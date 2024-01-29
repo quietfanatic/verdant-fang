@@ -65,6 +65,7 @@ my %configs = (
 my $program = 'verdant-fang';
 
 my @sources = (qw(
+    vf/game.cpp
     vf/main.cpp
     dirt/ayu/common.cpp
     dirt/ayu/data/parse.cpp

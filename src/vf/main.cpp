@@ -2,9 +2,11 @@
 #include "../dirt/ayu/resources/scheme.h"
 #include "../dirt/glow/common.h"
 #include "../dirt/tap/tap.h"
-#include "../dirt/uni/assertions.h"
-#include "../dirt/uni/strings.h"
+#include "common.h"
+#include "game.h"
+
 using namespace uni;
+using namespace vf;
 
 int main (int argc, char** argv) {
     char* base = glow::require_sdl(SDL_GetBasePath());
@@ -12,5 +14,8 @@ int main (int argc, char** argv) {
     ayu::FileResourceScheme data_scheme ("data", UniqueString(base));
     free(base);
     tap::allow_testing(argc, argv);
+
+    Game game;
+    game.loop.start();
     return 0;
 }
