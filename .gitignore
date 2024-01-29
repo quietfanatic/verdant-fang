@@ -1,0 +1,13 @@
+# products
+/tmp
+/out
+gmon.out
+cachegrind.out.*
+callgrind.out.*
+
+# Reference
+/ref
+*.draft.*
+
+# artifact of using an NTFS drive on Linux
+.fuse_hidden*
