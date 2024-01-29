@@ -1,0 +1,11 @@
+[ayu::Document {
+    start: [vf::Room { }]
+    player: [vf::Player {
+        room: #/start+1
+    }]
+    block: [vf::Block {
+        room: #/start+1
+        pos: [32 32]
+        box: [16 16 16 16]
+    }]
+}]
