@@ -1,13 +1,14 @@
 [ayu::Document {
     start: [vf::Room {
-        background_color: 0xcccc8800
+        background_color: 0xccaa8800
     }]
     player: [vf::Player {
         room: #/start+1
+        pos: [8 4]
     }]
-    block: [vf::Block {
+    floor: [vf::Block {
         room: #/start+1
-        pos: [32 32]
-        box: [0 0 16 16]
+        pos: [0 0]
+        box: [0 0 20 2]
     }]
 }]

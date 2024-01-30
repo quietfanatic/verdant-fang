@@ -4,9 +4,8 @@
 
 namespace vf {
 
-constexpr iri::IRI textures_loc ("res:/vf/textures.ayu");
 inline ayu::SharedResource& textures_res () {
-    static ayu::SharedResource r (textures_loc);
+    static ayu::SharedResource r (iri::constant("res:/vf/textures.ayu"));
     return r;
 }
 

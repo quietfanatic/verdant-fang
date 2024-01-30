@@ -5,6 +5,7 @@
 #include <SDL2/SDL_video.h>
 #include "../dirt/iri/iri.h"
 #include "../dirt/control/input.h"
+#include "camera.h"
 #include "room.h"
 
 namespace vf {
@@ -13,7 +14,9 @@ constexpr iri::IRI initial_state_loc ("res:/vf/initial-state.ayu");
 constexpr iri::IRI state_loc ("data:/state.ayu");
 
 static void draw_game (Game& game) {
+    begin_camera();
     if (game.current_room) game.current_room->draw();
+    end_camera();
     SDL_GL_SwapWindow(game.window);
 }
 

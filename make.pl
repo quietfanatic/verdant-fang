@@ -66,6 +66,7 @@ my $program = 'verdant-fang';
 
 my @sources = (qw(
     vf/block.cpp
+    vf/camera.cpp
     vf/game.cpp
     vf/main.cpp
     vf/player.cpp
