@@ -1,19 +1,22 @@
 #include "player.h"
 
+#include <SDL2/SDL_mixer.h>
 #include "../dirt/iri/iri.h"
 #include "../dirt/ayu/resources/resource.h"
 #include "../dirt/ayu/reflection/describe.h"
 #include "../dirt/glow/resource-texture.h"
 #include "../dirt/glow/texture-program.h"
+#include "assets.h"
 #include "block.h"
 #include "camera.h"
 #include "game.h"
 #include "settings.h"
-#include "textures.h"
+#include "sound.h"
 
 namespace vf {
 
 static ayu::SharedResource player_tex;
+static ayu::SharedResource a_sound;
 
 Player::Player () {
     box = {-0.5, 0, 0.5, 2};
@@ -22,33 +25,51 @@ Player::Player () {
         player_tex = ayu::SharedResource(
             iri::constant("vf:player_tex"),
             ayu::Dynamic::make<glow::Texture*>(
-                textures_res()["block"][1]
+                assets()["block"][1]
+            )
+        );
+    }
+    if (!a_sound) {
+        a_sound = ayu::SharedResource(
+            iri::constant("vf:a_sound"),
+            ayu::Dynamic::make<Sound*>(
+                assets()["sound"][1]
             )
         );
     }
 }
 
 void Player::Resident_before_step () {
-    Actions actions = the_game->settings().get_actions();
-    if (actions[Action::Left]) {
-        vel.x -= 0.02;
-        if (vel.x < -0.2) vel.x = -0.2;
-    }
-    if (actions[Action::Right]) {
-        vel.x += 0.02;
-        if (vel.x > 0.2) vel.x = 0.2;
-    }
-    if (!actions[Action::Left] && !actions[Action::Right]) {
-        vel.x -= normalize(vel.x) * 0.02;
-    }
-    if (floor) {
-        if (actions[Action::Jump]) {
-            vel.y = 0.2;
+    Actions actions = current_game->settings().get_actions();
+    switch (actions[Action::Right] - actions[Action::Left]) {
+        case -1: {
+            vel.x -= 0.02;
+            if (vel.x < -0.2) vel.x = -0.2;
+            break;
+        }
+        case 1: {
+            vel.x += 0.02;
+            if (vel.x > 0.2) vel.x = 0.2;
+            break;
+        }
+        case 0: {
+            if (vel.x > 0) {
+                vel.x -= 0.02;
+                if (vel.x < 0) vel.x = 0;
+            }
+            else if (vel.x < 0) {
+                vel.x += 0.02;
+                if (vel.x > 0) vel.x = 0;
+            }
         }
     }
-    else {
-        vel.y -= 0.01;
+    if (standing) {
+        if (actions[Action::Jump]) {
+            vel.y = 0.2;
+            standing = false;
+        }
     }
+    vel.y -= 0.01;
     pos += vel;
     floor = null;
 }
@@ -65,6 +86,10 @@ void Player::Resident_collide (Resident& other) {
         vel.y = 0;
         if (overlap.b == here.b) {
             pos.y += height(overlap);
+            if (!standing && !floor) {
+                auto snd = a_sound->value().as_known<Sound*>();
+                snd->play();
+            }
             floor = &block;
         }
         else if (overlap.t == here.t) {
@@ -81,6 +106,10 @@ void Player::Resident_collide (Resident& other) {
         }
         else never();
     }
+}
+
+void Player::Resident_after_step () {
+    standing = !!floor;
 }
 
 void Player::Resident_draw () {

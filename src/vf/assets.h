@@ -4,8 +4,8 @@
 
 namespace vf {
 
-inline ayu::SharedResource& textures_res () {
-    static ayu::SharedResource r (iri::constant("res:/vf/textures.ayu"));
+inline ayu::SharedResource& assets () {
+    static ayu::SharedResource r (iri::constant("res:/vf/assets.ayu"));
     return r;
 }
 

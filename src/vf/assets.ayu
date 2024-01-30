@@ -5,4 +5,8 @@
     player: [glow::ResourceTexture {
         source: block.png
     }]
+    sound: [vf::Sound {
+        source: Untitled1.ogg
+        channel: 0
+    }]
 }]

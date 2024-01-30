@@ -19,7 +19,7 @@ my @compile_opts = (map("-I$_", @includes), qw(
     -Wall -Wextra -Wno-unused-value
     -fmax-errors=10 -fdiagnostics-color -fno-diagnostics-show-caret
 ));
-my @link_opts = (qw(-lSDL2 -lSDL2_image));
+my @link_opts = (qw(-lSDL2 -lSDL2_image -lSDL2_mixer));
 #my @link_opts = (('-L' . rel2abs("$mingw_sdl2/lib")), qw(
 #    -static-libgcc -static-libstdc++
 #    -lmingw32 -lSDL2main -lSDL2
@@ -72,6 +72,7 @@ my @sources = (qw(
     vf/player.cpp
     vf/room.cpp
     vf/settings.cpp
+    vf/sound.cpp
     dirt/ayu/common.cpp
     dirt/ayu/data/parse.cpp
     dirt/ayu/data/print.cpp
@@ -127,6 +128,7 @@ my @sources = (qw(
 my @resources = (qw(
     vf/*.ayu
     vf/*.png
+    vf/*.ogg
 ),
     ["../LICENSE" => "LICENSE"],
     ["../README.md" => "README.md"],

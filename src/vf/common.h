@@ -13,4 +13,5 @@ struct Player;
 struct Resident;
 struct Room;
 struct Settings;
+struct Sound;
 } // vf

@@ -32,8 +32,8 @@ Game::Game () :
     settings_res(settings_loc),
     state(state_loc)
 {
-    expect(!the_game);
-    the_game = this;
+    expect(!current_game);
+    current_game = this;
     if (!ayu::source_exists(settings_loc)) {
         fs::copy_file(
             ayu::resource_filename(initial_settings_loc),
@@ -52,7 +52,7 @@ Game::Game () :
     current_room->enter();
 }
 
-Game::~Game () { the_game = null; }
+Game::~Game () { current_game = null; }
 
 Settings& Game::settings () {
     return settings_res->value().as_known<Settings>();
@@ -64,7 +64,7 @@ void Game::start () {
     loop.start();
 }
 
-Game* the_game = null;
+Game* current_game = null;
 
 } using namespace vf;
 

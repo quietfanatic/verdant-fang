@@ -19,6 +19,6 @@ struct Game {
     void start ();
 };
 
-extern Game* the_game;
+extern Game* current_game;
 
 } // vf

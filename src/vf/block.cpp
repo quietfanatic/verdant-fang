@@ -3,8 +3,8 @@
 #include "../dirt/ayu/reflection/describe.h"
 #include "../dirt/glow/resource-texture.h"
 #include "../dirt/glow/texture-program.h"
+#include "assets.h"
 #include "camera.h"
-#include "textures.h"
 
 namespace vf {
 
@@ -16,7 +16,7 @@ Block::Block () {
         block_tex_ptr = ayu::SharedResource(
             iri::constant("vf:block_tex"),
             ayu::Dynamic::make<glow::Texture*>(
-                textures_res()["block"][1]
+                assets()["block"][1]
             )
         );
     }

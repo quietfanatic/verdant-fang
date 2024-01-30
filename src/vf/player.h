@@ -8,8 +8,12 @@ inline Player* the_player = null;
 
 struct Player : Resident {
     Vec vel;
-    Block* floor = null;
+    bool standing = false;
+     // Temporary
+    Block* floor;
+
     Player ();
+    ~Player () { the_player = null; }
     void Resident_emerge () override {
         expect(!the_player); the_player = this;
     }
@@ -18,8 +22,8 @@ struct Player : Resident {
     }
     void Resident_before_step () override;
     void Resident_collide (Resident&) override;
+    void Resident_after_step () override;
     void Resident_draw () override;
-    ~Player () { the_player = null; }
 };
 
 } // vf
