@@ -12,12 +12,17 @@ namespace vf {
 constexpr iri::IRI initial_state_loc ("res:/vf/initial-state.ayu");
 constexpr iri::IRI state_loc ("data:/state.ayu");
 
+static void draw_game (Game& game) {
+    if (game.current_room) game.current_room->draw();
+    SDL_GL_SwapWindow(game.window);
+}
+
 Game::Game () :
     window("Verdant Fang (testing)", {640, 360}),
     loop{
         .on_event = [](SDL_Event*){ return false; },
-        .on_step = []{},
-        .on_draw = []{},
+        .on_step = [this]{ if (current_room) current_room->step(); },
+        .on_draw = [this]{ draw_game(*this); },
     },
     state(state_loc)
 {
@@ -28,9 +33,15 @@ Game::Game () :
         );
     }
     ayu::load(state);
-    Room* start_room = state["start"][1];
-    expect(start_room->residents);
-    start_room->enter();
+    current_room = state["start"][1];
+    expect(current_room->residents);
+    current_room->enter();
+}
+
+void Game::start () {
+    SDL_ShowWindow(window);
+    glow::init();
+    loop.start();
 }
 
 } using namespace vf;

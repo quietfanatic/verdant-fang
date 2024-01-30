@@ -65,8 +65,11 @@ my %configs = (
 my $program = 'verdant-fang';
 
 my @sources = (qw(
+    vf/block.cpp
     vf/game.cpp
     vf/main.cpp
+    vf/player.cpp
+    vf/room.cpp
     dirt/ayu/common.cpp
     dirt/ayu/data/parse.cpp
     dirt/ayu/data/print.cpp
@@ -96,11 +99,11 @@ my @sources = (qw(
     dirt/geo/vec.t.cpp
     dirt/glow/colors.cpp
     dirt/glow/common.cpp
-    dirt/glow/file-texture.cpp
     dirt/glow/gl.cpp
     dirt/glow/image.cpp
     dirt/glow/objects.cpp
     dirt/glow/program.cpp
+    dirt/glow/resource-texture.cpp
     dirt/glow/test-environment.cpp
     dirt/glow/texture-program.cpp
     dirt/iri/iri.cpp
@@ -120,6 +123,8 @@ my @sources = (qw(
 );
 
 my @resources = (qw(
+    vf/*.ayu
+    vf/*.png
 ),
     ["../LICENSE" => "LICENSE"],
     ["../README.md" => "README.md"],

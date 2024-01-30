@@ -4,6 +4,8 @@
 
 namespace vf {
 
-struct Block : Resident { };
+struct Block : Resident {
+    void Resident_draw ();
+};
 
 } // vf

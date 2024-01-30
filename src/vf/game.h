@@ -11,7 +11,9 @@ struct Game {
     wind::Window window;
     wind::ActiveLoop loop;
     ayu::SharedResource state;
+    Room* current_room;
     Game ();
+    void start ();
 };
 
 } // vf

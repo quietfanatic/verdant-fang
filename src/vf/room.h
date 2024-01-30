@@ -1,4 +1,5 @@
 #pragma once
+#include "../dirt/glow/colors.h"
 #include "../dirt/uni/linked.h"
 #include "common.h"
 
@@ -6,8 +7,11 @@ namespace vf {
 
 struct Room {
     LinkedList<Resident> residents;
+    glow::RGBA8 background_color;
     void enter ();
     void exit ();
+    void step ();
+    void draw ();
 };
 
 struct Resident : Linked<Resident> {
@@ -21,6 +25,8 @@ struct Resident : Linked<Resident> {
     }
     virtual void Resident_emerge () { }
     virtual void Resident_reclude () { }
+    virtual void Resident_step () { }
+    virtual void Resident_draw () { }
 };
 
 } // vf

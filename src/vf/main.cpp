@@ -16,6 +16,6 @@ int main (int argc, char** argv) {
     tap::allow_testing(argc, argv);
 
     Game game;
-    game.loop.start();
+    game.start();
     return 0;
 }

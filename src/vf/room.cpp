@@ -1,5 +1,7 @@
 #include "room.h"
+
 #include "../dirt/ayu/reflection/describe.h"
+#include "../dirt/glow/gl.h"
 
 namespace vf {
 
@@ -13,11 +15,30 @@ void Room::exit () {
         o.Resident_reclude();
     }
 }
+void Room::step () {
+    for (Resident& o : residents) {
+        o.Resident_step();
+    }
+}
+void Room::draw () {
+    glClearColor(
+        background_color.r / 255.0,
+        background_color.g / 255.0,
+        background_color.b / 255.0,
+        background_color.a / 255.0
+    );
+    glClear(GL_COLOR_BUFFER_BIT);
+    for (Resident& o : residents) {
+        o.Resident_draw();
+    }
+}
 
 } using namespace vf;
 
 AYU_DESCRIBE(vf::Room,
-    attrs()
+    attrs(
+        attr("background_color", &Room::background_color)
+    )
 )
 
 AYU_DESCRIBE(vf::Resident,

@@ -1,0 +1,8 @@
+[ayu::Document {
+    block: [glow::ResourceTexture {
+        source: block.png
+    }]
+    player: [glow::ResourceTexture {
+        source: block.png
+    }]
+}]
