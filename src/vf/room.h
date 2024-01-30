@@ -6,7 +6,7 @@
 namespace vf {
 
 enum class Layers : uint32 {
-    Player_Block
+    Player_Block = 1
 };
 DECLARE_ENUM_BITWISE_OPERATORS(Layers)
 

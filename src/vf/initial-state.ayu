@@ -9,6 +9,6 @@
     floor: [vf::Block {
         room: #/start+1
         pos: [0 0]
-        box: [0 0 20 2]
+        box: [0 0 20 1]
     }]
 }]

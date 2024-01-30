@@ -27,7 +27,8 @@ void Room::step () {
         auto b = a;
         for (++b; b != residents.end(); ++b) {
             if (!!(a->layers_1 & b->layers_2)) {
-                if (overlaps(a_box, b->box + b->pos)) {
+                auto b_box = b->box + b->pos;
+                if (overlaps(a_box, b_box)) {
                     a->Resident_collide(*b);
                 }
             }

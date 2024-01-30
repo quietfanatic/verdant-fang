@@ -21,7 +21,7 @@ static void draw_game (Game& game) {
 }
 
 Game::Game () :
-    window("Verdant Fang (testing)", {640, 360}),
+    window("Verdant Fang (testing)", size(window_viewport)),
     loop{
         .on_event = [](SDL_Event*){ return false; },
         .on_step = [this]{ if (current_room) current_room->step(); },
