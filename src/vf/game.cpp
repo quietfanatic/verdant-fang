@@ -10,6 +10,8 @@
 
 namespace vf {
 
+constexpr iri::IRI initial_settings_loc ("res:/vf/initial-settings.ayu");
+constexpr iri::IRI settings_loc ("data:/settings.ayu");
 constexpr iri::IRI initial_state_loc ("res:/vf/initial-state.ayu");
 constexpr iri::IRI state_loc ("data:/state.ayu");
 
@@ -27,18 +29,33 @@ Game::Game () :
         .on_step = [this]{ if (current_room) current_room->step(); },
         .on_draw = [this]{ draw_game(*this); },
     },
+    settings_res(settings_loc),
     state(state_loc)
 {
+    expect(!the_game);
+    the_game = this;
+    if (!ayu::source_exists(settings_loc)) {
+        fs::copy_file(
+            ayu::resource_filename(initial_settings_loc),
+            ayu::resource_filename(settings_loc)
+        );
+    }
     if (!ayu::source_exists(state_loc)) {
         fs::copy_file(
             ayu::resource_filename(initial_state_loc),
             ayu::resource_filename(state_loc)
         );
     }
-    ayu::load(state);
+    ayu::load({settings_res, state});
     current_room = state["start"][1];
     expect(current_room->residents);
     current_room->enter();
+}
+
+Game::~Game () { the_game = null; }
+
+Settings& Game::settings () {
+    return settings_res->value().as_known<Settings>();
 }
 
 void Game::start () {
@@ -46,6 +63,8 @@ void Game::start () {
     glow::init();
     loop.start();
 }
+
+Game* the_game = null;
 
 } using namespace vf;
 

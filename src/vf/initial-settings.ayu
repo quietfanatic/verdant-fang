@@ -1,0 +1,14 @@
+[vf::Settings {
+    action_bindings: [
+        [[z] confirm]
+        [[x] back]
+        [[p] pause]
+        [[left] left]
+        [[right] right]
+        [[up] up]
+        [[down] down]
+        [[z] jump]
+        [[x] attack]
+        [[c] special]
+    ]
+}]

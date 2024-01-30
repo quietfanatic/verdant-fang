@@ -8,7 +8,9 @@ using namespace geo;
 using namespace uni;
 namespace fs = std::filesystem;
 struct Block;
+struct Game;
 struct Player;
 struct Resident;
 struct Room;
+struct Settings;
 } // vf

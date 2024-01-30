@@ -7,6 +7,8 @@
 #include "../dirt/glow/texture-program.h"
 #include "block.h"
 #include "camera.h"
+#include "game.h"
+#include "settings.h"
 #include "textures.h"
 
 namespace vf {
@@ -27,7 +29,26 @@ Player::Player () {
 }
 
 void Player::Resident_before_step () {
-    vel += Vec(0, -0.01);
+    Actions actions = the_game->settings().get_actions();
+    if (actions[Action::Left]) {
+        vel.x -= 0.02;
+        if (vel.x < -0.2) vel.x = -0.2;
+    }
+    if (actions[Action::Right]) {
+        vel.x += 0.02;
+        if (vel.x > 0.2) vel.x = 0.2;
+    }
+    if (!actions[Action::Left] && !actions[Action::Right]) {
+        vel.x -= normalize(vel.x) * 0.02;
+    }
+    if (floor) {
+        if (actions[Action::Jump]) {
+            vel.y = 0.2;
+        }
+    }
+    else {
+        vel.y -= 0.01;
+    }
     pos += vel;
     floor = null;
 }

@@ -71,6 +71,7 @@ my @sources = (qw(
     vf/main.cpp
     vf/player.cpp
     vf/room.cpp
+    vf/settings.cpp
     dirt/ayu/common.cpp
     dirt/ayu/data/parse.cpp
     dirt/ayu/data/print.cpp
