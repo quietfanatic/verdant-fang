@@ -2,7 +2,7 @@
 
 #include <SDL2/SDL_mixer.h>
 #include "../dirt/iri/iri.h"
-#include "../dirt/ayu/resources/resource.h"
+#include "../dirt/ayu/resources/global.h"
 #include "../dirt/ayu/reflection/describe.h"
 #include "../dirt/glow/resource-texture.h"
 #include "../dirt/glow/texture-program.h"
@@ -15,27 +15,19 @@
 
 namespace vf {
 
-static ayu::SharedResource player_tex;
-static ayu::SharedResource a_sound;
+static glow::Texture* player_tex = null;
+static Sound* a_sound = null;
 
 Player::Player () {
     box = {-0.5, 0, 0.5, 2};
     layers_1 = Layers::Player_Block;
     if (!player_tex) {
-        player_tex = ayu::SharedResource(
-            iri::constant("vf:player_tex"),
-            ayu::Dynamic::make<glow::Texture*>(
-                assets()["block"][1]
-            )
-        );
+        ayu::global(&player_tex);
+        player_tex = assets()["block"][1];
     }
     if (!a_sound) {
-        a_sound = ayu::SharedResource(
-            iri::constant("vf:a_sound"),
-            ayu::Dynamic::make<Sound*>(
-                assets()["sound"][1]
-            )
-        );
+        ayu::global(&a_sound);
+        a_sound = assets()["sound"][1];
     }
 }
 
@@ -87,8 +79,7 @@ void Player::Resident_collide (Resident& other) {
         if (overlap.b == here.b) {
             pos.y += height(overlap);
             if (!standing && !floor) {
-                auto snd = a_sound->value().as_known<Sound*>();
-                snd->play();
+                a_sound->play();
             }
             floor = &block;
         }
@@ -113,8 +104,7 @@ void Player::Resident_after_step () {
 }
 
 void Player::Resident_draw () {
-    auto tex = player_tex->value().as_known<glow::Texture*>();
-    draw_texture(*tex, world_to_screen(box + pos));
+    draw_texture(*player_tex, world_to_screen(box + pos));
 }
 
 } using namespace vf;

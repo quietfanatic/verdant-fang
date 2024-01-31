@@ -10,7 +10,6 @@ using namespace vf;
 
 int main (int argc, char** argv) {
     char* base = glow::require_sdl(SDL_GetBasePath());
-    ayu::ResourceScheme vf_scheme ("vf");
     ayu::FileResourceScheme res_scheme ("res", uni::cat(base, + "res"));
     ayu::FileResourceScheme data_scheme ("data", UniqueString(base));
     free(base);
