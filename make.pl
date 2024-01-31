@@ -3,10 +3,11 @@ use lib do {__FILE__ =~ /^(.*)[\/\\]/; ($1||'.').'/src/external/make-pl'};
 use MakePl;
 use MakePl::C;
 use File::Copy;
+no warnings 'qw';
 
 ##### COMMAND LINE CONFIGURATION
 
-my $compiler = 'gcc';
+my $compiler = 'mingw';
 my %compilers;
 my @linker;
 my @includes;
@@ -20,17 +21,41 @@ if ($compiler eq 'gcc') {
         cpp => ['g++-12'],
         c => ['gcc-12'],
     );
-    @linker = 'g++-12';
+    @linker = qw(g++-12 -lSDL2 -lSDL2_image -lSDL2_mixer);
 }
 elsif ($compiler eq 'mingw') {
-    my $mingw = '../../progams/mingw64';
+    my $mingw = '../../programs/mingw';
+    my $bin = '..\\..\\programs\\mingw\\mingw64\\bin';
+    my $arch = 'x86_64-w64-mingw32';
     %compilers = (
-        cpp => ["$mingw/bin/g++.exe"],
-        c => ["$mingw/bin/gcc.exe"],
+        cpp => ["$bin\\g++.exe"],
+        c => ["$bin\\gcc.exe"],
     );
-    @linker = ("$mingw/bin/g++.exe", qw(
-        -lmingw32 -lSDL2main -static-libgcc -static-libstdc++
-    ));
+    @linker = ("$bin\\g++.exe",
+        qw(-lmingw32 -static-libgcc -static-libstdc++),
+    );
+     # These need to be at the end of the command line because the linker is
+     # too dumb to look backwards.
+    push @link_opts, (
+        "$mingw/SDL2_image-2.8.2/$arch/lib/libSDL2_image.a",
+        "$mingw/SDL2_mixer-2.8.0/$arch/lib/libSDL2_mixer.a",
+        "$mingw/SDL2-2.28.5/$arch/lib/libSDL2main.a",
+        "$mingw/SDL2-2.28.5/$arch/lib/libSDL2.a",
+        qw(
+            -mwindows -Wl,--dynamicbase -Wl,--nxcompat -Wl,--high-entropy-va
+            -lm -ldinput8 -ldxguid -ldxerr8 -luser32 -lgdi32 -lwinmm -limm32 -lole32
+            -loleaut32 -lshell32 -lsetupapi -lversion -luuid
+        )
+    );
+    push @compile_opts, (
+        "-I$mingw/SDL2-2.28.5/$arch/include",
+         # The SDL sublibraries expect their headers to be in the same place as
+         # the SDL headers, but I prefer to keep them separate, so here's an
+         # ugly workaround.
+        "-I$mingw/SDL2-2.28.5/$arch/include/SDL2",
+        "-I$mingw/SDL2_image-2.8.2/$arch/include",
+        "-I$mingw/SDL2_mixer-2.8.0/$arch/include",
+    );
 }
 else {
     die "Unsupported compiler option";
@@ -46,7 +71,7 @@ push @compile_opts, qw(
     -Wall -Wextra -Wno-unused-value
     -fmax-errors=10 -fdiagnostics-color -fno-diagnostics-show-caret
 );
-push @link_opts, qw(-lSDL2 -lSDL2_image -lSDL2_mixer);
+push @link_opts, qw();
 
  # Dead code elimination actually makes compilation slightly faster.
 push @O0_opts, qw(-fdce);
@@ -142,7 +167,6 @@ my @sources = (qw(
     dirt/uni/assertions.cpp
     dirt/uni/errors.cpp
     dirt/uni/io.cpp
-    dirt/uni/shell.cpp
     dirt/uni/text.cpp
     dirt/uni/utf.cpp
     dirt/whereami/whereami.c
@@ -253,7 +277,12 @@ for my $cfg (keys %configs) {
      # Misc phonies
     phony "out/$cfg/build", [$out_program, @out_resources];
     phony "out/$cfg/test", "out/$cfg/build", sub {
-        run "$out_program --test | perl -pe \"s/\\r//\" | prove -e \"$out_program --test\" -";
+        my $prog = $out_program;
+        if ($compiler eq 'mingw') {
+            $prog =~ s/\//\\/g;
+            $prog = "$prog.exe";
+        }
+        run "$prog --test | perl -pe \"s/\\r//\" | prove -e \"$prog --test\" -";
     };
 }
 

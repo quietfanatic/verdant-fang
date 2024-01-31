@@ -12,7 +12,7 @@ int main (int argc, char** argv) {
     char* base = glow::require_sdl(SDL_GetBasePath());
     ayu::FileResourceScheme res_scheme ("res", uni::cat(base, + "res"));
     ayu::FileResourceScheme data_scheme ("data", UniqueString(base));
-    free(base);
+    SDL_free(base);
     tap::allow_testing(argc, argv);
 
     Game game;
