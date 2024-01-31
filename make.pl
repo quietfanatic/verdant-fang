@@ -6,30 +6,53 @@ use File::Copy;
 
 ##### COMMAND LINE CONFIGURATION
 
-my %compilers = (
-    'cpp' => [qw(g++-12 -std=c++20 -fno-threadsafe-statics -ftemplate-backtrace-limit=0 -fconcepts-diagnostics-depth=4)],
-    'c' => ['gcc-12']
-);
-my @linker = 'g++-12';
+my $compiler = 'gcc';
+my %compilers;
+my @linker;
+my @includes;
+my @compile_opts;
+my @link_opts;
+my @O0_opts;
+my @O3_opts;
 
-my @includes = ();
-my @compile_opts = (map("-I$_", @includes), qw(
+if ($compiler eq 'gcc') {
+    %compilers = (
+        cpp => ['g++-12'],
+        c => ['gcc-12'],
+    );
+    @linker = 'g++-12';
+}
+elsif ($compiler eq 'mingw') {
+    my $mingw = '../../progams/mingw64';
+    %compilers = (
+        cpp => ["$mingw/bin/g++.exe"],
+        c => ["$mingw/bin/gcc.exe"],
+    );
+    @linker = ("$mingw/bin/g++.exe", qw(
+        -lmingw32 -lSDL2main -static-libgcc -static-libstdc++
+    ));
+}
+else {
+    die "Unsupported compiler option";
+}
+
+push @{$compilers{cpp}}, qw(
+    -std=c++20 -fno-threadsafe-statics
+    -ftemplate-backtrace-limit=0 -fconcepts-diagnostics-depth=4
+);
+push @compile_opts, qw(
     -msse2 -mfpmath=sse
     -fstrict-aliasing -fstack-protector
     -Wall -Wextra -Wno-unused-value
     -fmax-errors=10 -fdiagnostics-color -fno-diagnostics-show-caret
-));
-my @link_opts = (qw(-lSDL2 -lSDL2_image -lSDL2_mixer));
-#my @link_opts = (('-L' . rel2abs("$mingw_sdl2/lib")), qw(
-#    -static-libgcc -static-libstdc++
-#    -lmingw32 -lSDL2main -lSDL2
-#));
+);
+push @link_opts, qw(-lSDL2 -lSDL2_image -lSDL2_mixer);
 
  # Dead code elimination actually makes compilation slightly faster.
-my @O0_opts = (qw(-fdce));
+push @O0_opts, qw(-fdce);
 
  # MFW I discovered parallel LTO
-my @O3_opts = (qw(-O3 -flto=7));
+push @O3_opts, qw(-O3 -flto=7);
 
 $ENV{ASAN_OPTIONS} = 'new_delete_type_mismatch=0';
 my %configs = (
