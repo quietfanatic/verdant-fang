@@ -23,11 +23,11 @@ Player::Player () {
     layers_1 = Layers::Player_Block;
     if (!player_tex) {
         ayu::global(&player_tex);
-        player_tex = assets()["block"][1];
+        player_tex = assets()["player_tex"][1];
     }
     if (!a_sound) {
         ayu::global(&a_sound);
-        a_sound = assets()["sound"][1];
+        a_sound = assets()["a_sound"][1];
     }
 }
 

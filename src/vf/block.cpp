@@ -15,7 +15,7 @@ Block::Block () {
     layers_2 = Layers::Player_Block;
     if (!block_tex) {
         ayu::global(&block_tex);
-        block_tex = assets()["block"][1];
+        block_tex = assets()["block_tex"][1];
     }
 }
 

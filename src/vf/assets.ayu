@@ -1,11 +1,17 @@
 [ayu::Document {
-    block: [glow::ResourceTexture {
+    block_tex: [glow::ResourceTexture {
         source: block.png
     }]
-    player: [glow::ResourceTexture {
-        source: block.png
+    player_img: [glow::FileImage {
+        source: player.png
     }]
-    sound: [vf::Sound {
+    player_tex: [glow::ImageTexture {
+        image: #/player_img+1
+        filter: GL_NEAREST
+        bounds: [6 5 22 37]
+        replace_color: [0xbb997700 0x00000000]
+    }]
+    a_sound: [vf::Sound {
         source: Untitled1.ogg
         channel: 0
     }]
