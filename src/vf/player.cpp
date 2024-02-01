@@ -33,35 +33,52 @@ Player::Player () {
 
 void Player::Resident_before_step () {
     Actions actions = current_game->settings().get_actions();
+    constexpr float ground_acc = 0.4;
+    constexpr float ground_max = 2.5;
+    constexpr float ground_dec = 0.4;
+    constexpr float air_acc = 0.2;
+    constexpr float air_max = 2;
+    constexpr float air_dec = 0;
+    constexpr float jump_vel = 3.5;
+    constexpr float gravity_jump = -0.1;
+    constexpr float gravity_fall = -0.2;
+    float acc = standing ? ground_acc : air_acc;
+    float max = standing ? ground_max : air_max;
+    float dec = standing ? ground_dec : air_dec;
     switch (actions[Action::Right] - actions[Action::Left]) {
         case -1: {
-            vel.x -= 0.2;
-            if (vel.x < -2) vel.x = -2;
+            if (vel.x > -max) {
+                vel.x -= acc;
+                if (vel.x < -max) vel.x = -max;
+            }
             break;
         }
         case 1: {
-            vel.x += 0.2;
-            if (vel.x > 2) vel.x = 2;
+            if (vel.x < max) {
+                vel.x += acc;
+                if (vel.x > max) vel.x = max;
+            }
             break;
         }
         case 0: {
             if (vel.x > 0) {
-                vel.x -= 0.2;
+                vel.x -= dec;
                 if (vel.x < 0) vel.x = 0;
             }
             else if (vel.x < 0) {
-                vel.x += 0.2;
+                vel.x += dec;
                 if (vel.x > 0) vel.x = 0;
             }
         }
     }
     if (standing) {
         if (actions[Action::Jump]) {
-            vel.y = 2;
+            vel.y += jump_vel;
             standing = false;
         }
     }
-    vel.y -= 0.1;
+    vel.y += actions[Action::Jump] ? gravity_jump : gravity_fall;
+
     pos += vel;
     floor = null;
 }
