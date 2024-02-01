@@ -1,10 +1,15 @@
 #pragma once
 #include "common.h"
+#include "frame.h"
 #include "room.h"
 
 namespace vf {
 
 inline Player* the_player = null;
+
+struct PlayerFrames {
+    Frame standing;
+};
 
 struct Player : Resident {
     Vec vel;

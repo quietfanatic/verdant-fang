@@ -1,13 +1,13 @@
 #include "scenery.h"
 
 #include "../dirt/ayu/reflection/describe.h"
-#include "../dirt/glow/texture-program.h"
 #include "camera.h"
+#include "frame.h"
 
 namespace vf {
 
 void Scenery::Resident_draw () {
-    glow::draw_texture(*tex, world_to_screen(bounds + pos));
+    draw_frame({{0, 0}, bounds}, *tex, pos);
 }
 
 } using namespace vf;

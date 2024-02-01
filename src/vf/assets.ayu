@@ -1,15 +1,15 @@
 [ayu::Document {
     cave_img: [glow::FileImage { source:cave.png }]
-    cave_tex: [glow::ImageTexture {
+    cave_tex: [glow::PixelTexture {
         image: #/cave_img+1
-        filter: GL_NEAREST
     }]
-    player_img: [glow::FileImage { source: player.png }]
-    player_tex: [glow::ImageTexture {
+    player_img: [glow::FileImage { source:verdant.png }]
+    player_tex: [glow::PixelTexture {
         image: #/player_img+1
-        filter: GL_NEAREST
-        bounds: [6 5 22 37]
-        replace_color: [0xbb997700 0x00000000]
+        bounds: [10 5 42 37]
+    }]
+    player_frames: [vf::PlayerFrames {
+        standing: [[12 0] [-12 0 20 32]]
     }]
     a_sound: [vf::Sound {
         source: Untitled1.mp3

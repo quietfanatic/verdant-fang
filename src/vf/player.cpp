@@ -16,6 +16,7 @@
 namespace vf {
 
 static glow::Texture* player_tex = null;
+static PlayerFrames* player_frames = null;
 static Sound* a_sound = null;
 
 Player::Player () {
@@ -24,6 +25,10 @@ Player::Player () {
     if (!player_tex) {
         ayu::global(&player_tex);
         player_tex = assets()["player_tex"][1];
+    }
+    if (!player_frames) {
+        ayu::global(&player_frames);
+        player_frames = assets()["player_frames"][1];
     }
     if (!a_sound) {
         ayu::global(&a_sound);
@@ -121,10 +126,17 @@ void Player::Resident_after_step () {
 }
 
 void Player::Resident_draw () {
-    draw_texture(*player_tex, world_to_screen(bounds + pos));
+    Frame& frame = player_frames->standing;
+    draw_frame(frame, *player_tex, pos);
 }
 
 } using namespace vf;
+
+AYU_DESCRIBE(vf::PlayerFrames,
+    attrs(
+        attr("standing", &PlayerFrames::standing)
+    )
+)
 
 AYU_DESCRIBE(vf::Player,
     attrs(
