@@ -19,7 +19,7 @@ static glow::Texture* player_tex = null;
 static Sound* a_sound = null;
 
 Player::Player () {
-    box = {-8, 0, 8, 32};
+    bounds = {-8, 0, 8, 32};
     layers_1 = Layers::Player_Block;
     if (!player_tex) {
         ayu::global(&player_tex);
@@ -70,8 +70,8 @@ void Player::Resident_collide (Resident& other) {
     expect(other.layers_2 & Layers::Player_Block);
     auto& block = static_cast<Block&>(other);
 
-    Rect here = box + pos;
-    Rect there = block.box + block.pos;
+    Rect here = bounds + pos;
+    Rect there = block.bounds + block.pos;
     Rect overlap = here & there;
     expect(proper(overlap));
     if (height(overlap) <= width(overlap)) {
@@ -104,7 +104,7 @@ void Player::Resident_after_step () {
 }
 
 void Player::Resident_draw () {
-    draw_texture(*player_tex, world_to_screen(box + pos));
+    draw_texture(*player_tex, world_to_screen(bounds + pos));
 }
 
 } using namespace vf;

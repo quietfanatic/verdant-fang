@@ -1,10 +1,10 @@
 [ayu::Document {
-    block_tex: [glow::ResourceTexture {
-        source: block.png
+    cave_img: [glow::FileImage { source:cave.png }]
+    cave_tex: [glow::ImageTexture {
+        image: #/cave_img+1
+        filter: GL_NEAREST
     }]
-    player_img: [glow::FileImage {
-        source: player.png
-    }]
+    player_img: [glow::FileImage { source: player.png }]
     player_tex: [glow::ImageTexture {
         image: #/player_img+1
         filter: GL_NEAREST

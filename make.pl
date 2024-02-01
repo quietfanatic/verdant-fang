@@ -123,6 +123,7 @@ my @sources = (qw(
     vf/player.cpp
     vf/room.cpp
     vf/settings.cpp
+    vf/scenery.cpp
     vf/sound.cpp
     dirt/ayu/common.cpp
     dirt/ayu/data/parse.cpp
@@ -159,11 +160,11 @@ my @sources = (qw(
     dirt/glow/image-texture.cpp
     dirt/glow/image-transform.cpp
     dirt/glow/image.cpp
-    dirt/glow/objects.cpp
     dirt/glow/program.cpp
     dirt/glow/resource-texture.cpp
     dirt/glow/test-environment.cpp
     dirt/glow/texture-program.cpp
+    dirt/glow/texture.cpp
     dirt/iri/iri.cpp
     dirt/iri/path.cpp
     dirt/uni/arrays.t.cpp

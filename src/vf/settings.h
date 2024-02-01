@@ -27,8 +27,8 @@ struct ActionBinding {
 };
 
 struct Settings {
-    Actions get_actions () const;
     UniqueArray<ActionBinding> action_bindings;
+    Actions get_actions () const;
 };
 
 } // vf

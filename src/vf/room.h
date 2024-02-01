@@ -21,8 +21,8 @@ struct Room {
 
 struct Resident : Linked<Resident> {
     Room* room = null;
-    Rect box = GNAN;
-    Vec pos = GNAN;
+    Rect bounds = GNAN;
+    Vec pos;
      // For collision.  If a.layers_1 & b.layers_2, then a.Resident_collide(b)
      // will be called, and vice versa.
     Layers layers_1 = {};

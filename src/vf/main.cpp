@@ -9,13 +9,13 @@ using namespace uni;
 using namespace vf;
 
 int main (int argc, char** argv) {
-    try {
-        char* base = glow::require_sdl(SDL_GetBasePath());
-        ayu::FolderResourceScheme res_scheme ("res", uni::cat(base, + "res"));
-        ayu::FolderResourceScheme data_scheme ("data", UniqueString(base));
-        SDL_free(base);
-        tap::allow_testing(argc, argv);
+    char* base = glow::require_sdl(SDL_GetBasePath());
+    ayu::FolderResourceScheme res_scheme ("res", uni::cat(base, + "res"));
+    ayu::FolderResourceScheme data_scheme ("data", UniqueString(base));
+    SDL_free(base);
+    tap::allow_testing(argc, argv);
 
+    try {
         Game game;
         game.start();
     }

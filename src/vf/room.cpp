@@ -23,17 +23,17 @@ void Room::step () {
     }
      // Just some straightforward O(n^2) collision detection.
     for (auto a = residents.begin(); a != residents.end(); ++a) {
-        Rect a_box = a->box + a->pos;
+        Rect a_box = a->bounds + a->pos;
         auto b = a;
         for (++b; b != residents.end(); ++b) {
             if (!!(a->layers_1 & b->layers_2)) {
-                auto b_box = b->box + b->pos;
+                auto b_box = b->bounds + b->pos;
                 if (overlaps(a_box, b_box)) {
                     a->Resident_collide(*b);
                 }
             }
             else if (!!(b->layers_1 & a->layers_2)) {
-                if (overlaps(b->box + b->pos, a_box)) {
+                if (overlaps(b->bounds + b->pos, a_box)) {
                     b->Resident_collide(*a);
                 }
             }
@@ -61,13 +61,13 @@ void Room::draw () {
 
 AYU_DESCRIBE(vf::Room,
     attrs(
-        attr("background_color", &Room::background_color)
+        attr("background_color", &Room::background_color, optional)
     )
 )
 
 AYU_DESCRIBE(vf::Resident,
     attrs(
         attr("room", value_methods<Room*, &Resident::get_room, &Resident::set_room>(), optional),
-        attr("pos", &Resident::pos)
+        attr("pos", &Resident::pos, optional)
     )
 )

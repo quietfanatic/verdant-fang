@@ -7,16 +7,30 @@
 &b11p25:180 -- ceiling
 
 [ayu::Document {
-    start: [vf::Room {
-        background_color: 0xccaa8800
+    start: [vf::Room { }]
+    bg: [vf::Scenery {
+        room: #/start+1
+        tex: "res:/vf/assets.ayu#/cave_tex+1"
+        bounds: [*b0 *b0 *b20 *b11p25]
+    }]
+    floor: [vf::Block {
+        room: #/start+1
+        bounds: [*b0 *b0 *b20 *b2]
+    }]
+    left_wall: [vf::Block {
+        room: #/start+1
+        bounds: [*b0 *b6 *b3 *b11p25]
+    }]
+    right_wall: [vf::Block {
+        room: #/start+1
+        bounds: [*b17 *b6 *b20 *b11p25]
+    }]
+    ceiling: [vf::Block {
+        room: #/start+1
+        bounds: [*b0 *b10 *b20 *b11p25]
     }]
     player: [vf::Player {
         room: #/start+1
         pos: [*b8 *b4]
-    }]
-    floor: [vf::Block {
-        room: #/start+1
-        pos: [*b0 *b0]
-        box: [*b0 *b0 *b20 *b1]
     }]
 }]

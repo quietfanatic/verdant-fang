@@ -6,7 +6,6 @@ namespace vf {
 
 struct Block : Resident {
     Block ();
-    void Resident_draw ();
 };
 
 } // vf
