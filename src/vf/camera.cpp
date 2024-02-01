@@ -12,7 +12,7 @@ static void setup_rtt () {
     world_tex = glow::Texture(GL_TEXTURE_2D);
     glTexImage2D(
         GL_TEXTURE_2D, 0, GL_RGBA,
-        camera_size_screen.x, camera_size_screen.y,
+        camera_size.x, camera_size.y,
         0, GL_RGBA, GL_UNSIGNED_BYTE, 0
     );
      // Filtering mode for screen.  May want to reconsider this.
@@ -34,7 +34,7 @@ static void setup_rtt () {
 void begin_camera () {
     if (!world_fb) setup_rtt();
     glBindFramebuffer(GL_FRAMEBUFFER, world_fb);
-    glViewport(0, 0, camera_size_screen.x, camera_size_screen.y);
+    glViewport(0, 0, camera_size.x, camera_size.y);
 }
 
 void end_camera () {

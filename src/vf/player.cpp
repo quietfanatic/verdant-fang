@@ -19,7 +19,7 @@ static glow::Texture* player_tex = null;
 static Sound* a_sound = null;
 
 Player::Player () {
-    box = {-0.5, 0, 0.5, 2};
+    box = {-8, 0, 8, 32};
     layers_1 = Layers::Player_Block;
     if (!player_tex) {
         ayu::global(&player_tex);
@@ -35,33 +35,33 @@ void Player::Resident_before_step () {
     Actions actions = current_game->settings().get_actions();
     switch (actions[Action::Right] - actions[Action::Left]) {
         case -1: {
-            vel.x -= 0.02;
-            if (vel.x < -0.2) vel.x = -0.2;
+            vel.x -= 0.2;
+            if (vel.x < -2) vel.x = -2;
             break;
         }
         case 1: {
-            vel.x += 0.02;
-            if (vel.x > 0.2) vel.x = 0.2;
+            vel.x += 0.2;
+            if (vel.x > 2) vel.x = 2;
             break;
         }
         case 0: {
             if (vel.x > 0) {
-                vel.x -= 0.02;
+                vel.x -= 0.2;
                 if (vel.x < 0) vel.x = 0;
             }
             else if (vel.x < 0) {
-                vel.x += 0.02;
+                vel.x += 0.2;
                 if (vel.x > 0) vel.x = 0;
             }
         }
     }
     if (standing) {
         if (actions[Action::Jump]) {
-            vel.y = 0.2;
+            vel.y = 2;
             standing = false;
         }
     }
-    vel.y -= 0.01;
+    vel.y -= 0.1;
     pos += vel;
     floor = null;
 }
