@@ -13,6 +13,9 @@ Sound::Sound (const iri::IRI& src) : source(src) {
 bool sound_initted = false;
 static void init_sound () {
     if (sound_initted) return;
+     // OGG doesn't seem to work on mingw
+    auto flags = MIX_INIT_MP3;
+    glow::require_sdl(Mix_Init(flags) & flags);
     glow::require_sdl(!Mix_OpenAudio(
         44100, AUDIO_S16SYS, 2, 512
     ));

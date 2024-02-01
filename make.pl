@@ -7,7 +7,7 @@ no warnings 'qw';
 
 ##### COMMAND LINE CONFIGURATION
 
-my $compiler = 'mingw';
+my $compiler = 'gcc';
 my %compilers;
 my @linker;
 my @includes;
@@ -15,13 +15,15 @@ my @compile_opts;
 my @link_opts;
 my @O0_opts;
 my @O3_opts;
+my @resources;
 
 if ($compiler eq 'gcc') {
     %compilers = (
         cpp => ['g++-12'],
         c => ['gcc-12'],
     );
-    @linker = qw(g++-12 -lSDL2 -lSDL2_image -lSDL2_mixer);
+    @linker = 'g++-12';
+    push @link_opts, qw(-lSDL2 -lSDL2_image -lSDL2_mixer);
 }
 elsif ($compiler eq 'mingw') {
     my $mingw = '../../programs/mingw';
@@ -37,15 +39,10 @@ elsif ($compiler eq 'mingw') {
      # These need to be at the end of the command line because the linker is
      # too dumb to look backwards.
     push @link_opts, (
-        "$mingw/SDL2_image-2.8.2/$arch/lib/libSDL2_image.a",
-        "$mingw/SDL2_mixer-2.8.0/$arch/lib/libSDL2_mixer.a",
-        "$mingw/SDL2-2.28.5/$arch/lib/libSDL2main.a",
-        "$mingw/SDL2-2.28.5/$arch/lib/libSDL2.a",
-        qw(
-            -mwindows -Wl,--dynamicbase -Wl,--nxcompat -Wl,--high-entropy-va
-            -lm -ldinput8 -ldxguid -ldxerr8 -luser32 -lgdi32 -lwinmm -limm32 -lole32
-            -loleaut32 -lshell32 -lsetupapi -lversion -luuid
-        )
+        "-L$mingw/SDL2_image-2.8.2/$arch/lib",
+        "-L$mingw/SDL2_mixer-2.8.0/$arch/lib",
+        "-L$mingw/SDL2-2.28.5/$arch/lib",
+        qw(-lSDL2_image -lSDL2_mixer -lSDL2main -lSDL2),
     );
     push @compile_opts, (
         "-I$mingw/SDL2-2.28.5/$arch/include",
@@ -55,6 +52,12 @@ elsif ($compiler eq 'mingw') {
         "-I$mingw/SDL2-2.28.5/$arch/include/SDL2",
         "-I$mingw/SDL2_image-2.8.2/$arch/include",
         "-I$mingw/SDL2_mixer-2.8.0/$arch/include",
+    );
+     # These are relative to ./src.  TODO: make this more intuitive
+    push @resources, (
+        ["../$mingw/SDL2-2.28.5/$arch/bin/SDL2.dll" => 'SDL2.dll'],
+        ["../$mingw/SDL2_image-2.8.2/$arch/bin/SDL2_image.dll" => 'SDL2_image.dll'],
+        ["../$mingw/SDL2_mixer-2.8.0/$arch/bin/SDL2_mixer.dll" => 'SDL2_mixer.dll'],
     );
 }
 else {
@@ -176,10 +179,10 @@ my @sources = (qw(
     [qw(dirt/tap/tap.cpp -DTAP_SELF_TEST)],
 );
 
-my @resources = (qw(
+push @resources, (qw(
     vf/*.ayu
     vf/*.png
-    vf/*.ogg
+    vf/*.mp3
 ),
     ["../LICENSE" => "LICENSE"],
     ["../README.md" => "README.md"],

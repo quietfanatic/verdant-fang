@@ -12,7 +12,7 @@
         replace_color: [0xbb997700 0x00000000]
     }]
     a_sound: [vf::Sound {
-        source: Untitled1.ogg
+        source: Untitled1.mp3
         channel: 0
     }]
 }]
