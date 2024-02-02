@@ -9,14 +9,14 @@ namespace vf {
 static glow::Texture world_tex;
 static GLuint world_fb = 0;
 
-static void setup_rtt () {
+static void setup_camera () {
     world_tex = glow::Texture(GL_TEXTURE_RECTANGLE);
     glTexImage2D(
         GL_TEXTURE_RECTANGLE, 0, GL_RGBA,
         camera_size.x, camera_size.y,
         0, GL_RGBA, GL_UNSIGNED_BYTE, 0
     );
-     // Filtering mode for screen.  May want to reconsider this.
+     // Filtering mode for entire screen
     glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glBindTexture(GL_TEXTURE_RECTANGLE, 0);
@@ -30,15 +30,18 @@ static void setup_rtt () {
         raise(e_General, "Failed to set up render to texture");
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void begin_camera () {
-    if (!world_fb) setup_rtt();
+    if (!world_fb) setup_camera();
     glBindFramebuffer(GL_FRAMEBUFFER, world_fb);
     glViewport(0, 0, camera_size.x, camera_size.y);
+    glEnable(GL_BLEND);
 }
 
 void end_camera () {
+    glDisable(GL_BLEND);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(
         window_viewport.l, window_viewport.b,
