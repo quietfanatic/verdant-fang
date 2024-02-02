@@ -17,7 +17,7 @@ namespace vf {
 
 static glow::Texture* player_tex = null;
 static PlayerFrames* player_frames = null;
-static Sound* a_sound = null;
+static Sound* land_snd = null;
 
 Player::Player () {
     bounds = {-8, 0, 8, 32};
@@ -30,9 +30,9 @@ Player::Player () {
         ayu::global(&player_frames);
         player_frames = assets()["player_frames"][1];
     }
-    if (!a_sound) {
-        ayu::global(&a_sound);
-        a_sound = assets()["a_sound"][1];
+    if (!land_snd) {
+        ayu::global(&land_snd);
+        land_snd = assets()["land_snd"][1];
     }
 }
 
@@ -101,7 +101,7 @@ void Player::Resident_collide (Resident& other) {
         if (overlap.b == here.b) {
             pos.y += height(overlap);
             if (!standing && !floor) {
-                a_sound->play();
+                land_snd->play();
             }
             floor = &block;
         }
