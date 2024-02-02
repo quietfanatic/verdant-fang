@@ -15,6 +15,12 @@
 
 namespace vf {
 
+struct PlayerFrames {
+    Frame stand;
+    Frame walk [6];
+    Frame attack [2];
+};
+
 static glow::Texture* player_tex = null;
 static PlayerFrames* player_frames = null;
 static Sound* land_snd = null;
@@ -36,56 +42,91 @@ Player::Player () {
     }
 }
 
+static constexpr float ground_acc = 0.4;
+static constexpr float ground_max = 2.5;
+static constexpr float ground_dec = 0.4;
+static constexpr float air_acc = 0.2;
+static constexpr float air_max = 2;
+static constexpr float air_dec = 0;
+static constexpr float jump_vel = 3.5;
+static constexpr float gravity_jump = 0.1;
+static constexpr float gravity_fall = 0.2;
+static constexpr uint8 attack_sequence [] = {8, 4, 8};
+
 void Player::Resident_before_step () {
+    bool floaty = false;
+    bool can_move = true;
+     // Advance animations
+    anim_timer += 1;
+    if (state == PS::Attack) {
+        expect(anim_phase < 3);
+        if (anim_timer > attack_sequence[anim_phase]) {
+            anim_timer = 0;
+            anim_phase += 1;
+        }
+        if (anim_phase == 3) {
+            anim_phase = 0;
+            state = PS::Neutral;
+        }
+        else {
+            can_move = false;
+            floaty = true;
+        }
+    }
+     // Now decide what to do and do it
     Actions actions = current_game->settings().get_actions();
-    constexpr float ground_acc = 0.4;
-    constexpr float ground_max = 2.5;
-    constexpr float ground_dec = 0.4;
-    constexpr float air_acc = 0.2;
-    constexpr float air_max = 2;
-    constexpr float air_dec = 0;
-    constexpr float jump_vel = 3.5;
-    constexpr float gravity_jump = -0.1;
-    constexpr float gravity_fall = -0.2;
-    float acc = standing ? ground_acc : air_acc;
-    float max = standing ? ground_max : air_max;
-    float dec = standing ? ground_dec : air_dec;
-    switch (actions[Action::Right] - actions[Action::Left]) {
-        case -1: {
-            if (vel.x > -max) {
-                vel.x -= acc;
-                if (vel.x < -max) vel.x = -max;
-            }
-            break;
+
+    float acc = floor ? ground_acc : air_acc;
+    float max = floor ? ground_max : air_max;
+    float dec = floor ? ground_dec : air_dec;
+
+    if (can_move && actions[Action::Left] && !actions[Action::Right]) {
+        left = true;
+        if (vel.x > -max) {
+            vel.x -= acc;
+            if (vel.x < -max) vel.x = -max;
         }
-        case 1: {
-            if (vel.x < max) {
-                vel.x += acc;
-                if (vel.x > max) vel.x = max;
-            }
-            break;
-        }
-        case 0: {
-            if (vel.x > 0) {
-                vel.x -= dec;
-                if (vel.x < 0) vel.x = 0;
-            }
-            else if (vel.x < 0) {
-                vel.x += dec;
-                if (vel.x > 0) vel.x = 0;
-            }
-        }
+        if (vel.x >= 0) walk_start_x = pos.x;
     }
-    if (standing) {
-        if (actions[Action::Jump]) {
+    else if (can_move && actions[Action::Right]) {
+        left = false;
+        if (vel.x < max) {
+            vel.x += acc;
+            if (vel.x > max) vel.x = max;
+        }
+        if (vel.x <= 0) walk_start_x = pos.x;
+    }
+    else {
+        if (vel.x > 0) {
+            vel.x -= dec;
+            if (vel.x < 0) vel.x = 0;
+        }
+        else {
+            vel.x += dec;
+            if (vel.x > 0) vel.x = 0;
+        }
+        walk_start_x = pos.x;
+    }
+    if (can_move && actions[Action::Jump]) {
+        if (floor) {
             vel.y += jump_vel;
-            standing = false;
+            floor = null;
+            state = PS::Neutral;
+            anim_timer = 0;
         }
+        floaty = true;
     }
-    vel.y += actions[Action::Jump] ? gravity_jump : gravity_fall;
+    if (can_move && actions[Action::Attack]) {
+        state = PS::Attack;
+        anim_phase = 0;
+        anim_timer = 0;
+        floaty = true;
+    }
+
+    vel.y -= floaty ? gravity_jump : gravity_fall;
 
     pos += vel;
-    floor = null;
+    new_floor = null;
 }
 
 void Player::Resident_collide (Resident& other) {
@@ -100,10 +141,10 @@ void Player::Resident_collide (Resident& other) {
         vel.y = 0;
         if (overlap.b == here.b) {
             pos.y += height(overlap);
-            if (!standing && !floor) {
+            if (!floor && !new_floor) {
                 land_snd->play();
             }
-            floor = &block;
+            new_floor = &block;
         }
         else if (overlap.t == here.t) {
             pos.y -= height(overlap);
@@ -122,25 +163,62 @@ void Player::Resident_collide (Resident& other) {
 }
 
 void Player::Resident_after_step () {
-    standing = !!floor;
+    if (new_floor && !floor) walk_start_x = pos.x;
+    floor = new_floor;
+    new_floor = null;
 }
 
 void Player::Resident_draw () {
-    Frame& frame = player_frames->standing;
-    draw_frame(frame, *player_tex, pos);
+    Frame* frame;
+    switch (state) {
+        case PS::Neutral: {
+            if (floor) {
+                float dist = distance(walk_start_x, pos.x);
+                if (dist >= 1) {
+                    frame = &player_frames->walk[geo::floor(dist / 16) % 6];
+                }
+                else frame = &player_frames->stand;
+            }
+            else frame = &player_frames->walk[0];
+            break;
+        }
+        case PS::Attack: {
+            if (anim_phase == 1) {
+                frame = &player_frames->attack[1];
+            }
+            else frame = &player_frames->attack[0];
+            break;
+        }
+        default: never();
+    }
+    draw_frame(pos, *frame, *player_tex, BVec{left, false});
 }
 
 } using namespace vf;
 
-AYU_DESCRIBE(vf::PlayerFrames,
-    attrs(
-        attr("standing", &PlayerFrames::standing)
+AYU_DESCRIBE(vf::PlayerState,
+    values(
+        value("neutral", PS::Neutral),
+        value("attack", PS::Attack)
     )
 )
 
 AYU_DESCRIBE(vf::Player,
     attrs(
         attr("vf::Resident", base<Resident>(), include),
-        attr("vel", &Player::vel, optional)
+        attr("vel", &Player::vel, optional),
+        attr("left", &Player::left, optional),
+        attr("state", &Player::state, optional),
+        attr("anim_phase", &Player::anim_phase, optional),
+        attr("anim_timer", &Player::anim_timer, optional),
+        attr("walk_start_x", &Player::walk_start_x, optional)
+    )
+)
+
+AYU_DESCRIBE(vf::PlayerFrames,
+    attrs(
+        attr("stand", &PlayerFrames::stand),
+        attr("walk", &PlayerFrames::walk),
+        attr("attack", &PlayerFrames::attack)
     )
 )

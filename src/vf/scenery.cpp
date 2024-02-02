@@ -7,7 +7,7 @@
 namespace vf {
 
 void Scenery::Resident_draw () {
-    draw_frame({{0, 0}, bounds}, *tex, pos);
+    draw_frame(pos, {{0, 0}, bounds}, *tex);
 }
 
 } using namespace vf;

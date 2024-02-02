@@ -49,7 +49,7 @@ void end_camera () {
     );
      // By changing viewport, this will now zoom.
     Frame frame {{0, 0}, {Vec(0, 0), camera_size}};
-    draw_frame(frame, world_tex, {0, 0});
+    draw_frame({0, 0}, frame, world_tex);
 }
 
 } // vf

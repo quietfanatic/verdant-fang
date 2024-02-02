@@ -7,15 +7,23 @@ namespace vf {
 
 inline Player* the_player = null;
 
-struct PlayerFrames {
-    Frame standing;
+enum class PlayerState {
+    Neutral,
+    Attack,
 };
+using PS = PlayerState;
 
 struct Player : Resident {
     Vec vel;
-    bool standing = false;
+    bool left = false;
+    PlayerState state = PS::Neutral;
+    uint8 anim_phase = 0;
+    uint32 anim_timer = 0;
+    float walk_start_x = GNAN;
+
+    Block* floor = null;
      // Temporary
-    Block* floor;
+    Block* new_floor;
 
     Player ();
     ~Player () { the_player = null; }
