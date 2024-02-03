@@ -50,6 +50,7 @@ AYU_DESCRIBE(vf::CommandBinding,
 
 AYU_DESCRIBE(vf::Settings,
     attrs(
+        attr("true_fullscreen", &Settings::true_fullscreen),
         attr("controls", &Settings::controls),
         attr("commands", &Settings::commands)
     )

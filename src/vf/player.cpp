@@ -43,6 +43,8 @@ struct Poses {
     Pose stand;
     Pose walk [6];
     Pose attack [2];
+    Pose rise;
+    Pose fall;
 };
 
 struct PlayerData {
@@ -187,24 +189,32 @@ void Player::Resident_after_step () {
 }
 
 void Player::Resident_draw () {
+    auto& poses = data->poses;
     Pose* pose = null;
     switch (state) {
         case PS::Neutral: {
             if (floor) {
                 float dist = distance(walk_start_x, pos.x);
                 if (dist >= 1) {
-                    pose = &data->poses.walk[geo::floor(dist / 16) % 6];
+                    pose = &poses.walk[geo::floor(dist / 16) % 6];
                 }
-                else pose = &data->poses.stand;
+                else pose = &poses.stand;
             }
-            else pose = &data->poses.walk[0];
+            else {
+                if (vel.y > 0) {
+                    pose = &poses.rise;
+                }
+                else {
+                    pose = &poses.fall;
+                }
+            }
             break;
         }
         case PS::Attack: {
             if (anim_phase == 1) {
-                pose = &data->poses.attack[1];
+                pose = &poses.attack[1];
             }
-            else pose = &data->poses.attack[0];
+            else pose = &poses.attack[0];
             break;
         }
         default: never();
@@ -277,7 +287,9 @@ AYU_DESCRIBE(vf::Poses,
     attrs(
         attr("stand", &Poses::stand),
         attr("walk", &Poses::walk),
-        attr("attack", &Poses::attack)
+        attr("attack", &Poses::attack),
+        attr("rise", &Poses::rise),
+        attr("fall", &Poses::fall)
     )
 )
 

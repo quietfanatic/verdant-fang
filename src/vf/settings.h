@@ -33,6 +33,7 @@ struct CommandBinding {
 };
 
 struct Settings {
+    bool true_fullscreen = false;
     UniqueArray<ControlBinding> controls;
     Controls get_controls () const;
     UniqueArray<CommandBinding> commands;

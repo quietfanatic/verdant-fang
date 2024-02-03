@@ -1,4 +1,9 @@
 [vf::Settings {
+     -- Make it so fullscreen mode sets the screen resolution.  If you have
+     -- framerate problems in fullscreen mode due to a sucky graphics driver,
+     -- then this option may help.  It may also screw with the sizes of all your
+     -- desktop windows.
+    true_fullscreen: false
     controls: [
         [[z] confirm]
         [[x] back]
