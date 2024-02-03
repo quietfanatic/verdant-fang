@@ -23,7 +23,7 @@ struct BodyFrame : Frame {
 struct BodyFrames {
     BodyFrame stand;
     BodyFrame walk [6];
-    BodyFrame attack [2];
+    BodyFrame attack [3];
 };
 
 struct HeadFrames {
@@ -31,6 +31,7 @@ struct HeadFrames {
     Frame wave0;
     Frame wave1;
     Frame wave2;
+    Frame back;
 };
 
 struct Pose {
@@ -41,7 +42,7 @@ struct Pose {
 struct Poses {
     Pose stand;
     Pose walk [6];
-    Pose attack [2];
+    Pose attack [3];
     Pose rise;
     Pose fall;
 };
@@ -70,7 +71,7 @@ static constexpr float air_dec = 0;
 static constexpr float jump_vel = 3.5;
 static constexpr float gravity_jump = 0.1;
 static constexpr float gravity_fall = 0.2;
-static constexpr uint8 attack_sequence [] = {4, 6, 4};
+static constexpr uint8 attack_sequence [] = {5, 7, 5};
 
 void Player::Resident_before_step () {
     bool floaty = false;
@@ -214,10 +215,8 @@ void Player::Resident_draw () {
             break;
         }
         case PS::Attack: {
-            if (anim_phase == 1) {
-                pose = &poses.attack[1];
-            }
-            else pose = &poses.attack[0];
+            expect(anim_phase < 3);
+            pose = &poses.attack[anim_phase];
             break;
         }
         default: never();
@@ -275,7 +274,8 @@ AYU_DESCRIBE(vf::HeadFrames,
         attr("neutral", &HeadFrames::neutral),
         attr("wave0", &HeadFrames::wave0),
         attr("wave1", &HeadFrames::wave1),
-        attr("wave2", &HeadFrames::wave2)
+        attr("wave2", &HeadFrames::wave2),
+        attr("back", &HeadFrames::back)
     )
 )
 

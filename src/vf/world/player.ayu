@@ -7,7 +7,7 @@
     }
     head_tex: {
         image: #/img
-        bounds: [100 40 226 63]
+        bounds: [100 40 258 63]
     }
     bodies: {
          -- y up
@@ -23,6 +23,7 @@
         attack: [
             [[72 0] [-20 0 20 31] [0 23]]
             [[13 0] [-8 0 36 31] [4 22]]
+            [[112 0] [-20 0 20 31] [0 23]]
         ]
     }
     heads: {
@@ -30,6 +31,7 @@
         wave0: [[55 13] [-23 -13 9 10]]
         wave1: [[87 13] [-23 -13 9 10]]
         wave2: [[119 13] [-23 -13 9 10]]
+        back: [[151 13] [-23 -13 9 10]]
     }
     poses: {
         stand: [#/bodies/stand #/heads/neutral]
@@ -44,6 +46,7 @@
         attack: [
             [#/bodies/attack+0 #/heads/neutral]
             [#/bodies/attack+1 #/heads/wave2]
+            [#/bodies/attack+2 #/heads/neutral]
         ]
         rise: [#/bodies/walk+0 #/heads/neutral]
         fall: [#/bodies/walk+2 #/heads/wave2]
