@@ -3,30 +3,4 @@
     cave_tex: [glow::PixelTexture {
         image: #/cave_img+1
     }]
-    player_img: [glow::FileImage { source:verdant.png }]
-    player_tex: [glow::PixelTexture {
-        image: #/player_img+1
-         -- y down
-        bounds: [10 6 217 106]
-    }]
-    player_frames: [vf::PlayerFrames {
-         -- y up
-        stand: [[13 69] [-13 0 19 31]]
-        walk: [
-            [[13 35] [-13 0 19 31]]
-            [[48 35] [-13 0 19 31]]
-            [[83 36] [-13 0 19 31]]
-            [[118 35] [-13 0 19 31]]
-            [[153 35] [-13 0 19 31]]
-            [[188 36] [-13 0 19 31]]
-        ]
-        attack: [
-            [[64 0] [-13 0 34 31]]
-            [[13 0] [-13 0 34 31]]
-        ]
-    }]
-    land_snd: [vf::Sound {
-        source: land.mp3
-        channel: 0
-    }]
 }]

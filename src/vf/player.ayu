@@ -1,0 +1,53 @@
+[vf::PlayerData {
+    img: { source:verdant.png }
+    body_tex: {
+        image: #/img
+         -- y down
+        bounds: [110 106 317 206]
+    }
+    head_tex: {
+        image: #/img
+        bounds: [100 40 226 63]
+    }
+    bodies: {
+         -- y up
+        stand: [[13 69] [-13 0 19 31] [0 23]]
+        walk: [
+            [[13 35] [-13 0 19 31] [1 23]]
+            [[48 35] [-13 0 19 31] [1 23]]
+            [[83 36] [-13 0 19 31] [1 22]]
+            [[118 35] [-13 0 19 31] [1 23]]
+            [[153 35] [-13 0 19 31] [1 23]]
+            [[188 36] [-13 0 19 31] [1 23]]
+        ]
+        attack: [
+            [[64 0] [-13 0 34 31] [0 23]]
+            [[13 0] [-13 0 34 31] [4 22]]
+        ]
+    }
+    heads: {
+        neutral: [[23 13] [-23 -13 9 10]]
+        wave0: [[55 13] [-23 -13 9 10]]
+        wave1: [[87 13] [-23 -13 9 10]]
+        wave2: [[119 13] [-23 -13 9 10]]
+    }
+    poses: {
+        stand: [#/bodies/stand #/heads/neutral]
+        walk: [
+            [#/bodies/walk+0 #/heads/wave0]
+            [#/bodies/walk+1 #/heads/wave1]
+            [#/bodies/walk+2 #/heads/wave2]
+            [#/bodies/walk+3 #/heads/wave0]
+            [#/bodies/walk+4 #/heads/wave1]
+            [#/bodies/walk+5 #/heads/wave2]
+        ]
+        attack: [
+            [#/bodies/attack+0 #/heads/neutral]
+            [#/bodies/attack+1 #/heads/wave2]
+        ]
+    }
+    land_sfx: {
+        source: land.mp3
+        channel: 0
+    }
+}]

@@ -20,12 +20,12 @@ int main (int argc, char** argv) {
         game.start();
     }
     catch (std::exception& e) {
-        SDL_ShowSimpleMessageBox(
-            SDL_MESSAGEBOX_ERROR,
-            "Sorry, the program crashed.",
-            cat("Uncaught exception: ", e.what()).c_str(),
-            null
-        );
+//        SDL_ShowSimpleMessageBox(
+//            SDL_MESSAGEBOX_ERROR,
+//            "Sorry, the program crashed.",
+//            cat("Uncaught exception: ", e.what()).c_str(),
+//            null
+//        );
         throw;
     }
     return 0;

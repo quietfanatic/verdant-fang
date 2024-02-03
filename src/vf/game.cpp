@@ -83,7 +83,9 @@ Settings& Game::settings () {
 }
 
 void Game::start () {
+    SDL_SetWindowResizable(window, SDL_TRUE);
     SDL_ShowWindow(window);
+    SDL_GL_SetSwapInterval(1);
     glow::init();
     loop.start();
 }

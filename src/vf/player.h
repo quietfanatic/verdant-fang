@@ -1,6 +1,5 @@
 #pragma once
 #include "common.h"
-#include "frame.h"
 #include "room.h"
 
 namespace vf {
@@ -13,7 +12,10 @@ enum class PlayerState {
 };
 using PS = PlayerState;
 
+struct PlayerData;
+
 struct Player : Resident {
+    PlayerData* data = null;
     Vec vel;
     bool left = false;
     PlayerState state = PS::Neutral;

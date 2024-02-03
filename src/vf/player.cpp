@@ -4,42 +4,60 @@
 #include "../dirt/iri/iri.h"
 #include "../dirt/ayu/resources/global.h"
 #include "../dirt/ayu/reflection/describe.h"
-#include "../dirt/glow/resource-texture.h"
+#include "../dirt/glow/file-image.h"
+#include "../dirt/glow/image-texture.h"
 #include "../dirt/glow/texture-program.h"
 #include "assets.h"
 #include "block.h"
 #include "camera.h"
+#include "frame.h"
 #include "game.h"
 #include "settings.h"
 #include "sound.h"
 
 namespace vf {
 
-struct PlayerFrames {
-    Frame stand;
-    Frame walk [6];
-    Frame attack [2];
+struct BodyFrame : Frame {
+    Vec head;
 };
 
-static glow::Texture* player_tex = null;
-static PlayerFrames* player_frames = null;
-static Sound* land_snd = null;
+struct BodyFrames {
+    BodyFrame stand;
+    BodyFrame walk [6];
+    BodyFrame attack [2];
+};
+
+struct HeadFrames {
+    Frame neutral;
+    Frame wave0;
+    Frame wave1;
+    Frame wave2;
+};
+
+struct Pose {
+    BodyFrame* body;
+    Frame* head;
+};
+
+struct Poses {
+    Pose stand;
+    Pose walk [6];
+    Pose attack [2];
+};
+
+struct PlayerData {
+    glow::FileImage img;
+    glow::PixelTexture body_tex;
+    glow::PixelTexture head_tex;
+    BodyFrames bodies;
+    HeadFrames heads;
+    Poses poses;
+    Sound land_sfx;
+};
 
 Player::Player () {
     bounds = {-8, 0, 8, 32};
     layers_1 = Layers::Player_Block;
-    if (!player_tex) {
-        ayu::global(&player_tex);
-        player_tex = assets()["player_tex"][1];
-    }
-    if (!player_frames) {
-        ayu::global(&player_frames);
-        player_frames = assets()["player_frames"][1];
-    }
-    if (!land_snd) {
-        ayu::global(&land_snd);
-        land_snd = assets()["land_snd"][1];
-    }
 }
 
 static constexpr float ground_acc = 0.4;
@@ -142,7 +160,7 @@ void Player::Resident_collide (Resident& other) {
         if (overlap.b == here.b) {
             pos.y += height(overlap);
             if (!floor && !new_floor) {
-                land_snd->play();
+                data->land_sfx.play();
             }
             new_floor = &block;
         }
@@ -169,29 +187,36 @@ void Player::Resident_after_step () {
 }
 
 void Player::Resident_draw () {
-    Frame* frame;
+    Pose* pose = null;
     switch (state) {
         case PS::Neutral: {
             if (floor) {
                 float dist = distance(walk_start_x, pos.x);
                 if (dist >= 1) {
-                    frame = &player_frames->walk[geo::floor(dist / 16) % 6];
+                    pose = &data->poses.walk[geo::floor(dist / 16) % 6];
                 }
-                else frame = &player_frames->stand;
+                else pose = &data->poses.stand;
             }
-            else frame = &player_frames->walk[0];
+            else pose = &data->poses.walk[0];
             break;
         }
         case PS::Attack: {
             if (anim_phase == 1) {
-                frame = &player_frames->attack[1];
+                pose = &data->poses.attack[1];
             }
-            else frame = &player_frames->attack[0];
+            else pose = &data->poses.attack[0];
             break;
         }
         default: never();
     }
-    draw_frame(pos, *frame, *player_tex, BVec{left, false});
+    Vec scale {left ? -1 : 1, 1};
+    if (pose->body) {
+        if (pose->head) {
+            Vec head_pos = pos + pose->body->head * scale;
+            draw_frame(head_pos, *pose->head, data->head_tex, scale);
+        }
+        draw_frame(pos, *pose->body, data->body_tex, scale);
+    }
 }
 
 } using namespace vf;
@@ -206,6 +231,7 @@ AYU_DESCRIBE(vf::PlayerState,
 AYU_DESCRIBE(vf::Player,
     attrs(
         attr("vf::Resident", base<Resident>(), include),
+        attr("data", &Player::data),
         attr("vel", &Player::vel, optional),
         attr("left", &Player::left, optional),
         attr("state", &Player::state, optional),
@@ -215,10 +241,54 @@ AYU_DESCRIBE(vf::Player,
     )
 )
 
-AYU_DESCRIBE(vf::PlayerFrames,
+AYU_DESCRIBE(vf::BodyFrame,
+    elems(
+        elem(&BodyFrame::offset),
+        elem(&BodyFrame::bounds),
+        elem(&BodyFrame::head)
+    )
+)
+
+AYU_DESCRIBE(vf::BodyFrames,
     attrs(
-        attr("stand", &PlayerFrames::stand),
-        attr("walk", &PlayerFrames::walk),
-        attr("attack", &PlayerFrames::attack)
+        attr("stand", &BodyFrames::stand),
+        attr("walk", &BodyFrames::walk),
+        attr("attack", &BodyFrames::attack)
+    )
+)
+
+AYU_DESCRIBE(vf::HeadFrames,
+    attrs(
+        attr("neutral", &HeadFrames::neutral),
+        attr("wave0", &HeadFrames::wave0),
+        attr("wave1", &HeadFrames::wave1),
+        attr("wave2", &HeadFrames::wave2)
+    )
+)
+
+AYU_DESCRIBE(vf::Pose,
+    elems(
+        elem(&Pose::body),
+        elem(&Pose::head)
+    )
+)
+
+AYU_DESCRIBE(vf::Poses,
+    attrs(
+        attr("stand", &Poses::stand),
+        attr("walk", &Poses::walk),
+        attr("attack", &Poses::attack)
+    )
+)
+
+AYU_DESCRIBE(vf::PlayerData,
+    attrs(
+        attr("img", &PlayerData::img),
+        attr("body_tex", &PlayerData::body_tex),
+        attr("head_tex", &PlayerData::head_tex),
+        attr("bodies", &PlayerData::bodies),
+        attr("heads", &PlayerData::heads),
+        attr("poses", &PlayerData::poses),
+        attr("land_sfx", &PlayerData::land_sfx)
     )
 )

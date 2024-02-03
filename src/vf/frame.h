@@ -10,6 +10,6 @@ struct Frame {
     Rect bounds;
 };
 
-void draw_frame (Vec, const Frame&, const glow::Texture&, BVec flip = {});
+void draw_frame (Vec, const Frame&, const glow::Texture&, Vec scale = {1, 1});
 
 } // vf

@@ -27,7 +27,7 @@ struct FrameProgram : glow::Program {
 
 static FrameProgram* program = null;
 
-void draw_frame (Vec pos, const Frame& frame, const glow::Texture& tex, BVec flip) {
+void draw_frame (Vec pos, const Frame& frame, const glow::Texture& tex, Vec scale) {
     require(!!tex);
     require(tex.target == GL_TEXTURE_RECTANGLE);
 
@@ -39,7 +39,7 @@ void draw_frame (Vec pos, const Frame& frame, const glow::Texture& tex, BVec fli
     }
     program->use();
 
-    Rect screen_bounds = frame.bounds * Vec(flip.x ? -1 : 1, flip.y ? -1 : 1);
+    Rect screen_bounds = frame.bounds * scale;
     Rect screen_rect = world_to_screen(screen_bounds + pos);
     Rect tex_rect = frame.bounds + frame.offset;
     glUniform1fv(program->u_screen_rect, 4, &screen_rect.l);
