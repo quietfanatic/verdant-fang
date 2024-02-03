@@ -1,8 +1,8 @@
 #include "sound.h"
 
 #include <SDL2/SDL_mixer.h>
-#include "../dirt/ayu/resources/resource.h"
-#include "../dirt/glow/common.h"
+#include "../../dirt/ayu/resources/resource.h"
+#include "../../dirt/glow/common.h"
 
 namespace vf {
 

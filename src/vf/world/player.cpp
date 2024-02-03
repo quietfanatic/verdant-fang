@@ -1,19 +1,18 @@
 #include "player.h"
 
 #include <SDL2/SDL_mixer.h>
-#include "../dirt/iri/iri.h"
-#include "../dirt/ayu/resources/global.h"
-#include "../dirt/ayu/reflection/describe.h"
-#include "../dirt/glow/file-image.h"
-#include "../dirt/glow/image-texture.h"
-#include "../dirt/glow/texture-program.h"
-#include "assets.h"
+#include "../../dirt/iri/iri.h"
+#include "../../dirt/ayu/resources/global.h"
+#include "../../dirt/ayu/reflection/describe.h"
+#include "../../dirt/glow/file-image.h"
+#include "../../dirt/glow/image-texture.h"
+#include "../../dirt/glow/texture-program.h"
+#include "../game/camera.h"
+#include "../game/frame.h"
+#include "../game/game.h"
+#include "../game/settings.h"
+#include "../game/sound.h"
 #include "block.h"
-#include "camera.h"
-#include "frame.h"
-#include "game.h"
-#include "settings.h"
-#include "sound.h"
 
 namespace vf {
 

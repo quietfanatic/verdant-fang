@@ -1,7 +1,7 @@
 #include "room.h"
 
-#include "../dirt/ayu/reflection/describe.h"
-#include "../dirt/glow/gl.h"
+#include "../../dirt/ayu/reflection/describe.h"
+#include "../../dirt/glow/gl.h"
 
 namespace vf {
 
@@ -26,13 +26,13 @@ void Room::step () {
         Rect a_box = a->bounds + a->pos;
         auto b = a;
         for (++b; b != residents.end(); ++b) {
-            if (!!(a->layers_1 & b->layers_2)) {
+            if (a->layers_1 & b->layers_2) {
                 auto b_box = b->bounds + b->pos;
                 if (overlaps(a_box, b_box)) {
                     a->Resident_collide(*b);
                 }
             }
-            else if (!!(b->layers_1 & a->layers_2)) {
+            else if (b->layers_1 & a->layers_2) {
                 if (overlaps(b->bounds + b->pos, a_box)) {
                     b->Resident_collide(*a);
                 }

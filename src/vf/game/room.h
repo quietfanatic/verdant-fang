@@ -1,14 +1,9 @@
 #pragma once
-#include "../dirt/glow/colors.h"
-#include "../dirt/uni/linked.h"
+#include "../../dirt/glow/colors.h"
+#include "../../dirt/uni/linked.h"
 #include "common.h"
 
 namespace vf {
-
-enum class Layers : uint32 {
-    Player_Block = 1
-};
-DECLARE_ENUM_BITWISE_OPERATORS(Layers)
 
 struct Room {
     LinkedList<Resident> residents;
@@ -25,8 +20,8 @@ struct Resident : Linked<Resident> {
     Vec pos;
      // For collision.  If a.layers_1 & b.layers_2, then a.Resident_collide(b)
      // will be called, and vice versa.
-    Layers layers_1 = {};
-    Layers layers_2 = {};
+    uint32 layers_1 = {};
+    uint32 layers_2 = {};
     Room* get_room () const { return room; }
     void set_room (Room* r) {
         if (room) unlink();

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../dirt/control/command.h"
-#include "../dirt/control/input.h"
+#include "../../dirt/control/command.h"
+#include "../../dirt/control/input.h"
 #include "common.h"
 
 namespace vf {

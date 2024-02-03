@@ -3,17 +3,17 @@
 #include <filesystem>
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_video.h>
-#include "../dirt/iri/iri.h"
-#include "../dirt/control/input.h"
+#include "../../dirt/iri/iri.h"
+#include "../../dirt/control/input.h"
 #include "camera.h"
 #include "room.h"
 #include "settings.h"
 
 namespace vf {
 
-constexpr iri::IRI initial_settings_loc ("res:/vf/initial-settings.ayu");
+constexpr iri::IRI initial_settings_loc ("res:/vf/game/initial-settings.ayu");
 constexpr iri::IRI settings_loc ("data:/settings.ayu");
-constexpr iri::IRI initial_state_loc ("res:/vf/initial-state.ayu");
+constexpr iri::IRI initial_state_loc ("res:/vf/game/initial-state.ayu");
 constexpr iri::IRI state_loc ("data:/state.ayu");
 
 static void on_draw (Game& game) {
@@ -95,8 +95,8 @@ Game* current_game = null;
 } using namespace vf;
 
 #ifndef TAP_DISABLE_TESTS
-#include "../dirt/tap/tap.h"
-#include "player.h"
+#include "../../dirt/tap/tap.h"
+#include "../world/player.h"
 
 tap::TestSet tests ("vf/game", []{
     using namespace control;

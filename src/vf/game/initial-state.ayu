@@ -10,7 +10,7 @@
     start: [vf::Room { }]
     bg: [vf::Scenery {
         room: #/start+1
-        tex: "res:/vf/assets.ayu#/cave_tex+1"
+        tex: "res:/vf/world/assets.ayu#/cave_tex+1"
         bounds: [*b0 *b0 *b20 *b11p25]
     }]
     floor: [vf::Block {
@@ -31,7 +31,7 @@
     }]
     player: [vf::Player {
         room: #/start+1
-        data: "res:/vf/player.ayu#"
+        data: "res:/vf/world/player.ayu#"
         pos: [*b8 *b4]
     }]
 }]

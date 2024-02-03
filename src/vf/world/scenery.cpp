@@ -1,8 +1,8 @@
 #include "scenery.h"
 
-#include "../dirt/ayu/reflection/describe.h"
-#include "camera.h"
-#include "frame.h"
+#include "../../dirt/ayu/reflection/describe.h"
+#include "../game/camera.h"
+#include "../game/frame.h"
 
 namespace vf {
 

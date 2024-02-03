@@ -1,7 +1,7 @@
 #include "settings.h"
 
 #include <SDL2/SDL_events.h>
-#include "../dirt/ayu/reflection/describe.h"
+#include "../../dirt/ayu/reflection/describe.h"
 
 namespace vf {
 

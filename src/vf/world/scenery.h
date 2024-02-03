@@ -1,6 +1,6 @@
 #pragma once
-#include "../dirt/glow/texture.h"
-#include "room.h"
+#include "../../dirt/glow/texture.h"
+#include "../game/room.h"
 
 namespace vf {
 

@@ -1,9 +1,10 @@
 #pragma once
+#include "../game/room.h"
 #include "common.h"
-#include "room.h"
 
 namespace vf {
 
+struct Player;
 inline Player* the_player = null;
 
 enum class PlayerState {

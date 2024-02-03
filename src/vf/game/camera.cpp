@@ -1,7 +1,7 @@
 #include "camera.h"
 
-#include "../dirt/glow/gl.h"
-#include "../dirt/glow/texture.h"
+#include "../../dirt/glow/gl.h"
+#include "../../dirt/glow/texture.h"
 #include "frame.h"
 
 namespace vf {

@@ -1,7 +1,7 @@
 #include <SDL2/SDL.h>
-#include "../dirt/ayu/resources/scheme.h"
-#include "../dirt/glow/common.h"
-#include "../dirt/tap/tap.h"
+#include "../../dirt/ayu/resources/scheme.h"
+#include "../../dirt/glow/common.h"
+#include "../../dirt/tap/tap.h"
 #include "common.h"
 #include "game.h"
 

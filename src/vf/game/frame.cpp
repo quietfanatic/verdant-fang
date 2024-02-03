@@ -1,11 +1,11 @@
 #include "frame.h"
 
-#include "../dirt/ayu/resources/global.h"
-#include "../dirt/ayu/resources/resource.h"
-#include "../dirt/glow/gl.h"
-#include "../dirt/glow/program.h"
-#include "../dirt/glow/texture.h"
-#include "../dirt/iri/iri.h"
+#include "../../dirt/ayu/resources/global.h"
+#include "../../dirt/ayu/resources/resource.h"
+#include "../../dirt/glow/gl.h"
+#include "../../dirt/glow/program.h"
+#include "../../dirt/glow/texture.h"
+#include "../../dirt/iri/iri.h"
 #include "camera.h"
 
 namespace vf {
@@ -34,7 +34,7 @@ void draw_frame (Vec pos, const Frame& frame, const glow::Texture& tex, Vec scal
     if (!program) {
         ayu::global(&program);
         program = ayu::ResourceRef(
-            iri::constant("res:/vf/frame.ayu")
+            iri::constant("res:/vf/game/frame.ayu")
         )["program"][1];
     }
     program->use();

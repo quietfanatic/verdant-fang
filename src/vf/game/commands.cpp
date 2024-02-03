@@ -1,6 +1,6 @@
 #include <SDL2/SDL_video.h>
-#include "../dirt/control/command.h"
-#include "../dirt/glow/common.h"
+#include "../../dirt/control/command.h"
+#include "../../dirt/glow/common.h"
 #include "game.h"
 #include "settings.h"
 

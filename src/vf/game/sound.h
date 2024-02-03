@@ -1,6 +1,6 @@
 #pragma once
 #include "common.h"
-#include "../dirt/iri/iri.h"
+#include "../../dirt/iri/iri.h"
 
 struct Mix_Chunk;
 

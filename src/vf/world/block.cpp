@@ -1,8 +1,7 @@
 #include "block.h"
 
-#include "../dirt/ayu/reflection/describe.h"
-#include "assets.h"
-#include "camera.h"
+#include "../../dirt/ayu/reflection/describe.h"
+#include "../game/camera.h"
 
 namespace vf {
 

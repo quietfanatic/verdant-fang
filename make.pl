@@ -116,17 +116,17 @@ my %configs = (
 my $program = 'verdant-fang';
 
 my @sources = (qw(
-    vf/block.cpp
-    vf/camera.cpp
-    vf/commands.cpp
-    vf/frame.cpp
-    vf/game.cpp
-    vf/main.cpp
-    vf/player.cpp
-    vf/room.cpp
-    vf/settings.cpp
-    vf/scenery.cpp
-    vf/sound.cpp
+    vf/world/block.cpp
+    vf/game/camera.cpp
+    vf/game/commands.cpp
+    vf/game/frame.cpp
+    vf/game/game.cpp
+    vf/game/main.cpp
+    vf/world/player.cpp
+    vf/game/room.cpp
+    vf/game/settings.cpp
+    vf/world/scenery.cpp
+    vf/game/sound.cpp
     dirt/ayu/common.cpp
     dirt/ayu/data/parse.cpp
     dirt/ayu/data/print.cpp
@@ -183,9 +183,10 @@ my @sources = (qw(
 );
 
 push @resources, (qw(
-    vf/*.ayu
-    vf/*.png
-    vf/*.mp3
+    vf/game/*.ayu
+    vf/world/*.ayu
+    vf/world/*.png
+    vf/world/*.mp3
 ),
     ["../LICENSE" => "LICENSE"],
     ["../README.md" => "README.md"],
