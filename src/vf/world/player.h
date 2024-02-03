@@ -22,7 +22,11 @@ struct Player : Resident {
     PlayerState state = PS::Neutral;
     uint8 anim_phase = 0;
     uint32 anim_timer = 0;
+     // More gravity a few frames after releasing jump
+    uint32 drop_timer = 0;
+     // For animations
     float walk_start_x = GNAN;
+    float fall_start_y = GNAN;
 
     Block* floor = null;
      // Temporary
