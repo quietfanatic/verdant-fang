@@ -157,9 +157,10 @@ void Player::Resident_collide (Resident& other) {
     Rect overlap = here & there;
     expect(proper(overlap));
     if (height(overlap) <= width(overlap)) {
-        vel.y = 0;
         if (overlap.b == here.b) {
             pos.y += height(overlap);
+            if (vel.y < 0) vel.y = 0;
+             // Land on block
             if (!floor && !new_floor) {
                 data->land_sfx.play();
             }
@@ -167,15 +168,18 @@ void Player::Resident_collide (Resident& other) {
         }
         else if (overlap.t == here.t) {
             pos.y -= height(overlap);
+            if (vel.y > 0) vel.y = 0;
         }
         else never();
     }
     else {
         if (overlap.l == here.l) {
             pos.x += width(overlap);
+            if (vel.x < 0) vel.x = 0;
         }
         else if (overlap.r == here.r) {
             pos.x -= width(overlap);
+            if (vel.x > 0) vel.x = 0;
         }
         else never();
     }
