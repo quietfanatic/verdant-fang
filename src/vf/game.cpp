@@ -7,6 +7,7 @@
 #include "../dirt/control/input.h"
 #include "camera.h"
 #include "room.h"
+#include "settings.h"
 
 namespace vf {
 
@@ -15,19 +16,42 @@ constexpr iri::IRI settings_loc ("data:/settings.ayu");
 constexpr iri::IRI initial_state_loc ("res:/vf/initial-state.ayu");
 constexpr iri::IRI state_loc ("data:/state.ayu");
 
-static void draw_game (Game& game) {
+static void on_draw (Game& game) {
     begin_camera();
     if (game.current_room) game.current_room->draw();
     end_camera();
     SDL_GL_SwapWindow(game.window);
 }
 
+static bool on_event (Game& game, SDL_Event* event) {
+    switch (event->type) {
+        case SDL_KEYDOWN: {
+            auto input = control::input_from_event(event);
+            for (auto& binding : game.settings().commands) {
+                if (input_matches_binding(input, binding.input)) {
+                    if (binding.command) binding.command();
+                    return true;
+                }
+            }
+            return false;
+        }
+        case SDL_WINDOWEVENT: {
+            if (event->window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+                window_size_changed({event->window.data1, event->window.data2});
+                return true;
+            }
+            else return false;
+        }
+        default: return false;
+    }
+}
+
 Game::Game () :
     window("Verdant Fang (testing)", size(window_viewport)),
     loop{
-        .on_event = [](SDL_Event*){ return false; },
+        .on_event = [this](SDL_Event* e){ return on_event(*this, e); },
         .on_step = [this]{ if (current_room) current_room->step(); },
-        .on_draw = [this]{ draw_game(*this); },
+        .on_draw = [this]{ on_draw(*this); },
     },
     settings_res(settings_loc),
     state(state_loc)

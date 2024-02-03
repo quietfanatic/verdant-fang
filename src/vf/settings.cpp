@@ -5,13 +5,13 @@
 
 namespace vf {
 
-Actions Settings::get_actions () const {
-    Actions r = {};
+Controls Settings::get_controls () const {
+    Controls r = {};
     auto keyboard = SDL_GetKeyboardState(null);
-    for (auto& binding : action_bindings) {
+    for (auto& binding : controls) {
         if (input_currently_pressed(binding.input, keyboard)) {
-            expect(binding.action < r.size());
-            r[binding.action] = true;
+            expect(binding.control < r.size());
+            r[binding.control] = true;
         }
     }
     return r;
@@ -19,30 +19,38 @@ Actions Settings::get_actions () const {
 
 } using namespace vf;
 
-AYU_DESCRIBE(vf::Action,
+AYU_DESCRIBE(vf::Control,
     values(
-        value("confirm", Action::Confirm),
-        value("back", Action::Back),
-        value("pause", Action::Pause),
-        value("left", Action::Left),
-        value("right", Action::Right),
-        value("up", Action::Up),
-        value("down", Action::Down),
-        value("jump", Action::Jump),
-        value("attack", Action::Attack),
-        value("special", Action::Special)
+        value("confirm", Control::Confirm),
+        value("back", Control::Back),
+        value("pause", Control::Pause),
+        value("left", Control::Left),
+        value("right", Control::Right),
+        value("up", Control::Up),
+        value("down", Control::Down),
+        value("jump", Control::Jump),
+        value("attack", Control::Attack),
+        value("special", Control::Special)
     )
 )
 
-AYU_DESCRIBE(vf::ActionBinding,
+AYU_DESCRIBE(vf::ControlBinding,
     elems(
-        elem(&ActionBinding::input),
-        elem(&ActionBinding::action)
+        elem(&ControlBinding::input),
+        elem(&ControlBinding::control)
+    )
+)
+
+AYU_DESCRIBE(vf::CommandBinding,
+    elems(
+        elem(&CommandBinding::input),
+        elem(&CommandBinding::command)
     )
 )
 
 AYU_DESCRIBE(vf::Settings,
     attrs(
-        attr("action_bindings", &Settings::action_bindings)
+        attr("controls", &Settings::controls),
+        attr("commands", &Settings::commands)
     )
 )

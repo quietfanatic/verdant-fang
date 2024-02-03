@@ -1,11 +1,12 @@
 #pragma once
 
+#include "../dirt/control/command.h"
 #include "../dirt/control/input.h"
 #include "common.h"
 
 namespace vf {
 
-enum Action {
+enum Control {
     Confirm,
     Back,
     Pause,
@@ -16,19 +17,25 @@ enum Action {
     Jump,
     Attack,
     Special,
-    N_Actions
+    N_Controls,
 };
 
-using Actions = std::array<bool, N_Actions>;
+using Controls = std::array<bool, N_Controls>;
 
-struct ActionBinding {
+struct ControlBinding {
     control::Input input;
-    Action action;
+    Control control;
+};
+
+struct CommandBinding {
+    control::Input input;
+    control::Statement command;
 };
 
 struct Settings {
-    UniqueArray<ActionBinding> action_bindings;
-    Actions get_actions () const;
+    UniqueArray<ControlBinding> controls;
+    Controls get_controls () const;
+    UniqueArray<CommandBinding> commands;
 };
 
 } // vf

@@ -1,5 +1,5 @@
 [vf::Settings {
-    action_bindings: [
+    controls: [
         [[z] confirm]
         [[x] back]
         [[p] pause]
@@ -10,5 +10,10 @@
         [[z] jump]
         [[x] attack]
         [[c] special]
+    ]
+    commands: [
+        [[f4] [fullscreen]]
+        [[f11] [fullscreen]]
+        [[alt enter] [fullscreen]]
     ]
 }]

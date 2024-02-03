@@ -9,6 +9,23 @@ namespace vf {
 static glow::Texture world_tex;
 static GLuint world_fb = 0;
 
+void window_size_changed (IVec new_size) {
+    if (slope(new_size) > slope(camera_size)) {
+         // letterbox
+        float zoom = new_size.x / camera_size.x;
+        float height = camera_size.y * zoom;
+        float margin = new_size.y - height;
+        window_viewport = IRect(0, margin / 2, new_size.x, height);
+    }
+    else {
+         // Pillarbox
+        float zoom = new_size.y / camera_size.y;
+        float width = camera_size.x * zoom;
+        float margin = new_size.x - width;
+        window_viewport = IRect(margin / 2, 0, width, new_size.y);
+    }
+}
+
 static void setup_camera () {
     world_tex = glow::Texture(GL_TEXTURE_RECTANGLE);
     glTexImage2D(

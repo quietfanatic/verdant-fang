@@ -51,7 +51,7 @@ static constexpr float air_dec = 0;
 static constexpr float jump_vel = 3.5;
 static constexpr float gravity_jump = 0.1;
 static constexpr float gravity_fall = 0.2;
-static constexpr uint8 attack_sequence [] = {8, 4, 8};
+static constexpr uint8 attack_sequence [] = {4, 6, 4};
 
 void Player::Resident_before_step () {
     bool floaty = false;
@@ -74,13 +74,13 @@ void Player::Resident_before_step () {
         }
     }
      // Now decide what to do and do it
-    Actions actions = current_game->settings().get_actions();
+    Controls controls = current_game->settings().get_controls();
 
     float acc = floor ? ground_acc : air_acc;
     float max = floor ? ground_max : air_max;
     float dec = floor ? ground_dec : air_dec;
 
-    if (can_move && actions[Action::Left] && !actions[Action::Right]) {
+    if (can_move && controls[Control::Left] && !controls[Control::Right]) {
         left = true;
         if (vel.x > -max) {
             vel.x -= acc;
@@ -88,7 +88,7 @@ void Player::Resident_before_step () {
         }
         if (vel.x >= 0) walk_start_x = pos.x;
     }
-    else if (can_move && actions[Action::Right]) {
+    else if (can_move && controls[Control::Right]) {
         left = false;
         if (vel.x < max) {
             vel.x += acc;
@@ -107,7 +107,7 @@ void Player::Resident_before_step () {
         }
         walk_start_x = pos.x;
     }
-    if (can_move && actions[Action::Jump]) {
+    if (can_move && controls[Control::Jump]) {
         if (floor) {
             vel.y += jump_vel;
             floor = null;
@@ -116,7 +116,7 @@ void Player::Resident_before_step () {
         }
         floaty = true;
     }
-    if (can_move && actions[Action::Attack]) {
+    if (can_move && controls[Control::Attack]) {
         state = PS::Attack;
         anim_phase = 0;
         anim_timer = 0;
