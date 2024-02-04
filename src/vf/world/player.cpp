@@ -56,6 +56,7 @@ struct PlayerData {
     Poses poses;
     Sound land_sfx;
     Sound stab_sfx;
+    Sound step_sfx [5];
 };
 
 Player::Player () {
@@ -282,7 +283,10 @@ AYU_DESCRIBE(vf::Player,
         attr("state", &Player::state, optional),
         attr("anim_phase", &Player::anim_phase, optional),
         attr("anim_timer", &Player::anim_timer, optional),
-        attr("walk_start_x", &Player::walk_start_x, optional)
+        attr("drop_timer", &Player::drop_timer, optional),
+        attr("walk_start_x", &Player::walk_start_x, optional),
+        attr("fall_start_x", &Player::walk_start_x, optional),
+        attr("floor", &Player::floor, optional)
     )
 )
 
@@ -338,6 +342,7 @@ AYU_DESCRIBE(vf::PlayerData,
         attr("heads", &PlayerData::heads),
         attr("poses", &PlayerData::poses),
         attr("land_sfx", &PlayerData::land_sfx),
-        attr("stab_sfx", &PlayerData::stab_sfx)
+        attr("stab_sfx", &PlayerData::stab_sfx),
+        attr("step_sfx", &PlayerData::step_sfx)
     )
 )

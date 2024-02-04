@@ -116,17 +116,18 @@ my %configs = (
 my $program = 'verdant-fang';
 
 my @sources = (qw(
-    vf/world/block.cpp
     vf/game/camera.cpp
     vf/game/commands.cpp
     vf/game/frame.cpp
     vf/game/game.cpp
     vf/game/main.cpp
-    vf/world/player.cpp
     vf/game/room.cpp
     vf/game/settings.cpp
-    vf/world/scenery.cpp
     vf/game/sound.cpp
+    vf/game/state.cpp
+    vf/world/block.cpp
+    vf/world/player.cpp
+    vf/world/scenery.cpp
     dirt/ayu/common.cpp
     dirt/ayu/data/parse.cpp
     dirt/ayu/data/print.cpp

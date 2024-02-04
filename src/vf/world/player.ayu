@@ -73,4 +73,11 @@
         source: fwssh.mp3
         channel: 1
     }
+    step_sfx: [
+        { source:step0.mp3 channel:0 }
+        { source:step1.mp3 channel:0 }
+        { source:step2.mp3 channel:0 }
+        { source:step3.mp3 channel:0 }
+        { source:step4.mp3 channel:0 }
+    ]
 }]

@@ -32,6 +32,7 @@
     player: [vf::Player {
         room: #/start+1
         data: "res:/vf/world/player.ayu#"
-        pos: [*b8 *b4]
+        pos: [*b6 *b2]
+        floor: #/floor+1
     }]
 }]

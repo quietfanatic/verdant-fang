@@ -1,6 +1,5 @@
 #include "game.h"
 
-#include <filesystem>
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_video.h>
 #include "../../dirt/iri/iri.h"
@@ -8,13 +7,9 @@
 #include "camera.h"
 #include "room.h"
 #include "settings.h"
+#include "state.h"
 
 namespace vf {
-
-constexpr iri::IRI initial_settings_loc ("res:/vf/game/initial-settings.ayu");
-constexpr iri::IRI settings_loc ("data:/settings.ayu");
-constexpr iri::IRI initial_state_loc ("res:/vf/game/initial-state.ayu");
-constexpr iri::IRI state_loc ("data:/state.ayu");
 
 static void on_draw (Game& game) {
     begin_camera();
@@ -53,25 +48,36 @@ Game::Game () :
         .on_step = [this]{ if (current_room) current_room->step(); },
         .on_draw = [this]{ on_draw(*this); },
     },
-    settings_res(settings_loc),
-    state(state_loc)
+    settings_res(iri::constant("data:/settings.ayu")),
+    state_res(iri::constant("data:/state.ayu"))
 {
     expect(!current_game);
     current_game = this;
-    if (!ayu::source_exists(settings_loc)) {
-        fs::copy_file(
-            ayu::resource_filename(initial_settings_loc),
-            ayu::resource_filename(settings_loc)
-        );
+    if (ayu::source_exists(settings_res->name())) {
+        ayu::load(settings_res);
     }
-    if (!ayu::source_exists(state_loc)) {
-        fs::copy_file(
-            ayu::resource_filename(initial_state_loc),
-            ayu::resource_filename(state_loc)
+    else {
+        settings_res->set_value({});
+        ayu::item_from_file(
+            settings_res->get_ref(), ayu::resource_filename(
+                iri::constant("res:/vf/game/initial-settings.ayu")
+            )
         );
+        ayu::save(settings_res);
     }
-    ayu::load({settings_res, state});
-    current_room = state["start"][1];
+    if (ayu::source_exists(state_res->name())) {
+        ayu::load(state_res);
+    }
+    else {
+        ayu::SharedResource world (iri::constant("res:/vf/world/world.ayu"));
+        state_res->set_value(ayu::Dynamic::make<State>());
+        state_res->get_value().as<State>().world = move(
+            world->value().as<ayu::Document>()
+        );
+        ayu::force_unload(world);
+         // Don't save state yet
+    }
+    current_room = state_res["world"]["start"][1];
     expect(current_room->residents);
     current_room->enter();
 }
@@ -95,13 +101,14 @@ Game* current_game = null;
 } using namespace vf;
 
 #ifndef TAP_DISABLE_TESTS
+#include <filesystem>
 #include "../../dirt/tap/tap.h"
 #include "../world/player.h"
 
 tap::TestSet tests ("vf/game", []{
     using namespace control;
     using namespace tap;
-    fs::remove(ayu::resource_filename(state_loc));
+    fs::remove(ayu::resource_filename(iri::constant("data:/state.ayu")));
     Game game;
     ok(the_player, "Initial state has player");
     int window_id = SDL_GetWindowID(game.window);
