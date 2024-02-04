@@ -9,8 +9,9 @@ inline Player* the_player = null;
 
 enum class PlayerState {
     Neutral,
-    Attack,
+    Crouch,
     Land,
+    Attack,
 };
 using PS = PlayerState;
 

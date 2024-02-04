@@ -7,7 +7,8 @@
     }
     bodies: {
          -- y up
-        stand: [[13 69] [-13 0 19 31] [0 23]]
+        stand: [[13 69] [-13 0 19 28] [0 23]]
+        crouch: [[84 76] [-13 0 19 24] [0 16]]
         walk: [
             [[13 35] [-13 0 19 28] [1 23]]
             [[48 35] [-13 0 19 28] [1 23]]
@@ -16,13 +17,13 @@
             [[153 35] [-13 0 19 28] [1 23]]
             [[188 36] [-13 0 19 28] [1 22]]
         ]
+        fall1: [[153 69] [-13 0 19 28] [1 23]]
+        land: [[49 71] [-13 0 19 28] [1 20]]
         attack: [
             [[72 0] [-20 0 20 28] [0 23]]
             [[13 0] [-8 0 36 28] [4 22] [28 19]]
             [[112 0] [-20 0 20 28] [0 23]]
         ]
-        fall1: [[153 69] [-13 0 19 28] [1 23]]
-        land: [[49 71] [-13 0 19 28] [1 20]]
     }
     head_tex: {
         image: #/img
@@ -35,14 +36,15 @@
             [[87 39] [-23 -13 9 10]]
             [[119 39] [-23 -13 9 10]]
         ]
-        back: [[151 39] [-23 -13 9 10]]
         fall: [
             [[23 13] [-23 -13 9 10]]
             [[55 13] [-23 -13 9 10]]
         ]
+        back: [[151 39] [-23 -13 9 10]]
     }
     poses: {
         stand: [#/bodies/stand #/heads/neutral]
+        crouch: [#/bodies/crouch #/heads/neutral]
         walk: [
             [#/bodies/walk+0 #/heads/wave+0]
             [#/bodies/walk+1 #/heads/wave+1]
@@ -51,19 +53,22 @@
             [#/bodies/walk+4 #/heads/wave+1]
             [#/bodies/walk+5 #/heads/wave+2]
         ]
-        attack: [
-            [#/bodies/attack+0 #/heads/neutral]
-            [#/bodies/attack+1 #/heads/wave+2]
-            [#/bodies/attack+2 #/heads/neutral]
-            [#/bodies/attack+0 #/heads/neutral]
-        ]
         jump: [
             [#/bodies/walk+0 #/heads/neutral]
             [#/bodies/walk+0 #/heads/wave+2]
             [#/bodies/walk+2 #/heads/fall+0]
             [#/bodies/fall1 #/heads/fall+1]
         ]
-        land: [#/bodies/land #/heads/fall+0]
+        land: [
+            [#/bodies/land #/heads/fall+0]
+            [#/bodies/land #/heads/wave+2]
+        ]
+        attack: [
+            [#/bodies/attack+0 #/heads/neutral]
+            [#/bodies/attack+1 #/heads/wave+2]
+            [#/bodies/attack+2 #/heads/neutral]
+            [#/bodies/attack+0 #/heads/neutral]
+        ]
     }
     step_sfx: [
          -- For some reason, having these as mp3s breaks SDL2_mixer.  Perhaps it
