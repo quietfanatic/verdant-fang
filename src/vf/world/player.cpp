@@ -26,6 +26,7 @@ struct BodyFrames {
     BodyFrame walk [6];
     BodyFrame attack [3];
     BodyFrame fall1;
+    BodyFrame land;
 };
 
 struct HeadFrames {
@@ -43,8 +44,9 @@ struct Pose {
 struct Poses {
     Pose stand;
     Pose walk [6];
-    Pose attack [3];
+    Pose attack [4];
     Pose jump [4];
+    Pose land;
 };
 
 struct PlayerData {
@@ -68,6 +70,7 @@ Player::Player () {
 static constexpr float ground_acc = 0.4;
 static constexpr float ground_max = 2.5;
 static constexpr float ground_dec = 0.4;
+static constexpr float coast_dec = 0.1;
 static constexpr float air_acc = 0.2;
 static constexpr float air_max = 2;
 static constexpr float air_dec = 0;
@@ -78,57 +81,89 @@ static constexpr float gravity_fall = 0.2;
 static constexpr float gravity_drop = 0.3;
 static constexpr uint8 drop_duration = 6;
 
-static constexpr uint8 attack_sequence [] = {5, 6, 5};
+static constexpr uint8 attack_sequence [4] = {5, 6, 5, 200};
+static constexpr uint8 land_sequence [2] = {3, 3};
+
+void Player::set_state (PlayerState st) {
+    state = st;
+    anim_phase = 0;
+    anim_timer = 0;
+}
 
  // Animation
-static uint8 walk_frame (Player& p) {
-    float dist = distance(p.walk_start_x, p.pos.x);
+uint8 Player::walk_frame () {
+    float dist = distance(walk_start_x, pos.x);
     return geo::floor(dist / 16) % 6;
 }
 static constexpr float jump_end_vel = 0.4;
 static constexpr float fall_start_vel = -0.8;
-static uint8 jump_frame (Player& p) {
-    if (p.vel.y > jump_end_vel) {
+uint8 Player::jump_frame () {
+    if (vel.y > jump_end_vel) {
         return 0;
     }
-    else if (p.vel.y > fall_start_vel) {
+    else if (vel.y > fall_start_vel) {
         return 1;
     }
     else {
-        float dist = distance(p.fall_start_y, p.pos.y);
+        float dist = distance(fall_start_y, pos.y);
         return 2 + geo::floor(dist / 16) % 2;
     }
 }
 
 void Player::Resident_before_step () {
+    expect(anim_timer < 255);
     bool can_move = true;
      // Advance animations
-    anim_timer += 1;
-    if (state == PS::Attack) {
-        expect(anim_phase < 3);
-        if (anim_phase == 1 && anim_timer == 3) {
-            data->stab_sfx.play();
+    switch (state) {
+        case PS::Attack: {
+            expect(anim_phase < 4);
+            anim_timer += 1;
+            if (anim_timer > attack_sequence[anim_phase]) {
+                anim_timer = 0;
+                anim_phase += 1;
+            }
+            if (anim_phase == 0 && anim_timer == 3) {
+                data->stab_sfx.play();
+            }
+            if (anim_phase <= 2) {
+                can_move = false;
+            }
+            else if (anim_phase == 4) {
+                set_state(PS::Neutral);
+            }
+            break;
         }
-        if (anim_timer > attack_sequence[anim_phase]) {
-            anim_timer = 0;
-            anim_phase += 1;
+        case PS::Land: {
+            expect(anim_phase < 2);
+            anim_timer += 1;
+            if (anim_timer > land_sequence[anim_phase]) {
+                anim_timer = 0;
+                anim_phase += 1;
+            }
+            if (anim_phase == 0) {
+                can_move = false;
+            }
+            else if (anim_phase == 2) {
+                set_state(PS::Neutral);
+            }
+            break;
         }
-        if (anim_phase == 3) {
-            anim_phase = 0;
-            state = PS::Neutral;
-        }
-        else {
-            can_move = false;
-        }
+        default: break;
     }
      // Now decide what to do and do it
     Controls controls = current_game->settings().get_controls();
 
     float acc = floor ? ground_acc : air_acc;
     float max = floor ? ground_max : air_max;
-    float dec = floor ? ground_dec : air_dec;
+    float dec = floor
+        ? can_move ? ground_dec : coast_dec
+        : air_dec;
 
     if (can_move && controls[Control::Left] && !controls[Control::Right]) {
+        if (state != PS::Neutral) {
+            set_state(PS::Neutral);
+            walk_start_x = pos.x;
+        }
         left = true;
         if (vel.x > -max) {
             vel.x -= acc;
@@ -137,6 +172,10 @@ void Player::Resident_before_step () {
         if (vel.x >= 0) walk_start_x = pos.x;
     }
     else if (can_move && controls[Control::Right]) {
+        if (state != PS::Neutral) {
+            set_state(PS::Neutral);
+            walk_start_x = pos.x;
+        }
         left = false;
         if (vel.x < max) {
             vel.x += acc;
@@ -160,16 +199,17 @@ void Player::Resident_before_step () {
             if (floor) {
                 vel.y += jump_vel;
                 floor = null;
-                state = PS::Neutral;
-                anim_timer = 0;
+                set_state(PS::Neutral);
             }
             drop_timer = 0;
         }
-        else if (!floor) drop_timer += 1;
+        else {
+             // Allow drop_timer to count even when on floor
+            drop_timer += 1;
+            if (drop_timer > drop_duration+1) drop_timer = drop_duration+1;
+        }
         if (controls[Control::Attack]) {
-            state = PS::Attack;
-            anim_phase = 0;
-            anim_timer = 0;
+            set_state(PS::Attack);
         }
     }
 
@@ -180,10 +220,10 @@ void Player::Resident_before_step () {
            : drop_timer <= drop_duration ? gravity_drop
            : gravity_fall;
 
-    auto walk_frame_before = walk_frame(*this);
+    auto walk_frame_before = walk_frame();
     pos += vel;
     if (floor && state == PS::Neutral) {
-        auto walk_frame_after = walk_frame(*this);
+        auto walk_frame_after = walk_frame();
         if (walk_frame_before % 3 == 1 && walk_frame_after % 3 == 2) {
             auto i = std::uniform_int_distribution(0, 4)(current_state->rng);
             expect(i >= 0 && i <= 4);
@@ -207,7 +247,11 @@ void Player::Resident_collide (Resident& other) {
             if (vel.y < 0) vel.y = 0;
              // Land on block
             if (!floor && !new_floor) {
+                 // You can cheat a little and cancel the landing animation with
+                 // the end of the attack animation.
+                if (state == PS::Neutral) set_state(PS::Land);
                 data->land_sfx.play();
+                walk_start_x = pos.x;
             }
             new_floor = &block;
         }
@@ -231,7 +275,6 @@ void Player::Resident_collide (Resident& other) {
 }
 
 void Player::Resident_after_step () {
-    if (new_floor && !floor) walk_start_x = pos.x;
     floor = new_floor;
     new_floor = null;
 }
@@ -243,22 +286,26 @@ void Player::Resident_draw () {
         case PS::Neutral: {
             if (floor) {
                 if (distance(walk_start_x, pos.x) >= 1) {
-                    pose = poses.walk[walk_frame(*this)];
+                    pose = poses.walk[walk_frame()];
                 }
                 else pose = poses.stand;
             }
             else {
-                pose = poses.jump[jump_frame(*this)];
+                pose = poses.jump[jump_frame()];
             }
             break;
         }
         case PS::Attack: {
-            expect(anim_phase < 3);
+            expect(anim_phase < 4);
             pose = poses.attack[anim_phase];
              // If falling, use head from non-attacking poses
             if (!floor) {
-                pose.head = poses.jump[jump_frame(*this)].head;
+                pose.head = poses.jump[jump_frame()].head;
             }
+            break;
+        }
+        case PS::Land: {
+            pose = poses.land;
             break;
         }
         default: never();
@@ -311,7 +358,8 @@ AYU_DESCRIBE(vf::BodyFrames,
         attr("stand", &BodyFrames::stand),
         attr("walk", &BodyFrames::walk),
         attr("attack", &BodyFrames::attack),
-        attr("fall1", &BodyFrames::fall1)
+        attr("fall1", &BodyFrames::fall1),
+        attr("land", &BodyFrames::land)
     )
 )
 
@@ -336,7 +384,8 @@ AYU_DESCRIBE(vf::Poses,
         attr("stand", &Poses::stand),
         attr("walk", &Poses::walk),
         attr("attack", &Poses::attack),
-        attr("jump", &Poses::jump)
+        attr("jump", &Poses::jump),
+        attr("land", &Poses::land)
     )
 )
 

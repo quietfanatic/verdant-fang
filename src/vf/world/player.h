@@ -10,6 +10,7 @@ inline Player* the_player = null;
 enum class PlayerState {
     Neutral,
     Attack,
+    Land,
 };
 using PS = PlayerState;
 
@@ -22,8 +23,8 @@ struct Player : Resident {
     PlayerState state = PS::Neutral;
     uint8 anim_phase = 0;
     uint32 anim_timer = 0;
-     // More gravity a few frames after releasing jump
     uint32 drop_timer = 0;
+     // More gravity a few frames after releasing jump
      // For animations
     float walk_start_x = GNAN;
     float fall_start_y = GNAN;
@@ -34,6 +35,11 @@ struct Player : Resident {
 
     Player ();
     ~Player () { the_player = null; }
+
+    void set_state (PlayerState);
+    uint8 walk_frame ();
+    uint8 jump_frame ();
+
     void Resident_emerge () override {
         expect(!the_player); the_player = this;
     }
