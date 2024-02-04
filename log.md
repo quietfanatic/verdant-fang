@@ -22,3 +22,11 @@
 - Looked up cave references.  Caves are very chaotic and illegible, so it'll be
   a big challenge making that work with game rooms which need to be geometric
   and legible.  Also my art skill level.
+#####2024-02-03 S
+- Made a simple cave background,  It's passable and better than nothing.
+- Did more animation work, including falling, landing, and crouching frames, and
+  improved existing ones.
+- Implemented attack hitbox.  No enemies to hit but you can bounce off walls.
+- Added sound effects for footsteps and stabbing.
+- Improved player control logic a bit.
+- Revised settings and state resource loading.
