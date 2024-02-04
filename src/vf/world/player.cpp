@@ -55,6 +55,7 @@ struct PlayerData {
     HeadFrames heads;
     Poses poses;
     Sound land_sfx;
+    Sound stab_sfx;
 };
 
 Player::Player () {
@@ -87,6 +88,9 @@ void Player::Resident_before_step () {
     anim_timer += 1;
     if (state == PS::Attack) {
         expect(anim_phase < 3);
+        if (anim_phase == 1 && anim_timer == 3) {
+            data->stab_sfx.play();
+        }
         if (anim_timer > attack_sequence[anim_phase]) {
             anim_timer = 0;
             anim_phase += 1;
@@ -333,6 +337,7 @@ AYU_DESCRIBE(vf::PlayerData,
         attr("bodies", &PlayerData::bodies),
         attr("heads", &PlayerData::heads),
         attr("poses", &PlayerData::poses),
-        attr("land_sfx", &PlayerData::land_sfx)
+        attr("land_sfx", &PlayerData::land_sfx),
+        attr("stab_sfx", &PlayerData::stab_sfx)
     )
 )

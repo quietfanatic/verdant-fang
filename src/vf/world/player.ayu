@@ -67,5 +67,10 @@
     land_sfx: {
         source: land.mp3
         channel: 0
+        volume: 0.5
+    }
+    stab_sfx: {
+        source: fwssh.mp3
+        channel: 1
     }
 }]

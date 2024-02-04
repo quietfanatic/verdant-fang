@@ -23,9 +23,11 @@ static void init_sound () {
 }
 
 void Sound::load () {
+    require(volume >= 0 && volume <= 1);
     init_sound();
     auto filename = ayu::resource_filename(source);
     chunk = glow::require_sdl(Mix_LoadWAV(filename.c_str()));
+    Mix_VolumeChunk(chunk, volume * 128);
 }
 
 Sound::~Sound () {
@@ -41,7 +43,8 @@ void Sound::play () {
 AYU_DESCRIBE(vf::Sound,
     attrs(
         attr("source", &Sound::source),
-        attr("channel", &Sound::channel, optional)
+        attr("channel", &Sound::channel, optional),
+        attr("volume", &Sound::volume, optional)
     ),
     init<&Sound::load>()
 )

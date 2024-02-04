@@ -12,6 +12,8 @@ struct Sound {
      // If this is not -1, then this sound will interrupt any other sound
      // playing on the same channel.
     int32 channel = -1;
+     // 0..1
+    float volume = 1;
      // Not serialized
     Mix_Chunk* chunk = null;
     operator Mix_Chunk* () { return chunk; }
