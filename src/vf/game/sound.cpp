@@ -35,7 +35,7 @@ Sound::~Sound () {
 }
 
 void Sound::play () {
-    expect(Mix_PlayChannel(channel, chunk, 0) >= 0);
+    glow::require_sdl(Mix_PlayChannel(channel, chunk, 0) >= 0);
 }
 
 } using namespace vf;

@@ -12,6 +12,7 @@
 #include "../game/game.h"
 #include "../game/settings.h"
 #include "../game/sound.h"
+#include "../game/state.h"
 #include "block.h"
 
 namespace vf {
@@ -43,8 +44,7 @@ struct Poses {
     Pose stand;
     Pose walk [6];
     Pose attack [3];
-    Pose jump [2];
-    Pose fall [2];
+    Pose jump [4];
 };
 
 struct PlayerData {
@@ -64,6 +64,7 @@ Player::Player () {
     layers_1 = Layers::Player_Block;
 }
 
+ // Physics
 static constexpr float ground_acc = 0.4;
 static constexpr float ground_max = 2.5;
 static constexpr float ground_dec = 0.4;
@@ -71,17 +72,33 @@ static constexpr float air_acc = 0.2;
 static constexpr float air_max = 2;
 static constexpr float air_dec = 0;
 
-static constexpr float jump_vel = 3.5;
-static constexpr float gravity_jump = 0.1;
+static constexpr float jump_vel = 3.4;
+static constexpr float gravity_jump = 0.11;
 static constexpr float gravity_fall = 0.2;
 static constexpr float gravity_drop = 0.3;
 static constexpr uint8 drop_duration = 6;
 
 static constexpr uint8 attack_sequence [] = {5, 6, 5};
 
- // For animation
+ // Animation
+static uint8 walk_frame (Player& p) {
+    float dist = distance(p.walk_start_x, p.pos.x);
+    return geo::floor(dist / 16) % 6;
+}
 static constexpr float jump_end_vel = 0.4;
 static constexpr float fall_start_vel = -0.8;
+static uint8 jump_frame (Player& p) {
+    if (p.vel.y > jump_end_vel) {
+        return 0;
+    }
+    else if (p.vel.y > fall_start_vel) {
+        return 1;
+    }
+    else {
+        float dist = distance(p.fall_start_y, p.pos.y);
+        return 2 + geo::floor(dist / 16) % 2;
+    }
+}
 
 void Player::Resident_before_step () {
     bool can_move = true;
@@ -163,7 +180,16 @@ void Player::Resident_before_step () {
            : drop_timer <= drop_duration ? gravity_drop
            : gravity_fall;
 
+    auto walk_frame_before = walk_frame(*this);
     pos += vel;
+    if (floor && state == PS::Neutral) {
+        auto walk_frame_after = walk_frame(*this);
+        if (walk_frame_before % 3 == 1 && walk_frame_after % 3 == 2) {
+            auto i = std::uniform_int_distribution(0, 4)(current_state->rng);
+            expect(i >= 0 && i <= 4);
+            data->step_sfx[i].play();
+        }
+    }
     new_floor = null;
 }
 
@@ -216,23 +242,13 @@ void Player::Resident_draw () {
     switch (state) {
         case PS::Neutral: {
             if (floor) {
-                float dist = distance(walk_start_x, pos.x);
-                if (dist >= 1) {
-                    pose = poses.walk[geo::floor(dist / 16) % 6];
+                if (distance(walk_start_x, pos.x) >= 1) {
+                    pose = poses.walk[walk_frame(*this)];
                 }
                 else pose = poses.stand;
             }
             else {
-                if (vel.y > jump_end_vel) {
-                    pose = poses.jump[0];
-                }
-                else if (vel.y > fall_start_vel) {
-                    pose = poses.jump[1];
-                }
-                else {
-                    float dist = distance(fall_start_y, pos.y);
-                    pose = poses.fall[geo::floor(dist / 16) % 2];
-                }
+                pose = poses.jump[jump_frame(*this)];
             }
             break;
         }
@@ -241,15 +257,7 @@ void Player::Resident_draw () {
             pose = poses.attack[anim_phase];
              // If falling, use head from non-attacking poses
             if (!floor) {
-                if (vel.y > jump_end_vel) {
-                }
-                else if (vel.y > fall_start_vel) {
-                    pose.head = poses.jump[1].head;
-                }
-                else {
-                    float dist = distance(fall_start_y, pos.y);
-                    pose.head = poses.fall[geo::floor(dist / 16) % 2].head;
-                }
+                pose.head = poses.jump[jump_frame(*this)].head;
             }
             break;
         }
@@ -328,8 +336,7 @@ AYU_DESCRIBE(vf::Poses,
         attr("stand", &Poses::stand),
         attr("walk", &Poses::walk),
         attr("attack", &Poses::attack),
-        attr("jump", &Poses::jump),
-        attr("fall", &Poses::fall)
+        attr("jump", &Poses::jump)
     )
 )
 

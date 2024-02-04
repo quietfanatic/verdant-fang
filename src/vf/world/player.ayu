@@ -58,8 +58,6 @@
         jump: [
             [#/bodies/walk+0 #/heads/neutral]
             [#/bodies/walk+0 #/heads/wave+2]
-        ]
-        fall: [
             [#/bodies/walk+2 #/heads/fall+0]
             [#/bodies/fall1 #/heads/fall+1]
         ]
@@ -74,10 +72,12 @@
         channel: 1
     }
     step_sfx: [
-        { source:step0.mp3 channel:0 }
-        { source:step1.mp3 channel:0 }
-        { source:step2.mp3 channel:0 }
-        { source:step3.mp3 channel:0 }
-        { source:step4.mp3 channel:0 }
+         -- For some reason, having these as mp3s breaks SDL2_mixer.  Perhaps it
+         -- can't play mp3 files that are too short?
+        { source:step0.wav channel:0 volume:0.5 }
+        { source:step1.wav channel:0 volume:0.5 }
+        { source:step2.wav channel:0 volume:0.5 }
+        { source:step3.wav channel:0 volume:0.5 }
+        { source:step4.wav channel:0 volume:0.5 }
     ]
 }]
