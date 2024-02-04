@@ -6,7 +6,8 @@
 namespace vf {
 
 Block::Block () {
-    layers_2 = Layers::Player_Block;
+    layers_2 = Layers::Player_Block | Layers::Fang_Block;
+    pos = {0, 0};
 }
 
 } using namespace vf;

@@ -17,7 +17,7 @@ struct Room {
 struct Resident : Linked<Resident> {
     Room* room = null;
     Rect bounds = GNAN;
-    Vec pos;
+    Vec pos = GNAN;
      // For collision.  If a.layers_1 & b.layers_2, then a.Resident_collide(b)
      // will be called, and vice versa.
     uint32 layers_1 = {};
@@ -25,7 +25,8 @@ struct Resident : Linked<Resident> {
     Room* get_room () const { return room; }
     void set_room (Room* r) {
         if (room) unlink();
-        if (r) link(&r->residents);
+        room = r;
+        if (room) link(&room->residents);
     }
     virtual void Resident_emerge () { }
     virtual void Resident_reclude () { }

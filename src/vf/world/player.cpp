@@ -19,6 +19,7 @@ namespace vf {
 
 struct BodyFrame : Frame {
     Vec head;
+    Vec fang = GNAN;
 };
 
 struct BodyFrames {
@@ -56,14 +57,20 @@ struct PlayerData {
     BodyFrames bodies;
     HeadFrames heads;
     Poses poses;
+    Sound step_sfx [5];
     Sound land_sfx;
     Sound stab_sfx;
-    Sound step_sfx [5];
+    Sound hit_solid_sfx;
 };
 
 Player::Player () {
     bounds = {-8, 0, 8, 32};
     layers_1 = Layers::Player_Block;
+}
+
+Player::Fang::Fang () {
+    bounds = {0, -1, 5, 1};
+    layers_1 = Layers::Fang_Block;
 }
 
  // Physics
@@ -230,6 +237,14 @@ void Player::Resident_before_step () {
             data->step_sfx[i].play();
         }
     }
+     // Set up attack hitbox.  Note that anim_timer was already incremented, so
+     // it will be 1 at the start of the animation phase.
+    if (state == PS::Attack && anim_phase == 1 && anim_timer == 1) {
+        fang.set_room(room);
+        Vec offset = data->bodies.attack[1].fang;
+        if (left) offset.x = -offset.x;
+        fang.pos = pos + offset;
+    }
     new_floor = null;
 }
 
@@ -274,9 +289,29 @@ void Player::Resident_collide (Resident& other) {
     }
 }
 
+void Player::Fang::Resident_collide (Resident& other) {
+    usize offset = (char*)&((Player*)this)->fang - (char*)this;
+    auto wielder = (Player*)((char*)this - offset);
+    wielder->fang_collide(other);
+}
+
+void Player::fang_collide (Resident& other) {
+    expect(other.layers_2 & Layers::Fang_Block);
+    data->hit_solid_sfx.play();
+    if (left) {
+        vel.x += 1;
+        if (vel.x < 0.5) vel.x = 0.5;
+    }
+    else {
+        vel.x -= 1;
+        if (vel.x > -0.5) vel.x = -0.5;
+    }
+}
+
 void Player::Resident_after_step () {
     floor = new_floor;
     new_floor = null;
+    fang.set_room(null);
 }
 
 void Player::Resident_draw () {
@@ -325,7 +360,8 @@ void Player::Resident_draw () {
 AYU_DESCRIBE(vf::PlayerState,
     values(
         value("neutral", PS::Neutral),
-        value("attack", PS::Attack)
+        value("attack", PS::Attack),
+        value("land", PS::Land)
     )
 )
 
@@ -349,7 +385,8 @@ AYU_DESCRIBE(vf::BodyFrame,
     elems(
         elem(&BodyFrame::offset),
         elem(&BodyFrame::bounds),
-        elem(&BodyFrame::head)
+        elem(&BodyFrame::head),
+        elem(&BodyFrame::fang, optional)
     )
 )
 
@@ -397,8 +434,9 @@ AYU_DESCRIBE(vf::PlayerData,
         attr("bodies", &PlayerData::bodies),
         attr("heads", &PlayerData::heads),
         attr("poses", &PlayerData::poses),
+        attr("step_sfx", &PlayerData::step_sfx),
         attr("land_sfx", &PlayerData::land_sfx),
         attr("stab_sfx", &PlayerData::stab_sfx),
-        attr("step_sfx", &PlayerData::step_sfx)
+        attr("hit_solid_sfx", &PlayerData::hit_solid_sfx)
     )
 )

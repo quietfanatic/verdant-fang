@@ -33,7 +33,8 @@ void Room::step () {
                 }
             }
             else if (b->layers_1 & a->layers_2) {
-                if (overlaps(b->bounds + b->pos, a_box)) {
+                auto b_box = b->bounds + b->pos;
+                if (overlaps(b_box, a_box)) {
                     b->Resident_collide(*a);
                 }
             }

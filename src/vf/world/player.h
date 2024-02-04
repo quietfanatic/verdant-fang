@@ -32,6 +32,13 @@ struct Player : Resident {
     Block* floor = null;
      // Temporary
     Block* new_floor;
+     // Also temporary; The attack hitbox is only active for one frame, and will
+     // be deactivated before the frame is over, leaving no serializable state.
+    struct Fang : Resident {
+        Fang ();
+        void Resident_collide (Resident&) override;
+    };
+    Fang fang;
 
     Player ();
     ~Player () { the_player = null; }
@@ -48,6 +55,7 @@ struct Player : Resident {
     }
     void Resident_before_step () override;
     void Resident_collide (Resident&) override;
+    void fang_collide (Resident&);
     void Resident_after_step () override;
     void Resident_draw () override;
 };

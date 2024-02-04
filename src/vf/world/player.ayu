@@ -18,7 +18,7 @@
         ]
         attack: [
             [[72 0] [-20 0 20 28] [0 23]]
-            [[13 0] [-8 0 36 28] [4 22]]
+            [[13 0] [-8 0 36 28] [4 22] [28 19]]
             [[112 0] [-20 0 20 28] [0 23]]
         ]
         fall1: [[153 69] [-13 0 19 28] [1 23]]
@@ -65,15 +65,6 @@
         ]
         land: [#/bodies/land #/heads/fall+0]
     }
-    land_sfx: {
-        source: land.mp3
-        channel: 0
-        volume: 0.5
-    }
-    stab_sfx: {
-        source: fwssh.mp3
-        channel: 1
-    }
     step_sfx: [
          -- For some reason, having these as mp3s breaks SDL2_mixer.  Perhaps it
          -- can't play mp3 files that are too short?
@@ -83,4 +74,18 @@
         { source:step3.wav channel:0 volume:0.5 }
         { source:step4.wav channel:0 volume:0.5 }
     ]
+    land_sfx: {
+        source: land.mp3
+        channel: 0
+        volume: 0.5
+    }
+    stab_sfx: {
+        source: fwssh.mp3
+        channel: 1
+    }
+    hit_solid_sfx: {
+         -- temp
+        source: land.mp3
+        channel: 1
+    }
 }]
