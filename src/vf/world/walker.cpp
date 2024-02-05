@@ -4,9 +4,6 @@
 #include "../../dirt/ayu/reflection/describe.h"
 #include "../game/state.h"
 #include "block.h"
- // temp for controls
-#include "../game/game.h"
-#include "../game/settings.h"
 
 namespace vf {
 
@@ -66,8 +63,9 @@ uint8 Walker::jump_frame () {
 }
 
 void Walker::Resident_before_step () {
-     // Read controls.  TODO: Make Mind class
-    Controls controls = current_game->settings().get_controls();
+     // Read controls.
+    Controls controls;
+    if (mind) controls = mind->Mind_think(*this);
      // Advance animations and do state-dependent things
     expect(anim_timer < 255);
     bool occupied = false;
@@ -348,6 +346,7 @@ AYU_DESCRIBE(vf::Walker,
     attrs(
         attr("vf::Resident", base<Resident>(), include),
         attr("data", &Walker::data),
+        attr("mind", &Walker::mind),
         attr("vel", &Walker::vel, optional),
         attr("left", &Walker::left, optional),
         attr("state", &Walker::state, optional),

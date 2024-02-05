@@ -2,6 +2,7 @@
 
 #include "../../dirt/glow/file-image.h"
 #include "../../dirt/glow/image-texture.h"
+#include "../game/controls.h"
 #include "../game/frame.h"
 #include "../game/sound.h"
 #include "../game/room.h"
@@ -67,6 +68,7 @@ struct WalkerData {
 
 struct Walker : Resident {
     WalkerData* data = null;
+    Mind* mind = null;
     Vec vel;
     bool left = false;
     WalkerState state = WS::Neutral;

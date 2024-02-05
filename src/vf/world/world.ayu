@@ -8,6 +8,7 @@
 
 [ayu::Document {
     start: [vf::Room { }]
+    player: [vf::PlayerMind { }]
     bg: [vf::Scenery {
         room: #/start+1
         tex: assets.ayu#/cave_tex+1
@@ -29,9 +30,10 @@
         room: #/start+1
         bounds: [*b0 *b10 *b20 *b11p25]
     }]
-    player: [vf::Player {
-        room: #/start+1
+    verdant: [vf::Player {
         data: player.ayu#
+        mind: #/player+1
+        room: #/start+1
         pos: [*b6 *b2]
         floor: #/floor+1
     }]

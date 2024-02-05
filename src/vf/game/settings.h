@@ -3,24 +3,9 @@
 #include "../../dirt/control/command.h"
 #include "../../dirt/control/input.h"
 #include "common.h"
+#include "controls.h"
 
 namespace vf {
-
-enum Control {
-    Confirm,
-    Back,
-    Pause,
-    Left,
-    Right,
-    Up,
-    Down,
-    Jump,
-    Attack,
-    Special,
-    N_Controls,
-};
-
-using Controls = std::array<bool, N_Controls>;
 
 struct ControlBinding {
     control::Input input;
@@ -35,7 +20,7 @@ struct CommandBinding {
 struct Settings {
     bool true_fullscreen = false;
     UniqueArray<ControlBinding> controls;
-    Controls get_controls () const;
+    Controls read_controls () const;
     UniqueArray<CommandBinding> commands;
 };
 
