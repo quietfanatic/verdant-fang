@@ -24,7 +24,7 @@ uint8 Walker::walk_frame () {
         walk_start_x = pos.x;
     }
     float dist = distance(walk_start_x, pos.x);
-    return geo::floor(dist / 16) % 6;
+    return geo::floor(dist / data->phys.walk_cycle_dist) % 6;
 }
 uint8 Walker::jump_frame () {
     if (!defined(fall_start_y)) {
@@ -38,12 +38,13 @@ uint8 Walker::jump_frame () {
     }
     else {
         float dist = distance(fall_start_y, pos.y);
-        return 2 + geo::floor(dist / 16) % 2;
+        return 2 + geo::floor(dist / data->phys.fall_cycle_dist) % 2;
     }
 }
 
 void Walker::Resident_before_step () {
     auto& phys = data->phys;
+    bounds = phys.bounds;
      // Read controls.
     Controls controls;
     if (mind) controls = mind->Mind_think(*this);
@@ -115,15 +116,13 @@ void Walker::Resident_before_step () {
         if (controls[Control::Down]) {
             if (state != WS::Crouch) {
                 set_state(WS::Crouch);
-                 // Lift legs up
-                if (!floor) pos.y += 4;
+                if (!floor) pos.y += phys.jump_crouch_lift;
             }
         }
         else if (state == WS::Crouch) {
             set_state(WS::Neutral);
             walk_start_x = pos.x;
-             // Put legs down
-            if (!floor) pos.y -= 4;
+            if (!floor) pos.y -= phys.jump_crouch_lift;
         }
 
          // Walk or don't
@@ -394,6 +393,7 @@ AYU_DESCRIBE(vf::Poses,
 
 AYU_DESCRIBE(vf::WalkerPhys,
     attrs(
+        attr("bounds", &WalkerPhys::bounds),
         attr("ground_acc", &WalkerPhys::ground_acc),
         attr("ground_max", &WalkerPhys::ground_max),
         attr("ground_dec", &WalkerPhys::ground_dec),
@@ -406,9 +406,12 @@ AYU_DESCRIBE(vf::WalkerPhys,
         attr("gravity_fall", &WalkerPhys::gravity_fall),
         attr("gravity_drop", &WalkerPhys::gravity_drop),
         attr("drop_duration", &WalkerPhys::drop_duration),
-        attr("attack_sequence", &WalkerPhys::attack_sequence),
+        attr("jump_crouch_lift", &WalkerPhys::jump_crouch_lift),
         attr("land_sequence", &WalkerPhys::land_sequence),
+        attr("attack_sequence", &WalkerPhys::attack_sequence),
         attr("hold_buffer", &WalkerPhys::hold_buffer),
+        attr("walk_cycle_dist", &WalkerPhys::walk_cycle_dist),
+        attr("fall_cycle_dist", &WalkerPhys::fall_cycle_dist),
         attr("jump_end_vel", &WalkerPhys::jump_end_vel),
         attr("fall_start_vel", &WalkerPhys::fall_start_vel)
     )

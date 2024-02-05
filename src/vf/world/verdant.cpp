@@ -2,9 +2,7 @@
 
 namespace vf {
 
-Verdant::Verdant () {
-    bounds = {-8, 0, 8, 32};
-}
+Verdant::Verdant () { }
 
 Verdant::Fang::Fang () {
     bounds = {0, -1, 5, 1};

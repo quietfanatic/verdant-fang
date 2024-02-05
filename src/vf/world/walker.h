@@ -54,6 +54,7 @@ struct Poses {
 };
 
 struct WalkerPhys {
+    Rect bounds;
     float ground_acc;
     float ground_max;
     float ground_dec;
@@ -62,15 +63,19 @@ struct WalkerPhys {
     float air_max;
     float air_dec;
     float jump_vel;
-    float jump_end_vel;
-    float fall_start_vel;
     float gravity_jump;
     float gravity_fall;
     float gravity_drop;
     uint8 drop_duration;
-    uint8 attack_sequence [4];
+    uint8 jump_crouch_lift;
     uint8 land_sequence [2];
+    uint8 attack_sequence [4];
     uint8 hold_buffer;
+     // For animation
+    float walk_cycle_dist;
+    float fall_cycle_dist;
+    float jump_end_vel;
+    float fall_start_vel;
 };
 
 struct WalkerData {
