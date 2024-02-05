@@ -109,14 +109,14 @@ Game* current_game = null;
 #ifndef TAP_DISABLE_TESTS
 #include <filesystem>
 #include "../../dirt/tap/tap.h"
-#include "../world/player.h"
+#include "../world/verdant.h"
 
 tap::TestSet tests ("vf/game", []{
     using namespace control;
     using namespace tap;
     fs::remove(ayu::resource_filename(iri::constant("data:/state.ayu")));
     Game game;
-    ok(the_player, "Initial state has player");
+    ok(main_character, "Initial state has player");
     int window_id = SDL_GetWindowID(game.window);
     send_input_as_event({.type = InputType::Key, .code = SDLK_ESCAPE}, window_id);
     game.loop.start();

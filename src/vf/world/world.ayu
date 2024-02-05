@@ -7,8 +7,8 @@
 &b11p25:180 -- ceiling
 
 [ayu::Document {
+    player: [vf::Player { }]
     start: [vf::Room { }]
-    player: [vf::PlayerMind { }]
     bg: [vf::Scenery {
         room: #/start+1
         tex: assets.ayu#/cave_tex+1
@@ -30,8 +30,8 @@
         room: #/start+1
         bounds: [*b0 *b10 *b20 *b11p25]
     }]
-    verdant: [vf::Player {
-        data: player.ayu#
+    verdant: [vf::Verdant {
+        data: verdant.ayu#
         mind: #/player+1
         room: #/start+1
         pos: [*b6 *b2]

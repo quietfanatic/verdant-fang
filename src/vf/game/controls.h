@@ -28,7 +28,7 @@ struct Mind {
     virtual Controls Mind_think (Resident&) = 0;
 };
 
-struct PlayerMind : Mind {
+struct Player : Mind {
     Controls Mind_think (Resident&) override;
 };
 

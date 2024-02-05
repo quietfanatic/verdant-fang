@@ -6,7 +6,7 @@
 
 namespace vf {
 
-Controls PlayerMind::Mind_think (Resident&) {
+Controls Player::Mind_think (Resident&) {
     return current_game->settings().read_controls();
 }
 
@@ -32,7 +32,7 @@ AYU_DESCRIBE(vf::Mind,
     attrs()
 )
 
-AYU_DESCRIBE(vf::PlayerMind,
+AYU_DESCRIBE(vf::Player,
     attrs(
         attr("vf::Mind", base<Mind>(), include)
     )

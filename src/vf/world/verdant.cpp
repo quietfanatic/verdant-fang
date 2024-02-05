@@ -1,17 +1,17 @@
-#include "player.h"
+#include "verdant.h"
 
 namespace vf {
 
-Player::Player () {
+Verdant::Verdant () {
     bounds = {-8, 0, 8, 32};
 }
 
-Player::Fang::Fang () {
+Verdant::Fang::Fang () {
     bounds = {0, -1, 5, 1};
     layers_1 |= Layers::Fang_Block;
 }
 
-void Player::Resident_before_step () {
+void Verdant::Resident_before_step () {
     Walker::Resident_before_step();
 
      // Set up attack hitbox.  anim_timer was already incremented so it will
@@ -24,13 +24,13 @@ void Player::Resident_before_step () {
     }
 }
 
-void Player::Fang::Resident_collide (Resident& other) {
-    usize offset = (char*)&((Player*)this)->fang - (char*)this;
-    auto wielder = (Player*)((char*)this - offset);
+void Verdant::Fang::Resident_collide (Resident& other) {
+    usize offset = (char*)&((Verdant*)this)->fang - (char*)this;
+    auto wielder = (Verdant*)((char*)this - offset);
     wielder->fang_collide(other);
 }
 
-void Player::fang_collide (Resident& other) {
+void Verdant::fang_collide (Resident& other) {
     expect(other.layers_2 & Layers::Fang_Block);
     data->hit_solid_sfx.play();
     if (left) {
@@ -43,14 +43,14 @@ void Player::fang_collide (Resident& other) {
     }
 }
 
-void Player::Resident_after_step () {
+void Verdant::Resident_after_step () {
     Walker::Resident_after_step();
     fang.set_room(null);
 }
 
 } using namespace vf;
 
-AYU_DESCRIBE(vf::Player,
+AYU_DESCRIBE(vf::Verdant,
     attrs(
         attr("vf::Walker", base<Walker>(), include)
     )

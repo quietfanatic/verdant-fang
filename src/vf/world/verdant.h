@@ -5,10 +5,10 @@
 
 namespace vf {
 
-struct Player;
-inline Player* the_player = null;
+struct Verdant;
+inline Verdant* main_character = null;
 
-struct Player : Walker {
+struct Verdant : Walker {
     struct Fang : Resident {
         Fang ();
         void Resident_collide (Resident&) override;
@@ -17,14 +17,14 @@ struct Player : Walker {
      // deactivated before the frame is over, leaving no serializable state.
     Fang fang;
 
-    Player ();
-    ~Player () { the_player = null; }
+    Verdant ();
+    ~Verdant () { main_character = null; }
 
     void Resident_emerge () override {
-        expect(!the_player); the_player = this;
+        expect(!main_character); main_character = this;
     }
     void Resident_reclude () override {
-        the_player = null;
+        main_character = null;
     }
      // Override these for weapon management
     void Resident_before_step () override;
