@@ -127,6 +127,7 @@ my @sources = (qw(
     vf/game/sound.cpp
     vf/game/state.cpp
     vf/world/block.cpp
+    vf/world/monster.cpp
     vf/world/verdant.cpp
     vf/world/scenery.cpp
     vf/world/walker.cpp

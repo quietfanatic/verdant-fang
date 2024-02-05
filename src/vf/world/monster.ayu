@@ -1,0 +1,121 @@
+[vf::WalkerData {
+    phys: {
+        bounds: [-8 0 8 30]
+        ground_acc: 0.3
+        ground_max: 2.5
+        ground_dec: 0.3
+        coast_dec: 0.1
+        air_acc: 0.2
+        air_max: 2
+        air_dec: 0
+        jump_vel: 3.4
+        gravity_jump: 0.11
+        gravity_fall: 0.2
+        gravity_drop: 0.3
+        drop_duration: 6
+        land_sequence: [4 4]
+        attack_sequence: [5 6 5 200]
+        jump_crouch_lift: 4
+        hold_buffer: 6
+        walk_cycle_dist: 16
+        fall_cycle_dist: 16
+        jump_end_vel: 0.6
+        fall_start_vel: -0.6
+    }
+    img: { source:verdant.png }
+    body_tex: {
+        image: #/img
+         -- y down
+        bounds: [110 106 317 206]
+    }
+    bodies: {
+         -- y up
+        stand: [[13 69] [-13 0 19 28] [0 23]]
+        crouch: [[84 76] [-13 0 19 24] [0 16]]
+        walk: [
+            [[13 35] [-13 0 19 28] [1 23]]
+            [[48 35] [-13 0 19 28] [1 23]]
+            [[83 36] [-13 0 19 28] [1 22]]
+            [[118 35] [-13 0 19 28] [1 23]]
+            [[153 35] [-13 0 19 28] [1 23]]
+            [[188 36] [-13 0 19 28] [1 22]]
+        ]
+        fall1: [[153 69] [-13 0 19 28] [1 23]]
+        land: [[49 71] [-13 0 19 28] [1 20]]
+        attack: [
+            [[72 0] [-20 0 20 28] [0 23]]
+            [[13 0] [-8 0 36 28] [4 22] [28 19]]
+            [[112 0] [-20 0 20 28] [0 23]]
+        ]
+    }
+    head_tex: {
+        image: #/img
+        bounds: [100 40 258 89]
+    }
+    heads: {
+        neutral: [[23 39] [-23 -13 9 10]]
+        wave: [
+            [[55 39] [-23 -13 9 10]]
+            [[87 39] [-23 -13 9 10]]
+            [[119 39] [-23 -13 9 10]]
+        ]
+        fall: [
+            [[23 13] [-23 -13 9 10]]
+            [[55 13] [-23 -13 9 10]]
+        ]
+        back: [[151 39] [-23 -13 9 10]]
+    }
+    poses: {
+        stand: [#/bodies/stand #/heads/neutral]
+        crouch: [#/bodies/crouch #/heads/neutral]
+        walk: [
+            [#/bodies/walk+0 #/heads/wave+0]
+            [#/bodies/walk+1 #/heads/wave+1]
+            [#/bodies/walk+2 #/heads/wave+2]
+            [#/bodies/walk+3 #/heads/wave+0]
+            [#/bodies/walk+4 #/heads/wave+1]
+            [#/bodies/walk+5 #/heads/wave+2]
+        ]
+        jump: [
+            [#/bodies/walk+0 #/heads/neutral]
+            [#/bodies/walk+0 #/heads/wave+2]
+            [#/bodies/walk+2 #/heads/fall+0]
+            [#/bodies/fall1 #/heads/fall+1]
+        ]
+        land: [
+            [#/bodies/land #/heads/fall+0]
+            [#/bodies/land #/heads/wave+2]
+        ]
+        attack: [
+            [#/bodies/attack+0 #/heads/neutral]
+            [#/bodies/attack+1 #/heads/wave+2]
+            [#/bodies/attack+2 #/heads/neutral]
+            [#/bodies/attack+0 #/heads/neutral]
+        ]
+    }
+    sfx: {
+        step: [
+             -- For some reason, having these as mp3s breaks SDL2_mixer.  Perhaps it
+             -- can't play mp3 files that are too short?
+            { source:step0.wav channel:0 volume:0.5 }
+            { source:step1.wav channel:0 volume:0.5 }
+            { source:step2.wav channel:0 volume:0.5 }
+            { source:step3.wav channel:0 volume:0.5 }
+            { source:step4.wav channel:0 volume:0.5 }
+        ]
+        land: {
+            source: land.mp3
+            channel: 0
+            volume: 0.5
+        }
+        attack: {
+            source: fwssh.mp3
+            channel: 1
+        }
+        hit_solid: {
+             -- temp
+            source: land.mp3
+            channel: 1
+        }
+    }
+}]

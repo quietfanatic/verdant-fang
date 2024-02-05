@@ -318,32 +318,6 @@ void Walker::Resident_draw () {
 
 } using namespace vf;
 
-AYU_DESCRIBE(vf::WalkerState,
-    values(
-        value("neutral", WS::Neutral),
-        value("crouch", WS::Crouch),
-        value("attack", WS::Attack),
-        value("land", WS::Land)
-    )
-)
-
-AYU_DESCRIBE(vf::Walker,
-    attrs(
-        attr("vf::Resident", base<Resident>(), include),
-        attr("data", &Walker::data),
-        attr("mind", &Walker::mind),
-        attr("vel", &Walker::vel, optional),
-        attr("left", &Walker::left, optional),
-        attr("state", &Walker::state, optional),
-        attr("anim_phase", &Walker::anim_phase, optional),
-        attr("anim_timer", &Walker::anim_timer, optional),
-        attr("drop_timer", &Walker::drop_timer, optional),
-        attr("walk_start_x", &Walker::walk_start_x, optional),
-        attr("fall_start_x", &Walker::walk_start_x, optional),
-        attr("floor", &Walker::floor, optional)
-    )
-)
-
 AYU_DESCRIBE(vf::BodyFrame,
     elems(
         elem(&BodyFrame::offset),
@@ -436,5 +410,31 @@ AYU_DESCRIBE(vf::WalkerData,
         attr("heads", &WalkerData::heads),
         attr("poses", &WalkerData::poses),
         attr("sfx", &WalkerData::sfx)
+    )
+)
+
+AYU_DESCRIBE(vf::WalkerState,
+    values(
+        value("neutral", WS::Neutral),
+        value("crouch", WS::Crouch),
+        value("attack", WS::Attack),
+        value("land", WS::Land)
+    )
+)
+
+AYU_DESCRIBE(vf::Walker,
+    attrs(
+        attr("vf::Resident", base<Resident>(), include),
+        attr("data", &Walker::data),
+        attr("mind", &Walker::mind),
+        attr("vel", &Walker::vel, optional),
+        attr("left", &Walker::left, optional),
+        attr("state", &Walker::state, optional),
+        attr("anim_phase", &Walker::anim_phase, optional),
+        attr("anim_timer", &Walker::anim_timer, optional),
+        attr("drop_timer", &Walker::drop_timer, optional),
+        attr("walk_start_x", &Walker::walk_start_x, optional),
+        attr("fall_start_x", &Walker::walk_start_x, optional),
+        attr("floor", &Walker::floor, optional)
     )
 )

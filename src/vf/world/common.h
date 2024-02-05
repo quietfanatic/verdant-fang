@@ -11,6 +11,7 @@ struct Walker;
 enum Layers : uint32 {
     Walker_Block = 1 << 0,
     Fang_Block = 1 << 1,
+    Monster_Verdant = 1 << 2,
 };
 
 } // vf
