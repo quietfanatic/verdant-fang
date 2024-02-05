@@ -76,7 +76,7 @@ Player::Fang::Fang () {
 }
 
  // Physics
-static constexpr float ground_acc = 0.4;
+static constexpr float ground_acc = 0.3;
 static constexpr float ground_max = 2.5;
 static constexpr float ground_dec = 0.3;
 static constexpr float coast_dec = 0.1;
@@ -221,6 +221,10 @@ void Player::Resident_before_step () {
                 walk_start_x = pos.x;
             }
             left = true;
+            if (floor && vel.x == 0) {
+                 // Start moving at least one pixel
+                pos.x -= 1;
+            }
             if (vel.x > -max) {
                 vel.x -= acc;
                 if (vel.x < -max) vel.x = -max;
@@ -233,6 +237,9 @@ void Player::Resident_before_step () {
                 walk_start_x = pos.x;
             }
             left = false;
+            if (floor && vel.x == 0) {
+                pos.x += 1;
+            }
             if (vel.x < max) {
                 vel.x += acc;
                 if (vel.x > max) vel.x = max;
@@ -271,7 +278,7 @@ void Player::Resident_before_step () {
             vel.x += dec;
             if (vel.x > 0) vel.x = 0;
         }
-        if (vel.x == 0) walk_start_x = pos.x;
+        walk_start_x = pos.x;
     }
 
      // Fall

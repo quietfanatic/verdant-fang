@@ -21,6 +21,7 @@ static void on_draw (Game& game) {
 static bool on_event (Game& game, SDL_Event* event) {
     switch (event->type) {
         case SDL_KEYDOWN: {
+            SDL_ShowCursor(SDL_DISABLE);
             auto input = control::input_from_event(event);
             for (auto& binding : game.settings().commands) {
                 if (input_matches_binding(input, binding.input)) {
@@ -28,6 +29,12 @@ static bool on_event (Game& game, SDL_Event* event) {
                     return true;
                 }
             }
+            return false;
+        }
+        case SDL_MOUSEMOTION:
+        case SDL_MOUSEBUTTONDOWN:
+        case SDL_MOUSEWHEEL: {
+            SDL_ShowCursor(SDL_ENABLE);
             return false;
         }
         case SDL_WINDOWEVENT: {
