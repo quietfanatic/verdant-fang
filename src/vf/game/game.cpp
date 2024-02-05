@@ -11,13 +11,6 @@
 
 namespace vf {
 
-static void on_draw (Game& game) {
-    begin_camera();
-    if (game.current_room) game.current_room->draw();
-    end_camera();
-    SDL_GL_SwapWindow(game.window);
-}
-
 static bool on_event (Game& game, SDL_Event* event) {
     switch (event->type) {
         case SDL_KEYDOWN: {
@@ -46,6 +39,13 @@ static bool on_event (Game& game, SDL_Event* event) {
         }
         default: return false;
     }
+}
+
+static void on_draw (Game& game) {
+    begin_camera();
+    if (game.current_room) game.current_room->draw();
+    end_camera();
+    SDL_GL_SwapWindow(game.window);
 }
 
 Game::Game () :

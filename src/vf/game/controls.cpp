@@ -7,7 +7,14 @@
 namespace vf {
 
 Controls Player::Mind_think (Resident&) {
-    return current_game->settings().read_controls();
+    auto inputs = current_game->settings().read_controls();
+    for (usize i = 0; i < Control::N_Controls; i++) {
+        if (inputs[i]) {
+            if (controls[i] < 255) controls[i] += 1;
+        }
+        else controls[i] = 0;
+    }
+    return controls;
 }
 
 } using namespace vf;
@@ -34,6 +41,7 @@ AYU_DESCRIBE(vf::Mind,
 
 AYU_DESCRIBE(vf::Player,
     attrs(
-        attr("vf::Mind", base<Mind>(), include)
+        attr("vf::Mind", base<Mind>(), include),
+        attr("controls", &Player::controls, optional)
     )
 )

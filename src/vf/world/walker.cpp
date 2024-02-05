@@ -35,6 +35,8 @@ static constexpr uint8 drop_duration = 6;
 static constexpr uint8 attack_sequence [4] = {5, 6, 5, 200};
 static constexpr uint8 land_sequence [2] = {4, 4};
 
+static constexpr uint8 hold_buffer = 6;
+
  // Animation
 uint8 Walker::walk_frame () {
     if (!defined(walk_start_x)) {
@@ -181,7 +183,7 @@ void Walker::Resident_before_step () {
 
          // Jump or don't
         if (controls[Control::Jump]) {
-            if (floor && !controls[Control::Down]) {
+            if (floor && !controls[Control::Down] && controls[Control::Jump] <= hold_buffer) {
                 vel.y += jump_vel;
                 floor = null;
                 if (interruptable) set_state(WS::Neutral);
@@ -194,7 +196,7 @@ void Walker::Resident_before_step () {
             if (drop_timer > drop_duration+1) drop_timer = drop_duration+1;
         }
          // Attack or don't
-        if (controls[Control::Attack]) {
+        if (controls[Control::Attack] && controls[Control::Attack] <= hold_buffer) {
             set_state(WS::Attack);
         }
     }

@@ -20,6 +20,7 @@ struct CommandBinding {
 struct Settings {
     bool true_fullscreen = false;
     UniqueArray<ControlBinding> controls;
+     // Only returns 0 and 1, do counting in Mind
     Controls read_controls () const;
     UniqueArray<CommandBinding> commands;
 };
