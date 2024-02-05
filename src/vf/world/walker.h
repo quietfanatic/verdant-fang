@@ -78,6 +78,13 @@ struct WalkerPhys {
     float fall_start_vel;
 };
 
+struct WalkerSfx {
+    Sound step [5];
+    Sound land;
+    Sound attack;
+    Sound hit_solid;
+};
+
 struct WalkerData {
     WalkerPhys phys;
     glow::FileImage img;
@@ -86,10 +93,7 @@ struct WalkerData {
     BodyFrames bodies;
     HeadFrames heads;
     Poses poses;
-    Sound step_sfx [5];
-    Sound land_sfx;
-    Sound attack_sfx;
-    Sound hit_solid_sfx;
+    WalkerSfx sfx;
 };
 
 struct Walker : Resident {

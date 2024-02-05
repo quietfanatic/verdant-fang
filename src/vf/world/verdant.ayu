@@ -93,27 +93,29 @@
             [#/bodies/attack+0 #/heads/neutral]
         ]
     }
-    step_sfx: [
-         -- For some reason, having these as mp3s breaks SDL2_mixer.  Perhaps it
-         -- can't play mp3 files that are too short?
-        { source:step0.wav channel:0 volume:0.5 }
-        { source:step1.wav channel:0 volume:0.5 }
-        { source:step2.wav channel:0 volume:0.5 }
-        { source:step3.wav channel:0 volume:0.5 }
-        { source:step4.wav channel:0 volume:0.5 }
-    ]
-    land_sfx: {
-        source: land.mp3
-        channel: 0
-        volume: 0.5
-    }
-    attack_sfx: {
-        source: fwssh.mp3
-        channel: 1
-    }
-    hit_solid_sfx: {
-         -- temp
-        source: land.mp3
-        channel: 1
+    sfx: {
+        step: [
+             -- For some reason, having these as mp3s breaks SDL2_mixer.  Perhaps it
+             -- can't play mp3 files that are too short?
+            { source:step0.wav channel:0 volume:0.5 }
+            { source:step1.wav channel:0 volume:0.5 }
+            { source:step2.wav channel:0 volume:0.5 }
+            { source:step3.wav channel:0 volume:0.5 }
+            { source:step4.wav channel:0 volume:0.5 }
+        ]
+        land: {
+            source: land.mp3
+            channel: 0
+            volume: 0.5
+        }
+        attack: {
+            source: fwssh.mp3
+            channel: 1
+        }
+        hit_solid: {
+             -- temp
+            source: land.mp3
+            channel: 1
+        }
     }
 }]

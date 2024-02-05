@@ -30,7 +30,7 @@ void Verdant::Fang::Resident_collide (Resident& other) {
 
 void Verdant::fang_collide (Resident& other) {
     expect(other.layers_2 & Layers::Fang_Block);
-    data->hit_solid_sfx.play();
+    data->sfx.hit_solid.play();
     if (left) {
         vel.x += 1;
         if (vel.x < 0.5) vel.x = 0.5;

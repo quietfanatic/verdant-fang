@@ -87,7 +87,7 @@ void Walker::Resident_before_step () {
                             anim_timer -= 1;
                         }
                         else {
-                            data->attack_sfx.play();
+                            data->sfx.attack.play();
                         }
                     }
                     occupied = true; break;
@@ -215,7 +215,7 @@ void Walker::Resident_before_step () {
         if (walk_frame_before % 3 == 1 && walk_frame_after % 3 == 2) {
             auto i = std::uniform_int_distribution(0, 4)(current_state->rng);
             expect(i >= 0 && i <= 4);
-            data->step_sfx[i].play();
+            data->sfx.step[i].play();
         }
     }
     new_floor = null;
@@ -238,7 +238,7 @@ void Walker::Resident_collide (Resident& other) {
                  // You can cheat a little and cancel the landing animation with
                  // the end of the attack animation.
                 if (state == WS::Neutral) set_state(WS::Land);
-                data->land_sfx.play();
+                data->sfx.land.play();
                 walk_start_x = pos.x;
             }
             new_floor = &block;
@@ -417,6 +417,15 @@ AYU_DESCRIBE(vf::WalkerPhys,
     )
 )
 
+AYU_DESCRIBE(vf::WalkerSfx,
+    attrs(
+        attr("step", &WalkerSfx::step),
+        attr("land", &WalkerSfx::land),
+        attr("attack", &WalkerSfx::attack),
+        attr("hit_solid", &WalkerSfx::hit_solid)
+    )
+)
+
 AYU_DESCRIBE(vf::WalkerData,
     attrs(
         attr("phys", &WalkerData::phys),
@@ -426,9 +435,6 @@ AYU_DESCRIBE(vf::WalkerData,
         attr("bodies", &WalkerData::bodies),
         attr("heads", &WalkerData::heads),
         attr("poses", &WalkerData::poses),
-        attr("step_sfx", &WalkerData::step_sfx),
-        attr("land_sfx", &WalkerData::land_sfx),
-        attr("attack_sfx", &WalkerData::attack_sfx),
-        attr("hit_solid_sfx", &WalkerData::hit_solid_sfx)
+        attr("sfx", &WalkerData::sfx)
     )
 )
