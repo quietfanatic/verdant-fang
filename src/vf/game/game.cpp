@@ -64,12 +64,11 @@ Game::Game () :
         ayu::load(settings_res);
     }
     else {
-        settings_res->set_value({});
-        ayu::item_from_file(
-            settings_res->get_ref(), ayu::resource_filename(
-                iri::constant("res:/vf/game/initial-settings.ayu")
-            )
+        auto initial = ayu::SharedResource(
+            iri::constant("res:/vf/game/initial-settings.ayu")
         );
+        ayu::load(initial);
+        ayu::rename(initial, settings_res);
         ayu::save(settings_res);
     }
     if (ayu::source_exists(state_res->name())) {
