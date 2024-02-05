@@ -78,7 +78,7 @@ Player::Fang::Fang () {
  // Physics
 static constexpr float ground_acc = 0.4;
 static constexpr float ground_max = 2.5;
-static constexpr float ground_dec = 0.4;
+static constexpr float ground_dec = 0.3;
 static constexpr float coast_dec = 0.1;
 static constexpr float air_acc = 0.2;
 static constexpr float air_max = 2;
@@ -101,12 +101,19 @@ void Player::set_state (PlayerState st) {
 
  // Animation
 uint8 Player::walk_frame () {
+    if (!defined(walk_start_x)) {
+         // Was the player's initial state moving?
+        walk_start_x = pos.x;
+    }
     float dist = distance(walk_start_x, pos.x);
     return geo::floor(dist / 16) % 6;
 }
 static constexpr float jump_end_vel = 0.4;
 static constexpr float fall_start_vel = -0.8;
 uint8 Player::jump_frame () {
+    if (!defined(fall_start_y)) {
+        fall_start_y = pos.y;
+    }
     if (vel.y > jump_end_vel) {
         return 0;
     }
@@ -120,7 +127,10 @@ uint8 Player::jump_frame () {
 }
 
 void Player::Resident_before_step () {
+     // Read controls
+    Controls controls = current_game->settings().get_controls();
     expect(anim_timer < 255);
+
      // Advance animations and do state-dependent things
     bool occupied = false;
     bool interruptable = false;
@@ -151,8 +161,17 @@ void Player::Resident_before_step () {
             }
             switch (anim_phase) {
                 case 0: {
-                    if (anim_timer == 3) {
-                        data->stab_sfx.play();
+                    if (anim_timer == attack_sequence[0]) {
+                         // Delay attack if the button is being held.
+                         // We're not really supposed to read the controls yet
+                         // but we need to do it before playing the sound
+                         // effect.
+                        if (controls[Control::Attack]) {
+                            anim_timer -= 1;
+                        }
+                        else {
+                            data->stab_sfx.play();
+                        }
                     }
                     occupied = true; break;
                 }
@@ -169,8 +188,6 @@ void Player::Resident_before_step () {
         default: never();
     }
 
-     // Read controls
-    Controls controls = current_game->settings().get_controls();
      // Choose some physics parameters
     float acc = floor ? ground_acc : air_acc;
     float max = floor ? ground_max : air_max;
@@ -254,7 +271,7 @@ void Player::Resident_before_step () {
             vel.x += dec;
             if (vel.x > 0) vel.x = 0;
         }
-        walk_start_x = pos.x;
+        if (vel.x == 0) walk_start_x = pos.x;
     }
 
      // Fall
