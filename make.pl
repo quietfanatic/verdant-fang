@@ -128,6 +128,7 @@ my @sources = (qw(
     vf/world/block.cpp
     vf/world/player.cpp
     vf/world/scenery.cpp
+    vf/world/walker.cpp
     dirt/ayu/common.cpp
     dirt/ayu/data/parse.cpp
     dirt/ayu/data/print.cpp

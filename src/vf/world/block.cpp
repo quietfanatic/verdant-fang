@@ -6,7 +6,7 @@
 namespace vf {
 
 Block::Block () {
-    layers_2 = Layers::Player_Block | Layers::Fang_Block;
+    layers_2 = Layers::Walker_Block | Layers::Fang_Block;
     pos = {0, 0};
 }
 

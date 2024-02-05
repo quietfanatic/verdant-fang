@@ -1,4 +1,4 @@
-[vf::PlayerData {
+[vf::WalkerData {
     img: { source:verdant.png }
     body_tex: {
         image: #/img
@@ -84,7 +84,7 @@
         channel: 0
         volume: 0.5
     }
-    stab_sfx: {
+    attack_sfx: {
         source: fwssh.mp3
         channel: 1
     }
