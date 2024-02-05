@@ -1,4 +1,23 @@
 [vf::WalkerData {
+    phys: {
+        ground_acc: 0.3
+        ground_max: 2.5
+        ground_dec: 0.3
+        coast_dec: 0.1
+        air_acc: 0.2
+        air_max: 2
+        air_dec: 0
+        jump_vel: 3.4
+        jump_end_vel: 0.4
+        fall_start_vel: -0.8
+        gravity_jump: 0.11
+        gravity_fall: 0.2
+        gravity_drop: 0.3
+        drop_duration: 6
+        attack_sequence: [5 6 5 200]
+        land_sequence: [4, 4]
+        hold_buffer: 6
+    }
     img: { source:verdant.png }
     body_tex: {
         image: #/img

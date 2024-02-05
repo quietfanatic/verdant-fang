@@ -17,26 +17,6 @@ void Walker::set_state (WalkerState st) {
     anim_timer = 0;
 }
 
- // Physics
-static constexpr float ground_acc = 0.3;
-static constexpr float ground_max = 2.5;
-static constexpr float ground_dec = 0.3;
-static constexpr float coast_dec = 0.1;
-static constexpr float air_acc = 0.2;
-static constexpr float air_max = 2;
-static constexpr float air_dec = 0;
-
-static constexpr float jump_vel = 3.4;
-static constexpr float gravity_jump = 0.11;
-static constexpr float gravity_fall = 0.2;
-static constexpr float gravity_drop = 0.3;
-static constexpr uint8 drop_duration = 6;
-
-static constexpr uint8 attack_sequence [4] = {5, 6, 5, 200};
-static constexpr uint8 land_sequence [2] = {4, 4};
-
-static constexpr uint8 hold_buffer = 6;
-
  // Animation
 uint8 Walker::walk_frame () {
     if (!defined(walk_start_x)) {
@@ -46,16 +26,14 @@ uint8 Walker::walk_frame () {
     float dist = distance(walk_start_x, pos.x);
     return geo::floor(dist / 16) % 6;
 }
-static constexpr float jump_end_vel = 0.4;
-static constexpr float fall_start_vel = -0.8;
 uint8 Walker::jump_frame () {
     if (!defined(fall_start_y)) {
         fall_start_y = pos.y;
     }
-    if (vel.y > jump_end_vel) {
+    if (vel.y > data->phys.jump_end_vel) {
         return 0;
     }
-    else if (vel.y > fall_start_vel) {
+    else if (vel.y > data->phys.fall_start_vel) {
         return 1;
     }
     else {
@@ -65,6 +43,7 @@ uint8 Walker::jump_frame () {
 }
 
 void Walker::Resident_before_step () {
+    auto& phys = data->phys;
      // Read controls.
     Controls controls;
     if (mind) controls = mind->Mind_think(*this);
@@ -78,7 +57,7 @@ void Walker::Resident_before_step () {
         case WS::Land: {
             expect(anim_phase < 2);
             anim_timer += 1;
-            if (anim_timer > land_sequence[anim_phase]) {
+            if (anim_timer > phys.land_sequence[anim_phase]) {
                 anim_timer = 0;
                 anim_phase += 1;
             }
@@ -92,13 +71,13 @@ void Walker::Resident_before_step () {
         case WS::Attack: {
             expect(anim_phase < 4);
             anim_timer += 1;
-            if (anim_timer > attack_sequence[anim_phase]) {
+            if (anim_timer > phys.attack_sequence[anim_phase]) {
                 anim_timer = 0;
                 anim_phase += 1;
             }
             switch (anim_phase) {
                 case 0: {
-                    if (anim_timer == attack_sequence[0]) {
+                    if (anim_timer == phys.attack_sequence[0]) {
                          // Delay attack if the button is being held.
                          // We're not really supposed to read the controls yet
                          // but we need to do it before playing the sound
@@ -122,11 +101,12 @@ void Walker::Resident_before_step () {
     }
 
      // Choose some physics parameters
-    float acc = floor ? ground_acc : air_acc;
-    float max = floor ? ground_max : air_max;
+    float acc = floor ? phys.ground_acc : phys.air_acc;
+    float max = floor ? phys.ground_max : phys.air_max;
     float dec = floor
-        ? occupied || state == WS::Crouch ? coast_dec : ground_dec
-        : air_dec;
+        ? occupied || state == WS::Crouch
+            ? phys.coast_dec : phys.ground_dec
+        : phys.air_dec;
 
      // Try to move
     bool decelerate = false;
@@ -183,8 +163,10 @@ void Walker::Resident_before_step () {
 
          // Jump or don't
         if (controls[Control::Jump]) {
-            if (floor && !controls[Control::Down] && controls[Control::Jump] <= hold_buffer) {
-                vel.y += jump_vel;
+            if (floor && !controls[Control::Down] &&
+                controls[Control::Jump] <= phys.hold_buffer
+            ) {
+                vel.y += phys.jump_vel;
                 floor = null;
                 if (interruptable) set_state(WS::Neutral);
             }
@@ -192,11 +174,13 @@ void Walker::Resident_before_step () {
         }
         else {
              // Allow drop_timer to count even when on floor
-            drop_timer += 1;
-            if (drop_timer > drop_duration+1) drop_timer = drop_duration+1;
+            if (drop_timer < phys.drop_duration) {
+                drop_timer += 1;
+            }
         }
          // Attack or don't
-        if (controls[Control::Attack] && controls[Control::Attack] <= hold_buffer) {
+        if (controls[Control::Attack] &&
+            controls[Control::Attack] <= phys.hold_buffer) {
             set_state(WS::Attack);
         }
     }
@@ -215,12 +199,12 @@ void Walker::Resident_before_step () {
     }
 
      // Fall
-    if (vel.y > fall_start_vel || !defined(fall_start_y)) {
+    if (vel.y > phys.fall_start_vel || !defined(fall_start_y)) {
         fall_start_y = pos.y;
     }
-    vel.y -= drop_timer == 0 ? gravity_jump
-           : drop_timer <= drop_duration ? gravity_drop
-           : gravity_fall;
+    vel.y -= drop_timer == 0 ? phys.gravity_jump
+           : drop_timer <= phys.drop_duration ? phys.gravity_drop
+           : phys.gravity_fall;
 
     auto walk_frame_before = walk_frame();
      // Apply velocity
@@ -408,8 +392,31 @@ AYU_DESCRIBE(vf::Poses,
     )
 )
 
+AYU_DESCRIBE(vf::WalkerPhys,
+    attrs(
+        attr("ground_acc", &WalkerPhys::ground_acc),
+        attr("ground_max", &WalkerPhys::ground_max),
+        attr("ground_dec", &WalkerPhys::ground_dec),
+        attr("coast_dec", &WalkerPhys::coast_dec),
+        attr("air_acc", &WalkerPhys::air_acc),
+        attr("air_max", &WalkerPhys::air_max),
+        attr("air_dec", &WalkerPhys::air_dec),
+        attr("jump_vel", &WalkerPhys::jump_vel),
+        attr("gravity_jump", &WalkerPhys::gravity_jump),
+        attr("gravity_fall", &WalkerPhys::gravity_fall),
+        attr("gravity_drop", &WalkerPhys::gravity_drop),
+        attr("drop_duration", &WalkerPhys::drop_duration),
+        attr("attack_sequence", &WalkerPhys::attack_sequence),
+        attr("land_sequence", &WalkerPhys::land_sequence),
+        attr("hold_buffer", &WalkerPhys::hold_buffer),
+        attr("jump_end_vel", &WalkerPhys::jump_end_vel),
+        attr("fall_start_vel", &WalkerPhys::fall_start_vel)
+    )
+)
+
 AYU_DESCRIBE(vf::WalkerData,
     attrs(
+        attr("phys", &WalkerData::phys),
         attr("img", &WalkerData::img),
         attr("body_tex", &WalkerData::body_tex),
         attr("head_tex", &WalkerData::head_tex),

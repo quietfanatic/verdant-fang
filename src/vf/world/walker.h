@@ -53,7 +53,28 @@ struct Poses {
     Pose attack [4];
 };
 
+struct WalkerPhys {
+    float ground_acc;
+    float ground_max;
+    float ground_dec;
+    float coast_dec;
+    float air_acc;
+    float air_max;
+    float air_dec;
+    float jump_vel;
+    float jump_end_vel;
+    float fall_start_vel;
+    float gravity_jump;
+    float gravity_fall;
+    float gravity_drop;
+    uint8 drop_duration;
+    uint8 attack_sequence [4];
+    uint8 land_sequence [2];
+    uint8 hold_buffer;
+};
+
 struct WalkerData {
+    WalkerPhys phys;
     glow::FileImage img;
     glow::PixelTexture body_tex;
     glow::PixelTexture head_tex;
