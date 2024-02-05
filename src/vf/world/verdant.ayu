@@ -8,14 +8,14 @@
         air_max: 2
         air_dec: 0
         jump_vel: 3.4
-        jump_end_vel: 0.4
-        fall_start_vel: -0.8
+        jump_end_vel: 0.6
+        fall_start_vel: -0.6
         gravity_jump: 0.11
         gravity_fall: 0.2
         gravity_drop: 0.3
         drop_duration: 6
         attack_sequence: [5 6 5 200]
-        land_sequence: [4, 4]
+        land_sequence: [4 4]
         hold_buffer: 6
     }
     img: { source:verdant.png }
