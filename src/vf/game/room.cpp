@@ -23,9 +23,12 @@ void Room::step () {
     }
      // Just some straightforward O(n^2) collision detection.
     for (auto a = residents.begin(); a != residents.end(); ++a) {
+        if (!defined(a->bounds)) continue;
+        expect(proper(a->bounds));
         Rect a_box = a->bounds + a->pos;
         auto b = a;
         for (++b; b != residents.end(); ++b) {
+            if (!defined(b->bounds)) continue;
             if (a->layers_1 & b->layers_2) {
                 auto b_box = b->bounds + b->pos;
                 if (overlaps(a_box, b_box)) {

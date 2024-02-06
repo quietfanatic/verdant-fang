@@ -1,7 +1,7 @@
 [vf::WalkerData {
     phys: {
         bounds: [-8 0 8 30]
-        weapon_bounds: [-3 -4 3 16]
+        weapon_bounds: [-6 -4 3 16]
         ground_acc: 0.25
         ground_max: 2.0
         ground_dec: 0.3

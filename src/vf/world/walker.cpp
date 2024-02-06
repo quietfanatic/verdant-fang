@@ -5,6 +5,9 @@
 #include "../game/state.h"
 #include "block.h"
 
+//TEMP
+#include "verdant.h"
+
 namespace vf {
 
 Walker::Walker () {
@@ -58,10 +61,8 @@ void Walker::Resident_before_step () {
         freeze_frames -= 1;
          // Kinda dumb way to disable collision but whatever
         bounds = GNAN;
+        weapon.bounds = GNAN;
         return;
-    }
-    else {
-        bounds = phys.bounds;
     }
 
      // Read controls.
@@ -241,11 +242,33 @@ void Walker::Resident_before_step () {
            : drop_timer <= phys.drop_duration ? phys.gravity_drop
            : phys.gravity_fall;
 
-    auto walk_frame_before = walk_frame();
+     // Set up hitboxes
+    if (left) {
+        bounds = {
+            -phys.bounds.r, phys.bounds.b,
+            -phys.bounds.l, phys.bounds.t
+        };
+    }
+    else bounds = phys.bounds;
+    if (do_attack) {
+        weapon.set_room(room);
+        Vec offset = data->body.attack[1].weapon;
+        if (left) {
+            weapon.pos = pos + offset * Vec(-1, 1);
+            weapon.bounds = {
+                -phys.weapon_bounds.r, phys.weapon_bounds.b,
+                -phys.weapon_bounds.l, phys.weapon_bounds.t
+            };
+        }
+        else {
+            weapon.pos = pos + offset;
+            weapon.bounds = phys.weapon_bounds;
+        }
+    }
 
+    auto walk_frame_before = walk_frame();
      // Apply velocity
     pos += vel;
-
      // See if we need to play footstep sound
     if (floor && state == WS::Neutral) {
         auto walk_frame_after = walk_frame();
@@ -255,18 +278,7 @@ void Walker::Resident_before_step () {
             data->sfx.step[i]->play();
         }
     }
-
-     // Set up attack hitbox.
-    if (do_attack) {
-        weapon.set_room(room);
-        weapon.bounds = phys.weapon_bounds;
-        Vec offset = data->body.attack[1].weapon;
-        if (left) {
-            offset.x = -offset.x;
-            weapon.bounds *= Vec(-1, 1);
-        }
-        weapon.pos = pos + offset;
-    }
+     // Prepare for collision detection
     new_floor = null;
 }
 
@@ -310,16 +322,16 @@ void Walker::Resident_collide (Resident& other) {
             else never();
         }
     }
-    else if (other.layers_2 & Layers::Walker_Walker) {
-        if (pos.x < other.pos.x) {
-            pos.x -= 1;
-            other.pos.x += 1;
-        }
-        else {
-            pos.x += 1;
-            other.pos.x -= 1;
-        }
-    }
+//;    else if (other.layers_2 & Layers::Walker_Walker) {
+//;        if (pos.x < other.pos.x) {
+//;            pos.x -= 1;
+//;            other.pos.x += 1;
+//;        }
+//;        else {
+//;            pos.x += 1;
+//;            other.pos.x -= 1;
+//;        }
+//;    }
 }
 
 void Walker::Weapon::Resident_collide (Resident& other) {
@@ -344,8 +356,8 @@ void Walker::Walker_on_weapon_collide (Resident& other) {
     if (other.layers_2 & Layers::Weapon_Walker) {
         auto& victim = static_cast<Walker&>(other);
         if (victim.state != WS::Dead) {
-            freeze_frames = 20;
-            victim.freeze_frames = 20;
+            freeze_frames = 15;
+            victim.freeze_frames = 15;
             victim.set_state(WS::Dead);
             data->sfx.hit_soft->play();
         }
