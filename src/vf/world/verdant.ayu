@@ -1,7 +1,7 @@
 [vf::WalkerData {
     phys: {
         body_box: [-8 0 8 30]
-        weapon_box: [0 -1 5 1]
+        weapon_box: [-12 -1 5 1]
         ground_acc: 0.3
         ground_max: 2.5
         ground_dec: 0.3
