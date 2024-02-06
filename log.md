@@ -30,3 +30,11 @@
 - Added sound effects for footsteps and stabbing.
 - Improved player control logic a bit.
 - Revised settings and state resource loading.
+#####2024-02-05 M
+- Some adjustments to player physics.
+- Add a simple monster.  I say simple, but it shares almost all code with the
+  player.  Behavior is separated by a Mind interface, one of which reads the
+  player's input and one of which controls monster AI.
+- Implement some basic physics around killing.
+- Sort draw commands by z, so you can dynamically decide which objects cover up
+  which other objects.
