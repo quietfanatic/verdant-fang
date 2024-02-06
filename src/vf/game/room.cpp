@@ -7,13 +7,13 @@ namespace vf {
 
 void Room::enter () {
     for (Resident& a : residents) {
-        a.Resident_emerge();
+        a.Resident_on_enter();
     }
 }
 
 void Room::exit () {
     for (Resident& a : residents) {
-        a.Resident_reclude();
+        a.Resident_on_exit();
     }
 }
 
@@ -23,22 +23,19 @@ void Room::step () {
     }
      // Just some straightforward O(n^2) collision detection.
     for (auto a = residents.begin(); a != residents.end(); ++a) {
-        if (!defined(a->bounds)) continue;
-        expect(proper(a->bounds));
-        Rect a_box = a->bounds + a->pos;
         auto b = a;
         for (++b; b != residents.end(); ++b) {
-            if (!defined(b->bounds)) continue;
-            if (a->layers_1 & b->layers_2) {
-                auto b_box = b->bounds + b->pos;
-                if (overlaps(a_box, b_box)) {
-                    a->Resident_collide(*b);
+            for (auto& a_hb : a->hitboxes)
+            for (auto& b_hb : b->hitboxes) {
+                if (a_hb.layers_1 & b_hb.layers_2) {
+                    if (overlaps(a_hb.box + a->pos, b_hb.box + b->pos)) {
+                        a->Resident_on_collide(a_hb, *b, b_hb);
+                    }
                 }
-            }
-            else if (b->layers_1 & a->layers_2) {
-                auto b_box = b->bounds + b->pos;
-                if (overlaps(b_box, a_box)) {
-                    b->Resident_collide(*a);
+                else if (b_hb.layers_1 & a_hb.layers_2) {
+                    if (overlaps(b_hb.box + b->pos, a_hb.box + a->pos)) {
+                        b->Resident_on_collide(b_hb, *a, a_hb);
+                    }
                 }
             }
         }

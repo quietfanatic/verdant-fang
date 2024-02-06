@@ -11,15 +11,10 @@
 namespace vf {
 
 Walker::Walker () {
-    layers_1 |= Layers::Walker_Block;
-    layers_1 |= Layers::Walker_Walker;
-    layers_2 |= Layers::Weapon_Walker;
-    layers_2 |= Layers::Walker_Walker;
-}
-
-Walker::Weapon::Weapon () {
-    layers_1 |= Layers::Weapon_Block;
-    layers_1 |= Layers::Weapon_Walker;
+    types |= Types::Walker;
+    hbs[0].layers_1 = Layers::Walker_Block | Layers::Walker_Walker;
+    hbs[0].layers_2 = Layers::Weapon_Walker | Layers::Walker_Walker;
+    hbs[1].layers_1 = Layers::Weapon_Block | Layers::Weapon_Walker;
 }
 
 void Walker::set_state (WalkerState st) {
@@ -59,9 +54,7 @@ void Walker::Resident_before_step () {
      // Do nothing if we're frozen
     if (freeze_frames) {
         freeze_frames -= 1;
-         // Kinda dumb way to disable collision but whatever
-        bounds = GNAN;
-        weapon.bounds = GNAN;
+        hitboxes = {};
         return;
     }
 
@@ -242,34 +235,9 @@ void Walker::Resident_before_step () {
            : drop_timer <= phys.drop_duration ? phys.gravity_drop
            : phys.gravity_fall;
 
-     // Set up hitboxes
-    if (left) {
-        bounds = {
-            -phys.bounds.r, phys.bounds.b,
-            -phys.bounds.l, phys.bounds.t
-        };
-    }
-    else bounds = phys.bounds;
-    if (do_attack) {
-        weapon.set_room(room);
-        Vec offset = data->body.attack[1].weapon;
-        if (left) {
-            weapon.pos = pos + offset * Vec(-1, 1);
-            weapon.bounds = {
-                -phys.weapon_bounds.r, phys.weapon_bounds.b,
-                -phys.weapon_bounds.l, phys.weapon_bounds.t
-            };
-        }
-        else {
-            weapon.pos = pos + offset;
-            weapon.bounds = phys.weapon_bounds;
-        }
-    }
-
+     // Apply velocity and see if we need to play footstep sound
     auto walk_frame_before = walk_frame();
-     // Apply velocity
     pos += vel;
-     // See if we need to play footstep sound
     if (floor && state == WS::Neutral) {
         auto walk_frame_after = walk_frame();
         if (walk_frame_before % 3 == 1 && walk_frame_after % 3 == 2) {
@@ -278,16 +246,29 @@ void Walker::Resident_before_step () {
             data->sfx.step[i]->play();
         }
     }
+
+     // Set up hitboxes
+    hbs[0].box = phys.body_box;
+    if (left) hbs[0].fliph();
+    if (do_attack) {
+        hbs[1].box = phys.weapon_box + data->body.attack[1].weapon;
+        if (left) hbs[1].fliph();
+        hitboxes = Slice<Hitbox>(&hbs[0], 2);
+    }
+    else hitboxes = Slice<Hitbox>(&hbs[0], 1);
+
      // Prepare for collision detection
     new_floor = null;
 }
 
-void Walker::Resident_collide (Resident& other) {
-    if (other.layers_2 & Layers::Walker_Block) {
-        auto& block = static_cast<Block&>(other);
+void Walker::Resident_on_collide (
+    const Hitbox& hb, Resident& o, const Hitbox& o_hb
+) {
+    if (&hb == &hbs[0] && o_hb.layers_2 & Layers::Walker_Block) {
+        auto& block = static_cast<Block&>(o);
 
-        Rect here = bounds + pos;
-        Rect there = block.bounds + block.pos;
+        Rect here = hb.box + pos;
+        Rect there = o_hb.box + o.pos;
         Rect overlap = here & there;
         expect(proper(overlap));
         if (height(overlap) <= width(overlap)) {
@@ -296,8 +277,8 @@ void Walker::Resident_collide (Resident& other) {
                 if (vel.y < 0) vel.y = 0;
                  // Land on block
                 if (!floor && !new_floor) {
-                     // You can cheat a little and cancel the landing animation with
-                     // the end of the attack animation.
+                     // You can cheat a little and cancel the landing animation
+                     // with the end of the attack animation.
                     if (state == WS::Neutral) set_state(WS::Land);
                     data->sfx.land->play();
                     walk_start_x = pos.x;
@@ -322,27 +303,17 @@ void Walker::Resident_collide (Resident& other) {
             else never();
         }
     }
-//;    else if (other.layers_2 & Layers::Walker_Walker) {
-//;        if (pos.x < other.pos.x) {
-//;            pos.x -= 1;
-//;            other.pos.x += 1;
-//;        }
-//;        else {
-//;            pos.x += 1;
-//;            other.pos.x -= 1;
-//;        }
-//;    }
-}
-
-void Walker::Weapon::Resident_collide (Resident& other) {
-     // Horrible offset jankery just to avoid storing a pointer
-    usize offset = (char*)&((Walker*)this)->weapon - (char*)this;
-    auto wielder = (Walker*)((char*)this - offset);
-    wielder->Walker_on_weapon_collide(other);
-}
-
-void Walker::Walker_on_weapon_collide (Resident& other) {
-    if (other.layers_2 & Layers::Weapon_Block) {
+    else if (&hb == &hbs[0] && o_hb.layers_2 & Layers::Walker_Walker) {
+        if (pos.x < o.pos.x) {
+            pos.x -= 1;
+            o.pos.x += 1;
+        }
+        else {
+            pos.x += 1;
+            o.pos.x -= 1;
+        }
+    }
+    else if (&hb == &hbs[1] && o_hb.layers_2 & Layers::Weapon_Block) {
         data->sfx.hit_solid->play();
         if (left) {
             vel.x += 1;
@@ -353,8 +324,8 @@ void Walker::Walker_on_weapon_collide (Resident& other) {
             if (vel.x > -0.5) vel.x = -0.5;
         }
     }
-    if (other.layers_2 & Layers::Weapon_Walker) {
-        auto& victim = static_cast<Walker&>(other);
+    else if (&hb == &hbs[1] && o_hb.layers_2 & Layers::Weapon_Walker) {
+        auto& victim = static_cast<Walker&>(o);
         if (victim.state != WS::Dead) {
             freeze_frames = 15;
             victim.freeze_frames = 15;
@@ -365,8 +336,8 @@ void Walker::Walker_on_weapon_collide (Resident& other) {
 }
 
 void Walker::Resident_after_step () {
+     // TODO: This isn't quite right
     if (freeze_frames) return;
-    weapon.set_room(null);
     floor = new_floor;
     new_floor = null;
 }
@@ -486,8 +457,8 @@ AYU_DESCRIBE(vf::Poses,
 
 AYU_DESCRIBE(vf::WalkerPhys,
     attrs(
-        attr("bounds", &WalkerPhys::bounds),
-        attr("weapon_bounds", &WalkerPhys::weapon_bounds),
+        attr("body_box", &WalkerPhys::body_box),
+        attr("weapon_box", &WalkerPhys::weapon_box),
         attr("ground_acc", &WalkerPhys::ground_acc),
         attr("ground_max", &WalkerPhys::ground_max),
         attr("ground_dec", &WalkerPhys::ground_dec),

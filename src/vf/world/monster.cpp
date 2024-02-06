@@ -6,13 +6,14 @@
 namespace vf {
 
 Monster::Monster () {
-    layers_1 |= Layers::Monster_Monster;
+    types |= Types::Monster;
 }
 
 Controls MonsterMind::Mind_think (Resident& s) {
-    expect(s.layers_1 & Layers::Monster_Monster);
-    auto& self = static_cast<Monster&>(s);
     Controls r {};
+    if (!(s.types & Types::Monster)) return r;
+    auto& self = static_cast<Monster&>(s);
+    if (!main_character) return r;
     auto target = main_character->pos.x - self.pos.x;
     if (contains(Range(-sight_dist, -attack_dist), target)) {
         r[Control::Left] = 1;
@@ -33,7 +34,7 @@ Controls MonsterMind::Mind_think (Resident& s) {
     }
     for (auto& other : self.room->residents) {
         if (&other == &s) continue;
-        if (other.layers_1 & Layers::Monster_Monster) {
+        if (other.types & Types::Monster) {
             if (contains(Range(-social_dist, 0), other.pos.x - self.pos.x)) {
                 r[Control::Left] = 0;
             }

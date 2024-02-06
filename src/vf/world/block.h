@@ -5,6 +5,7 @@
 namespace vf {
 
 struct Block : Resident {
+    Hitbox hb;
     Block ();
 };
 

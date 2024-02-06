@@ -6,9 +6,9 @@
 namespace vf {
 
 Block::Block () {
-    layers_2 |= Layers::Walker_Block;
-    layers_2 |= Layers::Weapon_Block;
+    hb.layers_2 = Layers::Walker_Block | Layers::Weapon_Block;
     pos = {0, 0};
+    hitboxes = Slice<Hitbox>(&hb, 1);
 }
 
 } using namespace vf;
@@ -16,6 +16,8 @@ Block::Block () {
 AYU_DESCRIBE(vf::Block,
     attrs(
         attr("Resident", base<Resident>(), include),
-        attr("bounds", &Resident::bounds)
+        attr("bounds", ref_func<Rect>(
+            [](Block& v)->Rect&{ return v.hb.box; }
+        ))
     )
 )

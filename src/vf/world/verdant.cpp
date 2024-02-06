@@ -2,7 +2,9 @@
 
 namespace vf {
 
-Verdant::Verdant () { }
+Verdant::Verdant () {
+    types |= Types::Verdant;
+}
 
 } using namespace vf;
 

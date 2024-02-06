@@ -57,8 +57,8 @@ struct Poses {
 };
 
 struct WalkerPhys {
-    Rect bounds;
-    Rect weapon_bounds;
+    Rect body_box;
+    Rect weapon_box;
     float ground_acc;
     float ground_max;
     float ground_dec;
@@ -120,13 +120,9 @@ struct Walker : Resident {
     Block* floor = null;
      // Temporary
     Block* new_floor;
-     // Temporary.  The attack hitbox is only active for one frame, and will be
-     // deactivated before the frame is over, leaving no serializable state.
-    struct Weapon : Resident {
-        Weapon ();
-        void Resident_collide (Resident&) override;
-    };
-    Weapon weapon;
+
+     // body, weapon
+    Hitbox hbs [2];
 
     Walker ();
 
@@ -135,9 +131,7 @@ struct Walker : Resident {
     uint8 jump_frame ();
 
     void Resident_before_step ();
-    void Resident_collide (Resident&) override;
-     // If you override, supercall.
-    virtual void Walker_on_weapon_collide (Resident&);
+    void Resident_on_collide (const Hitbox&, Resident&, const Hitbox&) override;
     void Resident_after_step () override;
     void Resident_draw () override;
 };

@@ -13,10 +13,10 @@ struct Verdant : Walker {
     Verdant ();
     ~Verdant () { main_character = null; }
 
-    void Resident_emerge () override {
+    void Resident_on_enter () override {
         expect(!main_character); main_character = this;
     }
-    void Resident_reclude () override {
+    void Resident_on_exit () override {
         main_character = null;
     }
 };
