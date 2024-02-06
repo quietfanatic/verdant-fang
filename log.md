@@ -22,6 +22,7 @@
 - Looked up cave references.  Caves are very chaotic and illegible, so it'll be
   a big challenge making that work with game rooms which need to be geometric
   and legible.  Also my art skill level.
+- Planned work for tomorrow: Cave!
 #####2024-02-03 S
 - Made a simple cave background,  It's passable and better than nothing.
 - Did more animation work, including falling, landing, and crouching frames, and
@@ -30,11 +31,18 @@
 - Added sound effects for footsteps and stabbing.
 - Improved player control logic a bit.
 - Revised settings and state resource loading.
+- Planned work for tomorrow: Monster!
 #####2024-02-05 M
 - Some adjustments to player physics.
 - Add a simple monster.  I say simple, but it shares almost all code with the
-  player.  Behavior is separated by a Mind interface, one of which reads the
-  player's input and one of which controls monster AI.
+  player.  Behavior is separated by resource data and a Mind interface, which
+  can either read keyboard input or do some basic AI.
+- Wasted some time trying to switch to libresprite and went back to GIMP.
 - Implement some basic physics around killing.
 - Sort draw commands by z, so you can dynamically decide which objects cover up
   which other objects.
+- Wasted a lot of time with collision bugs.  Reworked collision system to
+  support multiple hitboxes per resident to reduce the chances of this happening
+  again.
+- Planned work for tomorrow: Blood!  And maybe room transitions or music or more
+  sound effects.

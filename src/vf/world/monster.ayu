@@ -16,7 +16,8 @@
         drop_duration: 6
         land_sequence: [4 4]
         attack_sequence: [8 8 8 200]
-        dead_sequence: [8 120]
+        hit_sequence: 20
+        dead_sequence: [20 8 120]
         jump_crouch_lift: 4
         hold_buffer: 6
         walk_cycle_dist: 16

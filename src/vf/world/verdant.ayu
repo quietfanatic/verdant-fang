@@ -16,7 +16,8 @@
         drop_duration: 6
         land_sequence: [4 4]
         attack_sequence: [5 6 5 200]
-        dead_sequence: [8 240]
+        hit_sequence: 20
+        dead_sequence: [20 8 240]
         jump_crouch_lift: 4
         hold_buffer: 6
         walk_cycle_dist: 16
@@ -112,5 +113,6 @@
         attack: assets.ayu#/fwssh+1
         hit_solid: assets.ayu#/hit_solid+1
         hit_soft: assets.ayu#/stab+1
+        unhit: assets.ayu#/unstab+1
     }
 }]

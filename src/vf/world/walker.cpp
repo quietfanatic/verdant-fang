@@ -5,9 +5,6 @@
 #include "../game/state.h"
 #include "block.h"
 
-//TEMP
-#include "verdant.h"
-
 namespace vf {
 
 Walker::Walker () {
@@ -51,21 +48,13 @@ uint8 Walker::jump_frame () {
 void Walker::Resident_before_step () {
     auto& phys = data->phys;
 
-     // Do nothing if we're frozen
-    if (freeze_frames) {
-        freeze_frames -= 1;
-        hitboxes = {};
-        return;
-    }
-
      // Read controls.
     Controls controls;
     if (mind) controls = mind->Mind_think(*this);
 
      // Advance animations and do state-dependent things
     expect(anim_timer < 255);
-    bool occupied = false;
-    bool interruptable = false;
+    business = B::Free;
     bool do_attack = false;
     switch (state) {
         case WS::Neutral: break;
@@ -78,8 +67,8 @@ void Walker::Resident_before_step () {
                 anim_phase += 1;
             }
             switch (anim_phase) {
-                case 0: occupied = true; break;
-                case 1: interruptable = true; break;
+                case 0: business = B::Occupied; break;
+                case 1: business = B::Interruptible; break;
                 case 2: set_state(WS::Neutral); break;
             }
             break;
@@ -105,28 +94,41 @@ void Walker::Resident_before_step () {
                             data->sfx.attack->play();
                         }
                     }
-                    occupied = true; break;
+                    business = B::Occupied; break;
                 }
                 case 1: {
                     if (anim_timer == 1) do_attack = true;
-                    occupied = true; break;
+                    business = B::Occupied; break;
                 }
-                case 2: occupied = true; break;
-                case 3: interruptable = true; break;
+                case 2: business = B::Occupied; break;
+                case 3: business = B::Interruptible; break;
                 case 4: set_state(WS::Neutral); break;
             }
             break;
         }
+        case WS::Hit: {
+            expect(anim_phase == 0);
+            anim_timer += 1;
+            if (anim_timer > phys.hit_sequence) {
+                if (data->sfx.unhit) data->sfx.unhit->play();
+                state = WS::Attack;
+                anim_phase = 2;
+                anim_timer = 0;
+            }
+            business = B::Frozen;
+            break;
+        }
         case WS::Dead: {
-            expect(anim_phase < 3);
-            if (anim_phase < 2) {
+            expect(anim_phase < 4);
+            if (anim_phase < 3) {
                 anim_timer += 1;
                 if (anim_timer > phys.dead_sequence[anim_phase]) {
                     anim_phase += 1;
                     anim_timer = 0;
                 }
             }
-            occupied = true; break;
+            business = anim_phase == 0 ? B::Frozen : B::Occupied;
+            break;
         }
         default: never();
     }
@@ -135,13 +137,17 @@ void Walker::Resident_before_step () {
     float acc = floor ? phys.ground_acc : phys.air_acc;
     float max = floor ? phys.ground_max : phys.air_max;
     float dec = floor
-        ? occupied || state == WS::Crouch
+        ? business == B::Occupied || state == WS::Crouch
             ? phys.coast_dec : phys.ground_dec
         : phys.air_dec;
 
      // Try to move
     bool decelerate = false;
-    if (!occupied) {
+    switch (business) {
+    case B::Frozen: break;
+    case B::Occupied: decelerate = true; break;
+    case B::Interruptible:
+    case B::Free: {
          // Crouch or don't
         if (controls[Control::Down]) {
             if (state != WS::Crouch) {
@@ -158,7 +164,7 @@ void Walker::Resident_before_step () {
          // Walk or don't
         if (state == WS::Crouch && floor) decelerate = true;
         else if (controls[Control::Left] && !controls[Control::Right]) {
-            if (interruptable) {
+            if (business == B::Interruptible) {
                 set_state(WS::Neutral);
                 walk_start_x = pos.x;
             }
@@ -174,7 +180,7 @@ void Walker::Resident_before_step () {
             if (vel.x >= 0) walk_start_x = pos.x;
         }
         else if (controls[Control::Right]) {
-            if (interruptable) {
+            if (business == B::Interruptible) {
                 set_state(WS::Neutral);
                 walk_start_x = pos.x;
             }
@@ -197,7 +203,7 @@ void Walker::Resident_before_step () {
             ) {
                 vel.y += phys.jump_vel;
                 floor = null;
-                if (interruptable) set_state(WS::Neutral);
+                if (business == B::Interruptible) set_state(WS::Neutral);
             }
             drop_timer = 0;
         }
@@ -212,8 +218,9 @@ void Walker::Resident_before_step () {
             controls[Control::Attack] <= phys.hold_buffer) {
             set_state(WS::Attack);
         }
+        break;
     }
-    else decelerate = true;
+    }
 
     if (decelerate) {
         if (vel.x > 0) {
@@ -227,23 +234,25 @@ void Walker::Resident_before_step () {
         walk_start_x = pos.x;
     }
 
-     // Fall
-    if (vel.y > phys.fall_start_vel || !defined(fall_start_y)) {
-        fall_start_y = pos.y;
-    }
-    vel.y -= drop_timer == 0 ? phys.gravity_jump
-           : drop_timer <= phys.drop_duration ? phys.gravity_drop
-           : phys.gravity_fall;
+    if (business != B::Frozen) {
+         // Fall
+        if (vel.y > phys.fall_start_vel || !defined(fall_start_y)) {
+            fall_start_y = pos.y;
+        }
+        vel.y -= drop_timer == 0 ? phys.gravity_jump
+               : drop_timer <= phys.drop_duration ? phys.gravity_drop
+               : phys.gravity_fall;
 
-     // Apply velocity and see if we need to play footstep sound
-    auto walk_frame_before = walk_frame();
-    pos += vel;
-    if (floor && state == WS::Neutral) {
-        auto walk_frame_after = walk_frame();
-        if (walk_frame_before % 3 == 1 && walk_frame_after % 3 == 2) {
-            auto i = std::uniform_int_distribution(0, 4)(current_state->rng);
-            expect(i >= 0 && i <= 4);
-            data->sfx.step[i]->play();
+         // Apply velocity and see if we need to play footstep sound
+        auto walk_frame_before = walk_frame();
+        pos += vel;
+        if (floor && state == WS::Neutral) {
+            auto walk_frame_after = walk_frame();
+            if (walk_frame_before % 3 == 1 && walk_frame_after % 3 == 2) {
+                auto i = std::uniform_int_distribution(0, 4)(current_state->rng);
+                expect(i >= 0 && i <= 4);
+                data->sfx.step[i]->play();
+            }
         }
     }
 
@@ -304,13 +313,11 @@ void Walker::Resident_on_collide (
         }
     }
     else if (&hb == &hbs[0] && o_hb.layers_2 & Layers::Walker_Walker) {
-        if (pos.x < o.pos.x) {
-            pos.x -= 1;
-            o.pos.x += 1;
-        }
-        else {
-            pos.x += 1;
-            o.pos.x -= 1;
+        auto& other = static_cast<Walker&>(o);
+        if (state != WS::Dead && other.state != WS::Dead) {
+            float diff = pos.x < o.pos.x ? 1 : -1;
+            pos.x -= diff;
+            o.pos.x += diff;
         }
     }
     else if (&hb == &hbs[1] && o_hb.layers_2 & Layers::Weapon_Block) {
@@ -326,9 +333,8 @@ void Walker::Resident_on_collide (
     }
     else if (&hb == &hbs[1] && o_hb.layers_2 & Layers::Weapon_Walker) {
         auto& victim = static_cast<Walker&>(o);
-        if (victim.state != WS::Dead) {
-            freeze_frames = 15;
-            victim.freeze_frames = 15;
+        if (victim.state != WS::Hit && victim.state != WS::Dead) {
+            set_state(WS::Hit);
             victim.set_state(WS::Dead);
             data->sfx.hit_soft->play();
         }
@@ -336,10 +342,10 @@ void Walker::Resident_on_collide (
 }
 
 void Walker::Resident_after_step () {
-     // TODO: This isn't quite right
-    if (freeze_frames) return;
-    floor = new_floor;
-    new_floor = null;
+    if (business != B::Frozen) {
+        floor = new_floor;
+        new_floor = null;
+    }
 }
 
 void Walker::Resident_draw () {
@@ -378,13 +384,18 @@ void Walker::Resident_draw () {
             }
             break;
         }
-        case WS::Dead: {
-            if (freeze_frames) {
-                pose = poses.damage;
+        case WS::Hit: {
+            pose = poses.attack[1];
+            if (!floor) {
+                pose.head = poses.jump[jump_frame()].head;
             }
-            else switch (anim_phase) {
-                case 0: pose = poses.dead[0]; break;
-                case 1: case 2: pose = poses.dead[1]; break;
+            break;
+        }
+        case WS::Dead: {
+            switch (anim_phase) {
+                case 0: pose = poses.damage; break;
+                case 1: pose = poses.dead[0]; break;
+                case 2: case 3: pose = poses.dead[1]; break;
                 default: never();
             }
             break;
@@ -474,6 +485,7 @@ AYU_DESCRIBE(vf::WalkerPhys,
         attr("jump_crouch_lift", &WalkerPhys::jump_crouch_lift),
         attr("land_sequence", &WalkerPhys::land_sequence),
         attr("attack_sequence", &WalkerPhys::attack_sequence),
+        attr("hit_sequence", &WalkerPhys::hit_sequence),
         attr("dead_sequence", &WalkerPhys::dead_sequence),
         attr("hold_buffer", &WalkerPhys::hold_buffer),
         attr("walk_cycle_dist", &WalkerPhys::walk_cycle_dist),
@@ -489,7 +501,8 @@ AYU_DESCRIBE(vf::WalkerSfx,
         attr("land", &WalkerSfx::land),
         attr("attack", &WalkerSfx::attack),
         attr("hit_solid", &WalkerSfx::hit_solid),
-        attr("hit_soft", &WalkerSfx::hit_soft)
+        attr("hit_soft", &WalkerSfx::hit_soft),
+        attr("unhit", &WalkerSfx::unhit, optional)
     )
 )
 
@@ -510,7 +523,9 @@ AYU_DESCRIBE(vf::WalkerState,
         value("neutral", WS::Neutral),
         value("crouch", WS::Crouch),
         value("attack", WS::Attack),
-        value("land", WS::Land)
+        value("land", WS::Land),
+        value("hit", WS::Hit),
+        value("dead", WS::Dead)
     )
 )
 
@@ -525,7 +540,6 @@ AYU_DESCRIBE(vf::Walker,
         attr("anim_phase", &Walker::anim_phase, optional),
         attr("anim_timer", &Walker::anim_timer, optional),
         attr("drop_timer", &Walker::drop_timer, optional),
-        attr("freeze_frames", &Walker::freeze_frames, optional),
         attr("walk_start_x", &Walker::walk_start_x, optional),
         attr("fall_start_x", &Walker::walk_start_x, optional),
         attr("floor", &Walker::floor, optional)

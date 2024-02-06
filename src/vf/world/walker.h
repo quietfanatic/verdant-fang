@@ -14,6 +14,7 @@ enum class WalkerState {
     Crouch,
     Land,
     Attack,
+    Hit,
     Dead,
 };
 using WS = WalkerState;
@@ -74,7 +75,8 @@ struct WalkerPhys {
     uint8 jump_crouch_lift;
     uint8 land_sequence [2];
     uint8 attack_sequence [4];
-    uint8 dead_sequence [2];
+    uint8 hit_sequence;
+    uint8 dead_sequence [3];
     uint8 hold_buffer;
      // For animation
     float walk_cycle_dist;
@@ -89,6 +91,7 @@ struct WalkerSfx {
     Sound* attack;
     Sound* hit_solid;
     Sound* hit_soft;
+    Sound* unhit = null;
 };
 
 struct WalkerData {
@@ -110,8 +113,6 @@ struct Walker : Resident {
     uint8 anim_phase = 0;
     uint32 anim_timer = 0;
     uint32 drop_timer = 0;
-     // Counts down
-    uint32 freeze_frames = 0;
      // More gravity a few frames after releasing jump
      // For animations
     float walk_start_x = GNAN;
@@ -120,9 +121,17 @@ struct Walker : Resident {
     Block* floor = null;
      // Temporary
     Block* new_floor;
-
      // body, weapon
     Hitbox hbs [2];
+
+    enum class Business {
+        Free,
+        Interruptible,
+        Occupied,
+        Frozen
+    };
+    using B = Business;
+    Business business;
 
     Walker ();
 
