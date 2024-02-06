@@ -120,14 +120,34 @@ void Walker::Resident_before_step () {
         }
         case WS::Dead: {
             expect(anim_phase < 4);
-            if (anim_phase < 3) {
-                anim_timer += 1;
-                if (anim_timer > phys.dead_sequence[anim_phase]) {
-                    anim_phase += 1;
-                    anim_timer = 0;
+            switch (anim_phase) {
+                case 0: {
+                    anim_timer += 1;
+                    if (anim_timer > phys.dead_sequence[anim_phase]) {
+                        anim_phase += 1;
+                        anim_timer = 0;
+                        if (floor) pos.y += phys.dead_floor_lift;
+                        business = B::Occupied; break;
+                    }
+                    business = B::Frozen; break;
                 }
+                case 1: {
+                    if (floor) {
+                        anim_phase = 2;
+                        anim_timer = 0;
+                    }
+                    business = B::Occupied; break;
+                }
+                case 2: {
+                    anim_timer += 1;
+                    if (anim_timer > phys.dead_sequence[anim_phase]) {
+                        anim_phase += 1;
+                        anim_timer = 0;
+                    }
+                    business = B::Occupied; break;
+                }
+                case 3: business = B::Occupied; break;
             }
-            business = anim_phase == 0 ? B::Frozen : B::Occupied;
             break;
         }
         default: never();
@@ -234,12 +254,15 @@ void Walker::Resident_before_step () {
         walk_start_x = pos.x;
     }
 
-    if (business != B::Frozen) {
+    if (business == B::Frozen) {
+        vel = {0, 0};
+    }
+    else {
          // Fall
         if (vel.y > phys.fall_start_vel || !defined(fall_start_y)) {
             fall_start_y = pos.y;
         }
-        vel.y -= drop_timer == 0 ? phys.gravity_jump
+        vel.y -= state == WS::Dead || drop_timer == 0 ? phys.gravity_jump
                : drop_timer <= phys.drop_duration ? phys.gravity_drop
                : phys.gravity_fall;
 
@@ -289,7 +312,9 @@ void Walker::Resident_on_collide (
                      // You can cheat a little and cancel the landing animation
                      // with the end of the attack animation.
                     if (state == WS::Neutral) set_state(WS::Land);
-                    data->sfx.land->play();
+                    if (state != WS::Dead) {
+                        data->sfx.land->play();
+                    }
                     walk_start_x = pos.x;
                 }
                 new_floor = &block;
