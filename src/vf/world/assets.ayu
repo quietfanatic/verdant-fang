@@ -1,4 +1,5 @@
 [ayu::Document {
+    actors_img: [glow::FileImage { source:actors.png }]
     cave_img: [glow::FileImage { source:cave.png }]
     cave_tex: [glow::PixelTexture {
         image: #/cave_img+1

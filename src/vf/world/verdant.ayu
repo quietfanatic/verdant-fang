@@ -4,7 +4,7 @@
         ground_acc: 0.3
         ground_max: 2.5
         ground_dec: 0.3
-        coast_dec: 0.1
+        coast_dec: 0.2
         air_acc: 0.2
         air_max: 2
         air_dec: 0
@@ -22,9 +22,8 @@
         jump_end_vel: 0.6
         fall_start_vel: -0.6
     }
-    img: { source:verdant.png }
     body_tex: {
-        image: #/img
+        image: assets.ayu#/actors_img+1
          -- y down
         bounds: [110 106 317 206]
     }
@@ -49,7 +48,7 @@
         ]
     }
     head_tex: {
-        image: #/img
+        image: assets.ayu#/actors_img+1
         bounds: [100 40 258 89]
     }
     heads: {
@@ -64,6 +63,7 @@
             [[55 13] [-23 -13 9 10]]
         ]
         back: [[151 39] [-23 -13 9 10]]
+        down: [[23 39] [-23 -13 9 10]]
     }
     poses: {
         stand: [#/bodies/stand #/heads/neutral]

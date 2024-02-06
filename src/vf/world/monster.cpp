@@ -14,10 +14,21 @@ Controls MonsterMind::Mind_think (Resident& s) {
     auto& self = static_cast<Monster&>(s);
     Controls r {};
     auto target = main_character->pos.x - self.pos.x;
-    if (contains(Range(-sight_dist, -stop_dist), target)) {
+    if (contains(Range(-sight_dist, -attack_dist), target)) {
         r[Control::Left] = 1;
     }
-    else if (contains(Range(stop_dist, sight_dist), target)) {
+    else if (contains(Range(-attack_dist, attack_dist), target)) {
+        if (target < 0 && !self.left) {
+            r[Control::Left] = 1;
+        }
+        else if (target > 0 && self.left) {
+            r[Control::Right] = 1;
+        }
+        if (self.state != WS::Attack || self.anim_phase >= 3) {
+            r[Control::Attack] = 1;
+        }
+    }
+    else if (contains(Range(attack_dist, sight_dist), target)) {
         r[Control::Right] = 1;
     }
     return r;
@@ -35,6 +46,6 @@ AYU_DESCRIBE(vf::MonsterMind,
     attrs(
         attr("vf::Mind", base<Mind>(), include),
         attr("sight_dist", &MonsterMind::sight_dist),
-        attr("stop_dist", &MonsterMind::stop_dist)
+        attr("attack_dist", &MonsterMind::attack_dist)
     )
 )

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../../dirt/glow/file-image.h"
 #include "../../dirt/glow/image-texture.h"
 #include "../game/controls.h"
 #include "../game/frame.h"
@@ -37,6 +36,7 @@ struct HeadFrames {
     Frame wave [3];
     Frame fall [2];
     Frame back;
+    Frame down;
 };
 
 struct Pose {
@@ -87,7 +87,6 @@ struct WalkerSfx {
 
 struct WalkerData {
     WalkerPhys phys;
-    glow::FileImage img;
     glow::PixelTexture body_tex;
     glow::PixelTexture head_tex;
     BodyFrames bodies;

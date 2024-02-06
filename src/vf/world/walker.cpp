@@ -343,7 +343,8 @@ AYU_DESCRIBE(vf::HeadFrames,
         attr("neutral", &HeadFrames::neutral),
         attr("wave", &HeadFrames::wave),
         attr("fall", &HeadFrames::fall),
-        attr("back", &HeadFrames::back)
+        attr("back", &HeadFrames::back),
+        attr("down", &HeadFrames::down)
     )
 )
 
@@ -403,7 +404,6 @@ AYU_DESCRIBE(vf::WalkerSfx,
 AYU_DESCRIBE(vf::WalkerData,
     attrs(
         attr("phys", &WalkerData::phys),
-        attr("img", &WalkerData::img),
         attr("body_tex", &WalkerData::body_tex),
         attr("head_tex", &WalkerData::head_tex),
         attr("bodies", &WalkerData::bodies),

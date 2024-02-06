@@ -10,7 +10,7 @@ struct Monster : Walker {
 
 struct MonsterMind : Mind {
     float sight_dist;
-    float stop_dist;
+    float attack_dist;
     Controls Mind_think (Resident& r) override;
 };
 
