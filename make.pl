@@ -188,7 +188,8 @@ my @sources = (qw(
 
 push @resources, (qw(
     vf/game/*.ayu
-    vf/world/*.{ayu,png,mp3,wav}
+    vf/world/*.ayu
+    vf/world/assets/*.{png,mp3,wav}
 ),
     ["../LICENSE" => "LICENSE"],
     ["../README.md" => "README.md"],

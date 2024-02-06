@@ -27,7 +27,7 @@
          -- y down
         bounds: [171 214 377 314]
     }
-    bodies: {
+    body: {
          -- y up
         stand: [[13 69] [-13 0 19 34] [2 25]]
         crouch: [[84 76] [-13 0 19 30] [2 18]]
@@ -51,7 +51,7 @@
         image: assets.ayu#/actors_img+1
         bounds: [129 259 147 298]
     }
-    heads: {
+    head: {
         neutral: [[9 26] [-9 -3 9 13]]
         wave: [
             [[9 26] [-9 -3 9 13]]
@@ -66,56 +66,43 @@
         down: [[9 6] [-4 -6 9 10]]
     }
     poses: {
-        stand: [#/bodies/stand #/heads/neutral]
-        crouch: [#/bodies/crouch #/heads/neutral]
+        stand: [#/body/stand #/head/neutral]
+        crouch: [#/body/crouch #/head/neutral]
         walk: [
-            [#/bodies/walk+0 #/heads/wave+0]
-            [#/bodies/walk+1 #/heads/wave+1]
-            [#/bodies/walk+2 #/heads/wave+2]
-            [#/bodies/walk+3 #/heads/wave+0]
-            [#/bodies/walk+4 #/heads/wave+1]
-            [#/bodies/walk+5 #/heads/wave+2]
+            [#/body/walk+0 #/head/wave+0]
+            [#/body/walk+1 #/head/wave+1]
+            [#/body/walk+2 #/head/wave+2]
+            [#/body/walk+3 #/head/wave+0]
+            [#/body/walk+4 #/head/wave+1]
+            [#/body/walk+5 #/head/wave+2]
         ]
         jump: [
-            [#/bodies/walk+0 #/heads/neutral]
-            [#/bodies/walk+0 #/heads/wave+2]
-            [#/bodies/walk+2 #/heads/fall+0]
-            [#/bodies/fall1 #/heads/fall+1]
+            [#/body/walk+0 #/head/neutral]
+            [#/body/walk+0 #/head/wave+2]
+            [#/body/walk+2 #/head/fall+0]
+            [#/body/fall1 #/head/fall+1]
         ]
         land: [
-            [#/bodies/land #/heads/fall+0]
-            [#/bodies/land #/heads/wave+2]
+            [#/body/land #/head/fall+0]
+            [#/body/land #/head/wave+2]
         ]
         attack: [
-            [#/bodies/attack+0 #/heads/neutral]
-            [#/bodies/attack+1 #/heads/down]
-            [#/bodies/attack+2 #/heads/down]
-            [#/bodies/attack+0 #/heads/neutral]
+            [#/body/attack+0 #/head/neutral]
+            [#/body/attack+1 #/head/down]
+            [#/body/attack+2 #/head/down]
+            [#/body/attack+0 #/head/neutral]
         ]
     }
     sfx: {
         step: [
-             -- For some reason, having these as mp3s breaks SDL2_mixer.  Perhaps it
-             -- can't play mp3 files that are too short?
-            { source:step0.wav channel:0 volume:0.5 }
-            { source:step1.wav channel:0 volume:0.5 }
-            { source:step2.wav channel:0 volume:0.5 }
-            { source:step3.wav channel:0 volume:0.5 }
-            { source:step4.wav channel:0 volume:0.5 }
+            assets.ayu#/step0+1
+            assets.ayu#/step1+1
+            assets.ayu#/step2+1
+            assets.ayu#/step3+1
+            assets.ayu#/step4+1
         ]
-        land: {
-            source: land.mp3
-            channel: 0
-            volume: 0.5
-        }
-        attack: {
-            source: fwssh.mp3
-            channel: 1
-        }
-        hit_solid: {
-             -- temp
-            source: land.mp3
-            channel: 1
-        }
+        land: assets.ayu#/land+1
+        attack: assets.ayu#/fwssh+1
+        hit_solid: assets.ayu#/hit_solid+1
     }
 }]

@@ -79,18 +79,18 @@ struct WalkerPhys {
 };
 
 struct WalkerSfx {
-    Sound step [5];
-    Sound land;
-    Sound attack;
-    Sound hit_solid;
+    Sound* step [5];
+    Sound* land;
+    Sound* attack;
+    Sound* hit_solid;
 };
 
 struct WalkerData {
     WalkerPhys phys;
     glow::PixelTexture body_tex;
     glow::PixelTexture head_tex;
-    BodyFrames bodies;
-    HeadFrames heads;
+    BodyFrames body;
+    HeadFrames head;
     Poses poses;
     WalkerSfx sfx;
 };

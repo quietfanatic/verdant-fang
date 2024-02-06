@@ -16,7 +16,7 @@ void Verdant::Resident_before_step () {
      // start at 1.
     if (state == WS::Attack && anim_phase == 1 && anim_timer == 1) {
         fang.set_room(room);
-        Vec offset = data->bodies.attack[1].weapon;
+        Vec offset = data->body.attack[1].weapon;
         if (left) offset.x = -offset.x;
         fang.pos = pos + offset;
     }
@@ -30,7 +30,7 @@ void Verdant::Fang::Resident_collide (Resident& other) {
 
 void Verdant::fang_collide (Resident& other) {
     expect(other.layers_2 & Layers::Fang_Block);
-    data->sfx.hit_solid.play();
+    data->sfx.hit_solid->play();
     if (left) {
         vel.x += 1;
         if (vel.x < 0.5) vel.x = 0.5;

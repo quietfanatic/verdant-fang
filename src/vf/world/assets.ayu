@@ -1,7 +1,18 @@
 [ayu::Document {
-    actors_img: [glow::FileImage { source:actors.png }]
-    cave_img: [glow::FileImage { source:cave.png }]
+    actors_img: [glow::FileImage { source:assets/actors.png }]
+    cave_img: [glow::FileImage { source:assets/cave.png }]
     cave_tex: [glow::PixelTexture {
         image: #/cave_img+1
     }]
+     -- For some reason, having these as mp3s breaks SDL2_mixer.  Perhaps it
+     -- can't play mp3 files that are too short?
+    step0: [vf::Sound { source:assets/step0.wav channel:0 volume:0.5 }]
+    step1: [vf::Sound { source:assets/step0.wav channel:0 volume:0.5 }]
+    step2: [vf::Sound { source:assets/step0.wav channel:0 volume:0.5 }]
+    step3: [vf::Sound { source:assets/step0.wav channel:0 volume:0.5 }]
+    step4: [vf::Sound { source:assets/step0.wav channel:0 volume:0.5 }]
+    land: [vf::Sound { source:assets/land.mp3 channel:0 volume:0.5 }]
+    fwssh: [vf::Sound { source:assets/fwssh.mp3 channel:1 }]
+     -- temp
+    hit_solid: [vf::Sound { source:assets/land.mp3 channel:1 }]
 }]
