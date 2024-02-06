@@ -15,4 +15,6 @@
     fwssh: [vf::Sound { source:assets/fwssh.mp3 channel:1 }]
      -- temp
     hit_solid: [vf::Sound { source:assets/land.mp3 channel:1 }]
+    stab: [vf::Sound { source:assets/land.mp3 channel:1 }]
+    slash: [vf::Sound { source:assets/land.mp3 channel:2 }]
 }]

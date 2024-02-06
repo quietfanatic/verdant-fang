@@ -10,7 +10,8 @@
     player: [vf::Player { }]
     monstermind: [vf::MonsterMind {
         sight_dist: 120
-        attack_dist: 34
+        attack_dist: 32
+        social_dist: 40
     }]
     start: [vf::Room { }]
     bg: [vf::Scenery {

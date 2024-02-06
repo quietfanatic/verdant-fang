@@ -1,6 +1,7 @@
 [vf::WalkerData {
     phys: {
         bounds: [-8 0 8 30]
+        weapon_bounds: [-3 -4 3 16]
         ground_acc: 0.25
         ground_max: 2.0
         ground_dec: 0.3
@@ -15,6 +16,7 @@
         drop_duration: 6
         land_sequence: [4 4]
         attack_sequence: [8 8 8 200]
+        dead_sequence: [8 120]
         jump_crouch_lift: 4
         hold_buffer: 6
         walk_cycle_dist: 16
@@ -43,7 +45,7 @@
         land: [[49 71] [-13 0 19 34] [3 22]]
         attack: [
             [[72 0] [-13 0 10 35] [1 25]]
-            [[13 0] [-8 0 26 35] [7 22] [28 19]]
+            [[13 0] [-8 0 26 35] [7 22] [22 8]]
             [[112 0] [-8 0 26 35] [7 22]]
         ]
     }
@@ -92,6 +94,11 @@
             [#/body/attack+2 #/head/down]
             [#/body/attack+0 #/head/neutral]
         ]
+        damage: [#/body/land #/head/fall+0]
+        dead: [
+            [#/body/land #/head/fall+0]
+            [#/body/crouch #/head/neutral]
+        ]
     }
     sfx: {
         step: [
@@ -104,5 +111,6 @@
         land: assets.ayu#/land+1
         attack: assets.ayu#/fwssh+1
         hit_solid: assets.ayu#/hit_solid+1
+        hit_soft: assets.ayu#/slash+1
     }
 }]

@@ -14,6 +14,7 @@ enum class WalkerState {
     Crouch,
     Land,
     Attack,
+    Dead,
 };
 using WS = WalkerState;
 
@@ -51,10 +52,13 @@ struct Poses {
     Pose jump [4];
     Pose land [2];
     Pose attack [4];
+    Pose damage;
+    Pose dead [2];
 };
 
 struct WalkerPhys {
     Rect bounds;
+    Rect weapon_bounds;
     float ground_acc;
     float ground_max;
     float ground_dec;
@@ -70,6 +74,7 @@ struct WalkerPhys {
     uint8 jump_crouch_lift;
     uint8 land_sequence [2];
     uint8 attack_sequence [4];
+    uint8 dead_sequence [2];
     uint8 hold_buffer;
      // For animation
     float walk_cycle_dist;
@@ -83,6 +88,7 @@ struct WalkerSfx {
     Sound* land;
     Sound* attack;
     Sound* hit_solid;
+    Sound* hit_soft;
 };
 
 struct WalkerData {
@@ -104,6 +110,8 @@ struct Walker : Resident {
     uint8 anim_phase = 0;
     uint32 anim_timer = 0;
     uint32 drop_timer = 0;
+     // Counts down
+    uint32 freeze_frames = 0;
      // More gravity a few frames after releasing jump
      // For animations
     float walk_start_x = GNAN;
@@ -112,6 +120,13 @@ struct Walker : Resident {
     Block* floor = null;
      // Temporary
     Block* new_floor;
+     // Temporary.  The attack hitbox is only active for one frame, and will be
+     // deactivated before the frame is over, leaving no serializable state.
+    struct Weapon : Resident {
+        Weapon ();
+        void Resident_collide (Resident&) override;
+    };
+    Weapon weapon;
 
     Walker ();
 
@@ -120,7 +135,9 @@ struct Walker : Resident {
     uint8 jump_frame ();
 
     void Resident_before_step ();
-    void Resident_collide (Resident& other) override;
+    void Resident_collide (Resident&) override;
+     // If you override, supercall.
+    virtual void Walker_on_weapon_collide (Resident&);
     void Resident_after_step () override;
     void Resident_draw () override;
 };

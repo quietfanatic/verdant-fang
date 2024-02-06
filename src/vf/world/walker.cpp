@@ -9,6 +9,12 @@ namespace vf {
 
 Walker::Walker () {
     layers_1 |= Layers::Walker_Block;
+    layers_2 |= Layers::Weapon_Walker;
+}
+
+Walker::Weapon::Weapon () {
+    layers_1 |= Layers::Weapon_Block;
+    layers_1 |= Layers::Weapon_Walker;
 }
 
 void Walker::set_state (WalkerState st) {
@@ -44,14 +50,27 @@ uint8 Walker::jump_frame () {
 
 void Walker::Resident_before_step () {
     auto& phys = data->phys;
-    bounds = phys.bounds;
+
+     // Do nothing if we're frozen
+    if (freeze_frames) {
+        freeze_frames -= 1;
+         // Kinda dumb way to disable collision but whatever
+        bounds = GNAN;
+        return;
+    }
+    else {
+        bounds = phys.bounds;
+    }
+
      // Read controls.
     Controls controls;
     if (mind) controls = mind->Mind_think(*this);
+
      // Advance animations and do state-dependent things
     expect(anim_timer < 255);
     bool occupied = false;
     bool interruptable = false;
+    bool do_attack = false;
     switch (state) {
         case WS::Neutral: break;
         case WS::Crouch: break;
@@ -92,11 +111,26 @@ void Walker::Resident_before_step () {
                     }
                     occupied = true; break;
                 }
-                case 1: case 2: occupied = true; break;
+                case 1: {
+                    if (anim_timer == 1) do_attack = true;
+                    occupied = true; break;
+                }
+                case 2: occupied = true; break;
                 case 3: interruptable = true; break;
                 case 4: set_state(WS::Neutral); break;
             }
             break;
+        }
+        case WS::Dead: {
+            expect(anim_phase < 3);
+            if (anim_phase < 2) {
+                anim_timer += 1;
+                if (anim_timer > phys.dead_sequence[anim_phase]) {
+                    anim_phase += 1;
+                    anim_timer = 0;
+                }
+            }
+            occupied = true; break;
         }
         default: never();
     }
@@ -206,6 +240,7 @@ void Walker::Resident_before_step () {
            : phys.gravity_fall;
 
     auto walk_frame_before = walk_frame();
+
      // Apply velocity
     pos += vel;
 
@@ -218,51 +253,96 @@ void Walker::Resident_before_step () {
             data->sfx.step[i]->play();
         }
     }
+
+     // Set up attack hitbox.
+    if (do_attack) {
+        weapon.set_room(room);
+        weapon.bounds = phys.weapon_bounds;
+        Vec offset = data->body.attack[1].weapon;
+        if (left) {
+            offset.x = -offset.x;
+            weapon.bounds *= Vec(-1, 1);
+        }
+        weapon.pos = pos + offset;
+    }
     new_floor = null;
 }
 
 void Walker::Resident_collide (Resident& other) {
-    expect(other.layers_2 & Layers::Walker_Block);
-    auto& block = static_cast<Block&>(other);
+    if (other.layers_2 & Layers::Walker_Block) {
+        auto& block = static_cast<Block&>(other);
 
-    Rect here = bounds + pos;
-    Rect there = block.bounds + block.pos;
-    Rect overlap = here & there;
-    expect(proper(overlap));
-    if (height(overlap) <= width(overlap)) {
-        if (overlap.b == here.b) {
-            pos.y += height(overlap);
-            if (vel.y < 0) vel.y = 0;
-             // Land on block
-            if (!floor && !new_floor) {
-                 // You can cheat a little and cancel the landing animation with
-                 // the end of the attack animation.
-                if (state == WS::Neutral) set_state(WS::Land);
-                data->sfx.land->play();
-                walk_start_x = pos.x;
+        Rect here = bounds + pos;
+        Rect there = block.bounds + block.pos;
+        Rect overlap = here & there;
+        expect(proper(overlap));
+        if (height(overlap) <= width(overlap)) {
+            if (overlap.b == here.b) {
+                pos.y += height(overlap);
+                if (vel.y < 0) vel.y = 0;
+                 // Land on block
+                if (!floor && !new_floor) {
+                     // You can cheat a little and cancel the landing animation with
+                     // the end of the attack animation.
+                    if (state == WS::Neutral) set_state(WS::Land);
+                    data->sfx.land->play();
+                    walk_start_x = pos.x;
+                }
+                new_floor = &block;
             }
-            new_floor = &block;
+            else if (overlap.t == here.t) {
+                pos.y -= height(overlap);
+                if (vel.y > 0) vel.y = 0;
+            }
+            else never();
         }
-        else if (overlap.t == here.t) {
-            pos.y -= height(overlap);
-            if (vel.y > 0) vel.y = 0;
+        else {
+            if (overlap.l == here.l) {
+                pos.x += width(overlap);
+                if (vel.x < 0) vel.x = 0;
+            }
+            else if (overlap.r == here.r) {
+                pos.x -= width(overlap);
+                if (vel.x > 0) vel.x = 0;
+            }
+            else never();
         }
-        else never();
     }
-    else {
-        if (overlap.l == here.l) {
-            pos.x += width(overlap);
-            if (vel.x < 0) vel.x = 0;
+}
+
+void Walker::Weapon::Resident_collide (Resident& other) {
+     // Horrible offset jankery just to avoid storing a pointer
+    usize offset = (char*)&((Walker*)this)->weapon - (char*)this;
+    auto wielder = (Walker*)((char*)this - offset);
+    wielder->Walker_on_weapon_collide(other);
+}
+
+void Walker::Walker_on_weapon_collide (Resident& other) {
+    if (other.layers_2 & Layers::Weapon_Block) {
+        data->sfx.hit_solid->play();
+        if (left) {
+            vel.x += 1;
+            if (vel.x < 0.5) vel.x = 0.5;
         }
-        else if (overlap.r == here.r) {
-            pos.x -= width(overlap);
-            if (vel.x > 0) vel.x = 0;
+        else {
+            vel.x -= 1;
+            if (vel.x > -0.5) vel.x = -0.5;
         }
-        else never();
+    }
+    if (other.layers_2 & Layers::Weapon_Walker) {
+        auto& victim = static_cast<Walker&>(other);
+        if (victim.state != WS::Dead) {
+            freeze_frames = 20;
+            victim.freeze_frames = 20;
+            victim.set_state(WS::Dead);
+            data->sfx.hit_soft->play();
+        }
     }
 }
 
 void Walker::Resident_after_step () {
+    if (freeze_frames) return;
+    weapon.set_room(null);
     floor = new_floor;
     new_floor = null;
 }
@@ -300,6 +380,17 @@ void Walker::Resident_draw () {
              // If falling, use head from non-attacking poses
             if (!floor) {
                 pose.head = poses.jump[jump_frame()].head;
+            }
+            break;
+        }
+        case WS::Dead: {
+            if (freeze_frames) {
+                pose = poses.damage;
+            }
+            else switch (anim_phase) {
+                case 0: pose = poses.dead[0]; break;
+                case 1: case 2: pose = poses.dead[1]; break;
+                default: never();
             }
             break;
         }
@@ -362,13 +453,16 @@ AYU_DESCRIBE(vf::Poses,
         attr("walk", &Poses::walk),
         attr("jump", &Poses::jump),
         attr("land", &Poses::land),
-        attr("attack", &Poses::attack)
+        attr("attack", &Poses::attack),
+        attr("damage", &Poses::damage),
+        attr("dead", &Poses::dead)
     )
 )
 
 AYU_DESCRIBE(vf::WalkerPhys,
     attrs(
         attr("bounds", &WalkerPhys::bounds),
+        attr("weapon_bounds", &WalkerPhys::weapon_bounds),
         attr("ground_acc", &WalkerPhys::ground_acc),
         attr("ground_max", &WalkerPhys::ground_max),
         attr("ground_dec", &WalkerPhys::ground_dec),
@@ -384,6 +478,7 @@ AYU_DESCRIBE(vf::WalkerPhys,
         attr("jump_crouch_lift", &WalkerPhys::jump_crouch_lift),
         attr("land_sequence", &WalkerPhys::land_sequence),
         attr("attack_sequence", &WalkerPhys::attack_sequence),
+        attr("dead_sequence", &WalkerPhys::dead_sequence),
         attr("hold_buffer", &WalkerPhys::hold_buffer),
         attr("walk_cycle_dist", &WalkerPhys::walk_cycle_dist),
         attr("fall_cycle_dist", &WalkerPhys::fall_cycle_dist),
@@ -397,7 +492,8 @@ AYU_DESCRIBE(vf::WalkerSfx,
         attr("step", &WalkerSfx::step),
         attr("land", &WalkerSfx::land),
         attr("attack", &WalkerSfx::attack),
-        attr("hit_solid", &WalkerSfx::hit_solid)
+        attr("hit_solid", &WalkerSfx::hit_solid),
+        attr("hit_soft", &WalkerSfx::hit_soft)
     )
 )
 
@@ -433,6 +529,7 @@ AYU_DESCRIBE(vf::Walker,
         attr("anim_phase", &Walker::anim_phase, optional),
         attr("anim_timer", &Walker::anim_timer, optional),
         attr("drop_timer", &Walker::drop_timer, optional),
+        attr("freeze_frames", &Walker::freeze_frames, optional),
         attr("walk_start_x", &Walker::walk_start_x, optional),
         attr("fall_start_x", &Walker::walk_start_x, optional),
         attr("floor", &Walker::floor, optional)
