@@ -9,7 +9,9 @@ namespace vf {
 
 Walker::Walker () {
     layers_1 |= Layers::Walker_Block;
+    layers_1 |= Layers::Walker_Walker;
     layers_2 |= Layers::Weapon_Walker;
+    layers_2 |= Layers::Walker_Walker;
 }
 
 Walker::Weapon::Weapon () {
@@ -306,6 +308,16 @@ void Walker::Resident_collide (Resident& other) {
                 if (vel.x > 0) vel.x = 0;
             }
             else never();
+        }
+    }
+    else if (other.layers_2 & Layers::Walker_Walker) {
+        if (pos.x < other.pos.x) {
+            pos.x -= 1;
+            other.pos.x += 1;
+        }
+        else {
+            pos.x += 1;
+            other.pos.x -= 1;
         }
     }
 }
