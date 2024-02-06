@@ -31,6 +31,8 @@ struct BodyFrames {
     BodyFrame fall1;
     BodyFrame land;
     BodyFrame attack [3];
+    BodyFrame damage;
+    BodyFrame dead [2];
 };
 
 struct HeadFrames {
@@ -39,6 +41,8 @@ struct HeadFrames {
     Frame fall [2];
     Frame back;
     Frame down;
+    Frame damage;
+    Frame dead;
 };
 
 struct Pose {
@@ -72,11 +76,12 @@ struct WalkerPhys {
     float gravity_fall;
     float gravity_drop;
     uint8 drop_duration;
-    uint8 jump_crouch_lift;
     uint8 land_sequence [2];
     uint8 attack_sequence [4];
     uint8 hit_sequence;
     uint8 dead_sequence [3];
+    uint8 jump_crouch_lift;
+    uint8 dead_floor_lift;
     uint8 hold_buffer;
      // For animation
     float walk_cycle_dist;

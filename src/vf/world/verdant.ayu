@@ -19,6 +19,7 @@
         hit_sequence: 20
         dead_sequence: [20 8 240]
         jump_crouch_lift: 4
+        dead_floor_lift: 9
         hold_buffer: 6
         walk_cycle_dist: 16
         fall_cycle_dist: 16
@@ -28,7 +29,7 @@
     body_tex: {
         image: assets.ayu#/actors_img+1
          -- y down
-        bounds: [110 106 317 206]
+        bounds: [110 106 358 206]
     }
     body: {
          -- y up
@@ -49,6 +50,11 @@
             [[13 0] [-8 0 36 28] [4 22] [28 19]]
             [[112 0] [-20 0 20 28] [0 23]]
         ]
+        damage: [[150 0] [-15 0 17 24] [0 23]]
+        dead: [
+            [[185 9] [-13 -5 22 14] [-8 14]]
+            [[225 11] [-14 0 23 7] [-13 3]]
+        ]
     }
     head_tex: {
         image: assets.ayu#/actors_img+1
@@ -67,6 +73,8 @@
         ]
         back: [[151 39] [-23 -13 9 10]]
         down: [[23 39] [-23 -13 9 10]]
+        damage: [[87 13] [-23 -13 9 10]]
+        dead: [[121 17] [-20 -3 0 4]]
     }
     poses: {
         stand: [#/body/stand #/head/neutral]
@@ -95,10 +103,10 @@
             [#/body/attack+2 #/head/neutral]
             [#/body/attack+0 #/head/neutral]
         ]
-        damage: [#/body/land #/head/fall+0]
+        damage: [#/body/damage #/head/damage]
         dead: [
-            [#/body/land #/head/fall+0]
-            [#/body/crouch #/head/neutral]
+            [#/body/dead+0 #/head/damage]
+            [#/body/dead+1 #/head/dead]
         ]
     }
     sfx: {

@@ -432,7 +432,9 @@ AYU_DESCRIBE(vf::BodyFrames,
         attr("walk", &BodyFrames::walk),
         attr("fall1", &BodyFrames::fall1),
         attr("land", &BodyFrames::land),
-        attr("attack", &BodyFrames::attack)
+        attr("attack", &BodyFrames::attack),
+        attr("damage", &BodyFrames::damage),
+        attr("dead", &BodyFrames::dead)
     )
 )
 
@@ -442,7 +444,9 @@ AYU_DESCRIBE(vf::HeadFrames,
         attr("wave", &HeadFrames::wave),
         attr("fall", &HeadFrames::fall),
         attr("back", &HeadFrames::back),
-        attr("down", &HeadFrames::down)
+        attr("down", &HeadFrames::down),
+        attr("damage", &HeadFrames::damage),
+        attr("dead", &HeadFrames::dead)
     )
 )
 
@@ -482,11 +486,12 @@ AYU_DESCRIBE(vf::WalkerPhys,
         attr("gravity_fall", &WalkerPhys::gravity_fall),
         attr("gravity_drop", &WalkerPhys::gravity_drop),
         attr("drop_duration", &WalkerPhys::drop_duration),
-        attr("jump_crouch_lift", &WalkerPhys::jump_crouch_lift),
         attr("land_sequence", &WalkerPhys::land_sequence),
         attr("attack_sequence", &WalkerPhys::attack_sequence),
         attr("hit_sequence", &WalkerPhys::hit_sequence),
         attr("dead_sequence", &WalkerPhys::dead_sequence),
+        attr("jump_crouch_lift", &WalkerPhys::jump_crouch_lift),
+        attr("dead_floor_lift", &WalkerPhys::dead_floor_lift),
         attr("hold_buffer", &WalkerPhys::hold_buffer),
         attr("walk_cycle_dist", &WalkerPhys::walk_cycle_dist),
         attr("fall_cycle_dist", &WalkerPhys::fall_cycle_dist),
