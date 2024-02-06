@@ -58,15 +58,16 @@ void begin_camera () {
 }
 
 void end_camera () {
+    draw_frames();
     glDisable(GL_BLEND);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(
         window_viewport.l, window_viewport.b,
         width(window_viewport), height(window_viewport)
     );
-     // By changing viewport, this will now zoom.
-    Frame frame {{0, 0}, {Vec(0, 0), camera_size}};
-    draw_frame({0, 0}, frame, world_tex);
+    draw_frame_internal(
+        {-1, -1, 1, 1}, {0, 0, 320, 180}, world_tex
+    );
 }
 
 } // vf

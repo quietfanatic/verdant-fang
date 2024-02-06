@@ -397,12 +397,13 @@ void Walker::Resident_draw () {
         default: never();
     }
     Vec scale {left ? -1 : 1, 1};
+    float z = state == WS::Dead ? 100 : 200;
     if (pose.body) {
         if (pose.head) {
             Vec head_pos = pos + pose.body->head * scale;
-            draw_frame(head_pos, *pose.head, data->head_tex, scale);
+            draw_frame(head_pos, *pose.head, data->head_tex, scale, z);
         }
-        draw_frame(pos, *pose.body, data->body_tex, scale);
+        draw_frame(pos, *pose.body, data->body_tex, scale, z);
     }
 }
 
