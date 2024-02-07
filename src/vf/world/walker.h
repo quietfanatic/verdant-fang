@@ -64,6 +64,7 @@ struct Poses {
 struct WalkerPhys {
     Rect body_box;
     Rect weapon_box;
+    Rect damage_box;
     float ground_acc;
     float ground_max;
     float ground_dec;
@@ -126,8 +127,8 @@ struct Walker : Resident {
     Resident* floor = null;
      // Temporary
     Resident* new_floor;
-     // body, weapon
-    Hitbox hbs [2];
+     // body, damage, weapon
+    Hitbox hbs [3];
 
     enum class Business {
         Free,

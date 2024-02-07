@@ -2,6 +2,7 @@
     phys: {
         body_box: [-8 0 8 30]
         weapon_box: [-6 -4 3 16]
+        damage_box: [-3 12 3 32]
         ground_acc: 0.25
         ground_max: 2.0
         ground_dec: 0.3
@@ -50,7 +51,7 @@
             [[13 0] [-8 0 26 35] [7 22] [22 8]]
             [[112 0] [-8 0 26 35] [7 22]]
         ]
-        damage: [[150 0] [-10 0 8 25] [2 25]]
+        damage: [[150 0] [-10 0 8 25] [1 25]]
         dead: [
             [[185 10] [-15 -6 10 15] [-8 15]]
             [[225 11] [-17 0 11 7] [-16 4]]
@@ -73,7 +74,7 @@
         ]
         back: [[9 26] [-9 -3 9 13]]
         down: [[9 6] [-4 -6 9 10]]
-        damage: [[30 26] [-9 -3 9 13]]
+        damage: [[32 25] [-9 -3 9 13]]
         dead: [[36 10] [-11 -9 4 6]]
     }
     poses: {
@@ -120,6 +121,6 @@
         land: assets.ayu#/tkk+1
         attack: assets.ayu#/shok+1
         hit_solid: assets.ayu#/hit_solid+1
-        hit_soft: assets.ayu#/kkkkk+1
+        hit_soft: assets.ayu#/kkkww+1
     }
 }]

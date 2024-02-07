@@ -7,7 +7,9 @@ namespace Z {
     constexpr float BG = -100;
     constexpr float Dead = 0;
     constexpr float Blocks = 50;
+    constexpr float Damage = 80;
     constexpr float Alive = 100;
+    constexpr float DamageOverlap = 120;
 }
 
 namespace Types {

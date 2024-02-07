@@ -21,6 +21,6 @@
     hit_solid: [vf::Sound { source:assets/tkk.mp3 channel:1 }]
     doof: [vf::Sound { source:assets/doof.mp3 channel:1 }]
     shluk: [vf::Sound { source:assets/shluk.mp3 channel:1 }]
-    shok: [vf::Sound { source:assets/shok.mp3 channel:2 }]
-    kkkkk: [vf::Sound { source:assets/kkkkk.mp3 channel:2 }]
+    shok: [vf::Sound { source:assets/shok.mp3 channel:2 volume:0.7 }]
+    kkkww: [vf::Sound { source:assets/kkkkk.mp3 channel:3 volume:0.8 }]
 }]

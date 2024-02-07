@@ -9,8 +9,9 @@ namespace vf {
 Walker::Walker () {
     types |= Types::Walker;
     hbs[0].layers_1 = Layers::Walker_Block | Layers::Walker_Walker;
-    hbs[0].layers_2 = Layers::Weapon_Walker | Layers::Walker_Walker;
-    hbs[1].layers_1 = Layers::Weapon_Block | Layers::Weapon_Walker;
+    hbs[0].layers_2 = Layers::Walker_Walker;
+    hbs[1].layers_2 = Layers::Weapon_Walker;
+    hbs[2].layers_1 = Layers::Weapon_Block | Layers::Weapon_Walker;
 }
 
 void Walker::set_state (WalkerState st) {
@@ -281,12 +282,14 @@ void Walker::Resident_before_step () {
      // Set up hitboxes
     hbs[0].box = phys.body_box;
     if (left) hbs[0].fliph();
+    hbs[1].box = phys.damage_box;
+    if (left) hbs[1].fliph();
     if (do_attack) {
-        hbs[1].box = phys.weapon_box + data->body.attack[1].weapon;
-        if (left) hbs[1].fliph();
-        hitboxes = Slice<Hitbox>(&hbs[0], 2);
+        hbs[2].box = phys.weapon_box + data->body.attack[1].weapon;
+        if (left) hbs[2].fliph();
+        hitboxes = Slice<Hitbox>(&hbs[0], 3);
     }
-    else hitboxes = Slice<Hitbox>(&hbs[0], 1);
+    else hitboxes = Slice<Hitbox>(&hbs[0], 2);
 
      // Prepare for collision detection
     new_floor = null;
@@ -344,7 +347,7 @@ void Walker::Resident_on_collide (
             o.pos.x += diff;
         }
     }
-    else if (&hb == &hbs[1] && o_hb.layers_2 & Layers::Weapon_Block) {
+    else if (&hb == &hbs[2] && o_hb.layers_2 & Layers::Weapon_Block) {
         data->sfx.hit_solid->play();
         if (left) {
             vel.x += 1;
@@ -355,7 +358,7 @@ void Walker::Resident_on_collide (
             if (vel.x > -0.5) vel.x = -0.5;
         }
     }
-    else if (&hb == &hbs[1] && o_hb.layers_2 & Layers::Weapon_Walker) {
+    else if (&hb == &hbs[2] && o_hb.layers_2 & Layers::Weapon_Walker) {
         auto& victim = static_cast<Walker&>(o);
         if (victim.state != WS::Hit && victim.state != WS::Dead) {
             set_state(WS::Hit);
@@ -374,6 +377,8 @@ void Walker::Resident_after_step () {
 
 void Walker::Resident_draw () {
     auto& poses = data->poses;
+    bool damage_overlap = false;
+    float z = Z::Alive;
     Pose pose;
     switch (state) {
         case WS::Neutral: {
@@ -416,8 +421,13 @@ void Walker::Resident_draw () {
             break;
         }
         case WS::Dead: {
+            z = Z::Dead;
             switch (anim_phase) {
-                case 0: pose = poses.damage; break;
+                case 0: {
+                    damage_overlap = true;
+                    z = Z::Damage;
+                    pose = poses.damage; break;
+                }
                 case 1: pose = poses.dead[0]; break;
                 case 2: case 3: pose = poses.dead[1]; break;
                 default: never();
@@ -427,13 +437,33 @@ void Walker::Resident_draw () {
         default: never();
     }
     Vec scale {left ? -1 : 1, 1};
-    float z = state == WS::Dead ? Z::Dead : Z::Alive;
     if (pose.body) {
+        Vec head_offset = pose.body->head * scale;
         if (pose.head) {
-            Vec head_pos = pos + pose.body->head * scale;
-            draw_frame(head_pos, *pose.head, data->head_tex, scale, z);
+            draw_frame(pos + head_offset, *pose.head, data->head_tex, scale, z);
         }
         draw_frame(pos, *pose.body, data->body_tex, scale, z);
+        if (damage_overlap) {
+            Rect damage_box = data->phys.damage_box;
+             // Push the overlap box back so it looks like its being stabbed in
+             // the middle.  (Don't flip this, it'll be flipped in draw_frame).
+            damage_box -= Vec(2, 0);
+             // Extend infinitely vertically to keep it from looking like
+             // there's a square cut out.
+            damage_box.b = -GINF; damage_box.t = GINF;
+            Frame overlap = *pose.body;
+            overlap.bounds &= damage_box;
+            draw_frame(pos, overlap, data->body_tex, scale, Z::DamageOverlap);
+            if (pose.head) {
+                overlap = *pose.head;
+                 // Make sure to cancel the addition of head_offset to pos
+                overlap.bounds &= damage_box - head_offset;
+                draw_frame(
+                    pos + head_offset, overlap, data->head_tex, scale,
+                    Z::DamageOverlap - 1 // Keep head behind body
+                );
+            }
+        }
     }
 }
 
@@ -498,6 +528,7 @@ AYU_DESCRIBE(vf::WalkerPhys,
     attrs(
         attr("body_box", &WalkerPhys::body_box),
         attr("weapon_box", &WalkerPhys::weapon_box),
+        attr("damage_box", &WalkerPhys::damage_box),
         attr("ground_acc", &WalkerPhys::ground_acc),
         attr("ground_max", &WalkerPhys::ground_max),
         attr("ground_dec", &WalkerPhys::ground_dec),
