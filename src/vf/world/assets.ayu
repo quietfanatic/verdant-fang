@@ -2,10 +2,10 @@
     actors_img: [glow::FileImage { source:assets/actors.png }]
     cave_img: [glow::FileImage { source:assets/cave.png }]
     cave_tex: [glow::PixelTexture {
-        image: #/cave_img+1
+        image: #cave_img
     }]
     block_tex: [glow::PixelTexture {
-        image: #/actors_img+1
+        image: #actors_img
         bounds: [3 3 35 35]
     }]
      -- For some reason, having these as mp3s breaks SDL2_mixer.  Perhaps it
@@ -20,7 +20,7 @@
      -- temp
     hit_solid: [vf::Sound { source:assets/tkk.mp3 channel:1 }]
     doof: [vf::Sound { source:assets/doof.mp3 channel:1 }]
-    shluk: [vf::Sound { source:assets/shluk.mp3 channel:1 }]
+    shluk: [vf::Sound { source:assets/shluk.mp3 channel:1 volume:0.6 }]
     shok: [vf::Sound { source:assets/shok.mp3 channel:2 volume:0.7 }]
     kkkww: [vf::Sound { source:assets/kkkkk.mp3 channel:3 volume:0.8 }]
 }]

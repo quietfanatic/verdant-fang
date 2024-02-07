@@ -30,7 +30,7 @@ void main () {
 
 [ayu::Document {
     program: [vf::FrameProgram {
-        shaders: [#/vertex+1 #/fragment+1]
+        shaders: [#vertex #fragment]
     }]
     vertex: [glow::Shader {
         type: GL_VERTEX_SHADER

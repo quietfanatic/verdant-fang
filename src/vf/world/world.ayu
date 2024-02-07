@@ -15,12 +15,12 @@
     }]
     start: [vf::Room { }]
     bg: [vf::Scenery {
-        room: #/start+1
-        tex: assets.ayu#/cave_tex+1
+        room: #start
+        tex: assets.ayu#cave_tex
         bounds: [0 0 320 180]
     }]
     start_blocks: [vf::Blocks {
-        room: #/start+1
+        room: #start
         blocks: [
             [-16 160] [16 160] [48 160] [80 160] [112 160] [144 160] [176 160] [208 160] [240 160] [272 160] [304 160]
             [-16 128] [16 128] [272 128] [304 128]
@@ -29,17 +29,17 @@
         ]
     }]
     verdant: [vf::Verdant {
-        data: verdant.ayu#/data+1
-        mind: #/player+1
-        room: #/start+1
+        data: verdant.ayu#data
+        mind: #player
+        room: #start
         pos: [*b6 *b2]
-        floor: #/start_blocks+1
+        floor: #start_blocks
     }]
     monster: [vf::Monster {
-        data: monster.ayu#/data+1
-        mind: #/monstermind+1
-        room: #/start+1
+        data: monster.ayu#data
+        mind: #monstermind
+        room: #start
         pos: [*b16 *b2]
-        floor: #/start_blocks+1
+        floor: #start_blocks
     }]
 }]

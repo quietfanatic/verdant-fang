@@ -1,6 +1,6 @@
 [vf::DecalData {
     stab_tex: {
-        image: assets.ayu#/actors_img+1
+        image: assets.ayu#actors_img
         bounds: [337 323 393 356]
     }
     stab_0: [
