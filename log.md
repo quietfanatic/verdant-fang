@@ -46,3 +46,11 @@
   again.
 - Planned work for tomorrow: Blood!  And maybe room transitions or music or more
   sound effects.
+#####2024-02-06 T
+- Added damage and dead frames for player and monster.
+- Made sound effects for player and monster damage.
+- Implemented a bunch of logic around damage and dying.  Killing an enemy feels
+  really stimulating already.
+- Started drawing art for blood and started some logic around displaying it, but
+  haven't finished it yet.
+- Planned work for tomorrow: Actual blood!
