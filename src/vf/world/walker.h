@@ -128,12 +128,13 @@ struct Walker : Resident {
     WalkerState state = WS::Neutral;
     uint8 anim_phase = 0;
     uint32 anim_timer = 0;
-    uint32 drop_timer = 0;
      // More gravity a few frames after releasing jump
+    uint32 drop_timer = 0;
      // For animations
     float walk_start_x = GNAN;
     float fall_start_y = GNAN;
-    DecalType decals [max_decals];
+    DecalType decal_type = {};
+    uint8 decal_index = -1;
 
     Resident* floor = null;
      // Temporary
@@ -160,6 +161,9 @@ struct Walker : Resident {
     void Resident_on_collide (const Hitbox&, Resident&, const Hitbox&) override;
     void Resident_after_step () override;
     void Resident_draw () override;
+     // Customization points.
+     // You can supercall this or not.
+    virtual void Walker_on_hit (const Hitbox&, Walker&, const Hitbox&);
 };
 
 } // vf

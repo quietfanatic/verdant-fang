@@ -373,11 +373,14 @@ void Walker::Resident_on_collide (
         }
     }
     else if (&hb == &hbs[2] && o_hb.layers_2 & Layers::Weapon_Walker) {
-        auto& victim = static_cast<Walker&>(o);
-        set_state(WS::Hit);
-        victim.set_state(WS::Damage);
-        data->sfx.hit_soft->play();
+        Walker_on_hit(hb, static_cast<Walker&>(o), o_hb);
     }
+}
+
+void Walker::Walker_on_hit (const Hitbox&, Walker& victim, const Hitbox&) {
+    set_state(WS::Hit);
+    victim.set_state(WS::Damage);
+    data->sfx.hit_soft->play();
 }
 
 void Walker::Resident_after_step () {
@@ -459,20 +462,18 @@ void Walker::Resident_draw () {
             draw_frame(pos + head_offset, *pose.head, data->head_tex, scale, z);
         }
         draw_frame(pos, *pose.body, data->body_tex, scale, z);
-        if (damage_overlap) {
-             // Push the overlap box back so it looks like its being stabbed in
-             // the middle.  Right now everything is assuming the entity is
-             // facing right.  Flipping will be done in draw_frame with scale.
-            float front = data->phys.damage_box.r
-                        - data->phys.damage_overlap_bias;
+        if (damage_overlap && decal_index < max_decals) {
+            float cutoff = pose.body->decals[decal_index].x;
             Frame overlap = *pose.body;
-            if (overlap.bounds.r > front) overlap.bounds.r = front;
+            if (overlap.bounds.r > cutoff) overlap.bounds.r = cutoff;
             draw_frame(pos, overlap, data->body_tex, scale, Z::DamageOverlap);
             if (pose.head) {
                 overlap = *pose.head;
                  // Make sure to cancel the addition of head_offset to pos
-                front -= head_offset.x;
-                if (overlap.bounds.r > front) overlap.bounds.r = front;
+                float head_cutoff = cutoff - head_offset.x;
+                if (overlap.bounds.r > head_cutoff) {
+                    overlap.bounds.r = head_cutoff;
+                }
                 draw_frame(
                     pos + head_offset, overlap, data->head_tex, scale,
                     Z::DamageOverlap - 1 // Keep head behind body

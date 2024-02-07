@@ -19,6 +19,8 @@ struct Verdant : Walker {
     void Resident_on_exit () override {
         main_character = null;
     }
+
+    void Walker_on_hit (const Hitbox&, Walker&, const Hitbox&);
 };
 
 } // vf
