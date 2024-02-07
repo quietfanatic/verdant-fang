@@ -300,7 +300,9 @@ void Walker::Resident_on_collide (
         Rect there = o_hb.box + o.pos;
         Rect overlap = here & there;
         expect(proper(overlap));
-        if (height(overlap) <= width(overlap)) {
+         // Bias toward vertical contact, mainly to avoid stubbing toes on
+         // boundaries between blocks
+        if (height(overlap) - 2 <= width(overlap)) {
             if (overlap.b == here.b) {
                 pos.y += height(overlap);
                 if (vel.y < 0) vel.y = 0;

@@ -117,9 +117,9 @@
             assets.ayu#/step3+1
             assets.ayu#/step4+1
         ]
-        land: assets.ayu#/land+1
-        attack: assets.ayu#/fwssh+1
+        land: assets.ayu#/tkk+1
+        attack: assets.ayu#/shok+1
         hit_solid: assets.ayu#/hit_solid+1
-        hit_soft: assets.ayu#/slash+1
+        hit_soft: assets.ayu#/kkkkk+1
     }
 }]
