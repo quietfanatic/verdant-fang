@@ -29,7 +29,7 @@
     body_tex: {
         image: assets.ayu#/actors_img+1
          -- y down
-        bounds: [171 214 377 314]
+        bounds: [171 214 411 314]
     }
     body: {
          -- y up
@@ -50,15 +50,15 @@
             [[13 0] [-8 0 26 35] [7 22] [22 8]]
             [[112 0] [-8 0 26 35] [7 22]]
         ]
-        damage: [[0 0] [0 0 0 0] [0 0]]
+        damage: [[150 0] [-10 0 8 25] [2 25]]
         dead: [
-            [[0 0] [0 0 0 0] [0 0]]
-            [[0 0] [0 0 0 0] [0 0]]
+            [[185 10] [-15 -6 10 15] [-8 15]]
+            [[225 11] [-17 0 11 7] [-16 4]]
         ]
     }
     head_tex: {
         image: assets.ayu#/actors_img+1
-        bounds: [129 259 147 298]
+        bounds: [129 259 170 298]
     }
     head: {
         neutral: [[9 26] [-9 -3 9 13]]
@@ -73,8 +73,8 @@
         ]
         back: [[9 26] [-9 -3 9 13]]
         down: [[9 6] [-4 -6 9 10]]
-        damage: [[0 0] [0 0 0 0]]
-        dead: [[0 0] [0 0 0 0]]
+        damage: [[30 26] [-9 -3 9 13]]
+        dead: [[36 10] [-11 -9 4 6]]
     }
     poses: {
         stand: [#/body/stand #/head/neutral]
@@ -103,10 +103,10 @@
             [#/body/attack+2 #/head/down]
             [#/body/attack+0 #/head/neutral]
         ]
-        damage: [#/body/land #/head/fall+0]
+        damage: [#/body/damage #/head/damage]
         dead: [
-            [#/body/land #/head/fall+0]
-            [#/body/crouch #/head/neutral]
+            [#/body/dead+0 #/head/damage]
+            [#/body/dead+1 #/head/dead]
         ]
     }
     sfx: {
