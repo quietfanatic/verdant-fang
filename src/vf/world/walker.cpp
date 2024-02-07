@@ -481,6 +481,7 @@ void Walker::Resident_draw () {
             }
         }
     }
+    draw_decal(*this, pose);
 }
 
 

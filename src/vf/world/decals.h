@@ -21,6 +21,6 @@ struct DecalData {
 
 struct Walker;
 struct Pose;
-void draw_decals (const Walker&, const Pose&);
+void draw_decal (const Walker&, const Pose&);
 
 } // vf
