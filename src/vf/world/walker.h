@@ -28,9 +28,14 @@ struct BodyFrame : Frame {
     uint8 decal_dirs [4] = {0, 0, 0, 0};
 };
 
+struct WeaponFrame : Frame {
+    Rect hitbox;
+};
+
 struct Pose {
-    BodyFrame* body = null;;
+    BodyFrame* body = null;
     Frame* head = null;
+    WeaponFrame* weapon = null;
 };
 
 struct WalkerPoses {
@@ -46,7 +51,6 @@ struct WalkerPoses {
 
 struct WalkerPhys {
     Rect body_box;
-    Rect weapon_box;
     Rect damage_box;
     float ground_acc;
     float ground_max;
@@ -91,6 +95,7 @@ struct WalkerData {
     WalkerPhys phys;
     glow::PixelTexture* body_tex;
     glow::PixelTexture* head_tex;
+    glow::PixelTexture* weapon_tex;
     DecalData* decals;
     WalkerPoses* poses;
     WalkerSfx sfx;

@@ -29,7 +29,8 @@ void Verdant::Walker_on_hit (
     victim.decal_type = DecalType::Stab;
     victim.decal_index = decal_i;
      // Snap to stab location.
-    float tip_offset = weapon_offset.x + data->phys.weapon_box.r;
+    float tip_offset = weapon_offset.x
+                     + data->poses->attack[1].weapon->hitbox.r;
     if (left) tip_offset = -tip_offset;
     float weapon_tip = pos.x + tip_offset;
     Vec decal_offset = victim_body.decals[decal_i];

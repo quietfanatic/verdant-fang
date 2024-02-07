@@ -22,13 +22,13 @@ static void draw_stab_decal (const Walker& w, const Pose& pose) {
         case WS::Damage: {
             if (w.anim_phase < 3) phase = w.anim_phase;
             else phase = 2;
-            z = Z::DamageDecal;
+            z = Z::Overlap + Z::DecalOffset;
             break;
         }
         case WS::Dead: {
             expect(w.anim_phase < 7);
             phase = 2 + w.anim_phase;
-            z = Z::DeadDecal;
+            z = Z::Dead + Z::DecalOffset;
             break;
         }
         default: never();

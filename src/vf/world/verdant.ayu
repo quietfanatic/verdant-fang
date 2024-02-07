@@ -5,73 +5,146 @@
         bounds: [110 106 358 206]
     }]
      -- y up
-    body_stand: [vf::BodyFrame [[13 69] [-13 0 19 28] [0 23]]]
-    body_crouch: [vf::BodyFrame [[84 76] [-13 0 19 24] [0 16]]]
-    body_walk0: [vf::BodyFrame [[13 35] [-13 0 19 28] [1 23]]]
-    body_walk1: [vf::BodyFrame [[48 35] [-13 0 19 28] [1 23]]]
-    body_walk2: [vf::BodyFrame [[83 36] [-13 0 19 28] [1 22]]]
-    body_walk3: [vf::BodyFrame [[118 35] [-13 0 19 28] [1 23]]]
-    body_walk4: [vf::BodyFrame [[153 35] [-13 0 19 28] [1 23]]]
-    body_walk5: [vf::BodyFrame [[188 36] [-13 0 19 28] [1 22]]]
-    body_fall1: [vf::BodyFrame [[153 69] [-13 0 19 28] [1 23]]]
-    body_land: [vf::BodyFrame [[49 71] [-13 0 19 28] [1 20]]]
-    body_preattack: [vf::BodyFrame [[72 0] [-20 0 20 28] [0 23]]]
-    body_attack: [vf::BodyFrame [[13 0] [-8 0 36 28] [4 22] [28 19]]]
-    body_postattack: [vf::BodyFrame [[112 0] [-20 0 20 28] [0 23]]]
-    body_damage: [vf::BodyFrame [[150 0] [-15 0 17 24] [0 23]]]
-    body_damagefall: [vf::BodyFrame [[185 10] [-13 -6 21 14] [-8 14]]]
-    body_dead: [vf::BodyFrame [[225 11] [-14 0 23 7] [-13 3]]]
+    body_stand: [vf::BodyFrame [
+        [13 69] [-13 0 19 28] [0 23] [-5 12]
+    ]]
+    body_crouch: [vf::BodyFrame [
+        [84 76] [-13 0 19 24] [0 16] [-6 9]
+    ]]
+    body_walk0: [vf::BodyFrame [
+        [13 35] [-13 0 19 28] [1 23] [-5 12]
+    ]]
+    body_walk1: [vf::BodyFrame [
+        [48 35] [-13 0 19 28] [1 23] [-5 12]
+    ]]
+    body_walk2: [vf::BodyFrame [
+        [83 36] [-13 0 19 28] [1 22] [-5 12]
+    ]]
+    body_walk3: [vf::BodyFrame [
+        [118 35] [-13 0 19 28] [1 23] [-5 12]
+    ]]
+    body_walk4: [vf::BodyFrame [
+        [153 35] [-13 0 19 28] [1 23] [-5 12]
+    ]]
+    body_walk5: [vf::BodyFrame [
+        [188 36] [-13 0 19 28] [1 22] [-5 12]
+    ]]
+    body_fall1: [vf::BodyFrame [
+        [153 69] [-13 0 19 28] [1 23] [-5 12]
+    ]]
+    body_land: [vf::BodyFrame [
+        [49 71] [-13 0 19 28] [1 20] [-5 10]
+    ]]
+    body_preattack: [vf::BodyFrame [
+        [72 0] [-20 0 20 28] [0 23] [-11 19]
+    ]]
+    body_attack: [vf::BodyFrame [
+        [13 0] [-8 0 36 28] [4 22] [7 19]
+    ]]
+    body_postattack: [vf::BodyFrame [
+        [112 0] [-20 0 20 28] [0 23] [-11 19]
+    ]]
+    body_damage: [vf::BodyFrame [
+        [150 0] [-15 0 17 24] [0 23] [-8 14]
+    ]]
+    body_damagefall: [vf::BodyFrame [
+        [185 10] [-13 -6 21 14] [-8 13] [-4 -4]
+    ]]
+    body_dead: [vf::BodyFrame [
+        [225 11] [-14 0 23 7] [-13 3] [-4 0]
+    ]]
     head_tex: [glow::PixelTexture {
         image: assets.ayu#actors_img
         bounds: [100 40 258 89]
     }]
-    head_neutral: [vf::Frame [[23 39] [-23 -13 9 10]]]
-    head_wave0: [vf::Frame [[55 39] [-23 -13 9 10]]]
-    head_wave1: [vf::Frame [[87 39] [-23 -13 9 10]]]
-    head_wave2: [vf::Frame [[119 39] [-23 -13 9 10]]]
-    head_fall0: [vf::Frame [[23 13] [-23 -13 9 10]]]
-    head_fall1: [vf::Frame [[55 13] [-23 -13 9 10]]]
-    head_back: [vf::Frame [[151 39] [-23 -13 9 10]]]
-    head_down: [vf::Frame [[23 39] [-23 -13 9 10]]]
-    head_damage: [vf::Frame [[87 13] [-23 -13 9 10]]]
-    head_dead: [vf::Frame [[121 17] [-20 -3 0 4]]]
+    head_neutral: [vf::Frame [
+        [23 39] [-23 -13 9 10]
+    ]]
+    head_wave0: [vf::Frame [
+        [55 39] [-23 -13 9 10]
+    ]]
+    head_wave1: [vf::Frame [
+        [87 39] [-23 -13 9 10]
+    ]]
+    head_wave2: [vf::Frame [
+        [119 39] [-23 -13 9 10]
+    ]]
+    head_fall0: [vf::Frame [
+        [23 13] [-23 -13 9 10]
+    ]]
+    head_fall1: [vf::Frame [
+        [55 13] [-23 -13 9 10]
+    ]]
+    head_back: [vf::Frame [
+        [151 39] [-23 -13 9 10]
+    ]]
+    head_down: [vf::Frame [
+        [23 39] [-23 -13 9 10]
+    ]]
+    head_damage: [vf::Frame [
+        [87 13] [-23 -13 9 10]
+    ]]
+    head_dead: [vf::Frame [
+        [121 17] [-20 -3 0 4]
+    ]]
+    fang_tex: [glow::PixelTexture {
+        image: assets.ayu#actors_img
+        bounds: [49 106 86 186]
+    }]
+    spear_neutral: [vf::WeaponFrame [
+        [10 63] [-6 -3 24 13]
+    ]]
+    spear_preattack: [vf::WeaponFrame [
+        [10 55] [-7 -1 27 1]
+    ]]
+    spear_attack: [vf::WeaponFrame [
+        [10 50] [-7 -1 27 1] [9 -1 27 1]
+    ]]
+    spear_damage: [vf::WeaponFrame [
+        [10 40] [-7 -9 25 3]
+    ]]
+    spear_damagefall: [vf::WeaponFrame [
+        [10 16] [-7 -3 26 7]
+    ]]
+    spear_dead: [vf::WeaponFrame [
+        [10 6] [-7 0 27 1]
+    ]]
     poses: [vf::WalkerPoses {
-        stand: [#body_stand #head_neutral]
-        crouch: [#body_crouch #head_neutral]
+        stand: [#body_stand #head_neutral #spear_neutral]
+        crouch: [#body_crouch #head_neutral #spear_neutral]
         walk: [
-            [#body_walk0 #head_wave0]
-            [#body_walk1 #head_wave1]
-            [#body_walk2 #head_wave2]
-            [#body_walk3 #head_wave0]
-            [#body_walk4 #head_wave1]
-            [#body_walk5 #head_wave2]
+            [#body_walk0 #head_wave0 #spear_neutral]
+            [#body_walk1 #head_wave1 #spear_neutral]
+            [#body_walk2 #head_wave2 #spear_neutral]
+            [#body_walk3 #head_wave0 #spear_neutral]
+            [#body_walk4 #head_wave1 #spear_neutral]
+            [#body_walk5 #head_wave2 #spear_neutral]
         ]
         jump: [
-            [#body_walk0 #head_neutral]
-            [#body_walk0 #head_wave2]
-            [#body_walk2 #head_fall0]
-            [#body_fall1 #head_fall1]
+            [#body_walk0 #head_neutral #spear_neutral]
+            [#body_walk0 #head_wave2 #spear_neutral]
+            [#body_walk2 #head_fall0 #spear_neutral]
+            [#body_fall1 #head_fall1 #spear_neutral]
         ]
         land: [
-            [#body_land #head_fall0]
-            [#body_land #head_wave2]
+            [#body_land #head_fall0 #spear_neutral]
+            [#body_land #head_wave2 #spear_neutral]
         ]
         attack: [
-            [#body_preattack #head_neutral]
-            [#body_attack #head_wave2]
-            [#body_postattack #head_neutral]
-            [#body_preattack #head_neutral]
+            [#body_preattack #head_neutral #spear_preattack]
+            [#body_attack #head_wave2 #spear_attack]
+            [#body_postattack #head_neutral #spear_preattack]
+            [#body_preattack #head_neutral #spear_preattack]
         ]
         damage: [
-            [#body_damage #head_damage]
-            [#body_damagefall #head_damage]
+            [#body_damage #head_damage #spear_damage]
+            [#body_damagefall #head_damage #spear_damagefall]
         ]
-        dead: [#body_dead #head_dead]
+        dead: [#body_dead #head_dead #spear_dead]
     }]
     data: [vf::WalkerData {
         phys: {
             body_box: [-8 0 8 30]
-            weapon_box: [-12 -1 5 1]
             damage_box: [-3 12 3 28]
             ground_acc: 0.3
             ground_max: 2.5
@@ -100,8 +173,9 @@
         }
         body_tex: #body_tex
         head_tex: #head_tex
-        poses: #poses
+        weapon_tex: #fang_tex
         decals: decals.ayu#
+        poses: #poses
         sfx: {
             step: [
                 assets.ayu#step0

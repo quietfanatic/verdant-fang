@@ -300,7 +300,8 @@ void Walker::Resident_before_step () {
     }
     if (do_attack) {
         i++;
-        hbs[i].box = phys.weapon_box + data->poses->attack[1].body->weapon;
+        hbs[i].box = data->poses->attack[1].body->weapon
+                   + data->poses->attack[1].weapon->hitbox;
         if (left) hbs[i].fliph();
     }
     hitboxes = Slice<Hitbox>(&hbs[0], i+1);
@@ -393,7 +394,7 @@ void Walker::Resident_after_step () {
 void Walker::Resident_draw () {
     auto& poses = *data->poses;
     bool damage_overlap = false;
-    float z = Z::Alive;
+    float z = Z::Actor;
     Pose pose;
     switch (state) {
         case WS::Neutral: {
@@ -459,14 +460,17 @@ void Walker::Resident_draw () {
     if (pose.body) {
         Vec head_offset = pose.body->head * scale;
         if (pose.head) {
-            draw_frame(pos + head_offset, *pose.head, *data->head_tex, scale, z);
+            draw_frame(
+                pos + head_offset, *pose.head, *data->head_tex,
+                scale, z + Z::HeadOffset
+            );
         }
         draw_frame(pos, *pose.body, *data->body_tex, scale, z);
         if (damage_overlap && decal_index < max_decals) {
             float cutoff = pose.body->decals[decal_index].x;
             Frame overlap = *pose.body;
             if (overlap.bounds.r > cutoff) overlap.bounds.r = cutoff;
-            draw_frame(pos, overlap, *data->body_tex, scale, Z::DamageOverlap);
+            draw_frame(pos, overlap, *data->body_tex, scale, Z::Overlap);
             if (pose.head) {
                 overlap = *pose.head;
                  // Make sure to cancel the addition of head_offset to pos
@@ -475,10 +479,17 @@ void Walker::Resident_draw () {
                     overlap.bounds.r = head_cutoff;
                 }
                 draw_frame(
-                    pos + head_offset, overlap, *data->head_tex, scale,
-                    Z::DamageOverlap - 1 // Keep head behind body
+                    pos + head_offset, overlap, *data->head_tex,
+                    scale, Z::Overlap + Z::HeadOffset
                 );
             }
+        }
+        if (pose.weapon) {
+            Vec weapon_offset = pose.body->weapon * scale;
+            draw_frame(
+                pos + weapon_offset, *pose.weapon, *data->weapon_tex,
+                scale, (damage_overlap ? Z::Overlap : z) + Z::WeaponOffset
+            );
         }
     }
     draw_decal(*this, pose);
@@ -498,10 +509,19 @@ AYU_DESCRIBE(vf::BodyFrame,
     )
 )
 
+AYU_DESCRIBE(vf::WeaponFrame,
+    elems(
+        elem(&WeaponFrame::offset),
+        elem(&WeaponFrame::bounds),
+        elem(&WeaponFrame::hitbox, optional)
+    )
+)
+
 AYU_DESCRIBE(vf::Pose,
     elems(
         elem(&Pose::body),
-        elem(&Pose::head)
+        elem(&Pose::head),
+        elem(&Pose::weapon)
     )
 )
 
@@ -521,7 +541,6 @@ AYU_DESCRIBE(vf::WalkerPoses,
 AYU_DESCRIBE(vf::WalkerPhys,
     attrs(
         attr("body_box", &WalkerPhys::body_box),
-        attr("weapon_box", &WalkerPhys::weapon_box),
         attr("damage_box", &WalkerPhys::damage_box),
         attr("ground_acc", &WalkerPhys::ground_acc),
         attr("ground_max", &WalkerPhys::ground_max),
@@ -566,6 +585,7 @@ AYU_DESCRIBE(vf::WalkerData,
         attr("phys", &WalkerData::phys),
         attr("body_tex", &WalkerData::body_tex),
         attr("head_tex", &WalkerData::head_tex),
+        attr("weapon_tex", &WalkerData::weapon_tex),
         attr("poses", &WalkerData::poses),
         attr("sfx", &WalkerData::sfx),
         attr("decals", &WalkerData::decals)

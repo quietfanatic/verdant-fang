@@ -4,14 +4,15 @@
 namespace vf {
 
 namespace Z {
-    constexpr float BG = -300;
-    constexpr float Dead = -200;
-    constexpr float DeadDecal = -100;
+    constexpr float BG = -200;
+    constexpr float Dead = -100;
     constexpr float Blocks = 0;
     constexpr float Damage = 100;
-    constexpr float Alive = 200;
-    constexpr float DamageOverlap = 300;
-    constexpr float DamageDecal = 400;
+    constexpr float Actor = 200;
+    constexpr float Overlap = 300;
+    constexpr float HeadOffset = -10;
+    constexpr float DecalOffset = 10;
+    constexpr float WeaponOffset = 20;
 }
 
 namespace Types {
