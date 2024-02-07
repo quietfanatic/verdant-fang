@@ -272,7 +272,7 @@ void Walker::Resident_before_step () {
         if (vel.y > phys.fall_start_vel || !defined(fall_start_y)) {
             fall_start_y = pos.y;
         }
-        vel.y -= state == WS::Dead || drop_timer == 0 ? phys.gravity_jump
+        vel.y -= state == WS::Damage || drop_timer == 0 ? phys.gravity_jump
                : drop_timer <= phys.drop_duration ? phys.gravity_drop
                : phys.gravity_fall;
 
