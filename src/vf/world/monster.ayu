@@ -1,141 +1,125 @@
-[vf::WalkerData {
-    phys: {
-        body_box: [-8 0 8 30]
-        weapon_box: [-6 -4 3 16]
-        damage_box: [-3 12 3 32]
-        ground_acc: 0.25
-        ground_max: 2.0
-        ground_dec: 0.3
-        coast_dec: 0.3
-        air_acc: 0.2
-        air_max: 2
-        air_dec: 0
-        jump_vel: 3.4
-        gravity_jump: 0.11
-        gravity_fall: 0.2
-        gravity_drop: 0.3
-        drop_duration: 6
-        land_sequence: [4 4]
-        attack_sequence: [8 8 8 200]
-        hit_sequence: 24
-        damage_sequence: [18 6 8 12]
-        dead_sequence: [8 8 8 20 60 120 240]
-        jump_crouch_lift: 4
-        dead_floor_lift: 10
-        hold_buffer: 6
-        walk_cycle_dist: 16
-        fall_cycle_dist: 16
-        jump_end_vel: 0.6
-        fall_start_vel: -0.6
-         -- TODO: Remove this and just make damage_box bigger
-        damage_overlap_bias: 1
-    }
-    body_tex: {
+[ayu::Document {
+    body_tex: [glow::PixelTexture {
         image: assets.ayu#/actors_img+1
          -- y down
         bounds: [171 214 411 314]
-    }
-    body: {
-         -- y up
-        stand: [[13 69] [-13 0 19 34] [2 25]]
-        crouch: [[84 76] [-13 0 19 30] [2 18]]
-        walk: [
-            [[13 35] [-13 0 19 34] [3 25]]
-            [[48 35] [-13 0 19 34] [3 25]]
-            [[83 36] [-13 0 19 34] [3 24]]
-            [[118 35] [-13 0 19 34] [3 25]]
-            [[153 35] [-13 0 19 34] [3 25]]
-            [[188 36] [-13 0 19 34] [3 24]]
-        ]
-        fall1: [[153 69] [-13 0 19 34] [3 25]]
-        land: [[49 71] [-13 0 19 34] [3 22]]
-        attack: [
-            [[72 0] [-13 0 10 35] [1 25]]
-            [[13 0] [-8 0 26 35] [7 22] [22 8]]
-            [[112 0] [-8 0 26 35] [7 22]]
-        ]
-        damage: [
-            [
-                [150 0] [-10 0 8 25] [1 25] [+nan +nan]
-                [[1 14] [2 19] [1 24] [1 29]]
-                [0 0 0 0]
-            ] [
-                [185 10] [-15 -6 10 15] [-8 15] [+nan +nan]
-                [[-3 5] [-6 9] [-8 14] [-8 19]]
-                [1 1 0 0]
-            ]
-        ]
-        dead: [
-            [225 11] [-17 0 11 7] [-16 4] [+nan +nan]
-            [[-4 5] [-9 5] [-15 5] [-21 5]]
-            [2 2 2 2]
-        ]
-    }
-    head_tex: {
+    }]
+     -- y up
+    body_stand: [vf::BodyFrame [[13 69] [-13 0 19 34] [2 25]]]
+    body_crouch: [vf::BodyFrame [[84 76] [-13 0 19 30] [2 18]]]
+    body_walk0: [vf::BodyFrame [[13 35] [-13 0 19 34] [3 25]]]
+    body_walk1: [vf::BodyFrame [[48 35] [-13 0 19 34] [3 25]]]
+    body_walk2: [vf::BodyFrame [[83 36] [-13 0 19 34] [3 24]]]
+    body_walk3: [vf::BodyFrame [[118 35] [-13 0 19 34] [3 25]]]
+    body_walk4: [vf::BodyFrame [[153 35] [-13 0 19 34] [3 25]]]
+    body_walk5: [vf::BodyFrame [[188 36] [-13 0 19 34] [3 24]]]
+    body_fall1: [vf::BodyFrame [[153 69] [-13 0 19 34] [3 25]]]
+    body_land: [vf::BodyFrame [[49 71] [-13 0 19 34] [3 22]]]
+    body_preattack: [vf::BodyFrame [[72 0] [-13 0 10 35] [1 25]]]
+    body_attack: [vf::BodyFrame [[13 0] [-8 0 26 35] [7 22] [22 8]]]
+    body_postattack: [vf::BodyFrame [[112 0] [-8 0 26 35] [7 22]]]
+    body_damage: [vf::BodyFrame [
+        [150 0] [-10 0 8 25] [1 25] [+nan +nan]
+        [[1 14] [2 19] [1 24] [1 29]]
+        [0 0 0 0]
+    ]]
+    body_damagefall: [vf::BodyFrame [
+        [185 10] [-15 -6 10 15] [-8 15] [+nan +nan]
+        [[-3 5] [-6 9] [-8 14] [-8 19]]
+        [1 1 0 0]
+    ]]
+    body_dead: [vf::BodyFrame [
+        [225 11] [-17 0 11 7] [-16 4] [+nan +nan]
+        [[-4 5] [-9 5] [-15 5] [-21 5]]
+        [2 2 2 2]
+    ]]
+    head_tex: [glow::PixelTexture {
         image: assets.ayu#/actors_img+1
         bounds: [129 259 170 298]
-    }
-    head: {
-        neutral: [[9 26] [-9 -3 9 13]]
-        wave: [
-            [[9 26] [-9 -3 9 13]]
-            [[9 26] [-9 -3 9 13]]
-            [[9 26] [-9 -3 9 13]]
-        ]
-        fall: [
-            [[9 26] [-9 -3 9 13]]
-            [[9 26] [-9 -3 9 13]]
-        ]
-        back: [[9 26] [-9 -3 9 13]]
-        down: [[9 6] [-4 -6 9 10]]
-        damage: [[32 25] [-9 -3 9 13]]
-        dead: [[36 10] [-11 -9 4 6]]
-    }
-    poses: {
-        stand: [#/body/stand #/head/neutral]
-        crouch: [#/body/crouch #/head/neutral]
+    }]
+    head_neutral: [vf::Frame [[9 26] [-9 -3 9 13]]]
+    head_down: [vf::Frame [[9 6] [-4 -6 9 10]]]
+    head_damage: [vf::Frame [[32 25] [-9 -3 9 13]]]
+    head_dead: [vf::Frame [[36 10] [-11 -9 4 6]]]
+    poses: [vf::WalkerPoses {
+        stand: [#/body_stand+1 #/head_neutral+1]
+        crouch: [#/body_crouch+1 #/head_neutral+1]
         walk: [
-            [#/body/walk+0 #/head/wave+0]
-            [#/body/walk+1 #/head/wave+1]
-            [#/body/walk+2 #/head/wave+2]
-            [#/body/walk+3 #/head/wave+0]
-            [#/body/walk+4 #/head/wave+1]
-            [#/body/walk+5 #/head/wave+2]
+            [#/body_walk0+1 #/head_neutral+1]
+            [#/body_walk1+1 #/head_neutral+1]
+            [#/body_walk2+1 #/head_neutral+1]
+            [#/body_walk3+1 #/head_neutral+1]
+            [#/body_walk4+1 #/head_neutral+1]
+            [#/body_walk5+1 #/head_neutral+1]
         ]
         jump: [
-            [#/body/walk+0 #/head/neutral]
-            [#/body/walk+0 #/head/wave+2]
-            [#/body/walk+2 #/head/fall+0]
-            [#/body/fall1 #/head/fall+1]
+            [#/body_walk0+1 #/head_neutral+1]
+            [#/body_walk0+1 #/head_neutral+1]
+            [#/body_walk2+1 #/head_neutral+1]
+            [#/body_fall1+1 #/head_neutral+1]
         ]
         land: [
-            [#/body/land #/head/fall+0]
-            [#/body/land #/head/wave+2]
+            [#/body_land+1 #/head_neutral+1]
+            [#/body_land+1 #/head_neutral+1]
         ]
         attack: [
-            [#/body/attack+0 #/head/neutral]
-            [#/body/attack+1 #/head/down]
-            [#/body/attack+2 #/head/down]
-            [#/body/attack+0 #/head/neutral]
+            [#/body_preattack+1 #/head_neutral+1]
+            [#/body_attack+1 #/head_down+1]
+            [#/body_postattack+1 #/head_down+1]
+            [#/body_preattack+1 #/head_neutral+1]
         ]
         damage: [
-            [#/body/damage+0 #/head/damage]
-            [#/body/damage+1 #/head/damage]
+            [#/body_damage+1 #/head_damage+1]
+            [#/body_damagefall+1 #/head_damage+1]
         ]
-        dead: [#/body/dead #/head/dead]
-    }
-    sfx: {
-        step: [
-            assets.ayu#/step0+1
-            assets.ayu#/step1+1
-            assets.ayu#/step2+1
-            assets.ayu#/step3+1
-            assets.ayu#/step4+1
-        ]
-        land: assets.ayu#/tkk+1
-        attack: assets.ayu#/shok+1
-        hit_solid: assets.ayu#/hit_solid+1
-        hit_soft: assets.ayu#/kkkww+1
-    }
-    decals: decals.ayu#
+        dead: [#/body_dead+1 #/head_dead+1]
+    }]
+    data: [vf::WalkerData {
+        phys: {
+            body_box: [-8 0 8 30]
+            weapon_box: [-6 -4 3 16]
+            damage_box: [-3 12 3 32]
+            ground_acc: 0.25
+            ground_max: 2.0
+            ground_dec: 0.3
+            coast_dec: 0.3
+            air_acc: 0.2
+            air_max: 2
+            air_dec: 0
+            jump_vel: 3.4
+            gravity_jump: 0.11
+            gravity_fall: 0.2
+            gravity_drop: 0.3
+            drop_duration: 6
+            land_sequence: [4 4]
+            attack_sequence: [8 8 8 200]
+            hit_sequence: 24
+            damage_sequence: [18 6 8 12]
+            dead_sequence: [8 8 8 20 60 120 240]
+            jump_crouch_lift: 4
+            dead_floor_lift: 10
+            hold_buffer: 6
+            walk_cycle_dist: 16
+            fall_cycle_dist: 16
+            jump_end_vel: 0.6
+            fall_start_vel: -0.6
+        }
+        body_tex: #/body_tex+1
+        head_tex: #/head_tex+1
+        poses: #/poses+1
+        decals: decals.ayu#
+        sfx: {
+            step: [
+                assets.ayu#/step0+1
+                assets.ayu#/step1+1
+                assets.ayu#/step2+1
+                assets.ayu#/step3+1
+                assets.ayu#/step4+1
+            ]
+            land: assets.ayu#/tkk+1
+            attack: assets.ayu#/shok+1
+            hit_solid: assets.ayu#/hit_solid+1
+            hit_soft: assets.ayu#/kkkww+1
+        }
+    }]
 }]

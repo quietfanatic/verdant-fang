@@ -28,33 +28,12 @@ struct BodyFrame : Frame {
     uint8 decal_dirs [4] = {0, 0, 0, 0};
 };
 
-struct BodyFrames {
-    BodyFrame stand;
-    BodyFrame crouch;
-    BodyFrame walk [6];
-    BodyFrame fall1;
-    BodyFrame land;
-    BodyFrame attack [3];
-    BodyFrame damage [2];
-    BodyFrame dead;
-};
-
-struct HeadFrames {
-    Frame neutral;
-    Frame wave [3];
-    Frame fall [2];
-    Frame back;
-    Frame down;
-    Frame damage;
-    Frame dead;
-};
-
 struct Pose {
     BodyFrame* body = null;;
     Frame* head = null;
 };
 
-struct Poses {
+struct WalkerPoses {
     Pose stand;
     Pose crouch;
     Pose walk [6];
@@ -97,7 +76,6 @@ struct WalkerPhys {
     float fall_cycle_dist;
     float jump_end_vel;
     float fall_start_vel;
-    float damage_overlap_bias;
 };
 
 struct WalkerSfx {
@@ -111,13 +89,11 @@ struct WalkerSfx {
 
 struct WalkerData {
     WalkerPhys phys;
-    glow::PixelTexture body_tex;
-    glow::PixelTexture head_tex;
-    BodyFrames body;
-    HeadFrames head;
-    Poses poses;
-    WalkerSfx sfx;
+    glow::PixelTexture* body_tex;
+    glow::PixelTexture* head_tex;
     DecalData* decals;
+    WalkerPoses* poses;
+    WalkerSfx sfx;
 };
 
 struct Walker : Resident {

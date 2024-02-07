@@ -29,14 +29,14 @@
         ]
     }]
     verdant: [vf::Verdant {
-        data: verdant.ayu#
+        data: verdant.ayu#/data+1
         mind: #/player+1
         room: #/start+1
         pos: [*b6 *b2]
         floor: #/start_blocks+1
     }]
     monster: [vf::Monster {
-        data: monster.ayu#
+        data: monster.ayu#/data+1
         mind: #/monstermind+1
         room: #/start+1
         pos: [*b16 *b2]

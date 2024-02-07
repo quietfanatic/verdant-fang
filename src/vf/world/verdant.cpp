@@ -12,10 +12,11 @@ void Verdant::Walker_on_hit (
      // We haven't implemented backstabbing so turn victim around.
     victim.left = !left;
      // Find place to stab
-    auto& victim_body = victim.data->body.damage[0];
+    Vec weapon_offset = data->poses->attack[1].body->weapon;
+    auto& victim_body = *victim.data->poses->damage[0].body;
     usize min_dist = GINF;
     usize decal_i = -1;
-    float weapon_y = pos.y + data->body.attack[1].weapon.y;
+    float weapon_y = pos.y + weapon_offset.y;
     for (usize i = 0; i < max_decals; i++) {
         float decal_y = victim.pos.y + victim_body.decals[i].y;
         float dist = distance(decal_y, weapon_y);
@@ -28,12 +29,15 @@ void Verdant::Walker_on_hit (
     victim.decal_type = DecalType::Stab;
     victim.decal_index = decal_i;
      // Snap to stab location.
-    float tip_offset = data->body.attack[1].weapon.x + data->phys.weapon_box.r;
+    float tip_offset = weapon_offset.x + data->phys.weapon_box.r;
     if (left) tip_offset = -tip_offset;
     float weapon_tip = pos.x + tip_offset;
     Vec decal_offset = victim_body.decals[decal_i];
     if (victim.left) decal_offset.x = -decal_offset.x;
     Vec decal_pos = victim.pos + decal_offset;
+     // Move victim vertically
+    float height_diff = decal_pos.y - weapon_y;
+    victim.pos.y -= height_diff;
      // Move victor horizontally
     if (left) {
         if (decal_pos.x - weapon_tip < 2) {
@@ -45,9 +49,6 @@ void Verdant::Walker_on_hit (
             pos.x += weapon_tip - decal_pos.x;
         }
     }
-     // Move victim vertically
-    float height_diff = decal_pos.y - weapon_y;
-    victim.pos.y -= height_diff;
      // Supercall
     Walker::Walker_on_hit(hb, victim, o_hb);
 }

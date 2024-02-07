@@ -300,7 +300,7 @@ void Walker::Resident_before_step () {
     }
     if (do_attack) {
         i++;
-        hbs[i].box = phys.weapon_box + data->body.attack[1].weapon;
+        hbs[i].box = phys.weapon_box + data->poses->attack[1].body->weapon;
         if (left) hbs[i].fliph();
     }
     hitboxes = Slice<Hitbox>(&hbs[0], i+1);
@@ -391,7 +391,7 @@ void Walker::Resident_after_step () {
 }
 
 void Walker::Resident_draw () {
-    auto& poses = data->poses;
+    auto& poses = *data->poses;
     bool damage_overlap = false;
     float z = Z::Alive;
     Pose pose;
@@ -459,14 +459,14 @@ void Walker::Resident_draw () {
     if (pose.body) {
         Vec head_offset = pose.body->head * scale;
         if (pose.head) {
-            draw_frame(pos + head_offset, *pose.head, data->head_tex, scale, z);
+            draw_frame(pos + head_offset, *pose.head, *data->head_tex, scale, z);
         }
-        draw_frame(pos, *pose.body, data->body_tex, scale, z);
+        draw_frame(pos, *pose.body, *data->body_tex, scale, z);
         if (damage_overlap && decal_index < max_decals) {
             float cutoff = pose.body->decals[decal_index].x;
             Frame overlap = *pose.body;
             if (overlap.bounds.r > cutoff) overlap.bounds.r = cutoff;
-            draw_frame(pos, overlap, data->body_tex, scale, Z::DamageOverlap);
+            draw_frame(pos, overlap, *data->body_tex, scale, Z::DamageOverlap);
             if (pose.head) {
                 overlap = *pose.head;
                  // Make sure to cancel the addition of head_offset to pos
@@ -475,7 +475,7 @@ void Walker::Resident_draw () {
                     overlap.bounds.r = head_cutoff;
                 }
                 draw_frame(
-                    pos + head_offset, overlap, data->head_tex, scale,
+                    pos + head_offset, overlap, *data->head_tex, scale,
                     Z::DamageOverlap - 1 // Keep head behind body
                 );
             }
@@ -498,31 +498,6 @@ AYU_DESCRIBE(vf::BodyFrame,
     )
 )
 
-AYU_DESCRIBE(vf::BodyFrames,
-    attrs(
-        attr("stand", &BodyFrames::stand),
-        attr("crouch", &BodyFrames::crouch),
-        attr("walk", &BodyFrames::walk),
-        attr("fall1", &BodyFrames::fall1),
-        attr("land", &BodyFrames::land),
-        attr("attack", &BodyFrames::attack),
-        attr("damage", &BodyFrames::damage),
-        attr("dead", &BodyFrames::dead)
-    )
-)
-
-AYU_DESCRIBE(vf::HeadFrames,
-    attrs(
-        attr("neutral", &HeadFrames::neutral),
-        attr("wave", &HeadFrames::wave),
-        attr("fall", &HeadFrames::fall),
-        attr("back", &HeadFrames::back),
-        attr("down", &HeadFrames::down),
-        attr("damage", &HeadFrames::damage),
-        attr("dead", &HeadFrames::dead)
-    )
-)
-
 AYU_DESCRIBE(vf::Pose,
     elems(
         elem(&Pose::body),
@@ -530,16 +505,16 @@ AYU_DESCRIBE(vf::Pose,
     )
 )
 
-AYU_DESCRIBE(vf::Poses,
+AYU_DESCRIBE(vf::WalkerPoses,
     attrs(
-        attr("stand", &Poses::stand),
-        attr("crouch", &Poses::crouch),
-        attr("walk", &Poses::walk),
-        attr("jump", &Poses::jump),
-        attr("land", &Poses::land),
-        attr("attack", &Poses::attack),
-        attr("damage", &Poses::damage),
-        attr("dead", &Poses::dead)
+        attr("stand", &WalkerPoses::stand),
+        attr("crouch", &WalkerPoses::crouch),
+        attr("walk", &WalkerPoses::walk),
+        attr("jump", &WalkerPoses::jump),
+        attr("land", &WalkerPoses::land),
+        attr("attack", &WalkerPoses::attack),
+        attr("damage", &WalkerPoses::damage),
+        attr("dead", &WalkerPoses::dead)
     )
 )
 
@@ -571,8 +546,7 @@ AYU_DESCRIBE(vf::WalkerPhys,
         attr("walk_cycle_dist", &WalkerPhys::walk_cycle_dist),
         attr("fall_cycle_dist", &WalkerPhys::fall_cycle_dist),
         attr("jump_end_vel", &WalkerPhys::jump_end_vel),
-        attr("fall_start_vel", &WalkerPhys::fall_start_vel),
-        attr("damage_overlap_bias", &WalkerPhys::damage_overlap_bias)
+        attr("fall_start_vel", &WalkerPhys::fall_start_vel)
     )
 )
 
@@ -592,8 +566,6 @@ AYU_DESCRIBE(vf::WalkerData,
         attr("phys", &WalkerData::phys),
         attr("body_tex", &WalkerData::body_tex),
         attr("head_tex", &WalkerData::head_tex),
-        attr("body", &WalkerData::body),
-        attr("head", &WalkerData::head),
         attr("poses", &WalkerData::poses),
         attr("sfx", &WalkerData::sfx),
         attr("decals", &WalkerData::decals)
