@@ -123,9 +123,9 @@ struct Walker : Resident {
     float walk_start_x = GNAN;
     float fall_start_y = GNAN;
 
-    Block* floor = null;
+    Resident* floor = null;
      // Temporary
-    Block* new_floor;
+    Resident* new_floor;
      // body, weapon
     Hitbox hbs [2];
 

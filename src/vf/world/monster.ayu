@@ -19,7 +19,7 @@
         hit_sequence: 24
         dead_sequence: [24 8 120]
         jump_crouch_lift: 4
-        dead_floor_lift: 9
+        dead_floor_lift: 10
         hold_buffer: 6
         walk_cycle_dist: 16
         fall_cycle_dist: 16

@@ -3,7 +3,6 @@
 #include "../game/settings.h"
 #include "../../dirt/ayu/reflection/describe.h"
 #include "../game/state.h"
-#include "block.h"
 
 namespace vf {
 
@@ -297,8 +296,6 @@ void Walker::Resident_on_collide (
     const Hitbox& hb, Resident& o, const Hitbox& o_hb
 ) {
     if (&hb == &hbs[0] && o_hb.layers_2 & Layers::Walker_Block) {
-        auto& block = static_cast<Block&>(o);
-
         Rect here = hb.box + pos;
         Rect there = o_hb.box + o.pos;
         Rect overlap = here & there;
@@ -317,7 +314,7 @@ void Walker::Resident_on_collide (
                     }
                     walk_start_x = pos.x;
                 }
-                new_floor = &block;
+                new_floor = &o;
             }
             else if (overlap.t == here.t) {
                 pos.y -= height(overlap);
@@ -428,7 +425,7 @@ void Walker::Resident_draw () {
         default: never();
     }
     Vec scale {left ? -1 : 1, 1};
-    float z = state == WS::Dead ? 100 : 200;
+    float z = state == WS::Dead ? Z::Dead : Z::Alive;
     if (pose.body) {
         if (pose.head) {
             Vec head_pos = pos + pose.body->head * scale;

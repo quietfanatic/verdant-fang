@@ -17,36 +17,29 @@
     bg: [vf::Scenery {
         room: #/start+1
         tex: assets.ayu#/cave_tex+1
-        bounds: [*b0 *b0 *b20 *b11p25]
+        bounds: [0 0 320 180]
     }]
-    floor: [vf::Block {
+    start_blocks: [vf::Blocks {
         room: #/start+1
-        bounds: [*b0 *b0 *b20 *b2]
-    }]
-    left_wall: [vf::Block {
-        room: #/start+1
-        bounds: [*b0 *b6 *b3 *b11p25]
-    }]
-    right_wall: [vf::Block {
-        room: #/start+1
-        bounds: [*b17 *b6 *b20 *b11p25]
-    }]
-    ceiling: [vf::Block {
-        room: #/start+1
-        bounds: [*b0 *b10 *b20 *b11p25]
+        blocks: [
+            [-16 160] [16 160] [48 160] [80 160] [112 160] [144 160] [176 160] [208 160] [240 160] [272 160] [304 160]
+            [-16 128] [16 128] [272 128] [304 128]
+            [-16 96] [16 96] [272 96] [304 96]
+            [-16 0] [16 0] [48 0] [80 0] [112 0] [144 0] [176 0] [208 0] [240 0] [272 0] [304 0]
+        ]
     }]
     verdant: [vf::Verdant {
         data: verdant.ayu#
         mind: #/player+1
         room: #/start+1
         pos: [*b6 *b2]
-        floor: #/floor+1
+        floor: #/start_blocks+1
     }]
     monster: [vf::Monster {
         data: monster.ayu#
         mind: #/monstermind+1
         room: #/start+1
         pos: [*b16 *b2]
-        floor: #/floor+1
+        floor: #/start_blocks+1
     }]
 }]

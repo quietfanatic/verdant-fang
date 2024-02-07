@@ -9,7 +9,7 @@ namespace vf {
 Scenery::Scenery () { pos = {0, 0}; }
 
 void Scenery::Resident_draw () {
-    draw_frame(pos, {{0, 0}, bounds}, *tex);
+    draw_frame(pos, {{0, 0}, bounds}, *tex, {1, 1}, Z::BG);
 }
 
 } using namespace vf;

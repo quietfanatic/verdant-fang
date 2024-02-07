@@ -4,6 +4,10 @@
     cave_tex: [glow::PixelTexture {
         image: #/cave_img+1
     }]
+    block_tex: [glow::PixelTexture {
+        image: #/actors_img+1
+        bounds: [3 3 35 35]
+    }]
      -- For some reason, having these as mp3s breaks SDL2_mixer.  Perhaps it
      -- can't play mp3 files that are too short?
     step0: [vf::Sound { source:assets/step0.wav channel:0 volume:0.5 }]

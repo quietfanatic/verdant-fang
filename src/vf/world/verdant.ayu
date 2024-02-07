@@ -19,7 +19,7 @@
         hit_sequence: 24
         dead_sequence: [24 8 240]
         jump_crouch_lift: 4
-        dead_floor_lift: 9
+        dead_floor_lift: 10
         hold_buffer: 6
         walk_cycle_dist: 16
         fall_cycle_dist: 16
@@ -52,7 +52,7 @@
         ]
         damage: [[150 0] [-15 0 17 24] [0 23]]
         dead: [
-            [[185 9] [-13 -5 22 14] [-8 14]]
+            [[185 10] [-13 -6 21 14] [-8 14]]
             [[225 11] [-14 0 23 7] [-13 3]]
         ]
     }
