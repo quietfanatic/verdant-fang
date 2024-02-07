@@ -6,6 +6,7 @@
 #include "../game/sound.h"
 #include "../game/room.h"
 #include "common.h"
+#include "decals.h"
 
 namespace vf {
 
@@ -15,6 +16,7 @@ enum class WalkerState {
     Land,
     Attack,
     Hit,
+    Damage,
     Dead,
 };
 using WS = WalkerState;
@@ -22,6 +24,8 @@ using WS = WalkerState;
 struct BodyFrame : Frame {
     Vec head;
     Vec weapon = GNAN;
+    Vec decals [4] = {GNAN, GNAN, GNAN, GNAN};
+    uint8 decal_dirs [4] = {0, 0, 0, 0};
 };
 
 struct BodyFrames {
@@ -31,8 +35,8 @@ struct BodyFrames {
     BodyFrame fall1;
     BodyFrame land;
     BodyFrame attack [3];
-    BodyFrame damage;
-    BodyFrame dead [2];
+    BodyFrame damage [2];
+    BodyFrame dead;
 };
 
 struct HeadFrames {
@@ -57,8 +61,8 @@ struct Poses {
     Pose jump [4];
     Pose land [2];
     Pose attack [4];
-    Pose damage;
-    Pose dead [2];
+    Pose damage [2];
+    Pose dead;
 };
 
 struct WalkerPhys {
@@ -80,7 +84,11 @@ struct WalkerPhys {
     uint8 land_sequence [2];
     uint8 attack_sequence [4];
     uint8 hit_sequence;
-    uint8 dead_sequence [3];
+     // [0] + [1] should match opponent's hit_sequence.  TODO: link them
+     // [2] is before starting to fall.
+     // [3] is minimum time to fall before landing.
+    uint8 damage_sequence [4];
+    uint8 dead_sequence [7];
     uint8 jump_crouch_lift;
     uint8 dead_floor_lift;
     uint8 hold_buffer;
@@ -89,6 +97,7 @@ struct WalkerPhys {
     float fall_cycle_dist;
     float jump_end_vel;
     float fall_start_vel;
+    float damage_overlap_bias;
 };
 
 struct WalkerSfx {
@@ -108,6 +117,7 @@ struct WalkerData {
     HeadFrames head;
     Poses poses;
     WalkerSfx sfx;
+    DecalData* decals;
 };
 
 struct Walker : Resident {
@@ -123,6 +133,7 @@ struct Walker : Resident {
      // For animations
     float walk_start_x = GNAN;
     float fall_start_y = GNAN;
+    DecalType decals [max_decals];
 
     Resident* floor = null;
      // Temporary

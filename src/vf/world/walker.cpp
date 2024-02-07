@@ -56,6 +56,7 @@ void Walker::Resident_before_step () {
     expect(anim_timer < 255);
     business = B::Free;
     bool do_attack = false;
+    bool invincible = false;
     switch (state) {
         case WS::Neutral: break;
         case WS::Crouch: break;
@@ -116,38 +117,47 @@ void Walker::Resident_before_step () {
                 anim_timer = 0;
             }
             business = B::Frozen;
+            invincible = true;
+            break;
+        }
+        case WS::Damage: {
+            expect(anim_phase < 5);
+            if (anim_phase < 4) {
+                anim_timer += 1;
+                if (anim_timer > phys.damage_sequence[anim_phase]) {
+                    anim_phase += 1;
+                    anim_timer = 0;
+                }
+            }
+            switch (anim_phase) {
+                case 0: case 1: case 2: business = B::Frozen; break;
+                case 3: {
+                    if (anim_timer == 0 && floor) {
+                        pos.y += phys.dead_floor_lift;
+                    }
+                    business = B::Occupied; break;
+                }
+                case 4: {
+                    if (floor) {
+                        set_state(WS::Dead);
+                    }
+                    business = B::Occupied; break;
+                }
+            }
+            invincible = true;
             break;
         }
         case WS::Dead: {
-            expect(anim_phase < 4);
-            switch (anim_phase) {
-                case 0: {
-                    anim_timer += 1;
-                    if (anim_timer > phys.dead_sequence[anim_phase]) {
-                        anim_phase += 1;
-                        anim_timer = 0;
-                        if (floor) pos.y += phys.dead_floor_lift;
-                        business = B::Occupied; break;
-                    }
-                    business = B::Frozen; break;
+            expect(anim_phase < 7);
+            if (anim_phase < 6) {
+                anim_timer += 1;
+                if (anim_timer > phys.dead_sequence[anim_phase]) {
+                    anim_phase += 1;
+                    anim_timer = 0;
                 }
-                case 1: {
-                    if (floor) {
-                        anim_phase = 2;
-                        anim_timer = 0;
-                    }
-                    business = B::Occupied; break;
-                }
-                case 2: {
-                    anim_timer += 1;
-                    if (anim_timer > phys.dead_sequence[anim_phase]) {
-                        anim_phase += 1;
-                        anim_timer = 0;
-                    }
-                    business = B::Occupied; break;
-                }
-                case 3: business = B::Occupied; break;
             }
+            invincible = true;
+            business = B::Occupied; break;
             break;
         }
         default: never();
@@ -280,16 +290,20 @@ void Walker::Resident_before_step () {
     }
 
      // Set up hitboxes
-    hbs[0].box = phys.body_box;
-    if (left) hbs[0].fliph();
-    hbs[1].box = phys.damage_box;
-    if (left) hbs[1].fliph();
-    if (do_attack) {
-        hbs[2].box = phys.weapon_box + data->body.attack[1].weapon;
-        if (left) hbs[2].fliph();
-        hitboxes = Slice<Hitbox>(&hbs[0], 3);
+    usize i = 0;
+    hbs[i].box = phys.body_box;
+    if (left) hbs[i].fliph();
+    if (!invincible) {
+        i++;
+        hbs[i].box = phys.damage_box;
+        if (left) hbs[i].fliph();
     }
-    else hitboxes = Slice<Hitbox>(&hbs[0], 2);
+    if (do_attack) {
+        i++;
+        hbs[i].box = phys.weapon_box + data->body.attack[1].weapon;
+        if (left) hbs[i].fliph();
+    }
+    hitboxes = Slice<Hitbox>(&hbs[0], i+1);
 
      // Prepare for collision detection
     new_floor = null;
@@ -360,11 +374,9 @@ void Walker::Resident_on_collide (
     }
     else if (&hb == &hbs[2] && o_hb.layers_2 & Layers::Weapon_Walker) {
         auto& victim = static_cast<Walker&>(o);
-        if (victim.state != WS::Hit && victim.state != WS::Dead) {
-            set_state(WS::Hit);
-            victim.set_state(WS::Dead);
-            data->sfx.hit_soft->play();
-        }
+        set_state(WS::Hit);
+        victim.set_state(WS::Damage);
+        data->sfx.hit_soft->play();
     }
 }
 
@@ -420,18 +432,22 @@ void Walker::Resident_draw () {
             }
             break;
         }
-        case WS::Dead: {
-            z = Z::Dead;
+        case WS::Damage: {
             switch (anim_phase) {
-                case 0: {
+                case 0: case 1: {
                     damage_overlap = true;
-                    z = Z::Damage;
-                    pose = poses.damage; break;
+                    pose = poses.damage[0]; break;
                 }
-                case 1: pose = poses.dead[0]; break;
-                case 2: case 3: pose = poses.dead[1]; break;
+                case 2: pose = poses.damage[0]; break;
+                case 3: case 4: pose = poses.damage[1]; break;
                 default: never();
             }
+            z = Z::Damage;
+            break;
+        }
+        case WS::Dead: {
+            pose = poses.dead;
+            z = Z::Dead;
             break;
         }
         default: never();
@@ -444,20 +460,19 @@ void Walker::Resident_draw () {
         }
         draw_frame(pos, *pose.body, data->body_tex, scale, z);
         if (damage_overlap) {
-            Rect damage_box = data->phys.damage_box;
              // Push the overlap box back so it looks like its being stabbed in
-             // the middle.  (Don't flip this, it'll be flipped in draw_frame).
-            damage_box -= Vec(2, 0);
-             // Extend infinitely vertically to keep it from looking like
-             // there's a square cut out.
-            damage_box.b = -GINF; damage_box.t = GINF;
+             // the middle.  Right now everything is assuming the entity is
+             // facing right.  Flipping will be done in draw_frame with scale.
+            float front = data->phys.damage_box.r
+                        - data->phys.damage_overlap_bias;
             Frame overlap = *pose.body;
-            overlap.bounds &= damage_box;
+            if (overlap.bounds.r > front) overlap.bounds.r = front;
             draw_frame(pos, overlap, data->body_tex, scale, Z::DamageOverlap);
             if (pose.head) {
                 overlap = *pose.head;
                  // Make sure to cancel the addition of head_offset to pos
-                overlap.bounds &= damage_box - head_offset;
+                front -= head_offset.x;
+                if (overlap.bounds.r > front) overlap.bounds.r = front;
                 draw_frame(
                     pos + head_offset, overlap, data->head_tex, scale,
                     Z::DamageOverlap - 1 // Keep head behind body
@@ -475,7 +490,9 @@ AYU_DESCRIBE(vf::BodyFrame,
         elem(&BodyFrame::offset),
         elem(&BodyFrame::bounds),
         elem(&BodyFrame::head),
-        elem(&BodyFrame::weapon, optional)
+        elem(&BodyFrame::weapon, optional),
+        elem(&BodyFrame::decals, optional),
+        elem(&BodyFrame::decal_dirs, optional)
     )
 )
 
@@ -544,6 +561,7 @@ AYU_DESCRIBE(vf::WalkerPhys,
         attr("land_sequence", &WalkerPhys::land_sequence),
         attr("attack_sequence", &WalkerPhys::attack_sequence),
         attr("hit_sequence", &WalkerPhys::hit_sequence),
+        attr("damage_sequence", &WalkerPhys::damage_sequence),
         attr("dead_sequence", &WalkerPhys::dead_sequence),
         attr("jump_crouch_lift", &WalkerPhys::jump_crouch_lift),
         attr("dead_floor_lift", &WalkerPhys::dead_floor_lift),
@@ -551,7 +569,8 @@ AYU_DESCRIBE(vf::WalkerPhys,
         attr("walk_cycle_dist", &WalkerPhys::walk_cycle_dist),
         attr("fall_cycle_dist", &WalkerPhys::fall_cycle_dist),
         attr("jump_end_vel", &WalkerPhys::jump_end_vel),
-        attr("fall_start_vel", &WalkerPhys::fall_start_vel)
+        attr("fall_start_vel", &WalkerPhys::fall_start_vel),
+        attr("damage_overlap_bias", &WalkerPhys::damage_overlap_bias)
     )
 )
 
@@ -574,7 +593,8 @@ AYU_DESCRIBE(vf::WalkerData,
         attr("body", &WalkerData::body),
         attr("head", &WalkerData::head),
         attr("poses", &WalkerData::poses),
-        attr("sfx", &WalkerData::sfx)
+        attr("sfx", &WalkerData::sfx),
+        attr("decals", &WalkerData::decals)
     )
 )
 

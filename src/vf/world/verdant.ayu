@@ -18,7 +18,8 @@
         land_sequence: [4 4]
         attack_sequence: [5 6 5 200]
         hit_sequence: 24
-        dead_sequence: [24 8 240]
+        damage_sequence: [12 12 8 12]
+        dead_sequence: [8 8 8 20 60 120 240]
         jump_crouch_lift: 4
         dead_floor_lift: 10
         hold_buffer: 6
@@ -26,6 +27,7 @@
         fall_cycle_dist: 16
         jump_end_vel: 0.6
         fall_start_vel: -0.6
+        damage_overlap_bias: 2
     }
     body_tex: {
         image: assets.ayu#/actors_img+1
@@ -51,11 +53,11 @@
             [[13 0] [-8 0 36 28] [4 22] [28 19]]
             [[112 0] [-20 0 20 28] [0 23]]
         ]
-        damage: [[150 0] [-15 0 17 24] [0 23]]
-        dead: [
+        damage: [
+            [[150 0] [-15 0 17 24] [0 23]]
             [[185 10] [-13 -6 21 14] [-8 14]]
-            [[225 11] [-14 0 23 7] [-13 3]]
         ]
+        dead: [[225 11] [-14 0 23 7] [-13 3]]
     }
     head_tex: {
         image: assets.ayu#/actors_img+1
@@ -104,11 +106,11 @@
             [#/body/attack+2 #/head/neutral]
             [#/body/attack+0 #/head/neutral]
         ]
-        damage: [#/body/damage #/head/damage]
-        dead: [
-            [#/body/dead+0 #/head/damage]
-            [#/body/dead+1 #/head/dead]
+        damage: [
+            [#/body/damage+0 #/head/damage]
+            [#/body/damage+1 #/head/damage]
         ]
+        dead: [#/body/dead #/head/dead]
     }
     sfx: {
         step: [
@@ -124,4 +126,5 @@
         hit_soft: assets.ayu#/doof+1
         unhit: assets.ayu#/shluk+1
     }
+    decals: decals.ayu#
 }]

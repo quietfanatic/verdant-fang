@@ -18,7 +18,8 @@
         land_sequence: [4 4]
         attack_sequence: [8 8 8 200]
         hit_sequence: 24
-        dead_sequence: [24 8 120]
+        damage_sequence: [12 12 8 12]
+        dead_sequence: [8 8 8 20 60 120 240]
         jump_crouch_lift: 4
         dead_floor_lift: 10
         hold_buffer: 6
@@ -26,6 +27,8 @@
         fall_cycle_dist: 16
         jump_end_vel: 0.6
         fall_start_vel: -0.6
+         -- TODO: Remove this and just make damage_box bigger
+        damage_overlap_bias: 1
     }
     body_tex: {
         image: assets.ayu#/actors_img+1
@@ -51,10 +54,21 @@
             [[13 0] [-8 0 26 35] [7 22] [22 8]]
             [[112 0] [-8 0 26 35] [7 22]]
         ]
-        damage: [[150 0] [-10 0 8 25] [1 25]]
+        damage: [
+            [
+                [150 0] [-10 0 8 25] [1 25] [+nan +nan]
+                [[1 14] [2 19] [1 24] [1 29]]
+                [0 0 0 0]
+            ] [
+                [185 10] [-15 -6 10 15] [-8 15] [+nan +nan]
+                [[-3 5] [-6 9] [-8 14] [-8 19]]
+                [1 1 0 0]
+            ]
+        ]
         dead: [
-            [[185 10] [-15 -6 10 15] [-8 15]]
-            [[225 11] [-17 0 11 7] [-16 4]]
+            [225 11] [-17 0 11 7] [-16 4] [+nan +nan]
+            [[-4 4] [-9 4] [-15 4] [-21 4]]
+            [2 2 2 2]
         ]
     }
     head_tex: {
@@ -104,11 +118,11 @@
             [#/body/attack+2 #/head/down]
             [#/body/attack+0 #/head/neutral]
         ]
-        damage: [#/body/damage #/head/damage]
-        dead: [
-            [#/body/dead+0 #/head/damage]
-            [#/body/dead+1 #/head/dead]
+        damage: [
+            [#/body/damage+0 #/head/damage]
+            [#/body/damage+1 #/head/damage]
         ]
+        dead: [#/body/dead #/head/dead]
     }
     sfx: {
         step: [
@@ -123,4 +137,5 @@
         hit_solid: assets.ayu#/hit_solid+1
         hit_soft: assets.ayu#/kkkww+1
     }
+    decals: decals.ayu#
 }]
