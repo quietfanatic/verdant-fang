@@ -18,6 +18,29 @@ void Monster::Walker_on_hit (
     Walker::Walker_on_hit(hb, victim, o_hb);
 }
 
+template <class T>
+T quadratic (T p, T v, T a, float t) {
+    return p + v*t + a*(t*t);
+}
+
+float predict (Walker& self, Walker& target, float self_acc, float time) {
+    auto& target_phys = target.data->phys;
+    auto predicted_x = quadratic(
+        self.pos.x, self.vel.x,
+        self.left ? -self_acc : self_acc,
+        time
+    );
+     // Assume target will attack and decelerate.
+    float target_acc =
+        target.floor ? target_phys.coast_dec : target_phys.air_dec;
+    auto predicted_target_x = quadratic(
+        target.pos.x, target.vel.x,
+        target.left ? -target_acc : target_acc,
+        time
+    );
+    return predicted_target_x - predicted_x;
+}
+
 Controls MonsterMind::Mind_think (Resident& s) {
     Controls r {};
     if (!(s.types & Types::Monster)) return r;
@@ -26,26 +49,43 @@ Controls MonsterMind::Mind_think (Resident& s) {
         target->state == WS::Damage ||
         target->state == WS::Dead
     ) return r;
-    auto dist = target->pos.x - self.pos.x;
+    auto& phys = self.data->phys;
+
+     // Calculcate some distances
+    float dist = target->pos.x - self.pos.x;
+     // Predict where target will be when attack animation finishes.
+    float attack_dist = predict(
+        self, *target,
+        self.floor ? -phys.coast_dec : -phys.air_dec,
+        phys.attack_sequence[0]
+    );
+     // For jump distance, use the amount of time it's likely to take for our
+     // damage box to leave the hazard area of the target's weapon.
+    float jump_dist = predict(self, *target, 0, 4);
+
      // Work with right-facing coordinates
-    if (self.left) dist = -dist;
     auto forward = self.left ? Control::Left : Control::Right;
     auto backward = self.left ? Control::Right : Control::Left;
+    if (self.left) {
+        dist = -dist;
+        attack_dist = -attack_dist;
+        jump_dist = -jump_dist;
+    }
 
     if (dist < 0) {
         r[backward] = 1;
     }
-    else if (dist < attack_dist) {
+    else if (attack_dist < attack_range) {
          // Don't hold preattack pose
         if (self.state != WS::Attack || self.anim_phase >= 3) {
             r[Control::Attack] = 1;
         }
     }
-    else if (dist < jump_dist) {
+    else if (jump_dist < jump_range) {
         r[forward] = 1;
         r[Control::Jump] = 1;
     }
-    else if (dist < sight_dist) {
+    else if (dist < sight_range) {
         r[forward] = 1;
     }
 
@@ -55,7 +95,7 @@ Controls MonsterMind::Mind_think (Resident& s) {
         if (fren.state == WS::Dead || fren.state == WS::Damage) continue; // :(
         auto dist = fren.pos.x - self.pos.x;
         if (self.left) dist = -dist;
-        if (dist > 0 && dist < social_dist) {
+        if (dist > 0 && dist < social_distance) {
             if (jump_dist && fren.left != self.left) {
                 r[Control::Jump] = 1;
             }
@@ -80,9 +120,9 @@ AYU_DESCRIBE(vf::MonsterMind,
     attrs(
         attr("vf::Mind", base<Mind>(), include),
         attr("target", &MonsterMind::target),
-        attr("sight_dist", &MonsterMind::sight_dist),
-        attr("attack_dist", &MonsterMind::attack_dist),
-        attr("jump_dist", &MonsterMind::jump_dist, optional),
-        attr("social_dist", &MonsterMind::social_dist)
+        attr("sight_range", &MonsterMind::sight_range),
+        attr("attack_range", &MonsterMind::attack_range),
+        attr("jump_range", &MonsterMind::jump_range, optional),
+        attr("social_distance", &MonsterMind::social_distance)
     )
 )

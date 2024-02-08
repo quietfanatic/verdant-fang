@@ -11,10 +11,10 @@ struct Monster : Walker {
 
 struct MonsterMind : Mind {
     Walker* target = null;
-    float sight_dist;
-    float attack_dist;
-    float jump_dist = 0;
-    float social_dist;
+    float sight_range;
+    float attack_range;
+    float jump_range = 0;
+    float social_distance;
     Controls Mind_think (Resident& r) override;
 };
 

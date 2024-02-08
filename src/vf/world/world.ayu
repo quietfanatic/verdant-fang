@@ -10,16 +10,16 @@
     player: [vf::Player { }]
     chargey: [vf::MonsterMind {
         target: #verdant
-        sight_dist: 120
-        attack_dist: 32
-        social_dist: 40
+        sight_range: 120
+        attack_range: 24
+        social_distance: 40
     }]
     jumpy: [vf::MonsterMind {
         target: #verdant
-        sight_dist: 120
-        attack_dist: 32
-        jump_dist: 64
-        social_dist: 64
+        sight_range: 120
+        attack_range: 24
+        jump_range: 64
+        social_distance: 64
     }]
 
     start: [vf::Room { }]
