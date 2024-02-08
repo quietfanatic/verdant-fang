@@ -26,33 +26,39 @@ Controls MonsterMind::Mind_think (Resident& s) {
         target->state == WS::Damage ||
         target->state == WS::Dead
     ) return r;
-    auto rel = target->pos.x - self.pos.x;
-    if (contains(Range(-sight_dist, -attack_dist), rel)) {
-        r[Control::Left] = 1;
+    auto dist = target->pos.x - self.pos.x;
+     // Work with right-facing coordinates
+    if (self.left) dist = -dist;
+    auto forward = self.left ? Control::Left : Control::Right;
+    auto backward = self.left ? Control::Right : Control::Left;
+
+    if (dist < 0) {
+        r[backward] = 1;
     }
-    else if (contains(Range(-attack_dist, attack_dist), rel)) {
-        if (rel < 0 && !self.left) {
-            r[Control::Left] = 1;
-        }
-        else if (rel > 0 && self.left) {
-            r[Control::Right] = 1;
-        }
+    else if (dist < attack_dist) {
+        r[forward] = 1;
+         // Don't hold preattack pose
         if (self.state != WS::Attack || self.anim_phase >= 3) {
             r[Control::Attack] = 1;
         }
     }
-    else if (contains(Range(attack_dist, sight_dist), rel)) {
-        r[Control::Right] = 1;
+    else if (dist < jump_dist) {
+        r[Control::Jump] = 1;
     }
+    else if (dist < sight_dist) {
+        r[forward] = 1;
+    }
+
     for (auto& other : self.room->residents) {
-        if (&other == &s) continue;
-        if (other.types & Types::Monster) {
-            if (contains(Range(-social_dist, 0), other.pos.x - self.pos.x)) {
-                r[Control::Left] = 0;
+        if (&other == &s || !(other.types & Types::Monster)) continue;
+        auto& fren = static_cast<Monster&>(other);
+        auto dist = fren.pos.x - self.pos.x;
+        if (self.left) dist = -dist;
+        if (dist > 0 && dist < social_dist) {
+            if (jump_dist && fren.left != self.left) {
+                r[Control::Jump] = 1;
             }
-            if (contains(Range(0, social_dist), other.pos.x - self.pos.x)) {
-                r[Control::Right] = 0;
-            }
+            else r[forward] = 0;
         }
     }
     return r;
@@ -72,6 +78,7 @@ AYU_DESCRIBE(vf::MonsterMind,
         attr("target", &MonsterMind::target),
         attr("sight_dist", &MonsterMind::sight_dist),
         attr("attack_dist", &MonsterMind::attack_dist),
+        attr("jump_dist", &MonsterMind::jump_dist, optional),
         attr("social_dist", &MonsterMind::social_dist)
     )
 )

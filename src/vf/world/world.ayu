@@ -8,10 +8,17 @@
 
 [ayu::Document {
     player: [vf::Player { }]
-    monstermind: [vf::MonsterMind {
+    chargey: [vf::MonsterMind {
         target: #verdant
         sight_dist: 120
         attack_dist: 32
+        social_dist: 40
+    }]
+    jumpy: [vf::MonsterMind {
+        target: #verdant
+        sight_dist: 120
+        attack_dist: 32
+        jump_dist: 96
         social_dist: 40
     }]
 
@@ -59,11 +66,19 @@
             [-16 0] [16 0] [48 0] [80 0] [112 0] [144 0] [176 0] [208 0] [240 0] [272 0] [304 0]
         ]
     }]
-    monster: [vf::Monster {
+
+    charger: [vf::Monster {
         data: monster.ayu#data
-        mind: #monstermind
+        mind: #chargey
         room: #den
         pos: [256 32]
+        floor: #start_blocks
+    }]
+    jumper: [vf::Monster {
+        data: monster.ayu#data
+        mind: #jumpy
+        room: #den
+        pos: [288 32]
         floor: #start_blocks
     }]
 

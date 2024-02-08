@@ -13,6 +13,7 @@ struct MonsterMind : Mind {
     Walker* target = null;
     float sight_dist;
     float attack_dist;
+    float jump_dist = 0;
     float social_dist;
     Controls Mind_think (Resident& r) override;
 };
