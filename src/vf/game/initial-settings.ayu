@@ -20,5 +20,7 @@
         [[f4] [fullscreen]]
         [[f11] [fullscreen]]
         [[alt enter] [fullscreen]]
+        [[ctrl s] [save_state]]
+        [[ctrl l] [load_state]]
     ]
 }]

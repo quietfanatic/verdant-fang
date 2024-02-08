@@ -22,11 +22,13 @@ Controls MonsterMind::Mind_think (Resident& s) {
     Controls r {};
     if (!(s.types & Types::Monster)) return r;
     auto& self = static_cast<Monster&>(s);
-    if (!main_character ||
-        main_character->state == WS::Damage ||
-        main_character->state == WS::Dead
+    auto v = self.room->find_with_types(Types::Verdant);
+    if (!v) return r;
+    auto& verdant = static_cast<Verdant&>(*v);
+    if (verdant.state == WS::Damage ||
+        verdant.state == WS::Dead
     ) return r;
-    auto target = main_character->pos.x - self.pos.x;
+    auto target = verdant.pos.x - self.pos.x;
     if (contains(Range(-sight_dist, -attack_dist), target)) {
         r[Control::Left] = 1;
     }

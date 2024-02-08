@@ -32,4 +32,17 @@ void fullscreen_ () {
 }
 Command fullscreen (fullscreen_, "fullscreen", "Toggle window fullscreen state");
 
+void save_state_ () {
+    if (!current_game) return;
+    ayu::save(current_game->state_res);
+}
+Command save_state (save_state_, "save_state", "Save game state");
+
+void load_state_ () {
+    if (!current_game) return;
+    ayu::ResourceTransaction tr;
+    ayu::reload(current_game->state_res);
+}
+Command load_state (load_state_, "load_state", "Load game state");
+
 } // vf

@@ -3,6 +3,7 @@
 #include "../../dirt/ayu/reflection/describe.h"
 #include "../game/camera.h"
 #include "../game/game.h"
+#include "../game/state.h"
 #include "verdant.h"
 
 namespace vf {
@@ -19,10 +20,10 @@ void Transition::Resident_on_collide (const Hitbox&, Resident& o, const Hitbox&)
     auto& v = static_cast<Verdant&>(o);
     current_game->before_next_step.push_back([&v, this]{
         v.set_room(null);
-        auto& game = *current_game;
-        game.current_room->exit();
-        game.current_room = target_room;
-        game.current_room->enter();
+        auto& state = current_game->state();
+        state.current_room->exit();
+        state.current_room = target_room;
+        state.current_room->enter();
         v.set_room(target_room);
         v.walk_start_x += target_pos.x - v.pos.x; // hack
         v.pos = target_pos;

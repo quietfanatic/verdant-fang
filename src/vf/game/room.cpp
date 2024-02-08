@@ -58,6 +58,13 @@ void Room::draw () {
     }
 }
 
+Resident* Room::find_with_types (uint32 types) {
+    for (Resident& a : residents) {
+        if (a.types & types) return &a;
+    }
+    return null;
+}
+
 } using namespace vf;
 
 AYU_DESCRIBE(vf::Room,

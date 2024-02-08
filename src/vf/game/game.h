@@ -13,7 +13,7 @@ struct Game {
     ayu::SharedResource settings_res;
     Settings& settings ();
     ayu::SharedResource state_res;
-    Room* current_room = null;
+    State& state ();
     UniqueArray<uni::UniqueFunction<void()>> before_next_step;
     Game ();
     ~Game ();

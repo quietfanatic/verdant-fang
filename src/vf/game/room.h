@@ -12,6 +12,10 @@ struct Room {
     void exit ();
     void step ();
     void draw ();
+
+     // Get first resident whose types includes these one (bitwise and).
+     // Returns null if there is none.
+    Resident* find_with_types (uint32 types);
 };
 
  // Hitboxes determine when Resident_on_collide is called.  The algorithm looks
@@ -49,6 +53,7 @@ struct Resident : Linked<Resident> {
         room = r;
         if (room) link(&room->residents);
     }
+
     virtual void Resident_on_enter () { }
     virtual void Resident_on_exit () { }
     virtual void Resident_before_step () { }

@@ -45,12 +45,14 @@ static void on_step (Game& game) {
     while (game.before_next_step) {
         game.before_next_step.consume([](auto&& f) { f(); });
     }
-    if (game.current_room) game.current_room->step();
+    auto room = game.state().current_room;
+    if (room) room->step();
 }
 
 static void on_draw (Game& game) {
     begin_camera();
-    if (game.current_room) game.current_room->draw();
+    auto room = game.state().current_room;
+    if (room) room->draw();
     end_camera();
     SDL_GL_SwapWindow(game.window);
 }
@@ -84,21 +86,22 @@ Game::Game () :
     else {
         ayu::SharedResource world (iri::constant("res:/vf/world/world.ayu"));
         state_res->set_value(ayu::Dynamic::make<State>());
-        state_res->get_value().as<State>().world = move(
-            world->value().as<ayu::Document>()
-        );
+        auto& state = state_res->get_value().as<State>();
+        state.current_room = world["start"][1];
+        state.world = move(world->value().as<ayu::Document>());
         ayu::force_unload(world);
          // Don't save state yet
     }
-    current_room = state_res["world"]["start"][1];
-    expect(current_room->residents);
-    current_room->enter();
 }
 
 Game::~Game () { current_game = null; }
 
 Settings& Game::settings () {
     return settings_res->value().as_known<Settings>();
+}
+
+State& Game::state () {
+    return state_res->value().as_known<State>();
 }
 
 void Game::start () {
@@ -116,14 +119,15 @@ Game* current_game = null;
 #ifndef TAP_DISABLE_TESTS
 #include <filesystem>
 #include "../../dirt/tap/tap.h"
-#include "../world/verdant.h"
+#include "../world/common.h"
 
 tap::TestSet tests ("vf/game", []{
     using namespace control;
     using namespace tap;
     fs::remove(ayu::resource_filename(iri::constant("data:/state.ayu")));
     Game game;
-    ok(main_character, "Initial state has player");
+    auto room = game.state().current_room;
+    ok(room->find_with_types(Types::Verdant), "Initial state has player");
     int window_id = SDL_GetWindowID(game.window);
     send_input_as_event({.type = InputType::Key, .code = SDLK_ESCAPE}, window_id);
     game.loop.start();

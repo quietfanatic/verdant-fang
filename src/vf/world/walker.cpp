@@ -1,7 +1,7 @@
 #include "walker.h"
 
-#include "../game/settings.h"
 #include "../../dirt/ayu/reflection/describe.h"
+#include "../game/game.h"
 #include "../game/state.h"
 
 namespace vf {
@@ -282,7 +282,7 @@ void Walker::Resident_before_step () {
         if (floor && state == WS::Neutral) {
             auto walk_frame_after = walk_frame();
             if (walk_frame_before % 3 == 1 && walk_frame_after % 3 == 2) {
-                auto i = std::uniform_int_distribution(0, 4)(current_state->rng);
+                auto i = std::uniform_int_distribution(0, 4)(current_game->state().rng);
                 expect(i >= 0 && i <= 4);
                 data->sfx.step[i]->play();
             }
