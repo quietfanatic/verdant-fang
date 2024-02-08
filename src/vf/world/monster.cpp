@@ -9,11 +9,23 @@ Monster::Monster () {
     types |= Types::Monster;
 }
 
+void Monster::Walker_on_hit (
+    const Hitbox& hb, Walker& victim, const Hitbox& o_hb
+) {
+    victim.left = !left;
+    victim.decal_type = DecalType::Slash;
+    victim.decal_index = 1;
+    Walker::Walker_on_hit(hb, victim, o_hb);
+}
+
 Controls MonsterMind::Mind_think (Resident& s) {
     Controls r {};
     if (!(s.types & Types::Monster)) return r;
     auto& self = static_cast<Monster&>(s);
-    if (!main_character) return r;
+    if (!main_character ||
+        main_character->state == WS::Damage ||
+        main_character->state == WS::Dead
+    ) return r;
     auto target = main_character->pos.x - self.pos.x;
     if (contains(Range(-sight_dist, -attack_dist), target)) {
         r[Control::Left] = 1;

@@ -8,15 +8,21 @@ namespace vf {
 enum class DecalType : uint8 {
     None,
     Stab,
+    Slash,
 };
 
 constexpr uint8 max_decals = 4;
 
+struct Decal {
+    glow::PixelTexture tex;
+    Frame dir_0 [3];
+    Frame dir_1 [1];
+    Frame dir_2 [7];
+};
+
 struct DecalData {
-    glow::PixelTexture stab_tex;
-    Frame stab_0 [3];
-    Frame stab_1 [1];
-    Frame stab_2 [7];
+    Decal stab;
+    Decal slash;
 };
 
 struct Walker;

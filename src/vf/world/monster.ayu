@@ -155,8 +155,8 @@
             land_sequence: [4 4]
             attack_sequence: [8 8 8 200]
             hit_sequence: 24
-            damage_sequence: [18 6 8 8]
-            dead_sequence: [8 8 8 20 60 120 240]
+            damage_sequence: [14 10 10 8]
+            dead_sequence: [10 10 10 20 60 120 240]
             jump_crouch_lift: 4
             dead_floor_lift: 10
             hold_buffer: 6

@@ -6,6 +6,7 @@ namespace vf {
 
 struct Monster : Walker {
     Monster ();
+    void Walker_on_hit (const Hitbox&, Walker&, const Hitbox&) override;
 };
 
 struct MonsterMind : Mind {
