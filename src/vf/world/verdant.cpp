@@ -41,13 +41,13 @@ void Verdant::Walker_on_hit (
     victim.pos.y -= height_diff;
      // Move victor horizontally
     if (left) {
-        if (decal_pos.x - weapon_tip < 2) {
-            pos.x -= decal_pos.x - weapon_tip;
+        if (weapon_tip + 2 > decal_pos.x) {
+            pos.x += decal_pos.x - (weapon_tip + 2);
         }
     }
     else {
-        if (weapon_tip - decal_pos.x < 2) {
-            pos.x += weapon_tip - decal_pos.x;
+        if (weapon_tip - 2 < decal_pos.x) {
+            pos.x += decal_pos.x - (weapon_tip - 2);
         }
     }
      // Supercall
