@@ -1,13 +1,77 @@
 #include "camera.h"
 
+#include "../../dirt/ayu/resources/global.h"
+#include "../../dirt/ayu/resources/resource.h"
+#include "../../dirt/ayu/reflection/describe.h"
 #include "../../dirt/glow/gl.h"
+#include "../../dirt/glow/program.h"
 #include "../../dirt/glow/texture.h"
+#include "../../dirt/iri/iri.h"
 #include "frame.h"
 
 namespace vf {
 
-static glow::Texture world_tex;
-static GLuint world_fb = 0;
+struct CameraProgram : glow::Program {
+    glow::Texture world_tex;
+    GLuint world_fb;
+    void Program_after_link () override {
+        int u_tex = glGetUniformLocation(id, "u_tex");
+        glUniform1i(u_tex, 0);
+        world_tex = glow::Texture(GL_TEXTURE_2D);
+        glTexImage2D(
+            GL_TEXTURE_2D, 0, GL_RGBA,
+            camera_size.x, camera_size.y,
+            0, GL_RGBA, GL_UNSIGNED_BYTE, 0
+        );
+         // Filtering mode for entire screen
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        glGenFramebuffers(1, &world_fb);
+        glBindFramebuffer(GL_FRAMEBUFFER, world_fb);
+        glFramebufferTexture2D(
+            GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, world_tex, 0
+        );
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+            raise(e_General, "Failed to set up render to texture");
+        }
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+    void begin () {
+        glBindFramebuffer(GL_FRAMEBUFFER, world_fb);
+        glViewport(0, 0, camera_size.x, camera_size.y);
+        glEnable(GL_BLEND);
+    }
+    void end () {
+        draw_frames();
+        use();
+        glDisable(GL_BLEND);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(
+            window_viewport.l, window_viewport.b,
+            width(window_viewport), height(window_viewport)
+        );
+        glBindTexture(GL_TEXTURE_2D, world_tex);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    }
+};
+static CameraProgram* camera_program = null;
+
+void begin_camera () {
+    if (!camera_program) {
+        ayu::global(&camera_program);
+        camera_program = ayu::ResourceRef(
+            iri::constant("res:/vf/game/camera.ayu")
+        )["program"][1];
+    }
+    camera_program->begin();
+}
+
+void end_camera () {
+    camera_program->end();
+}
 
 void window_size_changed (IVec new_size) {
     if (slope(new_size) > slope(camera_size)) {
@@ -26,48 +90,8 @@ void window_size_changed (IVec new_size) {
     }
 }
 
-static void setup_camera () {
-    world_tex = glow::Texture(GL_TEXTURE_RECTANGLE);
-    glTexImage2D(
-        GL_TEXTURE_RECTANGLE, 0, GL_RGBA,
-        camera_size.x, camera_size.y,
-        0, GL_RGBA, GL_UNSIGNED_BYTE, 0
-    );
-     // Filtering mode for entire screen
-    glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glBindTexture(GL_TEXTURE_RECTANGLE, 0);
+} using namespace vf;
 
-    glGenFramebuffers(1, &world_fb);
-    glBindFramebuffer(GL_FRAMEBUFFER, world_fb);
-    glFramebufferTexture2D(
-        GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, world_tex, 0
-    );
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-        raise(e_General, "Failed to set up render to texture");
-    }
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-}
-
-void begin_camera () {
-    if (!world_fb) setup_camera();
-    glBindFramebuffer(GL_FRAMEBUFFER, world_fb);
-    glViewport(0, 0, camera_size.x, camera_size.y);
-    glEnable(GL_BLEND);
-}
-
-void end_camera () {
-    draw_frames();
-    glDisable(GL_BLEND);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(
-        window_viewport.l, window_viewport.b,
-        width(window_viewport), height(window_viewport)
-    );
-    draw_frame_internal(
-        {-1, -1, 1, 1}, {0, 0, 320, 180}, world_tex
-    );
-}
-
-} // vf
+AYU_DESCRIBE(vf::CameraProgram,
+    delegate(base<glow::Program>())
+)

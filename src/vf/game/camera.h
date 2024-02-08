@@ -11,9 +11,9 @@ T world_to_screen (const T& world) {
     return world / (camera_size / 2) - Vec(1, 1);
 }
 
-void window_size_changed (IVec new_size);
-
 void begin_camera ();
 void end_camera ();
+
+void window_size_changed (IVec new_size);
 
 } // vf

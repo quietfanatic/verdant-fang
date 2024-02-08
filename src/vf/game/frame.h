@@ -27,11 +27,4 @@ void draw_texture (
 
 void draw_frames ();
 
- // For use from camera.  I need to reorganize this.
-void draw_frame_internal (
-    const Rect& screen_rect,
-    const Rect& tex_rect,
-    uint32 tex
-);
-
 } // vf

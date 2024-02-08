@@ -80,25 +80,12 @@ void draw_frames () {
     });
     for (usize i = 0; i < program.n_commands; i++) {
         auto& cmd = program.commands[indexes[i]];
-        draw_frame_internal(cmd.screen_rect, cmd.tex_rect, cmd.tex);
         glUniform1fv(program.u_screen_rect, 4, &cmd.screen_rect.l);
         glUniform1fv(program.u_tex_rect, 4, &cmd.tex_rect.l);
         glBindTexture(GL_TEXTURE_RECTANGLE, cmd.tex);
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     }
     program.n_commands = 0;
-}
-
-void draw_frame_internal (
-    const Rect& screen_rect,
-    const Rect& tex_rect,
-    uint32 tex
-) {
-    auto& program = *frame_program;
-    glUniform1fv(program.u_screen_rect, 4, &screen_rect.l);
-    glUniform1fv(program.u_tex_rect, 4, &tex_rect.l);
-    glBindTexture(GL_TEXTURE_RECTANGLE, tex);
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 }
 
 } using namespace vf;

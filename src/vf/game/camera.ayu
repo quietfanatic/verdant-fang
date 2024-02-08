@@ -1,0 +1,53 @@
+&vertex: "#version 140
+
+out vec2 v_tex_coords;
+
+void main () {
+    switch (gl_VertexID) {
+        case 0: {
+            gl_Position.xy = vec2(-1, -1);
+            v_tex_coords = vec2(0, 0);
+            break;
+        }
+        case 1: {
+            gl_Position.xy = vec2(1, -1);
+            v_tex_coords = vec2(1, 0);
+            break;
+        }
+        case 2: {
+            gl_Position.xy = vec2(1, 1);
+            v_tex_coords = vec2(1, 1);
+            break;
+        }
+        case 3: {
+            gl_Position.xy = vec2(-1, 1);
+            v_tex_coords = vec2(0, 1);
+            break;
+        }
+    }
+    gl_Position.zw = vec2(0, 1);
+}"
+
+&fragment: "#version 140
+
+uniform sampler2D u_tex;
+in vec2 v_tex_coords;
+out vec4 color;
+
+void main () {
+    color = texture(u_tex, v_tex_coords);
+}"
+
+[ayu::Document {
+    program: [vf::CameraProgram {
+        shaders: [#vertex #fragment]
+    }]
+    vertex: [glow::Shader {
+        type: GL_VERTEX_SHADER
+        source: *vertex
+    }]
+    fragment: [glow::Shader {
+        type: GL_FRAGMENT_SHADER
+        source: *fragment
+    }]
+}]
