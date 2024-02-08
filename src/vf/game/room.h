@@ -59,8 +59,6 @@ struct Resident : Linked<Resident> {
      // The use case for Resident_set_pos is for Walker to reset its
      // walk_start_x.
     virtual void Resident_set_pos (Vec p) { pos = p; }
-    virtual void Resident_on_enter () { }
-    virtual void Resident_on_exit () { }
     virtual void Resident_before_step () { }
      // See Hitbox
     virtual void Resident_on_collide (
@@ -70,6 +68,8 @@ struct Resident : Linked<Resident> {
     ) { }
     virtual void Resident_after_step () { }
     virtual void Resident_draw () { }
+    virtual void Resident_on_enter () { }
+    virtual void Resident_on_exit () { }
 
     Resident () = default;
     Resident (const Resident&) = delete;

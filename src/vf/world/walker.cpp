@@ -500,9 +500,11 @@ void Walker::Resident_draw () {
             }
         }
         if (pose.weapon) {
+            expect(weapon_state < 3);
             Vec weapon_offset = pose.body->weapon * scale;
             draw_frame(
-                pos + weapon_offset, *pose.weapon, *data->weapon_tex,
+                pos + weapon_offset, *pose.weapon,
+                *data->weapon_tex[weapon_state],
                 scale, (damage_overlap ? Z::Overlap : z) + Z::WeaponOffset
             );
         }
@@ -510,6 +512,9 @@ void Walker::Resident_draw () {
     draw_decal(*this, pose);
 }
 
+void Walker::Resident_on_exit () {
+    weapon_state = 0;
+}
 
 } using namespace vf;
 
@@ -634,6 +639,7 @@ AYU_DESCRIBE(vf::Walker,
         attr("walk_start_x", &Walker::walk_start_x, optional),
         attr("fall_start_x", &Walker::walk_start_x, optional),
         attr("decal_type", &Walker::decal_type, optional),
-        attr("decal_index", &Walker::decal_index, optional)
+        attr("decal_index", &Walker::decal_index, optional),
+        attr("weapon_state", &Walker::weapon_state, optional)
     )
 )

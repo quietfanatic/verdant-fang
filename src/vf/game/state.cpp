@@ -16,14 +16,13 @@ struct Scheduled {
 bool Transition::step (State& state) {
     if (until_exit) {
         if (!--until_exit) {
-            if (migrant) migrant->set_room(null);
             state.current_room->exit();
             state.current_room = target_room;
-            state.current_room->enter();
             if (migrant) {
                 migrant->set_room(state.current_room);
                 migrant->set_pos(target_pos);
             }
+            state.current_room->enter();
             swap_world_tex();
              // fallthrough
         }

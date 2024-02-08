@@ -1,11 +1,13 @@
 [ayu::Document {
-    actors_img: [glow::FileImage { source:assets/actors.png }]
+    layer0: [glow::FileImage { source:assets/layer0.png }]
+    layer1: [glow::FileImage { source:assets/layer1.png }]
+    layer2: [glow::FileImage { source:assets/layer2.png }]
     cave_img: [glow::FileImage { source:assets/cave.png }]
     cave_tex: [glow::PixelTexture {
         image: #cave_img
     }]
     block_tex: [glow::PixelTexture {
-        image: #actors_img
+        image: #layer0
         bounds: [3 3 35 35]
     }]
      -- For some reason, having these as mp3s breaks SDL2_mixer.  Perhaps it

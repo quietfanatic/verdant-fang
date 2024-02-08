@@ -1,7 +1,7 @@
 [vf::DecalData {
     stab: {
         tex: {
-            image: assets.ayu#actors_img
+            image: assets.ayu#layer0
             bounds: [337 323 393 356]
         }
         dir_0: [
@@ -24,7 +24,7 @@
     }
     slash: {
         tex: {
-            image: assets.ayu#actors_img
+            image: assets.ayu#layer0
             bounds: [335 132 395 222]
         }
         dir_0: [

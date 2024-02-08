@@ -15,6 +15,7 @@ void Monster::Walker_on_hit (
     victim.left = !left;
     victim.decal_type = DecalType::Slash;
     victim.decal_index = 1;
+    weapon_state = 1;
     Walker::Walker_on_hit(hb, victim, o_hb);
 }
 
@@ -39,11 +40,11 @@ float predict (Walker& self, Walker& target, float self_acc, float time) {
         time
     );
      // Assume target will attack and decelerate.
-    float target_acc =
+    float target_dec =
         target.floor ? target_phys.coast_dec : target_phys.air_dec;
     auto predicted_target_x = quadratic_until_stop(
         target.pos.x, target.vel.x,
-        target.left ? -target_acc : target_acc,
+        target.left ? target_dec : -target_dec,
         time
     );
     return predicted_target_x - predicted_x;

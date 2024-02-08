@@ -26,30 +26,23 @@ void Verdant::Walker_on_hit (
             decal_i = i;
         }
     }
+     // Calculate stab depth
+    float weapon_tip = pos.x + left_flip(
+        weapon_offset.x + data->poses->attack[1].weapon->hitbox.r
+    );
+    Vec decal_pos = victim.pos + victim.left_flip(victim_body.decals[decal_i]);
+    float stab_depth = left_flip(weapon_tip - decal_pos.x);
      // Stab
     victim.decal_type = DecalType::Stab;
     victim.decal_index = decal_i;
-     // Snap to stab location.
-    float tip_offset = weapon_offset.x
-                     + data->poses->attack[1].weapon->hitbox.r;
-    if (left) tip_offset = -tip_offset;
-    float weapon_tip = pos.x + tip_offset;
-    Vec decal_offset = victim_body.decals[decal_i];
-    if (victim.left) decal_offset.x = -decal_offset.x;
-    Vec decal_pos = victim.pos + decal_offset;
+    if (stab_depth > 12) weapon_state = 2;
+    else if (weapon_state < 1) weapon_state = 1;
      // Move victim vertically
     float height_diff = decal_pos.y - weapon_y;
     victim.pos.y -= height_diff;
      // Move victor horizontally
-    if (left) {
-        if (weapon_tip + 2 > decal_pos.x) {
-            pos.x += decal_pos.x - (weapon_tip + 2);
-        }
-    }
-    else {
-        if (weapon_tip - 2 < decal_pos.x) {
-            pos.x += decal_pos.x - (weapon_tip - 2);
-        }
+    if (stab_depth < -2) {
+        pos.x += left_flip(-stab_depth);
     }
      // Supercall
     Walker::Walker_on_hit(hb, victim, o_hb);

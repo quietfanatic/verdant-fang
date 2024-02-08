@@ -96,7 +96,7 @@ struct WalkerData {
     WalkerPhys phys;
     glow::PixelTexture* body_tex;
     glow::PixelTexture* head_tex;
-    glow::PixelTexture* weapon_tex;
+    glow::PixelTexture* weapon_tex [3];
     DecalData* decals;
     WalkerPoses* poses;
     WalkerSfx sfx;
@@ -118,6 +118,7 @@ struct Walker : Resident {
     float fall_start_y = GNAN;
     DecalType decal_type = {};
     uint8 decal_index = -1;
+    uint8 weapon_state = 0;
 
      // Temporary
     Resident* new_floor;
@@ -144,9 +145,14 @@ struct Walker : Resident {
     void Resident_on_collide (const Hitbox&, Resident&, const Hitbox&) override;
     void Resident_after_step () override;
     void Resident_draw () override;
+    void Resident_on_exit () override;
      // Customization points.
      // You can supercall this or not.
     virtual void Walker_on_hit (const Hitbox&, Walker&, const Hitbox&);
+
+     // Useful
+    float left_flip (float v) { return left ? -v : v; }
+    Vec left_flip (Vec v) { return left ? Vec(-v.x, v.y) : v; }
 };
 
 } // vf

@@ -1,6 +1,6 @@
 [ayu::Document {
     body_tex: [glow::PixelTexture {
-        image: assets.ayu#actors_img
+        image: assets.ayu#layer2
          -- y down
         bounds: [171 214 411 314]
     }]
@@ -54,7 +54,7 @@
         [2 2 2 2]
     ]]
     head_tex: [glow::PixelTexture {
-        image: assets.ayu#actors_img
+        image: assets.ayu#layer2
         bounds: [129 259 170 298]
     }]
     head_neutral: [vf::Frame [
@@ -69,8 +69,12 @@
     head_dead: [vf::Frame [
         [36 10] [-11 -9 4 6]
     ]]
-    axe_tex: [glow::PixelTexture {
-        image: assets.ayu#actors_img
+    axe_tex_0: [glow::PixelTexture {
+        image: assets.ayu#layer0
+        bounds: [66 223 116 298]
+    }]
+    axe_tex_1: [glow::PixelTexture {
+        image: assets.ayu#layer1
         bounds: [66 223 116 298]
     }]
     axe_neutral: [vf::WeaponFrame [
@@ -162,7 +166,7 @@
         }
         body_tex: #body_tex
         head_tex: #head_tex
-        weapon_tex: #axe_tex
+        weapon_tex: [#axe_tex_0 #axe_tex_1 #axe_tex_1]
         poses: #poses
         decals: decals.ayu#
         sfx: {
