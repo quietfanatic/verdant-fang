@@ -14,7 +14,6 @@ struct Game {
     Settings& settings ();
     ayu::SharedResource state_res;
     State& state ();
-    UniqueArray<uni::UniqueFunction<void()>> before_next_step;
     Game ();
     ~Game ();
     void start ();

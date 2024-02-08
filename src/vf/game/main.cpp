@@ -15,18 +15,18 @@ int main (int argc, char** argv) {
     SDL_free(base);
     tap::allow_testing(argc, argv);
 
-    try {
+//    try {
         Game game;
         game.start();
-    }
-    catch (std::exception& e) {
+//    }
+//    catch (std::exception& e) {
 //        SDL_ShowSimpleMessageBox(
 //            SDL_MESSAGEBOX_ERROR,
 //            "Sorry, the program crashed.",
 //            cat("Uncaught exception: ", e.what()).c_str(),
 //            null
 //        );
-        throw;
-    }
+//        throw;
+//    }
     return 0;
 }

@@ -1,12 +1,29 @@
 #include "transition.h"
 
 #include "../../dirt/ayu/reflection/describe.h"
+#include "../../dirt/control/command.h"
 #include "../game/camera.h"
 #include "../game/game.h"
 #include "../game/state.h"
 #include "verdant.h"
 
 namespace vf {
+
+void start_room_transition_ (Transition* self, Verdant* v) {
+    v->set_room(null);
+    auto& state = current_game->state();
+    state.current_room->exit();
+    state.current_room = self->target_room;
+    state.current_room->enter();
+    v->set_room(self->target_room);
+     // Hack to unbreak walking sfx
+    v->walk_start_x += self->target_pos.x - v->pos.x;
+    v->pos = self->target_pos;
+    start_transition(self->direction);
+}
+control::Command start_room_transition (
+    start_room_transition_, "start_room_transition", "Trigger a room transition object"
+);
 
 Transition::Transition () {
     types = Types::Transition;
@@ -18,17 +35,10 @@ Transition::Transition () {
 void Transition::Resident_on_collide (const Hitbox&, Resident& o, const Hitbox&) {
     expect(o.types & Types::Verdant);
     auto& v = static_cast<Verdant&>(o);
-    current_game->before_next_step.push_back([&v, this]{
-        v.set_room(null);
-        auto& state = current_game->state();
-        state.current_room->exit();
-        state.current_room = target_room;
-        state.current_room->enter();
-        v.set_room(target_room);
-        v.walk_start_x += target_pos.x - v.pos.x; // hack
-        v.pos = target_pos;
-        start_transition(direction);
-    });
+     // Don't delay this or you'll end up queueing a new command every frame.
+    current_game->state().schedule_after(
+        0, control::Statement(&start_room_transition, this, &v)
+    );
 }
 
 } using namespace vf;
