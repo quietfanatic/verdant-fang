@@ -77,6 +77,10 @@
         image: assets.ayu#layer1
         bounds: [66 223 116 298]
     }]
+    axe_tex_2: [glow::PixelTexture {
+        image: assets.ayu#layer2
+        bounds: [66 223 116 298]
+    }]
     axe_neutral: [vf::WeaponFrame [
         [34 63] [-3 -2 13 7]
     ]]
@@ -166,7 +170,7 @@
         }
         body_tex: #body_tex
         head_tex: #head_tex
-        weapon_tex: [#axe_tex_0 #axe_tex_1 #axe_tex_1]
+        weapon_tex: [#axe_tex_0 #axe_tex_1 #axe_tex_2]
         poses: #poses
         decals: decals.ayu#
         sfx: {

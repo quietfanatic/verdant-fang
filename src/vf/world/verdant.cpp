@@ -42,7 +42,7 @@ void Verdant::Walker_on_hit (
     victim.pos.y -= height_diff;
      // Move victor horizontally
     if (stab_depth < -2) {
-        pos.x += left_flip(-stab_depth);
+        pos.x += left_flip(2 - stab_depth);
     }
      // Supercall
     Walker::Walker_on_hit(hb, victim, o_hb);
