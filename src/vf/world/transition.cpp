@@ -1,6 +1,7 @@
 #include "transition.h"
 
 #include "../../dirt/ayu/reflection/describe.h"
+#include "../game/camera.h"
 #include "../game/game.h"
 #include "verdant.h"
 
@@ -25,6 +26,7 @@ void Transition::Resident_on_collide (const Hitbox&, Resident& o, const Hitbox&)
         v.set_room(target_room);
         v.walk_start_x += target_pos.x - v.pos.x; // hack
         v.pos = target_pos;
+        start_transition();
     });
 }
 

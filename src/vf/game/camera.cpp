@@ -11,66 +11,116 @@
 
 namespace vf {
 
-struct CameraProgram : glow::Program {
-    glow::Texture world_tex;
-    GLuint world_fb;
+static uint32 wipe_timer = 0;
+constexpr uint32 wipe_timer_start = 30;
+static glow::Texture world_tex;
+static glow::Texture old_tex;
+static GLuint world_fb;
+
+struct ZoomProgram : glow::Program {
     void Program_after_link () override {
         int u_tex = glGetUniformLocation(id, "u_tex");
         glUniform1i(u_tex, 0);
-        world_tex = glow::Texture(GL_TEXTURE_2D);
-        glTexImage2D(
-            GL_TEXTURE_2D, 0, GL_RGBA,
-            camera_size.x, camera_size.y,
-            0, GL_RGBA, GL_UNSIGNED_BYTE, 0
-        );
-         // Filtering mode for entire screen
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glBindTexture(GL_TEXTURE_2D, 0);
-
-        glGenFramebuffers(1, &world_fb);
-        glBindFramebuffer(GL_FRAMEBUFFER, world_fb);
-        glFramebufferTexture2D(
-            GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, world_tex, 0
-        );
-        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-            raise(e_General, "Failed to set up render to texture");
-        }
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    }
-    void begin () {
-        glBindFramebuffer(GL_FRAMEBUFFER, world_fb);
-        glViewport(0, 0, camera_size.x, camera_size.y);
-        glEnable(GL_BLEND);
-    }
-    void end () {
-        draw_frames();
-        use();
-        glDisable(GL_BLEND);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(
-            window_viewport.l, window_viewport.b,
-            width(window_viewport), height(window_viewport)
-        );
-        glBindTexture(GL_TEXTURE_2D, world_tex);
-        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     }
 };
-static CameraProgram* camera_program = null;
+static ZoomProgram* zoom_program = null;
+
+struct WipeProgram : glow::Program {
+    int u_wipe_pos;
+    void Program_after_link () override {
+        u_wipe_pos = glGetUniformLocation(id, "u_wipe_pos");
+        require(u_wipe_pos != -1);
+        int u_tex = glGetUniformLocation(id, "u_tex");
+        glUniform1i(u_tex, 0);
+    }
+};
+static WipeProgram* wipe_program = null;
+
+static void setup_camera () {
+    world_tex = glow::Texture(GL_TEXTURE_2D);
+    glTexImage2D(
+        GL_TEXTURE_2D, 0, GL_RGBA,
+        camera_size.x, camera_size.y,
+        0, GL_RGBA, GL_UNSIGNED_BYTE, 0
+    );
+     // Filtering mode for entire screen
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    old_tex = glow::Texture(GL_TEXTURE_2D);
+    glTexImage2D(
+        GL_TEXTURE_2D, 0, GL_RGBA,
+        camera_size.x, camera_size.y,
+        0, GL_RGBA, GL_UNSIGNED_BYTE, 0
+    );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glGenFramebuffers(1, &world_fb);
+    glBindFramebuffer(GL_FRAMEBUFFER, world_fb);
+    glFramebufferTexture2D(
+        GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, world_tex, 0
+    );
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        raise(e_General, "Failed to set up render to texture");
+    }
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
 
 void begin_camera () {
-    if (!camera_program) {
-        ayu::global(&camera_program);
-        camera_program = ayu::ResourceRef(
+    if (!zoom_program) {
+        ayu::global(&zoom_program);
+        zoom_program = ayu::ResourceRef(
             iri::constant("res:/vf/game/camera.ayu")
-        )["program"][1];
+        )["zoom_program"][1];
     }
-    camera_program->begin();
+    if (!wipe_program) {
+        ayu::global(&wipe_program);
+        wipe_program = ayu::ResourceRef(
+            iri::constant("res:/vf/game/camera.ayu")
+        )["wipe_program"][1];
+    }
+    if (!world_fb) setup_camera();
+    glBindFramebuffer(GL_FRAMEBUFFER, world_fb);
+    glViewport(0, 0, camera_size.x, camera_size.y);
+    glEnable(GL_BLEND);
 }
 
 void end_camera () {
-    camera_program->end();
+    draw_frames();
+    if (wipe_timer) {
+        wipe_timer -= 1;
+        wipe_program->use();
+        glUniform1f(
+            wipe_program->u_wipe_pos,
+            float(wipe_timer) / wipe_timer_start
+        );
+        glBindTexture(GL_TEXTURE_2D, old_tex);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    }
+    zoom_program->use();
+    glDisable(GL_BLEND);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(
+        window_viewport.l, window_viewport.b,
+        width(window_viewport), height(window_viewport)
+    );
+    glBindTexture(GL_TEXTURE_2D, world_tex);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+}
+
+void start_transition () {
+    using std::swap; swap(world_tex, old_tex);
+    wipe_timer = wipe_timer_start;
+    glBindFramebuffer(GL_FRAMEBUFFER, world_fb);
+    glFramebufferTexture2D(
+        GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, world_tex, 0
+    );
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        raise(e_General, "Failed to change framebuffer texture");
+    }
 }
 
 void window_size_changed (IVec new_size) {
@@ -92,6 +142,10 @@ void window_size_changed (IVec new_size) {
 
 } using namespace vf;
 
-AYU_DESCRIBE(vf::CameraProgram,
+AYU_DESCRIBE(vf::ZoomProgram,
+    delegate(base<glow::Program>())
+)
+
+AYU_DESCRIBE(vf::WipeProgram,
     delegate(base<glow::Program>())
 )
