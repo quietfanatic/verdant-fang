@@ -13,8 +13,6 @@ namespace vf {
 
 static uint32 wipe_timer = 0;
 constexpr uint32 wipe_timer_start = 30;
-constexpr float wipe_width = 0.16;
-constexpr float wipe_height = 0.09;
 static glow::Texture world_tex;
 static glow::Texture old_tex;
 static GLuint world_fb;
@@ -99,9 +97,11 @@ void end_camera () {
         wipe_timer -= 1;
         wipe_program->use();
         float wipe_t = float(wipe_timer) / wipe_timer_start;
+         // Ease in and out a bit
+        wipe_t = (1.f - std::cos(wipe_t * float(M_PI))) / 2.f;
         glUniform1f(
             wipe_program->u_wipe_pos,
-            lerp(0 - wipe_width/2, 1 + wipe_width/2, wipe_t)
+            lerp(-0.1f, 1.1f, wipe_t)
         );
         glBindTexture(GL_TEXTURE_2D, old_tex);
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
