@@ -63,6 +63,7 @@ struct WalkerPhys {
     float gravity_jump;
     float gravity_fall;
     float gravity_drop;
+    float gravity_damage;
     uint8 drop_duration;
     uint8 land_sequence [2];
     uint8 attack_sequence [4];

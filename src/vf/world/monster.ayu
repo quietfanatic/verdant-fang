@@ -8,9 +8,6 @@
     body_stand: [vf::BodyFrame [
         [13 69] [-13 0 19 34] [2 25] [-3 15]
     ]]
-    body_crouch: [vf::BodyFrame [
-        [84 76] [-13 0 19 30] [2 18]
-    ]]
     body_walk0: [vf::BodyFrame [
         [13 35] [-13 0 19 34] [3 25] [0 21]
     ]]
@@ -29,11 +26,8 @@
     body_walk5: [vf::BodyFrame [
         [188 36] [-13 0 19 34] [3 24] [0 20]
     ]]
-    body_fall1: [vf::BodyFrame [
-        [153 69] [-13 0 19 34] [3 25]
-    ]]
     body_land: [vf::BodyFrame [
-        [49 71] [-13 0 19 34] [3 22]
+        [49 71] [-13 0 19 34] [2 23] [-1 19]
     ]]
     body_preattack: [vf::BodyFrame [
         [72 0] [-13 0 10 35] [1 25] [-2 25]
@@ -105,7 +99,7 @@
     ]]
     poses: [vf::WalkerPoses {
         stand: [#body_stand #head_neutral #axe_neutral]
-        crouch: [#body_crouch #head_neutral #axe_neutral]
+        crouch: [#body_land #head_neutral #axe_neutral]
         walk: [
             [#body_walk0 #head_neutral #axe_lift]
             [#body_walk1 #head_neutral #axe_lift]
@@ -118,7 +112,7 @@
             [#body_walk0 #head_neutral #axe_lift]
             [#body_walk0 #head_neutral #axe_lift]
             [#body_walk2 #head_neutral #axe_lift]
-            [#body_fall1 #head_neutral #axe_lift]
+            [#body_walk2 #head_neutral #axe_lift]
         ]
         land: [
             [#body_land #head_neutral #axe_lift]
@@ -146,11 +140,12 @@
             coast_dec: 0.3
             air_acc: 0.2
             air_max: 2
-            air_dec: 0
+            air_dec: 0.2
             jump_vel: 3.4
-            gravity_jump: 0.11
+            gravity_jump: 0.2
             gravity_fall: 0.2
-            gravity_drop: 0.3
+            gravity_drop: 0.2
+            gravity_damage: 0.1
             drop_duration: 6
             land_sequence: [4 4]
             attack_sequence: [8 8 8 200]

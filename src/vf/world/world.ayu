@@ -18,8 +18,8 @@
         target: #verdant
         sight_dist: 120
         attack_dist: 32
-        jump_dist: 96
-        social_dist: 40
+        jump_dist: 64
+        social_dist: 64
     }]
 
     start: [vf::Room { }]

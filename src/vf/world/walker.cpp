@@ -272,7 +272,8 @@ void Walker::Resident_before_step () {
         if (vel.y > phys.fall_start_vel || !defined(fall_start_y)) {
             fall_start_y = pos.y;
         }
-        vel.y -= state == WS::Damage || drop_timer == 0 ? phys.gravity_jump
+        vel.y -= state == WS::Damage ? phys.gravity_damage
+               : drop_timer == 0 ? phys.gravity_jump
                : drop_timer <= phys.drop_duration ? phys.gravity_drop
                : phys.gravity_fall;
 
@@ -356,7 +357,9 @@ void Walker::Resident_on_collide (
     }
     else if (&hb == &hbs[0] && o_hb.layers_2 & Layers::Walker_Walker) {
         auto& other = static_cast<Walker&>(o);
-        if (state != WS::Dead && other.state != WS::Dead) {
+        if (state != WS::Dead && other.state != WS::Dead &&
+            !!floor == !!other.floor
+        ) {
             float diff = pos.x < o.pos.x ? 1 : -1;
             pos.x -= diff;
             o.pos.x += diff;
@@ -556,6 +559,7 @@ AYU_DESCRIBE(vf::WalkerPhys,
         attr("gravity_jump", &WalkerPhys::gravity_jump),
         attr("gravity_fall", &WalkerPhys::gravity_fall),
         attr("gravity_drop", &WalkerPhys::gravity_drop),
+        attr("gravity_damage", &WalkerPhys::gravity_damage),
         attr("drop_duration", &WalkerPhys::drop_duration),
         attr("land_sequence", &WalkerPhys::land_sequence),
         attr("attack_sequence", &WalkerPhys::attack_sequence),

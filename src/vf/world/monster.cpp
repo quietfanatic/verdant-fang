@@ -36,13 +36,13 @@ Controls MonsterMind::Mind_think (Resident& s) {
         r[backward] = 1;
     }
     else if (dist < attack_dist) {
-        r[forward] = 1;
          // Don't hold preattack pose
         if (self.state != WS::Attack || self.anim_phase >= 3) {
             r[Control::Attack] = 1;
         }
     }
     else if (dist < jump_dist) {
+        r[forward] = 1;
         r[Control::Jump] = 1;
     }
     else if (dist < sight_dist) {
@@ -52,13 +52,17 @@ Controls MonsterMind::Mind_think (Resident& s) {
     for (auto& other : self.room->residents) {
         if (&other == &s || !(other.types & Types::Monster)) continue;
         auto& fren = static_cast<Monster&>(other);
+        if (fren.state == WS::Dead || fren.state == WS::Damage) continue; // :(
         auto dist = fren.pos.x - self.pos.x;
         if (self.left) dist = -dist;
         if (dist > 0 && dist < social_dist) {
             if (jump_dist && fren.left != self.left) {
                 r[Control::Jump] = 1;
             }
-            else r[forward] = 0;
+            else {
+                r[Control::Jump] = 0;
+                r[forward] = 0;
+            }
         }
     }
     return r;
