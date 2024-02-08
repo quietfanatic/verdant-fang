@@ -7,8 +7,8 @@ namespace vf {
 
 struct Scenery : Resident {
     Scenery ();
-    Rect bounds;
     glow::Texture* tex;
+    Rect bounds;
     void Resident_draw () override;
 };
 

@@ -18,6 +18,13 @@ void draw_frame (
     float z = 0
 );
 
+void draw_texture (
+    const glow::Texture&,
+    const Rect& world_rect,
+    const Rect& tex_rect,
+    float z = 0
+);
+
 void draw_frames ();
 
  // For use from camera.  I need to reorganize this.

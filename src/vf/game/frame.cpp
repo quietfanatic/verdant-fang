@@ -40,6 +40,17 @@ static FrameProgram* frame_program = null;
 void draw_frame (
     Vec pos, const Frame& frame, const glow::Texture& tex, Vec scale, float z
 ) {
+    Rect world_rect = pos + frame.bounds * scale;
+    Rect tex_rect = frame.bounds + frame.offset;
+    draw_texture(tex, world_rect, tex_rect, z);
+}
+
+void draw_texture (
+    const glow::Texture& tex,
+    const Rect& world_rect,
+    const Rect& tex_rect,
+    float z
+) {
     require(!!tex);
     require(tex.target == GL_TEXTURE_RECTANGLE);
     if (!frame_program) {
@@ -49,9 +60,7 @@ void draw_frame (
         )["program"][1];
     }
     require(frame_program->n_commands < FrameProgram::max_commands);
-    Rect screen_bounds = frame.bounds * scale;
-    Rect screen_rect = world_to_screen(screen_bounds + pos);
-    Rect tex_rect = frame.bounds + frame.offset;
+    Rect screen_rect = world_to_screen(world_rect);
     frame_program->commands[frame_program->n_commands++] = FrameProgram::Command(
         screen_rect, tex_rect, tex, z
     );

@@ -13,8 +13,9 @@
         attack_dist: 32
         social_dist: 40
     }]
+
     start: [vf::Room { }]
-    bg: [vf::Scenery {
+    start_bg: [vf::Scenery {
         room: #start
         tex: assets.ayu#cave_tex
         bounds: [0 0 320 180]
@@ -32,14 +33,43 @@
         data: verdant.ayu#data
         mind: #player
         room: #start
-        pos: [*b6 *b2]
+        pos: [96 32]
         floor: #start_blocks
+    }]
+    start_to_den: [vf::Transition {
+        room: #start
+        bounds: [328 0 328 180]
+        target_room: #den
+        target_pos: [16 32]
+    }]
+
+    den: [vf::Room { }]
+    den_bg: [vf::Scenery {
+        room: #den
+        tex: assets.ayu#cave_tex
+        bounds: [320 0 0 180]
+    }]
+    den_blocks: [vf::Blocks {
+        room: #den
+        blocks: [
+            [-16 160] [16 160] [48 160] [80 160] [112 160] [144 160] [176 160] [208 160] [240 160] [272 160] [304 160]
+            [-16 128] [16 128] [272 128] [304 128]
+            [-16 96] [16 96] [272 96] [304 96]
+            [-16 0] [16 0] [48 0] [80 0] [112 0] [144 0] [176 0] [208 0] [240 0] [272 0] [304 0]
+        ]
     }]
     monster: [vf::Monster {
         data: monster.ayu#data
         mind: #monstermind
-        room: #start
+        room: #den
         pos: [*b16 *b2]
         floor: #start_blocks
+    }]
+
+    den_to_start: [vf::Transition {
+        room: #den
+        bounds: [-8 0 -8 180]
+        target_room: #start
+        target_pos: [304 32]
     }]
 }]

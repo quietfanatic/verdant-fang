@@ -60,6 +60,8 @@ struct Resident : Linked<Resident> {
     ) { }
     virtual void Resident_after_step () { }
     virtual void Resident_draw () { }
+    Resident () = default;
+    Resident (const Resident&) = delete;
 };
 
 } // vf

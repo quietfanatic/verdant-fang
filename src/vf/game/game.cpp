@@ -41,6 +41,13 @@ static bool on_event (Game& game, SDL_Event* event) {
     }
 }
 
+static void on_step (Game& game) {
+    while (game.before_next_step) {
+        game.before_next_step.consume([](auto&& f) { f(); });
+    }
+    if (game.current_room) game.current_room->step();
+}
+
 static void on_draw (Game& game) {
     begin_camera();
     if (game.current_room) game.current_room->draw();
@@ -52,7 +59,7 @@ Game::Game () :
     window("Verdant Fang (testing)", size(window_viewport)),
     loop{
         .on_event = [this](SDL_Event* e){ return on_event(*this, e); },
-        .on_step = [this]{ if (current_room) current_room->step(); },
+        .on_step = [this]{ on_step(*this); },
         .on_draw = [this]{ on_draw(*this); },
     },
     settings_res(iri::constant("data:/settings.ayu")),

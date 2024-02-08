@@ -19,6 +19,7 @@ namespace Types {
     constexpr uint32 Walker = 1 << 0;
     constexpr uint32 Verdant = 1 << 1;
     constexpr uint32 Monster = 1 << 2;
+    constexpr uint32 Transition = 1 << 3;
 }
 
 namespace Layers {
@@ -26,6 +27,7 @@ namespace Layers {
     constexpr uint32 Walker_Walker = 1 << 1;
     constexpr uint32 Weapon_Block = 1 << 2;
     constexpr uint32 Weapon_Walker = 1 << 3;
+    constexpr uint32 Transition_Verdant = 1 << 4;
 }
 
 } // vf
