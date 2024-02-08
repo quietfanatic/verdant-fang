@@ -57,21 +57,38 @@ Game::Game () :
         .on_draw = [this]{ on_draw(*this); },
     },
     settings_res(iri::constant("data:/settings.ayu")),
+    options_res(iri::constant("data:/options.ayu")),
     state_res(iri::constant("data:/state.ayu"))
 {
     expect(!current_game);
     current_game = this;
+
+    ayu::ResourceTransaction tr;
+
     if (ayu::source_exists(settings_res->name())) {
         ayu::load(settings_res);
     }
     else {
         auto initial = ayu::SharedResource(
-            iri::constant("res:/vf/game/initial-settings.ayu")
+            iri::constant("res:/vf/game/settings-initial.ayu")
         );
         ayu::load(initial);
         ayu::rename(initial, settings_res);
         ayu::save(settings_res);
     }
+
+    if (ayu::source_exists(options_res->name())) {
+        ayu::load(options_res);
+    }
+    else {
+        auto initial = ayu::SharedResource(
+            iri::constant("res:/vf/game/options-initial.ayu")
+        );
+        ayu::load(initial);
+        ayu::rename(initial, options_res);
+        ayu::save(options_res);
+    }
+
     if (ayu::source_exists(state_res->name())) {
         ayu::load(state_res);
     }
@@ -90,6 +107,10 @@ Game::~Game () { current_game = null; }
 
 Settings& Game::settings () {
     return settings_res->value().as_known<Settings>();
+}
+
+Options& Game::options () {
+    return state_res->value().as_known<Options>();
 }
 
 State& Game::state () {

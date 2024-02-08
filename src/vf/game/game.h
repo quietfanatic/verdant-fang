@@ -12,6 +12,8 @@ struct Game {
     wind::ActiveLoop loop;
     ayu::SharedResource settings_res;
     Settings& settings ();
+    ayu::SharedResource options_res;
+    Options& options ();
     ayu::SharedResource state_res;
     State& state ();
     Game ();

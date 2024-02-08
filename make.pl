@@ -122,6 +122,7 @@ my @sources = (qw(
     vf/game/frame.cpp
     vf/game/game.cpp
     vf/game/main.cpp
+    vf/game/options.cpp
     vf/game/room.cpp
     vf/game/settings.cpp
     vf/game/sound.cpp

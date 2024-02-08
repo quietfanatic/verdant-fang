@@ -9,6 +9,7 @@ using namespace uni;
 namespace fs = std::filesystem;
 struct Game;
 struct Hitbox;
+struct Options;
 struct Resident;
 struct Room;
 struct Settings;
