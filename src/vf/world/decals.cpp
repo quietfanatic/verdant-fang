@@ -61,6 +61,14 @@ void draw_decal (const Walker& w, const Pose& pose) {
 
 } using namespace vf;
 
+AYU_DESCRIBE(vf::DecalType,
+    values(
+        value("none", DecalType::None),
+        value("stab", DecalType::Stab),
+        value("slash", DecalType::Slash)
+    )
+)
+
 AYU_DESCRIBE(vf::Decal,
     attrs(
         attr("tex", &Decal::tex),

@@ -54,3 +54,14 @@
 - Started drawing art for blood and started some logic around displaying it, but
   haven't finished it yet.
 - Planned work for tomorrow: Actual blood!
+#####2024-02-07 W
+- Animated blood for both player and monster.  A lot of work but worth it.
+- Added a really snazzy snake-themed effect for room transitions, using some
+  trig and a new shader.  Oh, and added room transitions.
+- To make room transitions work smoothly, added a per-frame scheduling system.
+- Fixed state loading and saving, including saving current room and scheduled
+  actions.  Although room transitions are properly saved, the visual transition
+  effect is not.  Saving it fully would require saving the texture of the old
+  room, which is not worth the effort.
+- Planned work for tomorrow: Buttons and doors and more enemies?
+

@@ -617,8 +617,10 @@ AYU_DESCRIBE(vf::Walker,
         attr("anim_phase", &Walker::anim_phase, optional),
         attr("anim_timer", &Walker::anim_timer, optional),
         attr("drop_timer", &Walker::drop_timer, optional),
+        attr("floor", &Walker::floor, optional),
         attr("walk_start_x", &Walker::walk_start_x, optional),
         attr("fall_start_x", &Walker::walk_start_x, optional),
-        attr("floor", &Walker::floor, optional)
+        attr("decal_type", &Walker::decal_type, optional),
+        attr("decal_index", &Walker::decal_index, optional)
     )
 )

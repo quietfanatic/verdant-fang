@@ -111,13 +111,13 @@ struct Walker : Resident {
     uint32 anim_timer = 0;
      // More gravity a few frames after releasing jump
     uint32 drop_timer = 0;
+    Resident* floor = null;
      // For animations
     float walk_start_x = GNAN;
     float fall_start_y = GNAN;
     DecalType decal_type = {};
     uint8 decal_index = -1;
 
-    Resident* floor = null;
      // Temporary
     Resident* new_floor;
      // body, damage, weapon
