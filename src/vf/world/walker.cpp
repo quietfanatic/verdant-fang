@@ -383,6 +383,7 @@ void Walker::Walker_on_hit (const Hitbox&, Walker& victim, const Hitbox&) {
      // if two walkers hit each other at the same time.
     if (state != WS::Damage) set_state(WS::Hit);
     victim.set_state(WS::Damage);
+    victim.data->sfx.attack->stop();
     data->sfx.hit_soft->play();
 }
 

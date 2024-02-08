@@ -38,6 +38,11 @@ void Sound::play () {
     glow::require_sdl(Mix_PlayChannel(channel, chunk, 0) >= 0);
 }
 
+void Sound::stop () {
+    expect(channel != -1);
+    glow::require_sdl(Mix_HaltChannel(channel) >= 0);
+}
+
 } using namespace vf;
 
 AYU_DESCRIBE(vf::Sound,

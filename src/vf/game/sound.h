@@ -23,6 +23,7 @@ struct Sound {
     void load ();
     ~Sound ();
     void play ();
+    void stop ();
 };
 
 } // vf
