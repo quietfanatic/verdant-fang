@@ -139,6 +139,7 @@ struct Walker : Resident {
     uint8 walk_frame ();
     uint8 jump_frame ();
 
+    void Resident_set_pos (Vec) override;
     void Resident_before_step ();
     void Resident_on_collide (const Hitbox&, Resident&, const Hitbox&) override;
     void Resident_after_step () override;

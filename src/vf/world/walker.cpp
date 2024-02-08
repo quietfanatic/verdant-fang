@@ -45,6 +45,11 @@ uint8 Walker::jump_frame () {
     }
 }
 
+void Walker::Resident_set_pos (Vec p) {
+    Resident::Resident_set_pos(p);
+    walk_start_x = p.x;
+}
+
 void Walker::Resident_before_step () {
     auto& phys = data->phys;
 

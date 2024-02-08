@@ -54,9 +54,11 @@ struct Resident : Linked<Resident> {
         if (room) link(&room->residents);
     }
 
-    void set_pos (Vec p) { Resident_on_set_pos(p); }
+    void set_pos (Vec p) { Resident_set_pos(p); }
 
-    virtual void Resident_on_set_pos (Vec p) { pos = p; }
+     // The use case for Resident_set_pos is for Walker to reset its
+     // walk_start_x.
+    virtual void Resident_set_pos (Vec p) { pos = p; }
     virtual void Resident_on_enter () { }
     virtual void Resident_on_exit () { }
     virtual void Resident_before_step () { }
