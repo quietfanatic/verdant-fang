@@ -76,8 +76,12 @@ Controls MonsterMind::Mind_think (Resident& s) {
         r[backward] = 1;
     }
     else if (attack_dist < attack_range) {
+        if (
+         // Don't attack too early when jumping unless the player is above.
+            (self.vel.y < 1 || target->pos.y > self.pos.y + 8) &&
          // Don't hold preattack pose
-        if (self.state != WS::Attack || self.anim_phase >= 3) {
+            (self.state != WS::Attack || self.anim_phase >= 3)
+        ) {
             r[Control::Attack] = 1;
         }
     }
