@@ -42,18 +42,53 @@ void main () {
 
 uniform sampler2D u_tex;
 uniform float u_wipe_pos;
+uniform int u_wipe_dir;
 in vec2 v_tex_coords;
 out vec4 color;
 
-const float wipe_width = 0.1;
-const vec4 wipe_color = vec4(0.3, 0.3, 0.3, 1.0);
+const float wipe_width = 0.16;
+const float wipe_height = 0.09;
+const vec4 wipe_colors [2] = vec4[2](
+    vec4(0.3, 0.3, 0.3, 1.0),
+    vec4(0.25, 0.25, 0.25, 1.0)
+);
 
 void main () {
-    if (v_tex_coords.x < u_wipe_pos - wipe_width / 2) {
+    float distance;
+    int color_index;
+    switch (u_wipe_dir) {
+         // Make a nice snakey wipe.  I know this code is messy, I haven't
+         // bothered to clean it up yet.
+        case 0: {
+            float wipe_pos = u_wipe_pos - sin(v_tex_coords.y * 9) / 16 * 0.6;
+            distance = v_tex_coords.x - wipe_pos;
+            color_index = mod(v_tex_coords.y * 9 + cos(distance * 10), 2) < 1 ? 0 : 1;
+            break;
+        }
+        case 1: {
+            float wipe_pos = u_wipe_pos - sin(v_tex_coords.x * 16) / 9 * 0.6;
+            distance = v_tex_coords.y - wipe_pos;
+            color_index = mod(v_tex_coords.x * 16 + cos(distance * 10), 2) < 1 ? 0 : 1;
+            break;
+        }
+        case 2: {
+            float wipe_pos = u_wipe_pos - sin(v_tex_coords.y * 9) / 16 * 0.6;
+            distance = 1 - v_tex_coords.x - wipe_pos;
+            color_index = mod(v_tex_coords.y * 9 + cos(distance * 10), 2) < 1 ? 0 : 1;
+            break;
+        }
+        case 3: {
+            float wipe_pos = u_wipe_pos - sin(v_tex_coords.x * 16) / 9 * 0.6;
+            distance = 1 - v_tex_coords.y - wipe_pos;
+            color_index = mod(v_tex_coords.x * 16 + cos(distance * 10), 2) < 1 ? 0 : 1;
+            break;
+        }
+    }
+    if (distance < -wipe_width / 2) {
         color = texture(u_tex, v_tex_coords);
     }
-    else if (v_tex_coords.x < u_wipe_pos + wipe_width / 2) {
-        color = wipe_color;
+    else if (distance < wipe_width / 2) {
+        color = wipe_colors[color_index];
     }
     else {
         color = vec4(0);

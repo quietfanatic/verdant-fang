@@ -14,7 +14,8 @@ T world_to_screen (const T& world) {
 void begin_camera ();
 void end_camera ();
 
-void start_transition ();
+ // Only four cardinal directions are implemented.
+void start_transition (Vec direction);
 
 void window_size_changed (IVec new_size);
 

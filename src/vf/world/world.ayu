@@ -71,5 +71,6 @@
         bounds: [-8 0 -8 180]
         target_room: #start
         target_pos: [304 32]
+        direction: [-1 0]
     }]
 }]

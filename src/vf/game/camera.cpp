@@ -13,6 +13,8 @@ namespace vf {
 
 static uint32 wipe_timer = 0;
 constexpr uint32 wipe_timer_start = 30;
+constexpr float wipe_width = 0.16;
+constexpr float wipe_height = 0.09;
 static glow::Texture world_tex;
 static glow::Texture old_tex;
 static GLuint world_fb;
@@ -27,9 +29,12 @@ static ZoomProgram* zoom_program = null;
 
 struct WipeProgram : glow::Program {
     int u_wipe_pos;
+    int u_wipe_dir;
     void Program_after_link () override {
         u_wipe_pos = glGetUniformLocation(id, "u_wipe_pos");
         require(u_wipe_pos != -1);
+        u_wipe_dir = glGetUniformLocation(id, "u_wipe_dir");
+        require(u_wipe_dir != -1);
         int u_tex = glGetUniformLocation(id, "u_tex");
         glUniform1i(u_tex, 0);
     }
@@ -93,9 +98,10 @@ void end_camera () {
     if (wipe_timer) {
         wipe_timer -= 1;
         wipe_program->use();
+        float wipe_t = float(wipe_timer) / wipe_timer_start;
         glUniform1f(
             wipe_program->u_wipe_pos,
-            float(wipe_timer) / wipe_timer_start
+            lerp(0 - wipe_width/2, 1 + wipe_width/2, wipe_t)
         );
         glBindTexture(GL_TEXTURE_2D, old_tex);
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
@@ -111,7 +117,8 @@ void end_camera () {
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 }
 
-void start_transition () {
+void start_transition (Vec direction) {
+    expect(length2(direction) == 1);
     using std::swap; swap(world_tex, old_tex);
     wipe_timer = wipe_timer_start;
     glBindFramebuffer(GL_FRAMEBUFFER, world_fb);
@@ -121,6 +128,13 @@ void start_transition () {
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         raise(e_General, "Failed to change framebuffer texture");
     }
+    wipe_program->use();
+    glUniform1i(wipe_program->u_wipe_dir,
+          direction.x > 0.4 ? 0
+        : direction.y > 0.4 ? 1
+        : direction.x < 0.4 ? 2
+        :                     3
+    );
 }
 
 void window_size_changed (IVec new_size) {

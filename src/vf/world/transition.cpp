@@ -26,7 +26,7 @@ void Transition::Resident_on_collide (const Hitbox&, Resident& o, const Hitbox&)
         v.set_room(target_room);
         v.walk_start_x += target_pos.x - v.pos.x; // hack
         v.pos = target_pos;
-        start_transition();
+        start_transition(direction);
     });
 }
 
@@ -37,6 +37,7 @@ AYU_DESCRIBE(vf::Transition,
         attr("vf::Resident", base<Resident>(), include),
         attr("bounds", ref_func<Rect>([](Transition& v)->Rect&{ return v.hb.box; })),
         attr("target_room", &Transition::target_room),
-        attr("target_pos", &Transition::target_pos)
+        attr("target_pos", &Transition::target_pos),
+        attr("direction", &Transition::direction, optional)
     )
 )
