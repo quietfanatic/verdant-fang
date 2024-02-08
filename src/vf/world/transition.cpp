@@ -49,7 +49,7 @@ void Transition::Resident_on_collide (const Hitbox&, Resident& o, const Hitbox&)
         triggered = true;
         start_transition(direction);
         current_game->state().schedule_after(
-            10, control::Statement(&change_room, this, &v)
+            8, control::Statement(&change_room, this, &v)
         );
     }
 }

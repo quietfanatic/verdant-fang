@@ -40,6 +40,7 @@ Command save_state (save_state_, "save_state", "Save game state");
 
 void load_state_ () {
     if (!current_game) return;
+    if (!ayu::source_exists(current_game->state_res->name())) return;
     ayu::ResourceTransaction tr;
     ayu::reload(current_game->state_res);
 }
