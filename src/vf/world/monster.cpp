@@ -18,14 +18,22 @@ void Monster::Walker_on_hit (
     Walker::Walker_on_hit(hb, victim, o_hb);
 }
 
-template <class T>
-T quadratic (T p, T v, T a, float t) {
+ // Evaluate quadratic, but stopping when velocity reaches 0 instead of going
+ // backwards.
+float quadratic_until_stop (float p, float v, float a, float t) {
+     // 0 = v + at
+     // -v = at
+     // -v/a = t
+    if (a) {
+        float peak_t = -(v / a);
+        if (peak_t >= 0 && t > peak_t) t = peak_t;
+    }
     return p + v*t + a*(t*t);
 }
 
 float predict (Walker& self, Walker& target, float self_acc, float time) {
     auto& target_phys = target.data->phys;
-    auto predicted_x = quadratic(
+    auto predicted_x = quadratic_until_stop(
         self.pos.x, self.vel.x,
         self.left ? -self_acc : self_acc,
         time
@@ -33,7 +41,7 @@ float predict (Walker& self, Walker& target, float self_acc, float time) {
      // Assume target will attack and decelerate.
     float target_acc =
         target.floor ? target_phys.coast_dec : target_phys.air_dec;
-    auto predicted_target_x = quadratic(
+    auto predicted_target_x = quadratic_until_stop(
         target.pos.x, target.vel.x,
         target.left ? -target_acc : target_acc,
         time
