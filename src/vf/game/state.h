@@ -17,6 +17,9 @@ struct State {
     uint64 current_frame = 0;
     Room* current_room = null;
     UniqueArray<Scheduled> scheduled;
+     // If set to true, step() will increment current_frame but will not run
+     // current_room->step().
+    bool frozen = false;
     ayu::Document world;
 
     State ();

@@ -19,7 +19,7 @@ void State::step () {
         scheduled.erase(usize(0));
         action();
     }
-    if (current_room) current_room->step();
+    if (!frozen && current_room) current_room->step();
     current_frame += 1;
 }
 
@@ -51,6 +51,7 @@ AYU_DESCRIBE(vf::State,
         attr("current_frame", &State::current_frame, optional),
         attr("current_room", &State::current_room),
         attr("scheduled", &State::scheduled, optional),
+        attr("frozen", &State::frozen, optional),
         attr("world", &State::world)
     )
 );

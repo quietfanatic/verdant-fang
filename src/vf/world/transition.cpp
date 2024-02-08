@@ -9,7 +9,13 @@
 
 namespace vf {
 
-void start_room_transition_ (Transition* self, Verdant* v) {
+static void unfreeze_ () {
+    current_game->state().frozen = false;
+}
+static control::Command unfreeze (unfreeze_, "vf::Transition::unfreeze");
+
+static void change_room_ (Transition* self, Verdant* v) {
+    self->triggered = false;
     v->set_room(null);
     auto& state = current_game->state();
     state.current_room->exit();
@@ -19,10 +25,14 @@ void start_room_transition_ (Transition* self, Verdant* v) {
      // Hack to unbreak walking sfx
     v->walk_start_x += self->target_pos.x - v->pos.x;
     v->pos = self->target_pos;
-    start_transition(self->direction);
+    swap_world_tex();
+    state.frozen = true;
+    state.schedule_after(
+        wipe_duration - 10, control::Statement(&unfreeze)
+    );
 }
-control::Command start_room_transition (
-    start_room_transition_, "start_room_transition", "Trigger a room transition object"
+static control::Command change_room (
+    change_room_, "vf::Transition::change_room"
 );
 
 Transition::Transition () {
@@ -35,10 +45,13 @@ Transition::Transition () {
 void Transition::Resident_on_collide (const Hitbox&, Resident& o, const Hitbox&) {
     expect(o.types & Types::Verdant);
     auto& v = static_cast<Verdant&>(o);
-     // Don't delay this or you'll end up queueing a new command every frame.
-    current_game->state().schedule_after(
-        0, control::Statement(&start_room_transition, this, &v)
-    );
+    if (!triggered) {
+        triggered = true;
+        start_transition(direction);
+        current_game->state().schedule_after(
+            10, control::Statement(&change_room, this, &v)
+        );
+    }
 }
 
 } using namespace vf;
@@ -49,6 +62,7 @@ AYU_DESCRIBE(vf::Transition,
         attr("bounds", ref_func<Rect>([](Transition& v)->Rect&{ return v.hb.box; })),
         attr("target_room", &Transition::target_room),
         attr("target_pos", &Transition::target_pos),
-        attr("direction", &Transition::direction, optional)
+        attr("direction", &Transition::direction, optional),
+        attr("triggered", &Transition::triggered, optional)
     )
 )

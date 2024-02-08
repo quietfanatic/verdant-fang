@@ -5,6 +5,7 @@ namespace vf {
 
 constexpr Vec camera_size = {320, 180};
 inline IRect window_viewport = {0, 0, 1280, 720};
+constexpr uint32 wipe_duration = 30;
 
 template <class T>
 T world_to_screen (const T& world) {
@@ -16,6 +17,8 @@ void end_camera ();
 
  // Only four cardinal directions are implemented.
 void start_transition (Vec direction);
+ // You must do this before the area after the wipe is visible.
+void swap_world_tex ();
 
 void window_size_changed (IVec new_size);
 

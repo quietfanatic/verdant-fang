@@ -12,7 +12,6 @@
 namespace vf {
 
 static uint32 wipe_timer = 0;
-constexpr uint32 wipe_timer_start = 30;
 static glow::Texture world_tex;
 static glow::Texture old_tex;
 static GLuint world_fb;
@@ -96,7 +95,7 @@ void end_camera () {
     if (wipe_timer) {
         wipe_timer -= 1;
         wipe_program->use();
-        float wipe_t = float(wipe_timer) / wipe_timer_start;
+        float wipe_t = float(wipe_timer) / wipe_duration;
          // Ease in and out a bit
         wipe_t = (1.f - std::cos(wipe_t * float(M_PI))) / 2.f;
         glUniform1f(
@@ -119,15 +118,6 @@ void end_camera () {
 
 void start_transition (Vec direction) {
     expect(length2(direction) == 1);
-    using std::swap; swap(world_tex, old_tex);
-    wipe_timer = wipe_timer_start;
-    glBindFramebuffer(GL_FRAMEBUFFER, world_fb);
-    glFramebufferTexture2D(
-        GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, world_tex, 0
-    );
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-        raise(e_General, "Failed to change framebuffer texture");
-    }
     wipe_program->use();
     glUniform1i(wipe_program->u_wipe_dir,
           direction.x > 0.4 ? 0
@@ -135,6 +125,18 @@ void start_transition (Vec direction) {
         : direction.x < 0.4 ? 2
         :                     3
     );
+}
+
+void swap_world_tex () {
+    using std::swap; swap(world_tex, old_tex);
+    wipe_timer = wipe_duration;
+    glBindFramebuffer(GL_FRAMEBUFFER, world_fb);
+    glFramebufferTexture2D(
+        GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, world_tex, 0
+    );
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        raise(e_General, "Failed to change framebuffer texture");
+    }
 }
 
 void window_size_changed (IVec new_size) {
