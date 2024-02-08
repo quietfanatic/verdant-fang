@@ -22,28 +22,26 @@ Controls MonsterMind::Mind_think (Resident& s) {
     Controls r {};
     if (!(s.types & Types::Monster)) return r;
     auto& self = static_cast<Monster&>(s);
-    auto v = self.room->find_with_types(Types::Verdant);
-    if (!v) return r;
-    auto& verdant = static_cast<Verdant&>(*v);
-    if (verdant.state == WS::Damage ||
-        verdant.state == WS::Dead
+    if (!target ||
+        target->state == WS::Damage ||
+        target->state == WS::Dead
     ) return r;
-    auto target = verdant.pos.x - self.pos.x;
-    if (contains(Range(-sight_dist, -attack_dist), target)) {
+    auto rel = target->pos.x - self.pos.x;
+    if (contains(Range(-sight_dist, -attack_dist), rel)) {
         r[Control::Left] = 1;
     }
-    else if (contains(Range(-attack_dist, attack_dist), target)) {
-        if (target < 0 && !self.left) {
+    else if (contains(Range(-attack_dist, attack_dist), rel)) {
+        if (rel < 0 && !self.left) {
             r[Control::Left] = 1;
         }
-        else if (target > 0 && self.left) {
+        else if (rel > 0 && self.left) {
             r[Control::Right] = 1;
         }
         if (self.state != WS::Attack || self.anim_phase >= 3) {
             r[Control::Attack] = 1;
         }
     }
-    else if (contains(Range(attack_dist, sight_dist), target)) {
+    else if (contains(Range(attack_dist, sight_dist), rel)) {
         r[Control::Right] = 1;
     }
     for (auto& other : self.room->residents) {
@@ -71,6 +69,7 @@ AYU_DESCRIBE(vf::Monster,
 AYU_DESCRIBE(vf::MonsterMind,
     attrs(
         attr("vf::Mind", base<Mind>(), include),
+        attr("target", &MonsterMind::target),
         attr("sight_dist", &MonsterMind::sight_dist),
         attr("attack_dist", &MonsterMind::attack_dist),
         attr("social_dist", &MonsterMind::social_dist)

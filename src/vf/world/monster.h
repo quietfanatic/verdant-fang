@@ -10,6 +10,7 @@ struct Monster : Walker {
 };
 
 struct MonsterMind : Mind {
+    Walker* target = null;
     float sight_dist;
     float attack_dist;
     float social_dist;

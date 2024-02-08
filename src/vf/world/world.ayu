@@ -9,6 +9,7 @@
 [ayu::Document {
     player: [vf::Player { }]
     monstermind: [vf::MonsterMind {
+        target: #verdant
         sight_dist: 120
         attack_dist: 32
         social_dist: 40
@@ -62,7 +63,7 @@
         data: monster.ayu#data
         mind: #monstermind
         room: #den
-        pos: [*b16 *b2]
+        pos: [256 32]
         floor: #start_blocks
     }]
 
