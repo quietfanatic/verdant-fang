@@ -327,9 +327,13 @@ void Walker::Resident_on_collide (
                 if (vel.y < 0) vel.y = 0;
                  // Land on block
                 if (!floor && !new_floor) {
-                     // You can cheat a little and cancel the landing animation
-                     // with the end of the attack animation.
-                    if (state == WS::Neutral) set_state(WS::Land);
+                     // Cancel attack endlag with landing lag.  I don't like
+                     // this, but the alternative is cancelling landing lag with
+                     // attack endlag, which sounds nice but monsters end up
+                     // doing it all the time.
+                    if (state == WS::Neutral ||
+                        (state == WS::Attack && anim_phase >= 2)
+                    ) set_state(WS::Land);
                     if (state != WS::Dead) {
                         data->sfx.land->play();
                     }

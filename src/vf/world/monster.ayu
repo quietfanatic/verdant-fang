@@ -134,20 +134,20 @@
         phys: {
             body_box: [-8 0 8 30]
             damage_box: [-4 12 4 32]
-            ground_acc: 0.25
+            ground_acc: 0.18
             ground_max: 2.0
             ground_dec: 0.3
             coast_dec: 0.3
-            air_acc: 0.2
+            air_acc: 0.1
             air_max: 2
-            air_dec: 0.2
+            air_dec: 0.1
             jump_vel: 3.4
             gravity_jump: 0.2
             gravity_fall: 0.2
             gravity_drop: 0.2
             gravity_damage: 0.1
             drop_duration: 6
-            land_sequence: [4 4]
+            land_sequence: [8 4]
             attack_sequence: [8 8 8 200]
             hit_sequence: 24
             damage_sequence: [14 10 10 8]
