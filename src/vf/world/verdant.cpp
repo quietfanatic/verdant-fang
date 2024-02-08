@@ -4,7 +4,7 @@ namespace vf {
 
 Verdant::Verdant () {
     types |= Types::Verdant;
-    hbs[0].layers_2 |= Layers::Transition_Verdant;
+    hbs[0].layers_2 |= Layers::LoadingZone_Verdant;
 }
 
 void Verdant::Walker_on_hit (

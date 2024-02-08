@@ -116,7 +116,7 @@ void end_camera () {
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 }
 
-void start_transition (Vec direction) {
+void start_transition_effect (Vec direction) {
     expect(length2(direction) == 1);
     wipe_program->use();
     glUniform1i(wipe_program->u_wipe_dir,

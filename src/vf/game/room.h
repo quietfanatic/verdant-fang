@@ -54,6 +54,9 @@ struct Resident : Linked<Resident> {
         if (room) link(&room->residents);
     }
 
+    void set_pos (Vec p) { Resident_on_set_pos(p); }
+
+    virtual void Resident_on_set_pos (Vec p) { pos = p; }
     virtual void Resident_on_enter () { }
     virtual void Resident_on_exit () { }
     virtual void Resident_before_step () { }
@@ -65,6 +68,7 @@ struct Resident : Linked<Resident> {
     ) { }
     virtual void Resident_after_step () { }
     virtual void Resident_draw () { }
+
     Resident () = default;
     Resident (const Resident&) = delete;
 };

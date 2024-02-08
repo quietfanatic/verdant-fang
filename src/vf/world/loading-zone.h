@@ -4,13 +4,12 @@
 
 namespace vf {
 
-struct Transition : Resident {
+struct LoadingZone : Resident {
     Hitbox hb;
     Room* target_room;
     Vec target_pos;
     Vec direction = {1, 0};
-    bool triggered = false; // To avoid triggering every frame
-    Transition ();
+    LoadingZone ();
     void Resident_on_collide (const Hitbox&, Resident&, const Hitbox&);
 };
 

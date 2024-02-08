@@ -8,7 +8,16 @@ namespace control { struct Statement; }
 
 namespace vf {
 
-struct Scheduled;
+struct Transition {
+    Room* target_room;
+    Resident* migrant;
+    Vec target_pos = GNAN;
+    uint32 until_exit = 8;
+    uint32 until_enter = 24;
+
+    bool step (State&);
+};
+
 struct State {
     union {
         std::minstd_rand rng;
@@ -16,17 +25,12 @@ struct State {
     };
     uint64 current_frame = 0;
     Room* current_room = null;
-    UniqueArray<Scheduled> scheduled;
-     // If set to true, step() will increment current_frame but will not run
-     // current_room->step().
-    bool frozen = false;
+    std::optional<Transition> transition;
+
     ayu::Document world;
 
     State ();
     void step ();
-     // If delay is 0, runs action at the BEGINNING of the NEXT frame.  And 1 is
-     // the frame after that.
-    void schedule_after (uint32 delay_frames, control::Statement&&);
 };
 
 } // vf

@@ -2,6 +2,7 @@
 
 #include "../../dirt/ayu/reflection/describe.h"
 #include "../../dirt/control/command.h"
+#include "camera.h"
 #include "room.h"
 
 namespace vf {
@@ -11,37 +12,50 @@ struct Scheduled {
     control::Statement action;
 };
 
+ // If this returns false, don't step the room.
+bool Transition::step (State& state) {
+    if (until_exit) {
+        if (!--until_exit) {
+            if (migrant) migrant->set_room(null);
+            state.current_room->exit();
+            state.current_room = target_room;
+            state.current_room->enter();
+            if (migrant) {
+                migrant->set_room(state.current_room);
+                migrant->set_pos(target_pos);
+            }
+            swap_world_tex();
+             // fallthrough
+        }
+        else return true;
+    }
+    if (until_enter) {
+        --until_enter;
+        return false;
+    }
+     // Delete self
+    state.transition = {};
+    return true;
+}
+
 State::State () : rng(0) { }
 
 void State::step () {
-    while (scheduled && scheduled[0].frame == current_frame) {
-        auto action = move(scheduled[0].action);
-        scheduled.erase(usize(0));
-        action();
-    }
-    if (!frozen && current_room) current_room->step();
+    bool should_step = true;
+    if (transition) should_step = transition->step(*this);
+    if (should_step && current_room) current_room->step(); 
     current_frame += 1;
-}
-
-void State::schedule_after (
-    uint32 delay_frames, control::Statement&& action
-) {
-    uint64 frame = current_frame + delay_frames + 1;
-    for (auto& s : scheduled) {
-        if (frame < s.frame) {
-            scheduled.insert(&s, Scheduled(frame, move(action)));
-            return;
-        }
-    }
-    scheduled.emplace_back(frame, move(action));
 }
 
 } using namespace vf;
 
-AYU_DESCRIBE(vf::Scheduled,
+AYU_DESCRIBE(vf::Transition,
     attrs(
-        attr("frame", &Scheduled::frame),
-        attr("action", &Scheduled::action)
+        attr("target_room", &Transition::target_room),
+        attr("migrant", &Transition::migrant),
+        attr("target_pos", &Transition::target_pos),
+        attr("until_exit", &Transition::until_exit),
+        attr("until_enter", &Transition::until_enter)
     )
 )
 
@@ -50,8 +64,7 @@ AYU_DESCRIBE(vf::State,
         attr("rng", member(&State::rng_uint32, prefer_hex), optional),
         attr("current_frame", &State::current_frame, optional),
         attr("current_room", &State::current_room),
-        attr("scheduled", &State::scheduled, optional),
-        attr("frozen", &State::frozen, optional),
+        attr("transition", &State::transition, collapse_optional),
         attr("world", &State::world)
     )
 );

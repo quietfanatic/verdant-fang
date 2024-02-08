@@ -16,7 +16,7 @@ void begin_camera ();
 void end_camera ();
 
  // Only four cardinal directions are implemented.
-void start_transition (Vec direction);
+void start_transition_effect (Vec direction);
  // You must do this before the area after the wipe is visible.
 void swap_world_tex ();
 

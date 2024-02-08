@@ -1,10 +1,5 @@
 --   0  16  32  48  64  80  96 112 128 144 160 176 192 208 224 240 256 272 288 304 320
 --  ||  |   |   |   |  |||  |   |   |   |  |||  |   |   |   |  |||  |   |   |   |  ||
-&b0:0 &b1:16 &b2:32 &b3:48 &b4:64 &b5:80
-&b6:96 &b7:112 &b8:128 &b9:144 &b10:160
-&b11:176 &b12:192 &b13:208 &b14:224 &b15:240
-&b16:256 &b17:272 &b18:288 &b19:304 &b20:320
-&b11p25:180 -- ceiling
 
 [ayu::Document {
     player: [vf::Player { }]
@@ -44,7 +39,7 @@
         pos: [96 32]
         floor: #start_blocks
     }]
-    start_to_den: [vf::Transition {
+    start_to_den: [vf::LoadingZone {
         room: #start
         bounds: [328 0 328 180]
         target_room: #den
@@ -82,7 +77,7 @@
         floor: #start_blocks
     }]
 
-    den_to_start: [vf::Transition {
+    den_to_start: [vf::LoadingZone {
         room: #den
         bounds: [-8 0 -8 180]
         target_room: #start
