@@ -379,7 +379,9 @@ void Walker::Resident_on_collide (
 }
 
 void Walker::Walker_on_hit (const Hitbox&, Walker& victim, const Hitbox&) {
-    set_state(WS::Hit);
+     // Prevent undefined behavior (trying to draw decals when state is WS::Hit)
+     // if two walkers hit each other at the same time.
+    if (state != WS::Damage) set_state(WS::Hit);
     victim.set_state(WS::Damage);
     data->sfx.hit_soft->play();
 }
