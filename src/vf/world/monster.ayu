@@ -181,9 +181,9 @@
                 assets.ayu#step3
                 assets.ayu#step4
             ]
-            land: assets.ayu#tkk
+            land: assets.ayu#pmf
             attack: assets.ayu#shok
-            hit_solid: assets.ayu#hit_solid
+            hit_solid: assets.ayu#tkk
             hit_soft: assets.ayu#kkkww
         }
     }]
