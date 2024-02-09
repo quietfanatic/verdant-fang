@@ -10,6 +10,20 @@
         image: #layer0
         bounds: [3 3 35 35]
     }]
+    door_data: [vf::TexAndFrame {
+        tex: {
+            image: #layer0
+            bounds: [54 12 77 76]
+        }
+        frame: [[11 0] [-11 0 12 64]]
+    }]
+    switch_data: [vf::TexAndFrame {
+        tex: {
+            image: #layer0
+            bounds: [25 91 35 109]
+        }
+        frame: [[5 9] [-5 -9 5 9]]
+    }]
      -- For some reason, having these as mp3s breaks SDL2_mixer.  Perhaps it
      -- can't play mp3 files that are too short?
     step0: [vf::Sound { source:assets/step0.wav channel:0 volume:0.5 }]

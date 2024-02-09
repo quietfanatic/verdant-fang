@@ -128,11 +128,14 @@ my @sources = (qw(
     vf/game/sound.cpp
     vf/game/state.cpp
     vf/world/blocks.cpp
+    vf/world/common.cpp
     vf/world/decals.cpp
+    vf/world/door.cpp
     vf/world/loading-zone.cpp
     vf/world/monster.cpp
     vf/world/verdant.cpp
     vf/world/scenery.cpp
+    vf/world/switch.cpp
     vf/world/walker.cpp
     dirt/ayu/common.cpp
     dirt/ayu/data/parse.cpp

@@ -8,10 +8,11 @@ namespace vf {
 
 Walker::Walker () {
     types |= Types::Walker;
-    hbs[0].layers_1 = Layers::Walker_Block | Layers::Walker_Walker;
+    hbs[0].layers_1 = Layers::Walker_Solid | Layers::Walker_Walker;
     hbs[0].layers_2 = Layers::Walker_Walker;
     hbs[1].layers_2 = Layers::Weapon_Walker;
-    hbs[2].layers_1 = Layers::Weapon_Block | Layers::Weapon_Walker;
+    hbs[2].layers_1 = Layers::Weapon_Solid | Layers::Weapon_Walker;
+    hbs[2].layers_2 = Layers::Switch_Weapon;
 }
 
 void Walker::set_state (WalkerState st) {
@@ -319,7 +320,7 @@ void Walker::Resident_before_step () {
 void Walker::Resident_on_collide (
     const Hitbox& hb, Resident& o, const Hitbox& o_hb
 ) {
-    if (&hb == &hbs[0] && o_hb.layers_2 & Layers::Walker_Block) {
+    if (&hb == &hbs[0] && o_hb.layers_2 & Layers::Walker_Solid) {
         Rect here = hb.box + pos;
         Rect there = o_hb.box + o.pos;
         Rect overlap = here & there;
@@ -350,7 +351,6 @@ void Walker::Resident_on_collide (
                 pos.y -= height(overlap);
                 if (vel.y > 0) vel.y = 0;
             }
-            else never();
         }
         else {
             if (overlap.l == here.l) {
@@ -361,7 +361,6 @@ void Walker::Resident_on_collide (
                 pos.x -= width(overlap);
                 if (vel.x > 0) vel.x = 0;
             }
-            else never();
         }
     }
     else if (&hb == &hbs[0] && o_hb.layers_2 & Layers::Walker_Walker) {
@@ -374,7 +373,7 @@ void Walker::Resident_on_collide (
             o.pos.x += diff;
         }
     }
-    else if (&hb == &hbs[2] && o_hb.layers_2 & Layers::Weapon_Block) {
+    else if (&hb == &hbs[2] && o_hb.layers_2 & Layers::Weapon_Solid) {
         data->sfx.hit_solid->play();
         if (left) {
             vel.x += 1;

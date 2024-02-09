@@ -23,7 +23,7 @@ Blocks::Blocks () {
 
 void Blocks::init () {
     for (auto& b : blocks) {
-        b.layers_2 = Layers::Walker_Block | Layers::Weapon_Block;
+        b.layers_2 = Layers::Walker_Solid | Layers::Weapon_Solid;
         b.box.r = b.box.l + 32;
         b.box.t = b.box.b + 32;
     }

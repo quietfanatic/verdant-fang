@@ -29,6 +29,7 @@
             [-16 160] [16 160] [48 160] [80 160] [112 160] [144 160] [176 160] [208 160] [240 160] [272 160] [304 160]
             [-16 128] [16 128] [272 128] [304 128]
             [-16 96] [16 96] [272 96] [304 96]
+            [160 32]
             [-16 0] [16 0] [48 0] [80 0] [112 0] [144 0] [176 0] [208 0] [240 0] [272 0] [304 0]
         ]
     }]
@@ -38,6 +39,17 @@
         room: #start
         pos: [96 32]
         floor: #start_blocks
+    }]
+    start_switch: [vf::Switch {
+        room: #start
+        pos: [256 112]
+        data: assets.ayu#switch_data
+        target: #start_to_den_door
+    }]
+    start_to_den_door: [vf::Door {
+        room: #start
+        pos: [288 32]
+        data: assets.ayu#door_data
     }]
     start_to_den: [vf::LoadingZone {
         room: #start
@@ -81,6 +93,38 @@
         room: #den
         bounds: [-8 0 -8 180]
         target_room: #start
+        target_pos: [304 32]
+        direction: [-1 0]
+    }]
+    den_to_atelier: [vf::LoadingZone {
+        room: #den
+        bounds: [328 0 328 180]
+        target_room: #atelier
+        target_pos: [16 32]
+    }]
+
+    atelier: [vf::Room { }]
+    atelier_bg: [vf::Scenery {
+        room: #atelier
+        tex: assets.ayu#cave_tex
+        bounds: [0 0 320 180]
+    }]
+    atelier_blocks: [vf::Blocks {
+        room: #atelier
+        blocks: [
+            [-16 160] [16 160] [48 160] [80 160] [112 160] [144 160] [176 160] [208 160] [240 160] [272 160] [304 160]
+            [-16 128] [16 128] [272 128] [304 128]
+            [-16 96] [16 96] [272 96] [304 96]
+            [272 64] [304 64]
+            [272 32] [304 32]
+            [-16 0] [16 0] [48 0] [80 0] [112 0] [144 0] [176 0] [208 0] [240 0] [272 0] [304 0]
+        ]
+    }]
+
+    atelier_to_den: [vf::LoadingZone {
+        room: #atelier
+        bounds: [-8 0 -8 180]
+        target_room: #den
         target_pos: [304 32]
         direction: [-1 0]
     }]
