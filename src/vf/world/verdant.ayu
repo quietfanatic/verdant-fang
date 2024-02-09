@@ -158,7 +158,7 @@
     }]
     data: [vf::WalkerData {
         phys: {
-            body_box: [-8 0 8 30]
+            body_box: [-6 0 6 30]
             damage_box: [-3 12 3 30]
             ground_acc: 0.3
             ground_max: 2.5

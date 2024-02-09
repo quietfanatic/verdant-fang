@@ -369,10 +369,12 @@ void Walker::Resident_on_collide (
         else {
             if (overlap.l == here.l) {
                 pos.x += width(overlap);
+                walk_start_x = pos.x;
                 if (vel.x < 0) vel.x = 0;
             }
             else if (overlap.r == here.r) {
                 pos.x -= width(overlap);
+                walk_start_x = pos.x;
                 if (vel.x > 0) vel.x = 0;
             }
         }
