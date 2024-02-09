@@ -156,8 +156,8 @@ struct Walker : Resident {
     virtual void Walker_on_hit (const Hitbox&, Walker&, const Hitbox&);
 
      // Useful
-    float left_flip (float v) { return left ? -v : v; }
-    Vec left_flip (Vec v) { return left ? Vec(-v.x, v.y) : v; }
+    float left_flip (float v) const { return left ? -v : v; }
+    Vec left_flip (Vec v) const { return left ? Vec(-v.x, v.y) : v; }
 };
 
 } // vf

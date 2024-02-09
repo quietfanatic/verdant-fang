@@ -461,11 +461,10 @@ void Walker::Resident_draw () {
         }
         case WS::Damage: {
             switch (anim_phase) {
-                case 0: case 1: {
+                case 0: case 1: case 2: {
                     damage_overlap = true;
                     pose = poses.damage[0]; break;
                 }
-                case 2: pose = poses.damage[0]; break;
                 case 3: case 4: pose = poses.damage[1]; break;
                 default: never();
             }

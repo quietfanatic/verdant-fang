@@ -13,7 +13,8 @@ void Monster::Walker_on_hit (
     const Hitbox& hb, Walker& victim, const Hitbox& o_hb
 ) {
     victim.left = !left;
-    uint8 decal_i = 1;
+    bool high = pos.y - victim.pos.y > 8;
+    uint8 decal_i = high ? 3 : 1;
     Vec weapon_offset = data->poses->attack[1].body->weapon;
     auto& victim_body = *victim.data->poses->damage[0].body;
     float weapon_tip = pos.x + left_flip(
@@ -21,9 +22,10 @@ void Monster::Walker_on_hit (
     );
     Vec decal_pos = victim.pos + victim.left_flip(victim_body.decals[decal_i]);
     float depth = left_flip(weapon_tip - decal_pos.x);
-    victim.decal_type = DecalType::Slash;
+    ayu::dump(depth);
+    victim.decal_type = high ? DecalType::SlashHigh : DecalType::SlashLow;
     victim.decal_index = decal_i;
-    if (depth > 4) weapon_state = 2;
+    if (high || depth > 4) weapon_state = 2;
     else if (weapon_state < 1) weapon_state = 1;
     if (depth > 6) {
         victim.pos.x += left_flip(depth - 6);

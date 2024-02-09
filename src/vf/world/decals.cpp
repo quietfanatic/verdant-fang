@@ -9,10 +9,10 @@ void draw_decal (const Walker& w, const Pose& pose) {
     if (w.decal_type == DecalType::None || w.decal_index >= max_decals) return;
     auto& data = *w.data->decals;
     auto& decal = w.decal_type == DecalType::Stab ? data.stab
-                : w.decal_type == DecalType::Slash ? data.slash
+                : w.decal_type == DecalType::SlashLow ? data.slash_low
+                : w.decal_type == DecalType::SlashHigh ? data.slash_high
                 : (never(), data.stab);
-    Vec off = pose.body->decals[w.decal_index];
-    if (w.left) off.x = -off.x;
+    Vec off = w.left_flip(pose.body->decals[w.decal_index]);
     uint8 dir = pose.body->decal_dirs[w.decal_index];
     if (!defined(off) || dir > 2) {
 #ifndef NDEBUG
@@ -24,14 +24,14 @@ void draw_decal (const Walker& w, const Pose& pose) {
     float z;
     switch (w.state) {
         case WS::Damage: {
-            if (w.anim_phase < 3) phase = w.anim_phase;
-            else phase = 2;
+            if (w.anim_phase < 4) phase = w.anim_phase;
+            else phase = 3;
             z = Z::Overlap + Z::DecalOffset;
             break;
         }
         case WS::Dead: {
             expect(w.anim_phase < 7);
-            phase = 2 + w.anim_phase;
+            phase = 3 + w.anim_phase;
             z = Z::Dead + Z::DecalOffset;
             break;
         }
@@ -40,18 +40,18 @@ void draw_decal (const Walker& w, const Pose& pose) {
     const Frame* frame;
     switch (dir) {
         case 0: {
-            expect(phase <= 2);
+            expect(phase <= 3);
             frame = &decal.dir_0[phase];
             break;
         }
         case 1: {
-            expect(phase == 2);
-            frame = &decal.dir_1[phase - 2];
+            expect(phase == 3);
+            frame = &decal.dir_1[phase - 3];
             break;
         }
         case 2: {
-            expect(phase >= 2);
-            frame = &decal.dir_2[phase - 2];
+            expect(phase >= 3);
+            frame = &decal.dir_2[phase - 3];
             break;
         }
         default: never();
@@ -65,7 +65,8 @@ AYU_DESCRIBE(vf::DecalType,
     values(
         value("none", DecalType::None),
         value("stab", DecalType::Stab),
-        value("slash", DecalType::Slash)
+        value("slash_low", DecalType::SlashLow),
+        value("slash_high", DecalType::SlashHigh)
     )
 )
 
@@ -81,6 +82,7 @@ AYU_DESCRIBE(vf::Decal,
 AYU_DESCRIBE(vf::DecalData,
     attrs(
         attr("stab", &DecalData::stab),
-        attr("slash", &DecalData::slash)
+        attr("slash_low", &DecalData::slash_low),
+        attr("slash_high", &DecalData::slash_high)
     )
 )
