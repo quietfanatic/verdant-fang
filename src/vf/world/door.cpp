@@ -58,6 +58,11 @@ void Door::Resident_draw () {
     draw_frame(pos, data->frame, data->tex, {1, 1}, Z::Door);
 }
 
+void Door::Resident_on_exit () {
+    if (open) pos = open_pos;
+    else pos = closed_pos;
+}
+
 void Door::Activatable_activate () {
     if (!open) {
         open = true;

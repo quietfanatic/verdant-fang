@@ -14,6 +14,7 @@ struct Door : Resident, Activatable {
     void init (); // Sets closed and open pos if they're not set
     void Resident_before_step () override;
     void Resident_draw () override;
+    void Resident_on_exit () override;
     void Activatable_activate () override;
 };
 

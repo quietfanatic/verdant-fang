@@ -5,8 +5,12 @@
 namespace vf {
 
 struct Monster : Walker {
+    Vec home_pos = GNAN;
+    std::optional<bool> home_left;
     Monster ();
+    void init ();
     void Walker_on_hit (const Hitbox&, Walker&, const Hitbox&) override;
+    void Resident_on_exit () override;
 };
 
 struct MonsterMind : Mind {

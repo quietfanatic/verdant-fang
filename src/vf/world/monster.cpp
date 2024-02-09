@@ -9,6 +9,11 @@ Monster::Monster () {
     types |= Types::Monster;
 }
 
+void Monster::init () {
+    if (!defined(home_pos)) home_pos = pos;
+    if (!home_left) home_left = left;
+}
+
 void Monster::Walker_on_hit (
     const Hitbox& hb, Walker& victim, const Hitbox& o_hb
 ) {
@@ -22,7 +27,6 @@ void Monster::Walker_on_hit (
     );
     Vec decal_pos = victim.pos + victim.left_flip(victim_body.decals[decal_i]);
     float depth = left_flip(weapon_tip - decal_pos.x);
-    ayu::dump(depth);
     victim.decal_type = high ? DecalType::SlashHigh : DecalType::SlashLow;
     victim.decal_index = decal_i;
     if (high || depth > 4) weapon_state = 2;
@@ -34,6 +38,21 @@ void Monster::Walker_on_hit (
         pos.x += left_flip(1 - depth);
     }
     Walker::Walker_on_hit(hb, victim, o_hb);
+}
+
+void Monster::Resident_on_exit () {
+    if (state == WS::Damage || state == WS::Dead) {
+        set_state(WS::Dead);
+        anim_phase = 6;
+    }
+    else {
+        pos = home_pos;
+        vel = {};
+        walk_start_x = pos.x;
+        left = *home_left;
+        set_state(WS::Neutral);
+    }
+    Walker::Resident_on_exit();
 }
 
  // Evaluate quadratic, but stopping when velocity reaches 0 instead of going
@@ -142,8 +161,11 @@ Controls MonsterMind::Mind_think (Resident& s) {
 
 AYU_DESCRIBE(vf::Monster,
     attrs(
-        attr("vf::Walker", base<Walker>(), include)
-    )
+        attr("vf::Walker", base<Walker>(), include),
+        attr("home_pos", &Monster::home_pos, optional),
+        attr("home_left", &Monster::home_left, collapse_optional)
+    ),
+    init<&Monster::init>()
 )
 
 AYU_DESCRIBE(vf::MonsterMind,
