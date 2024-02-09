@@ -8,11 +8,9 @@ struct Activatable {
     virtual void Activatable_activate () = 0;
 };
 
-struct SwitchData;
-
 struct Switch : Resident {
     Hitbox hb;
-    SwitchData* data;
+    TexFrameSound* data;
     Activatable* target = null;
     uint32 delay = 30;
     uint32 timer = 0;

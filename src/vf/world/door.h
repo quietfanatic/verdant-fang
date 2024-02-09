@@ -7,7 +7,7 @@ namespace vf {
 
 struct Door : Resident, Activatable {
     Hitbox hb;
-    TexAndFrame* data;
+    TexFrameSound* data;
     Vec closed_pos = GNAN;
     Vec open_pos = GNAN;
     bool open = false;

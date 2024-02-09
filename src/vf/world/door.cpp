@@ -3,6 +3,7 @@
 #include "../../dirt/ayu/reflection/describe.h"
 #include "../../dirt/glow/image-texture.h"
 #include "../game/frame.h"
+#include "../game/sound.h"
 
 namespace vf {
 
@@ -58,7 +59,10 @@ void Door::Resident_draw () {
 }
 
 void Door::Activatable_activate () {
-    open = true;
+    if (!open) {
+        open = true;
+        data->sound->play();
+    }
 }
 
 } using namespace vf;

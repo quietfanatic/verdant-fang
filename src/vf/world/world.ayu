@@ -6,13 +6,13 @@
     chargey: [vf::MonsterMind {
         target: #verdant
         sight_range: 120
-        attack_range: 30
+        attack_range: 28
         social_distance: 40
     }]
     jumpy: [vf::MonsterMind {
         target: #verdant
         sight_range: 120
-        attack_range: 30
+        attack_range: 28
         jump_range: 64
         social_distance: 64
     }]

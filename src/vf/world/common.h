@@ -41,4 +41,9 @@ struct TexAndFrame {
     Frame frame;
 };
 
+struct Sound;
+struct TexFrameSound : TexAndFrame {
+    Sound* sound;
+};
+
 } // vf

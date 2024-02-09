@@ -11,3 +11,10 @@ AYU_DESCRIBE(vf::TexAndFrame,
         attr("frame", &TexAndFrame::frame)
     )
 )
+
+AYU_DESCRIBE(vf::TexFrameSound,
+    attrs(
+        attr("vf::TexAndFrame", base<TexAndFrame>(), include),
+        attr("sound", &TexFrameSound::sound)
+    )
+)

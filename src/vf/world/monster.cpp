@@ -30,6 +30,9 @@ void Monster::Walker_on_hit (
     if (depth > 6) {
         victim.pos.x += left_flip(depth - 6);
     }
+    else if (depth < 1) {
+        pos.x += left_flip(1 - depth);
+    }
     Walker::Walker_on_hit(hb, victim, o_hb);
 }
 

@@ -5,10 +5,6 @@
 
 namespace vf {
 
-struct SwitchData : TexAndFrame {
-    Sound* activate_sfx;
-};
-
 void Switch::init () {
     hb.layers_1 = Layers::Switch_Weapon;
     hb.box = data->frame.bounds;
@@ -30,7 +26,7 @@ void Switch::Resident_on_collide (const Hitbox&, Resident& o, const Hitbox&) {
         expect(o.types & Types::Walker);
         auto& w = static_cast<Walker&>(o);
         w.recoil();
-        w.hit_sound = data->activate_sfx;
+        w.hit_sound = data->sound;
     }
 }
 
@@ -52,11 +48,4 @@ AYU_DESCRIBE(vf::Switch,
         attr("cooldown", &Switch::cooldown, optional)
     ),
     init<&Switch::init>()
-)
-
-AYU_DESCRIBE(vf::SwitchData,
-    attrs(
-        attr("vf::TexAndFrame", base<TexAndFrame>(), include),
-        attr("activate_sfx", &SwitchData::activate_sfx)
-    )
 )
