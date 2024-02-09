@@ -342,22 +342,24 @@ void Walker::Resident_on_collide (
         if (height(overlap) - 2 <= width(overlap)) {
             if (overlap.b == here.b) {
                 pos.y += height(overlap);
-                if (vel.y < 0) vel.y = 0;
-                 // Land on block
-                if (!floor && !new_floor) {
-                     // Cancel attack endlag with landing lag.  I don't like
-                     // this, but the alternative is cancelling landing lag with
-                     // attack endlag, which sounds nice but monsters end up
-                     // doing it all the time.
-                    if (state == WS::Neutral ||
-                        (state == WS::Attack && anim_phase >= 2)
-                    ) set_state(WS::Land);
-                    if (state != WS::Dead) {
-                        data->sfx.land->play();
+                if (vel.y < 0) {
+                    vel.y = 0;
+                     // Land on block
+                    if (!floor && !new_floor) {
+                         // Cancel attack endlag with landing lag.  I don't like
+                         // this, but the alternative is cancelling landing lag with
+                         // attack endlag, which sounds nice but monsters end up
+                         // doing it all the time.
+                        if (state == WS::Neutral ||
+                            (state == WS::Attack && anim_phase >= 2)
+                        ) set_state(WS::Land);
+                        if (state != WS::Dead) {
+                            data->sfx.land->play();
+                        }
+                        walk_start_x = pos.x;
                     }
-                    walk_start_x = pos.x;
+                    new_floor = &o;
                 }
-                new_floor = &o;
             }
             else if (overlap.t == here.t) {
                 pos.y -= height(overlap);
