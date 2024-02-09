@@ -9,13 +9,17 @@ void Switch::init () {
 }
 
 void Switch::Resident_before_step () {
-    if (cooldown) cooldown--;
+    if (timer) {
+        if (!--timer && target) target->Activatable_activate();
+    }
+    else if (cooldown) cooldown--;
 }
 
 void Switch::Resident_on_collide (const Hitbox&, Resident&, const Hitbox&) {
-    if (!cooldown) {
+    if (!timer && !cooldown) {
         cooldown = 60;
-        if (target) target->Activatable_activate();
+        if (delay) timer = delay;
+        else if (target) target->Activatable_activate();
     }
 }
 
@@ -32,6 +36,8 @@ AYU_DESCRIBE(vf::Switch,
         attr("vf::Resident", base<Resident>(), include),
         attr("data", &Switch::data),
         attr("target", &Switch::target, optional),
+        attr("delay", &Switch::delay, optional),
+        attr("timer", &Switch::timer, optional),
         attr("cooldown", &Switch::cooldown, optional)
     ),
     init<&Switch::init>()

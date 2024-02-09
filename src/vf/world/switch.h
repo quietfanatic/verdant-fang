@@ -12,6 +12,8 @@ struct Switch : Resident {
     Hitbox hb;
     TexAndFrame* data;
     Activatable* target = null;
+    uint32 delay = 30;
+    uint32 timer = 0;
     uint32 cooldown = 0;
     void init ();
     void Resident_before_step () override;
