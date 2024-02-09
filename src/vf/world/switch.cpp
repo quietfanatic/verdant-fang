@@ -1,5 +1,7 @@
 #include "switch.h"
+
 #include "../game/sound.h"
+#include "walker.h"
 
 namespace vf {
 
@@ -20,12 +22,15 @@ void Switch::Resident_before_step () {
     else if (cooldown) cooldown--;
 }
 
-void Switch::Resident_on_collide (const Hitbox&, Resident&, const Hitbox&) {
+void Switch::Resident_on_collide (const Hitbox&, Resident& o, const Hitbox&) {
     if (!timer && !cooldown) {
         cooldown = 60;
         if (delay) timer = delay;
         else if (target) target->Activatable_activate();
-        data->activate_sfx->play();
+        expect(o.types & Types::Walker);
+        auto& w = static_cast<Walker&>(o);
+        w.recoil();
+        w.hit_sound = data->activate_sfx;
     }
 }
 

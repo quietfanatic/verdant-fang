@@ -46,6 +46,17 @@ uint8 Walker::jump_frame () {
     }
 }
 
+void Walker::recoil () {
+    if (left) {
+        vel.x += 1;
+        if (vel.x < 0.5) vel.x = 0.5;
+    }
+    else {
+        vel.x -= 1;
+        if (vel.x > -0.5) vel.x = -0.5;
+    }
+}
+
 void Walker::Resident_set_pos (Vec p) {
     Resident::Resident_set_pos(p);
     walk_start_x = p.x;
@@ -315,6 +326,7 @@ void Walker::Resident_before_step () {
 
      // Prepare for collision detection
     new_floor = null;
+    hit_sound = null;
 }
 
 void Walker::Resident_on_collide (
@@ -374,15 +386,8 @@ void Walker::Resident_on_collide (
         }
     }
     else if (&hb == &hbs[2] && o_hb.layers_2 & Layers::Weapon_Solid) {
-        data->sfx.hit_solid->play();
-        if (left) {
-            vel.x += 1;
-            if (vel.x < 0.5) vel.x = 0.5;
-        }
-        else {
-            vel.x -= 1;
-            if (vel.x > -0.5) vel.x = -0.5;
-        }
+        if (!hit_sound) hit_sound = data->sfx.hit_solid;
+        recoil();
     }
     else if (&hb == &hbs[2] && o_hb.layers_2 & Layers::Weapon_Walker) {
         Walker_on_hit(hb, static_cast<Walker&>(o), o_hb);
@@ -402,6 +407,10 @@ void Walker::Resident_after_step () {
     if (business != B::Frozen) {
         floor = new_floor;
         new_floor = null;
+    }
+    if (hit_sound) {
+        hit_sound->play();
+        hit_sound = null;
     }
 }
 

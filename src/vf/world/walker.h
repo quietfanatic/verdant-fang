@@ -120,7 +120,9 @@ struct Walker : Resident {
     uint8 decal_index = -1;
     uint8 weapon_state = 0;
 
-     // Temporary
+     // Everything below here is only used within one frame, so don't serialize
+     // it.
+    Sound* hit_sound;
     Resident* new_floor;
      // body, damage, weapon
     Hitbox hbs [3];
@@ -139,6 +141,9 @@ struct Walker : Resident {
     void set_state (WalkerState);
     uint8 walk_frame ();
     uint8 jump_frame ();
+
+     // Hit solid object
+    void recoil ();
 
     void Resident_set_pos (Vec) override;
     void Resident_before_step ();
