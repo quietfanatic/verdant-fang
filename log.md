@@ -64,4 +64,15 @@
   effect is not.  Saving it fully would require saving the texture of the old
   room, which is not worth the effort.
 - Planned work for tomorrow: Buttons and doors and more enemies?
-
+#####2024-02-08 H
+- Much of the work today was not very visible.  A lot of maintainance and
+  interface improvements.
+- Added another monster personality and did a lot of work on monster AI.  It's
+  still not great but it's better.
+- Animated a lot more blood.  Put blood on weapons and protagonist's head.
+- Spent a lot of time making room transitions more sensible and reliable.
+- Added a switch and a door.  Got the door's opening animation good-looking on
+  the first try.  If you don't count the try where I got my lerper backwards and
+  the door moved instantly.
+- Added sounds for the switch and the door and a better sound for landing.
+- Planned work for tomorrow: Boss?
