@@ -36,7 +36,7 @@
     pmf: [vf::Sound { source:assets/pmf.mp3 channel:0 volume:0.4}]
     fwssh: [vf::Sound { source:assets/fwssh.mp3 channel:1 }]
      -- temp
-    tkk: [vf::Sound { source:assets/tkk.mp3 channel:1 volume:0.7 }]
+    tkk: [vf::Sound { source:assets/tkk.mp3 channel:5 volume:0.7 }]
     doof: [vf::Sound { source:assets/doof.mp3 channel:1 }]
     shluk: [vf::Sound { source:assets/shluk.mp3 channel:1 volume:0.4 }]
     shok: [vf::Sound { source:assets/shok.mp3 channel:2 volume:0.7 }]
