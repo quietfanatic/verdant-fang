@@ -25,16 +25,19 @@ void Room::step () {
     for (auto a = residents.begin(); a != residents.end(); ++a) {
         auto b = a;
         for (++b; b != residents.end(); ++b) {
-            for (auto& a_hb : a->hitboxes)
-            for (auto& b_hb : b->hitboxes) {
-                if (a_hb.layers_1 & b_hb.layers_2) {
-                    if (overlaps(a_hb.box + a->pos, b_hb.box + b->pos)) {
-                        a->Resident_on_collide(a_hb, *b, b_hb);
+            for (auto& a_hb : a->hitboxes) {
+                if (!defined(a_hb.box)) continue;
+                for (auto& b_hb : b->hitboxes) {
+                    if (!defined(b_hb.box)) continue;
+                    if (a_hb.layers_1 & b_hb.layers_2) {
+                        if (overlaps(a_hb.box + a->pos, b_hb.box + b->pos)) {
+                            a->Resident_on_collide(a_hb, *b, b_hb);
+                        }
                     }
-                }
-                else if (b_hb.layers_1 & a_hb.layers_2) {
-                    if (overlaps(b_hb.box + b->pos, a_hb.box + a->pos)) {
-                        b->Resident_on_collide(b_hb, *a, a_hb);
+                    else if (b_hb.layers_1 & a_hb.layers_2) {
+                        if (overlaps(b_hb.box + b->pos, a_hb.box + a->pos)) {
+                            b->Resident_on_collide(b_hb, *a, a_hb);
+                        }
                     }
                 }
             }

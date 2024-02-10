@@ -13,6 +13,7 @@ Walker::Walker () {
     hbs[1].layers_2 = Layers::Weapon_Walker;
     hbs[2].layers_1 = Layers::Weapon_Solid | Layers::Weapon_Walker;
     hbs[2].layers_2 = Layers::Switch_Weapon;
+    hitboxes = Slice<Hitbox>(&hbs[0], 3);
 }
 
 void Walker::set_state (WalkerState st) {
@@ -308,21 +309,19 @@ void Walker::Resident_before_step () {
     }
 
      // Set up hitboxes
-    usize i = 0;
-    hbs[i].box = phys.body_box;
-    if (left) hbs[i].fliph();
+    hbs[0].box = phys.body_box;
+    if (left) hbs[0].fliph();
     if (!invincible) {
-        i++;
-        hbs[i].box = phys.damage_box;
-        if (left) hbs[i].fliph();
+        hbs[1].box = phys.damage_box;
+        if (left) hbs[1].fliph();
     }
+    else hbs[1].box = GNAN;
     if (do_attack) {
-        i++;
-        hbs[i].box = data->poses->attack[1].body->weapon
+        hbs[2].box = data->poses->attack[1].body->weapon
                    + data->poses->attack[1].weapon->hitbox;
-        if (left) hbs[i].fliph();
+        if (left) hbs[2].fliph();
     }
-    hitboxes = Slice<Hitbox>(&hbs[0], i+1);
+    else hbs[2].box = GNAN;
 
      // Prepare for collision detection
     new_floor = null;
