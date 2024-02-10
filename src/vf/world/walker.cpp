@@ -337,36 +337,31 @@ void Walker::Resident_on_collide (
         Rect there = o_hb.box + o.pos;
         Rect overlap = here & there;
         expect(proper(overlap));
-         // Bias toward vertical contact, mainly to avoid stubbing toes on
-         // boundaries between blocks
-        if (height(overlap) - 2 <= width(overlap)) {
-            if (overlap.b == here.b) {
-                pos.y += height(overlap);
-                if (vel.y < 0) {
-                    vel.y = 0;
-                     // Land on block
-                    if (!floor && !new_floor) {
-                         // Cancel attack endlag with landing lag.  I don't like
-                         // this, but the alternative is cancelling landing lag with
-                         // attack endlag, which sounds nice but monsters end up
-                         // doing it all the time.
-                        if (state == WS::Neutral ||
-                            (state == WS::Attack && anim_phase >= 2)
-                        ) set_state(WS::Land);
-                        if (state != WS::Dead) {
-                            data->sfx.land->play();
-                        }
-                        walk_start_x = pos.x;
+         // Bias toward contacting from above.
+        if (height(overlap) - 2 <= width(overlap) && overlap.b == here.b) {
+            pos.y += height(overlap);
+            if (vel.y < 0) {
+                vel.y = 0;
+                 // Land on block
+                if (!floor && !new_floor) {
+                     // Cancel attack endlag with landing lag.  I don't like
+                     // this, but the alternative is cancelling landing lag with
+                     // attack endlag, which sounds nice but monsters end up
+                     // doing it all the time.
+                    if (state == WS::Neutral ||
+                        (state == WS::Attack && anim_phase >= 2)
+                    ) set_state(WS::Land);
+                    if (state != WS::Dead) {
+                        data->sfx.land->play();
                     }
-                    new_floor = &o;
+                    walk_start_x = pos.x;
                 }
-            }
-            else if (overlap.t == here.t) {
-                pos.y -= height(overlap);
-                if (vel.y > 0) vel.y = 0;
+                new_floor = &o;
             }
         }
-        else {
+         // The bias toward contacting the side so we don't hit our head upwards
+         // on flat wall blocks.
+        else if (width(overlap) - 1 < height(overlap)) {
             if (overlap.l == here.l) {
                 pos.x += width(overlap);
                 walk_start_x = pos.x;
@@ -377,6 +372,10 @@ void Walker::Resident_on_collide (
                 walk_start_x = pos.x;
                 if (vel.x > 0) vel.x = 0;
             }
+        }
+        else if (overlap.t == here.t) {
+            pos.y -= height(overlap);
+            if (vel.y > 0) vel.y = 0;
         }
     }
     else if (&hb == &hbs[0] && o_hb.layers_2 & Layers::Walker_Walker) {
