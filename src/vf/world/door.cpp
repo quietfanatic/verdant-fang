@@ -46,8 +46,14 @@ void Door::Resident_before_step () {
         float closed_dist = distance(pos, closed_pos);
         float closedness = open_dist / (open_dist + closed_dist);
         float total_dist = distance(closed_pos, open_pos);
-        float gravity = 0.1;
-        float vel = sqrt(2 * gravity * (closedness / total_dist));
+        float vel = closedness < 0.1 ? 2
+                  : closedness < 0.2 ? 0.5
+                  : closedness < 0.3 ? 1.2
+                  : closedness < 0.4 ? 1.4
+                  : closedness < 0.5 ? 1.6
+                  : closedness < 0.6 ? 1.8
+                  : closedness < 0.7 ? 2
+                  : 2.4;
         float next = closedness + vel / total_dist;
         if (next > 1) pos = closed_pos;
         else pos = lerp(open_pos, closed_pos, next);
@@ -64,8 +70,12 @@ void Door::Resident_on_exit () {
 }
 
 void Door::Activatable_activate () {
-    if (!open) {
+    if (pos == closed_pos) {
         open = true;
+        data->sound->play();
+    }
+    else if (pos == open_pos) {
+        open = false;
         data->sound->play();
     }
 }
