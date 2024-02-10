@@ -42,7 +42,7 @@
     doof: [vf::Sound { source:assets/doof.mp3 channel:1 }]
     shluk: [vf::Sound { source:assets/shluk.mp3 channel:1 volume:0.4 }]
     shok: [vf::Sound { source:assets/shok.mp3 channel:2 volume:0.7 }]
-    kkkww: [vf::Sound { source:assets/kkkkk.mp3 channel:3 volume:0.8 }]
+    kkkww: [vf::Sound { source:assets/kkkww.mp3 channel:3 volume:0.8 }]
     koltik: [vf::Sound { source:assets/koltik.mp3 channel:1 }]
     gubuuw: [vf::Sound { source:assets/gubuuw.mp3 channel:4 }]
     gruwwu: [vf::Sound { source:assets/gruwwu.mp3 channel:4 }]
