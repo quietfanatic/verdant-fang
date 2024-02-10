@@ -372,11 +372,13 @@ void Walker::Resident_on_collide (
                 walk_start_x = pos.x;
                 if (vel.x > 0) vel.x = 0;
             }
+            else never();
         }
         else if (overlap.t == here.t) {
             pos.y -= height(overlap);
             if (vel.y > 0) vel.y = 0;
         }
+        else never();
     }
     else if (&hb == &hbs[0] && o_hb.layers_2 & Layers::Walker_Walker) {
         auto& other = static_cast<Walker&>(o);
