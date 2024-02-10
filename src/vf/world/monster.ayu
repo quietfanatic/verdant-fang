@@ -1,110 +1,64 @@
 [ayu::Document {
-    body_tex: [glow::PixelTexture {
+    body: [vf::LayeredTexture [{
         image: assets.ayu#layer2
          -- y down
         bounds: [171 214 411 314]
-    }]
+    }]]
      -- y up
-    body_stand: [vf::BodyFrame [
-        [13 69] [-13 0 19 34] [2 25] [-3 15]
-    ]]
-    body_walk0: [vf::BodyFrame [
-        [13 35] [-13 0 19 34] [3 25] [0 21]
-    ]]
-    body_walk1: [vf::BodyFrame [
-        [48 35] [-13 0 19 34] [3 25] [0 21]
-    ]]
-    body_walk2: [vf::BodyFrame [
-        [83 36] [-13 0 19 34] [3 24] [0 20]
-    ]]
-    body_walk3: [vf::BodyFrame [
-        [118 35] [-13 0 19 34] [3 25] [0 21]
-    ]]
-    body_walk4: [vf::BodyFrame [
-        [153 35] [-13 0 19 34] [3 25] [0 21]
-    ]]
-    body_walk5: [vf::BodyFrame [
-        [188 36] [-13 0 19 34] [3 24] [0 20]
-    ]]
-    body_land: [vf::BodyFrame [
-        [49 71] [-13 0 19 34] [2 23] [-1 19]
-    ]]
-    body_preattack: [vf::BodyFrame [
-        [72 0] [-13 0 10 35] [1 25] [-2 25]
-    ]]
-    body_attack: [vf::BodyFrame [
-        [13 0] [-8 0 26 35] [7 22] [14 14]
-    ]]
-    body_postattack: [vf::BodyFrame [
-        [112 0] [-8 0 26 35] [7 22] [14 14]
-    ]]
-    body_damage: [vf::BodyFrame [
-        [150 0] [-10 0 8 25] [1 25] [-7 14]
+    body_stand:      [vf::BodyFrame [#body [13 69] [2 25] [-3 15]]]
+    body_walk0:      [vf::BodyFrame [#body [13 35] [3 25] [0 21]]]
+    body_walk1:      [vf::BodyFrame [#body [48 35] [3 25] [0 21]]]
+    body_walk2:      [vf::BodyFrame [#body [83 36] [3 24] [0 20]]]
+    body_walk3:      [vf::BodyFrame [#body [118 35] [3 25] [0 21]]]
+    body_walk4:      [vf::BodyFrame [#body [153 35] [3 25] [0 21]]]
+    body_walk5:      [vf::BodyFrame [#body [188 36] [3 24] [0 20]]]
+    body_land:       [vf::BodyFrame [#body [49 71] [2 23] [-1 19]]]
+    body_preattack:  [vf::BodyFrame [#body [72 0] [1 25] [-2 25]]]
+    body_attack:     [vf::BodyFrame [#body [13 0] [7 22] [14 14]]]
+    body_postattack: [vf::BodyFrame [#body [112 0] [7 22] [14 14]]]
+    body_damage:     [vf::BodyFrame [
+        #body [150 0] [1 25] [-7 14]
         [[1 14] [2 19] [1 24] [1 29]]
         [0 0 0 0]
     ]]
     body_damagefall: [vf::BodyFrame [
-        [185 10] [-15 -6 10 15] [-8 15] [-8 -1]
+        #body [185 10] [-8 15] [-8 -1]
         [[-3 5] [-6 9] [-8 14] [-8 19]]
         [1 1 0 0]
     ]]
     body_dead: [vf::BodyFrame [
-        [225 11] [-17 0 11 7] [-16 4] [-7 0]
+        #body [225 11] [-16 4] [-7 0]
         [[-4 5] [-9 5] [-15 5] [-21 5]]
         [2 2 2 2]
     ]]
-    head_tex: [glow::PixelTexture {
+    head: [vf::LayeredTexture [{
         image: assets.ayu#layer2
         bounds: [129 259 170 298]
-    }]
-    head_neutral: [vf::Frame [
-        [9 26] [-9 -3 9 13]
+    }]]
+    head_neutral: [vf::Frame [#head [9 26]]]
+    head_down:    [vf::Frame [#head [9 6]]]
+    head_damage:  [vf::Frame [#head [32 25]]]
+    head_dead:    [vf::Frame [#head [36 10]]]
+    axe: [vf::LayeredTexture [
+        {
+            image: assets.ayu#layer0
+            bounds: [66 223 116 298]
+        } {
+            image: assets.ayu#layer1
+            bounds: [66 223 116 298]
+        } {
+            image: assets.ayu#layer2
+            bounds: [66 223 116 298]
+        }
     ]]
-    head_down: [vf::Frame [
-        [9 6] [-4 -6 9 10]
-    ]]
-    head_damage: [vf::Frame [
-        [32 25] [-9 -3 9 13]
-    ]]
-    head_dead: [vf::Frame [
-        [36 10] [-11 -9 4 6]
-    ]]
-    axe_tex_0: [glow::PixelTexture {
-        image: assets.ayu#layer0
-        bounds: [66 223 116 298]
-    }]
-    axe_tex_1: [glow::PixelTexture {
-        image: assets.ayu#layer1
-        bounds: [66 223 116 298]
-    }]
-    axe_tex_2: [glow::PixelTexture {
-        image: assets.ayu#layer2
-        bounds: [66 223 116 298]
-    }]
-    axe_neutral: [vf::WeaponFrame [
-        [34 63] [-3 -2 13 7]
-    ]]
-    axe_lift: [vf::WeaponFrame [
-        [41 41] [-7 -3 2 13]
-    ]]
-    axe_preattack: [vf::WeaponFrame [
-        [40 25] [-11 -2 3 9]
-    ]]
-    axe_attack: [vf::WeaponFrame [
-        [14 50] [-11 -9 12 21] [-6 -9 11 14]
-    ]]
-    axe_postattack: [vf::WeaponFrame [
-        [13 35] [-3 -9 11 2]
-    ]]
-    axe_damage: [vf::WeaponFrame [
-        [13 18] [-3 -9 11 2]
-    ]]
-    axe_damagefall: [vf::WeaponFrame [
-        [30 10] [-3 -2 13 7]
-    ]]
-    axe_dead: [vf::WeaponFrame [
-        [30 4] [-3 0 13 2]
-    ]]
+    axe_neutral:    [vf::WeaponFrame [#axe [34 63]]]
+    axe_lift:       [vf::WeaponFrame [#axe [41 41]]]
+    axe_preattack:  [vf::WeaponFrame [#axe [40 25]]]
+    axe_attack:     [vf::WeaponFrame [#axe [14 50] [-6 -9 11 14]]]
+    axe_postattack: [vf::WeaponFrame [#axe [13 35]]]
+    axe_damage:     [vf::WeaponFrame [#axe [13 18]]]
+    axe_damagefall: [vf::WeaponFrame [#axe [30 10]]]
+    axe_dead:       [vf::WeaponFrame [#axe [30 4]]]
     poses: [vf::WalkerPoses {
         stand: [#body_stand #head_neutral #axe_neutral]
         crouch: [#body_land #head_neutral #axe_neutral]
@@ -168,9 +122,6 @@
             jump_end_vel: 0.6
             fall_start_vel: -0.6
         }
-        body_tex: #body_tex
-        head_tex: #head_tex
-        weapon_tex: [#axe_tex_0 #axe_tex_1 #axe_tex_2]
         poses: #poses
         decals: decals.ayu#
         sfx: {

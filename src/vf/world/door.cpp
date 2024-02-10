@@ -2,13 +2,13 @@
 
 #include "../../dirt/ayu/reflection/describe.h"
 #include "../../dirt/glow/image-texture.h"
-#include "../game/frame.h"
+#include "../game/render.h"
 #include "../game/sound.h"
 
 namespace vf {
 
 struct DoorData {
-    glow::PixelTexture tex;
+    Rect hitbox;
     Frame frame;
     Sound* open_sfx;
     Sound* close_sfx;
@@ -17,9 +17,9 @@ struct DoorData {
 
 void Door::init () {
     hb.layers_2 = Layers::Walker_Solid | Layers::Weapon_Solid;
-    hb.box = data->frame.bounds;
+    hb.box = data->hitbox;
     hitboxes = Slice<Hitbox>(&hb, 1);
-    Vec default_offset = Vec(0, height(data->frame.bounds));
+    Vec default_offset = Vec(0, height(data->hitbox));
     if (open) {
         if (!defined(open_pos)) open_pos = pos;
         if (!defined(closed_pos)) closed_pos = open_pos - default_offset;
@@ -67,7 +67,7 @@ void Door::Resident_before_step () {
 }
 
 void Door::Resident_draw () {
-    draw_frame(pos, data->frame, data->tex, {1, 1}, Z::Door);
+    draw_frame(data->frame, 0, pos, Z::Door);
 }
 
 void Door::Resident_on_exit () {
@@ -102,7 +102,7 @@ AYU_DESCRIBE(vf::Door,
 
 AYU_DESCRIBE(vf::DoorData,
     attrs(
-        attr("tex", &DoorData::tex),
+        attr("hitbox", &DoorData::hitbox),
         attr("frame", &DoorData::frame),
         attr("open_sfx", &DoorData::open_sfx),
         attr("close_sfx", &DoorData::close_sfx),

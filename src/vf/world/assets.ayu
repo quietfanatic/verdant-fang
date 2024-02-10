@@ -6,24 +6,27 @@
     cave_tex: [glow::PixelTexture {
         image: #cave_img
     }]
-    block_tex: [glow::PixelTexture {
+    block_tex: [vf::LayeredTexture [{
         image: #layer0
         bounds: [3 3 35 35]
-    }]
+    }]]
+    block: [vf::Frame [#block_tex [0 0] [0 0 32 32]]]
+    switch_tex: [vf::LayeredTexture [{
+        image: #layer0
+        bounds: [25 91 35 109]
+    }]]
     switch: [vf::SwitchData {
-        tex: {
-            image: #layer0
-            bounds: [25 91 35 109]
-        }
-        frame: [[5 9] [-5 -9 5 9]]
+        hitbox: [-5 -9 5 9]
+        frame: [#switch_tex [5 9]]
         activate_sfx: #koltik
     }]
+    door_tex: [vf::LayeredTexture [{
+        image: #layer0
+        bounds: [54 12 77 76]
+    }]]
     door: [vf::DoorData {
-        tex: {
-            image: #layer0
-            bounds: [54 12 77 76]
-        }
-        frame: [[11 0] [-11 0 12 64]]
+        hitbox: [-11 0 12 64]
+        frame: [#door_tex [11 0]]
         open_sfx: #gubuuw
         close_sfx: #gruwwu
         slam_sfx: #pkuwww

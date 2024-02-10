@@ -76,3 +76,13 @@
   the door moved instantly.
 - Added sounds for the switch and the door and a better sound for landing.
 - Planned work for tomorrow: Boss?
+#####2024-02-09 F
+- Mostly art work today.  Drew some frames for the witch boss, who came out much
+  cuter than I expected.  I'm sorry cute witch, but you're the villain.
+- Drew frames for falling forward, landing on elbows and knees, and laying
+  forward.  Well, haven't drawn all the heads yet.
+- Adjusted verdant frames and decals some more.
+- Fixed some bugs with collision and stuff
+- Added sounds for door closing (and fixed door closing animation).
+- Planned work for tomorrow: Crushing by door and witch movement, and some
+  architecture for specializing Walker type and adding custom states.

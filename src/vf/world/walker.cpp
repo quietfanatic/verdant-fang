@@ -488,16 +488,15 @@ void Walker::Resident_draw () {
         Vec head_offset = pose.body->head * scale;
         if (pose.head) {
             draw_frame(
-                pos + head_offset, *pose.head, *data->head_tex,
-                scale, z + Z::HeadOffset
+                *pose.head, 0, pos + head_offset, z + Z::HeadOffset, scale
             );
         }
-        draw_frame(pos, *pose.body, *data->body_tex, scale, z);
+        draw_frame(*pose.body, 0, pos, z, scale);
         if (damage_overlap && decal_index < max_decals) {
             float cutoff = pose.body->decals[decal_index].x;
             Frame overlap = *pose.body;
             if (overlap.bounds.r > cutoff) overlap.bounds.r = cutoff;
-            draw_frame(pos, overlap, *data->body_tex, scale, Z::Overlap);
+            draw_frame(overlap, 0, pos, Z::Overlap, scale);
             if (pose.head) {
                 overlap = *pose.head;
                  // Make sure to cancel the addition of head_offset to pos
@@ -506,8 +505,8 @@ void Walker::Resident_draw () {
                     overlap.bounds.r = head_cutoff;
                 }
                 draw_frame(
-                    pos + head_offset, overlap, *data->head_tex,
-                    scale, Z::Overlap + Z::HeadOffset
+                    overlap, 0,
+                    pos + head_offset, Z::Overlap + Z::HeadOffset, scale
                 );
             }
         }
@@ -515,9 +514,10 @@ void Walker::Resident_draw () {
             expect(weapon_state < 3);
             Vec weapon_offset = pose.body->weapon * scale;
             draw_frame(
-                pos + weapon_offset, *pose.weapon,
-                *data->weapon_tex[weapon_state],
-                scale, (damage_overlap ? Z::Overlap : z) + Z::WeaponOffset
+                *pose.weapon, weapon_state,
+                pos + weapon_offset,
+                (damage_overlap ? Z::Overlap : z) + Z::WeaponOffset,
+                scale
             );
         }
     }
@@ -532,21 +532,23 @@ void Walker::Resident_on_exit () {
 
 AYU_DESCRIBE(vf::BodyFrame,
     elems(
+        elem(&BodyFrame::target),
         elem(&BodyFrame::offset),
-        elem(&BodyFrame::bounds),
         elem(&BodyFrame::head),
         elem(&BodyFrame::weapon, optional),
         elem(&BodyFrame::decals, optional),
         elem(&BodyFrame::decal_dirs, optional)
-    )
+    ),
+    init([](BodyFrame& v){ v.init(); })
 )
 
 AYU_DESCRIBE(vf::WeaponFrame,
     elems(
+        elem(&WeaponFrame::target),
         elem(&WeaponFrame::offset),
-        elem(&WeaponFrame::bounds),
         elem(&WeaponFrame::hitbox, optional)
-    )
+    ),
+    init([](WeaponFrame& v){ v.init(); })
 )
 
 AYU_DESCRIBE(vf::Pose,
@@ -616,9 +618,6 @@ AYU_DESCRIBE(vf::WalkerSfx,
 AYU_DESCRIBE(vf::WalkerData,
     attrs(
         attr("phys", &WalkerData::phys),
-        attr("body_tex", &WalkerData::body_tex),
-        attr("head_tex", &WalkerData::head_tex),
-        attr("weapon_tex", &WalkerData::weapon_tex),
         attr("poses", &WalkerData::poses),
         attr("sfx", &WalkerData::sfx),
         attr("decals", &WalkerData::decals)

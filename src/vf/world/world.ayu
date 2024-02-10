@@ -24,6 +24,7 @@
         bounds: [0 0 320 180]
     }]
     start_blocks: [vf::Blocks {
+        data: assets.ayu#block
         room: #start
         blocks: [
             [-16 160] [16 160] [48 160] [80 160] [112 160] [144 160] [176 160] [208 160] [240 160] [272 160] [304 160]
@@ -65,6 +66,7 @@
         bounds: [320 0 0 180]
     }]
     den_blocks: [vf::Blocks {
+        data: assets.ayu#block
         room: #den
         blocks: [
             [-16 160] [16 160] [48 160] [80 160] [112 160] [144 160] [176 160] [208 160] [240 160] [272 160] [304 160]
@@ -110,6 +112,7 @@
         bounds: [0 0 320 180]
     }]
     atelier_blocks: [vf::Blocks {
+        data: assets.ayu#block
         room: #atelier
         blocks: [
             [-16 160] [16 160] [48 160] [80 160] [112 160] [144 160] [176 160] [208 160] [240 160] [272 160] [304 160]

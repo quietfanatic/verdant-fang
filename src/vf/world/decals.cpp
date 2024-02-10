@@ -56,7 +56,7 @@ void draw_decal (const Walker& w, const Pose& pose) {
         }
         default: never();
     }
-    draw_frame(w.pos + off, *frame, decal.tex, {w.left ? -1 : 1, 1}, z);
+    draw_frame(*frame, 0, w.pos + off, z, {w.left ? -1 : 1, 1});
 }
 
 } using namespace vf;

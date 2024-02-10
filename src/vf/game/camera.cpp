@@ -7,7 +7,7 @@
 #include "../../dirt/glow/program.h"
 #include "../../dirt/glow/texture.h"
 #include "../../dirt/iri/iri.h"
-#include "frame.h"
+#include "render.h"
 
 namespace vf {
 

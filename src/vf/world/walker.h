@@ -2,7 +2,7 @@
 
 #include "../../dirt/glow/image-texture.h"
 #include "../game/controls.h"
-#include "../game/frame.h"
+#include "../game/render.h"
 #include "../game/sound.h"
 #include "../game/room.h"
 #include "common.h"
@@ -94,9 +94,6 @@ struct WalkerSfx {
 
 struct WalkerData {
     WalkerPhys phys;
-    glow::PixelTexture* body_tex;
-    glow::PixelTexture* head_tex;
-    glow::PixelTexture* weapon_tex [3];
     DecalData* decals;
     WalkerPoses* poses;
     WalkerSfx sfx;

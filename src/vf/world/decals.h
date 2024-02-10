@@ -1,6 +1,6 @@
 #pragma once
 #include "../../dirt/glow/image-texture.h"
-#include "../game/frame.h"
+#include "../game/render.h"
 #include "common.h"
 
 namespace vf {
@@ -15,7 +15,7 @@ enum class DecalType : uint8 {
 constexpr uint8 max_decals = 4;
 
 struct Decal {
-    glow::PixelTexture tex;
+    vf::LayeredTexture tex;
     Frame dir_0 [4];
     Frame dir_1 [1];
     Frame dir_2 [7];
