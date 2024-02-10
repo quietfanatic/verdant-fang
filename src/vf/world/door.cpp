@@ -10,6 +10,9 @@ namespace vf {
 struct DoorData {
     glow::PixelTexture tex;
     Frame frame;
+    Sound* open_sfx;
+    Sound* close_sfx;
+    Sound* slam_sfx;
 };
 
 void Door::init () {
@@ -55,7 +58,10 @@ void Door::Resident_before_step () {
                   : closedness < 0.7 ? 2
                   : 2.4;
         float next = closedness + vel / total_dist;
-        if (next > 1) pos = closed_pos;
+        if (next >= 0.999) {
+            pos = closed_pos;
+            data->slam_sfx->play();
+        }
         else pos = lerp(open_pos, closed_pos, next);
     }
 }
@@ -72,11 +78,11 @@ void Door::Resident_on_exit () {
 void Door::Activatable_activate () {
     if (pos == closed_pos) {
         open = true;
-        data->sound->play();
+        data->open_sfx->play();
     }
     else if (pos == open_pos) {
         open = false;
-        data->sound->play();
+        data->close_sfx->play();
     }
 }
 
@@ -92,4 +98,14 @@ AYU_DESCRIBE(vf::Door,
         attr("open", &Door::open, optional)
     ),
     init<&Door::init>()
+)
+
+AYU_DESCRIBE(vf::DoorData,
+    attrs(
+        attr("tex", &DoorData::tex),
+        attr("frame", &DoorData::frame),
+        attr("open_sfx", &DoorData::open_sfx),
+        attr("close_sfx", &DoorData::close_sfx),
+        attr("slam_sfx", &DoorData::slam_sfx)
+    )
 )

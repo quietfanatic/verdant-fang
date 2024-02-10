@@ -128,7 +128,6 @@ my @sources = (qw(
     vf/game/sound.cpp
     vf/game/state.cpp
     vf/world/blocks.cpp
-    vf/world/common.cpp
     vf/world/decals.cpp
     vf/world/door.cpp
     vf/world/loading-zone.cpp

@@ -1,7 +1,5 @@
 #pragma once
-#include "../../dirt/glow/image-texture.h"
 #include "../game/common.h"
-#include "../game/frame.h"
 
 namespace vf {
 
@@ -35,15 +33,5 @@ namespace Layers {
     constexpr uint32 LoadingZone_Verdant = 1 << 4;
     constexpr uint32 Switch_Weapon = 1 << 5;
 }
-
-struct TexAndFrame {
-    glow::PixelTexture tex;
-    Frame frame;
-};
-
-struct Sound;
-struct TexFrameSound : TexAndFrame {
-    Sound* sound;
-};
 
 } // vf

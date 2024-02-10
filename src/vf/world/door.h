@@ -5,9 +5,10 @@
 
 namespace vf {
 
+struct DoorData;
 struct Door : Resident, Activatable {
     Hitbox hb;
-    TexFrameSound* data;
+    DoorData* data;
     Vec closed_pos = GNAN;
     Vec open_pos = GNAN;
     bool open = false;

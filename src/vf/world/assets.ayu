@@ -10,21 +10,23 @@
         image: #layer0
         bounds: [3 3 35 35]
     }]
-    door_data: [vf::TexFrameSound {
-        tex: {
-            image: #layer0
-            bounds: [54 12 77 76]
-        }
-        frame: [[11 0] [-11 0 12 64]]
-        sound: #gubuuw
-    }]
-    switch_data: [vf::TexFrameSound {
+    switch: [vf::SwitchData {
         tex: {
             image: #layer0
             bounds: [25 91 35 109]
         }
         frame: [[5 9] [-5 -9 5 9]]
-        sound: #koltik
+        activate_sfx: #koltik
+    }]
+    door: [vf::DoorData {
+        tex: {
+            image: #layer0
+            bounds: [54 12 77 76]
+        }
+        frame: [[11 0] [-11 0 12 64]]
+        open_sfx: #gubuuw
+        close_sfx: #gruwwu
+        slam_sfx: #pkuwww
     }]
      -- For some reason, having these as mp3s breaks SDL2_mixer.  Perhaps it
      -- can't play mp3 files that are too short?
@@ -43,4 +45,6 @@
     kkkww: [vf::Sound { source:assets/kkkkk.mp3 channel:3 volume:0.8 }]
     koltik: [vf::Sound { source:assets/koltik.mp3 channel:1 }]
     gubuuw: [vf::Sound { source:assets/gubuuw.mp3 channel:4 }]
+    gruwwu: [vf::Sound { source:assets/gruwwu.mp3 channel:4 }]
+    pkuwww: [vf::Sound { source:assets/pkuwww.mp3 channel:4 }]
 }]

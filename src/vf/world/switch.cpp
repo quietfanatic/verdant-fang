@@ -1,9 +1,17 @@
 #include "switch.h"
 
+#include "../../dirt/glow/image-texture.h"
+#include "../game/frame.h"
 #include "../game/sound.h"
 #include "walker.h"
 
 namespace vf {
+
+struct SwitchData {
+    glow::PixelTexture tex;
+    Frame frame;
+    Sound* activate_sfx;
+};
 
 void Switch::init () {
     hb.layers_1 = Layers::Switch_Weapon;
@@ -26,7 +34,7 @@ void Switch::Resident_on_collide (const Hitbox&, Resident& o, const Hitbox&) {
         expect(o.types & Types::Walker);
         auto& w = static_cast<Walker&>(o);
         w.recoil();
-        w.hit_sound = data->sound;
+        w.hit_sound = data->activate_sfx;
     }
 }
 
@@ -48,4 +56,12 @@ AYU_DESCRIBE(vf::Switch,
         attr("cooldown", &Switch::cooldown, optional)
     ),
     init<&Switch::init>()
+)
+
+AYU_DESCRIBE(vf::SwitchData,
+    attrs(
+        attr("tex", &SwitchData::tex),
+        attr("frame", &SwitchData::frame),
+        attr("activate_sfx", &SwitchData::activate_sfx)
+    )
 )

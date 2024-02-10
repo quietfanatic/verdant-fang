@@ -43,13 +43,13 @@
     start_switch: [vf::Switch {
         room: #start
         pos: [256 112]
-        data: assets.ayu#switch_data
+        data: assets.ayu#switch
         target: #start_to_den_door
     }]
     start_to_den_door: [vf::Door {
         room: #start
         pos: [288 32]
-        data: assets.ayu#door_data
+        data: assets.ayu#door
     }]
     start_to_den: [vf::LoadingZone {
         room: #start
