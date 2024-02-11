@@ -86,3 +86,17 @@
 - Added sounds for door closing (and fixed door closing animation).
 - Planned work for tomorrow: Crushing by door and witch movement, and some
   architecture for specializing Walker type and adding custom states.
+#####2024-02-10 S
+- A lot of work under the hood today.  I added a system to automatically
+  determine the bounds of art frames, which makes it a lot faster to add new
+  frames and modify existing ones.  Also implemented the system for specializing
+  Walker types with custom states.  Haven't implemented any actual custom
+  states, but I have added some custom state handling to the main character.
+- Wasted something like two hours on a serious bug in said system which was just
+  caused by an argument name shadowing a class member. XoX
+- Finished art frames for falling and laying forwards, and added them to the
+  program (much more pleasant with the automatic bounds detection).
+- Implemented getting crushed by door, which was so easy it was almost
+  anticlimatic, thanks to all the refactoring work.
+- Planned work for Monday: Dunno!  Probably gonna play around with Witch some
+  more.
