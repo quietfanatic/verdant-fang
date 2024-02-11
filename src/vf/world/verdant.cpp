@@ -12,7 +12,9 @@ Verdant::Verdant () {
 }
 
 WalkerBusiness Verdant::Walker_business () {
-    if (state == WS::Hit && anim_timer == data->hit_sequence) {
+    if (state == WS::Hit && anim_phase == 1 &&
+        anim_timer == data->hit_sequence[1]
+    ) {
         static_cast<VerdantData*>(data)->unhit_sound->play();
     }
     return Walker::Walker_business();
@@ -24,7 +26,7 @@ void Verdant::Walker_on_hit (
      // We haven't implemented backstabbing so turn victim around.
     victim.left = !left;
      // Find place to stab
-    Vec weapon_offset = data->poses->attack[3].body->weapon;
+    Vec weapon_offset = data->poses->hit[0].body->weapon;
     auto& victim_body = *victim.data->poses->dead[0].body;
     usize min_dist = GINF;
     usize decal_i = -1;
@@ -39,7 +41,7 @@ void Verdant::Walker_on_hit (
     }
      // Calculate stab depth
     float weapon_tip = pos.x + left_flip(
-        weapon_offset.x + data->poses->attack[3].weapon->hitbox.r
+        weapon_offset.x + data->poses->hit[0].weapon->hitbox.r
     );
     Vec decal_pos = victim.pos + victim.left_flip(victim_body.decals[decal_i]);
     float stab_depth = left_flip(weapon_tip - decal_pos.x);

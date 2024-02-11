@@ -83,6 +83,7 @@ struct WalkerPoses {
      // Preattack (before hold), preattack (hold), attack active, attack
      // inactive, postattack occupied, postattack interruptible
     Pose attack [6];
+    Pose hit [2];
      // Standing, falling, laying
     Pose dead [3];
 };
@@ -114,8 +115,9 @@ struct WalkerData {
      // [4] is postattack, occupied.
      // [5] is postattack, interruptible.
     uint8 attack_sequence [6];
-     // Length of time to freeze when hitting a target.
-    uint8 hit_sequence;
+     // Length of time to freeze when hitting a target.  Phases differ only in
+     // animation.
+    uint8 hit_sequence [2];
      // [0] + [1] is freeze frames during hit.  These should match opponent's
      // hit_sequence so you're both frozen for the same time.  pose = dead[0]
      // [2] is before starting to fall.  pose = dead[0]

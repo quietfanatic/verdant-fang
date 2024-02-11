@@ -112,11 +112,17 @@ WalkerBusiness Walker::Walker_business () {
             }
         }
         case WS::Hit: {
-            expect(anim_phase == 0);
-            if (anim_timer >= data->hit_sequence) {
-                state = WS::Attack;
-                anim_phase = 4;
-                anim_timer = 0;
+            expect(anim_phase < 2);
+            if (anim_timer >= data->hit_sequence[anim_phase]) {
+                if (anim_phase == 1) {
+                    state = WS::Attack;
+                    anim_phase = 4;
+                    anim_timer = 0;
+                }
+                else {
+                    anim_phase += 1;
+                    anim_timer = 0;
+                }
                 return Walker_business();
             }
             else {
@@ -161,9 +167,7 @@ void Walker::Resident_before_step () {
 
      // Advance animations and do state-dependent things
     expect(anim_timer < 255);
-    expect(state != WS::Hit || anim_phase == 0);
     business = Walker_business();
-    expect(state != WS::Hit || anim_phase == 0);
 
      // Choose some physics parameters
     float acc = floor ? data->ground_acc : data->air_acc;
@@ -452,8 +456,7 @@ Pose Walker::Walker_pose () {
             break;
         }
         case WS::Hit: {
-             // TODO: use dedicated hit pose array
-            r = poses.attack[3];
+            r = poses.hit[anim_phase];
             if (!floor) {
                 r.head = poses.jump[jump_frame()].head;
             }
@@ -563,6 +566,7 @@ AYU_DESCRIBE(vf::WalkerPoses,
         attr("jump", &WalkerPoses::jump),
         attr("land", &WalkerPoses::land),
         attr("attack", &WalkerPoses::attack),
+        attr("hit", &WalkerPoses::hit),
         attr("dead", &WalkerPoses::dead)
     )
 )
