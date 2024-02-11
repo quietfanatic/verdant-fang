@@ -87,7 +87,7 @@ struct WalkerPoses {
     Pose dead [3];
 };
 
-struct WalkerPhys {
+struct WalkerData {
     Rect body_box;
     Rect damage_box;
     float ground_acc;
@@ -134,22 +134,13 @@ struct WalkerPhys {
     float fall_cycle_dist;
     float jump_end_vel;
     float fall_start_vel;
-};
-
-struct WalkerSfx {
-    Sound* step [5];
-    Sound* land;
-    Sound* attack;
-    Sound* hit_solid;
-    Sound* hit_soft;
-    Sound* unhit = null;
-};
-
-struct WalkerData {
-    WalkerPhys phys;
-    DecalData* decals;
+    Sound* step_sound [5];
+    Sound* land_sound;
+    Sound* attack_sound;
+    Sound* hit_solid_sound;
+    Sound* hit_soft_sound;
     WalkerPoses* poses;
-    WalkerSfx sfx;
+    DecalData* decals;
 };
 
 struct Walker : Resident {

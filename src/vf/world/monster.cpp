@@ -71,7 +71,6 @@ float quadratic_until_stop (float p, float v, float a, float t) {
 }
 
 float predict (Walker& self, Walker& target, float self_acc, float time) {
-    auto& target_phys = target.data->phys;
     auto predicted_x = quadratic_until_stop(
         self.pos.x, self.vel.x,
         self.left ? -self_acc : self_acc,
@@ -79,7 +78,7 @@ float predict (Walker& self, Walker& target, float self_acc, float time) {
     );
      // Assume target will attack and decelerate.
     float target_dec =
-        target.floor ? target_phys.coast_dec : target_phys.air_dec;
+        target.floor ? target.data->coast_dec : target.data->air_dec;
     auto predicted_target_x = quadratic_until_stop(
         target.pos.x, target.vel.x,
         target.left ? target_dec : -target_dec,
@@ -93,15 +92,14 @@ Controls MonsterMind::Mind_think (Resident& s) {
     if (!(s.types & Types::Monster)) return r;
     auto& self = static_cast<Monster&>(s);
     if (!target || target->state == WS::Dead) return r;
-    auto& phys = self.data->phys;
 
      // Calculcate some distances
     float dist = target->pos.x - self.pos.x;
      // Predict where target will be when attack animation finishes.
     float attack_dist = predict(
         self, *target,
-        self.floor ? -phys.coast_dec : -phys.air_dec,
-        phys.attack_sequence[0] + phys.attack_sequence[1]
+        self.floor ? -self.data->coast_dec : -self.data->air_dec,
+        self.data->attack_sequence[0] + self.data->attack_sequence[1]
     );
      // For jump distance, use the amount of time it's likely to take for our
      // damage box to leave the hazard area of the target's weapon.

@@ -2,9 +2,20 @@
 
 namespace vf {
 
+struct VerdantData : WalkerData {
+    Sound* unhit_sound;
+};
+
 Verdant::Verdant () {
     types |= Types::Verdant;
     hbs[0].layers_2 |= Layers::LoadingZone_Verdant;
+}
+
+WalkerBusiness Verdant::Walker_business () {
+    if (state == WS::Hit && anim_timer == data->hit_sequence) {
+        static_cast<VerdantData*>(data)->unhit_sound->play();
+    }
+    return Walker::Walker_business();
 }
 
 void Verdant::Walker_on_hit (
@@ -53,5 +64,12 @@ void Verdant::Walker_on_hit (
 AYU_DESCRIBE(vf::Verdant,
     attrs(
         attr("vf::Walker", base<Walker>(), include)
+    )
+)
+
+AYU_DESCRIBE(vf::VerdantData,
+    attrs(
+        attr("vf::WalkerData", base<WalkerData>(), include),
+        attr("unhit_sound", &VerdantData::unhit_sound)
     )
 )

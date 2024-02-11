@@ -29,21 +29,21 @@ uint8 Walker::walk_frame () {
         walk_start_x = pos.x;
     }
     float dist = distance(walk_start_x, pos.x);
-    return geo::floor(dist / data->phys.walk_cycle_dist) % 6;
+    return geo::floor(dist / data->walk_cycle_dist) % 6;
 }
 uint8 Walker::jump_frame () {
     if (!defined(fall_start_y)) {
         fall_start_y = pos.y;
     }
-    if (vel.y > data->phys.jump_end_vel) {
+    if (vel.y > data->jump_end_vel) {
         return 0;
     }
-    else if (vel.y > data->phys.fall_start_vel) {
+    else if (vel.y > data->fall_start_vel) {
         return 1;
     }
     else {
         float dist = distance(fall_start_y, pos.y);
-        return 2 + geo::floor(dist / data->phys.fall_cycle_dist) % 2;
+        return 2 + geo::floor(dist / data->fall_cycle_dist) % 2;
     }
 }
 
@@ -64,12 +64,11 @@ void Walker::Resident_set_pos (Vec p) {
 }
 
 WalkerBusiness Walker::Walker_business () {
-    auto& phys = data->phys;
     switch (state) {
         case WS::Neutral: return WB::Free;
         case WS::Land: {
             expect(anim_phase < 2);
-            if (anim_timer >= phys.land_sequence[anim_phase]) {
+            if (anim_timer >= data->land_sequence[anim_phase]) {
                 if (anim_phase == 1) {
                     set_state(WS::Neutral);
                 }
@@ -90,7 +89,7 @@ WalkerBusiness Walker::Walker_business () {
         }
         case WS::Attack: {
             expect(anim_phase < 6);
-            if (anim_timer >= phys.attack_sequence[anim_phase]) {
+            if (anim_timer >= data->attack_sequence[anim_phase]) {
                 if (anim_phase == 0) return WB::HoldAttack;
                 if (anim_phase == 6) {
                     set_state(WS::Neutral);
@@ -114,9 +113,7 @@ WalkerBusiness Walker::Walker_business () {
         }
         case WS::Hit: {
             expect(anim_phase == 0);
-            if (anim_timer >= phys.hit_sequence) {
-                 // TODO: move this to Verdant
-                if (data->sfx.unhit) data->sfx.unhit->play();
+            if (anim_timer >= data->hit_sequence) {
                 state = WS::Attack;
                 anim_phase = 4;
                 anim_timer = 0;
@@ -133,7 +130,7 @@ WalkerBusiness Walker::Walker_business () {
                  // End of animation (double meaning)
                 return WB::Occupied;
             }
-            else if (anim_timer >= phys.dead_sequence[anim_phase]) {
+            else if (anim_timer >= data->dead_sequence[anim_phase]) {
                 if (anim_phase == 3 && !floor) {
                      // Hold phase 3 until we land
                     return WB::Occupied;
@@ -141,7 +138,7 @@ WalkerBusiness Walker::Walker_business () {
                 else {
                     anim_phase += 1;
                     anim_timer = 0;
-                    if (anim_phase == 3) pos.y += phys.dead_floor_lift;
+                    if (anim_phase == 3) pos.y += data->dead_floor_lift;
                     return Walker_business();
                 }
             }
@@ -158,8 +155,6 @@ WalkerBusiness Walker::Walker_business () {
 }
 
 void Walker::Resident_before_step () {
-    auto& phys = data->phys;
-
      // Read controls.
     Controls controls;
     if (mind) controls = mind->Mind_think(*this);
@@ -171,12 +166,12 @@ void Walker::Resident_before_step () {
     expect(state != WS::Hit || anim_phase == 0);
 
      // Choose some physics parameters
-    float acc = floor ? phys.ground_acc : phys.air_acc;
-    float max = floor ? phys.ground_max : phys.air_max;
+    float acc = floor ? data->ground_acc : data->air_acc;
+    float max = floor ? data->ground_max : data->air_max;
     float dec = floor
         ? business == WB::Occupied || crouch
-            ? phys.coast_dec : phys.ground_dec
-        : phys.air_dec;
+            ? data->coast_dec : data->ground_dec
+        : data->air_dec;
 
      // Try to move
     bool decelerate = false;
@@ -204,12 +199,12 @@ void Walker::Resident_before_step () {
                 if (business == WB::Interruptible) {
                     set_state(WS::Neutral);
                 }
-                if (!floor) pos.y += phys.jump_crouch_lift;
+                if (!floor) pos.y += data->jump_crouch_lift;
             }
         }
         else if (crouch) {
             crouch = false;
-            if (!floor) pos.y -= phys.jump_crouch_lift;
+            if (!floor) pos.y -= data->jump_crouch_lift;
             walk_start_x = pos.x;
         }
 
@@ -251,9 +246,9 @@ void Walker::Resident_before_step () {
          // Jump or don't
         if (controls[Control::Jump]) {
             if (floor && !controls[Control::Down] &&
-                controls[Control::Jump] <= phys.hold_buffer
+                controls[Control::Jump] <= data->hold_buffer
             ) {
-                vel.y += phys.jump_vel;
+                vel.y += data->jump_vel;
                 floor = null;
                 if (business == WB::Interruptible) set_state(WS::Neutral);
             }
@@ -261,13 +256,13 @@ void Walker::Resident_before_step () {
         }
         else {
              // Allow drop_timer to count even when on floor
-            if (drop_timer < phys.drop_duration) {
+            if (drop_timer < data->drop_duration) {
                 drop_timer += 1;
             }
         }
          // Attack or don't
         if (controls[Control::Attack] &&
-            controls[Control::Attack] <= phys.hold_buffer) {
+            controls[Control::Attack] <= data->hold_buffer) {
             set_state(WS::Attack);
         }
         break;
@@ -288,14 +283,14 @@ void Walker::Resident_before_step () {
 
     if (business != WB::Frozen) {
          // Fall
-        if (vel.y > phys.fall_start_vel || !defined(fall_start_y)) {
+        if (vel.y > data->fall_start_vel || !defined(fall_start_y)) {
             fall_start_y = pos.y;
         }
          // TODO: Differentiate between dead anim phases?
-        vel.y -= state == WS::Dead ? phys.gravity_damage
-               : drop_timer == 0 ? phys.gravity_jump
-               : drop_timer <= phys.drop_duration ? phys.gravity_drop
-               : phys.gravity_fall;
+        vel.y -= state == WS::Dead ? data->gravity_damage
+               : drop_timer == 0 ? data->gravity_jump
+               : drop_timer <= data->drop_duration ? data->gravity_drop
+               : data->gravity_fall;
 
          // Apply velocity and see if we need to play footstep sound
         auto walk_frame_before = walk_frame();
@@ -305,16 +300,16 @@ void Walker::Resident_before_step () {
             if (walk_frame_before % 3 == 1 && walk_frame_after % 3 == 2) {
                 auto i = std::uniform_int_distribution(0, 4)(current_game->state().rng);
                 expect(i >= 0 && i <= 4);
-                data->sfx.step[i]->play();
+                data->step_sound[i]->play();
             }
         }
     }
 
      // Set up hitboxes
-    hbs[0].box = phys.body_box;
+    hbs[0].box = data->body_box;
     if (left) hbs[0].fliph();
     if (state != WS::Dead && business != WB::Frozen) {
-        hbs[1].box = phys.damage_box;
+        hbs[1].box = data->damage_box;
         if (left) hbs[1].fliph();
     }
     else hbs[1].box = GNAN;
@@ -322,7 +317,7 @@ void Walker::Resident_before_step () {
         hbs[2].box = data->poses->attack[anim_phase].body->weapon
                    + data->poses->attack[anim_phase].weapon->hitbox;
         if (left) hbs[2].fliph();
-        data->sfx.attack->play();
+        data->attack_sound->play();
     }
     else hbs[2].box = GNAN;
 
@@ -354,7 +349,7 @@ void Walker::Resident_on_collide (
                         (state == WS::Attack && anim_phase >= 2)
                     ) set_state(WS::Land);
                     if (state != WS::Dead) {
-                        data->sfx.land->play();
+                        data->land_sound->play();
                     }
                     walk_start_x = pos.x;
                 }
@@ -393,7 +388,7 @@ void Walker::Resident_on_collide (
         }
     }
     else if (&hb == &hbs[2] && o_hb.layers_2 & Layers::Weapon_Solid) {
-        if (!hit_sound) hit_sound = data->sfx.hit_solid;
+        if (!hit_sound) hit_sound = data->hit_solid_sound;
         recoil();
     }
     else if (&hb == &hbs[2] && o_hb.layers_2 & Layers::Weapon_Walker) {
@@ -406,8 +401,8 @@ void Walker::Walker_on_hit (const Hitbox&, Walker& victim, const Hitbox&) {
      // if two walkers hit each other at the same time.
     if (state != WS::Dead) set_state(WS::Hit);
     victim.set_state(WS::Dead);
-    victim.data->sfx.attack->stop();
-    data->sfx.hit_soft->play();
+    victim.data->attack_sound->stop();
+    data->hit_soft_sound->play();
 }
 
 void Walker::Resident_after_step () {
@@ -572,53 +567,40 @@ AYU_DESCRIBE(vf::WalkerPoses,
     )
 )
 
-AYU_DESCRIBE(vf::WalkerPhys,
-    attrs(
-        attr("body_box", &WalkerPhys::body_box),
-        attr("damage_box", &WalkerPhys::damage_box),
-        attr("ground_acc", &WalkerPhys::ground_acc),
-        attr("ground_max", &WalkerPhys::ground_max),
-        attr("ground_dec", &WalkerPhys::ground_dec),
-        attr("coast_dec", &WalkerPhys::coast_dec),
-        attr("air_acc", &WalkerPhys::air_acc),
-        attr("air_max", &WalkerPhys::air_max),
-        attr("air_dec", &WalkerPhys::air_dec),
-        attr("jump_vel", &WalkerPhys::jump_vel),
-        attr("gravity_jump", &WalkerPhys::gravity_jump),
-        attr("gravity_fall", &WalkerPhys::gravity_fall),
-        attr("gravity_drop", &WalkerPhys::gravity_drop),
-        attr("gravity_damage", &WalkerPhys::gravity_damage),
-        attr("drop_duration", &WalkerPhys::drop_duration),
-        attr("land_sequence", &WalkerPhys::land_sequence),
-        attr("attack_sequence", &WalkerPhys::attack_sequence),
-        attr("hit_sequence", &WalkerPhys::hit_sequence),
-        attr("dead_sequence", &WalkerPhys::dead_sequence),
-        attr("jump_crouch_lift", &WalkerPhys::jump_crouch_lift),
-        attr("dead_floor_lift", &WalkerPhys::dead_floor_lift),
-        attr("hold_buffer", &WalkerPhys::hold_buffer),
-        attr("walk_cycle_dist", &WalkerPhys::walk_cycle_dist),
-        attr("fall_cycle_dist", &WalkerPhys::fall_cycle_dist),
-        attr("jump_end_vel", &WalkerPhys::jump_end_vel),
-        attr("fall_start_vel", &WalkerPhys::fall_start_vel)
-    )
-)
-
-AYU_DESCRIBE(vf::WalkerSfx,
-    attrs(
-        attr("step", &WalkerSfx::step),
-        attr("land", &WalkerSfx::land),
-        attr("attack", &WalkerSfx::attack),
-        attr("hit_solid", &WalkerSfx::hit_solid),
-        attr("hit_soft", &WalkerSfx::hit_soft),
-        attr("unhit", &WalkerSfx::unhit, optional)
-    )
-)
-
 AYU_DESCRIBE(vf::WalkerData,
     attrs(
-        attr("phys", &WalkerData::phys),
+        attr("body_box", &WalkerData::body_box),
+        attr("damage_box", &WalkerData::damage_box),
+        attr("ground_acc", &WalkerData::ground_acc),
+        attr("ground_max", &WalkerData::ground_max),
+        attr("ground_dec", &WalkerData::ground_dec),
+        attr("coast_dec", &WalkerData::coast_dec),
+        attr("air_acc", &WalkerData::air_acc),
+        attr("air_max", &WalkerData::air_max),
+        attr("air_dec", &WalkerData::air_dec),
+        attr("jump_vel", &WalkerData::jump_vel),
+        attr("gravity_jump", &WalkerData::gravity_jump),
+        attr("gravity_fall", &WalkerData::gravity_fall),
+        attr("gravity_drop", &WalkerData::gravity_drop),
+        attr("gravity_damage", &WalkerData::gravity_damage),
+        attr("drop_duration", &WalkerData::drop_duration),
+        attr("land_sequence", &WalkerData::land_sequence),
+        attr("attack_sequence", &WalkerData::attack_sequence),
+        attr("hit_sequence", &WalkerData::hit_sequence),
+        attr("dead_sequence", &WalkerData::dead_sequence),
+        attr("jump_crouch_lift", &WalkerData::jump_crouch_lift),
+        attr("dead_floor_lift", &WalkerData::dead_floor_lift),
+        attr("hold_buffer", &WalkerData::hold_buffer),
+        attr("walk_cycle_dist", &WalkerData::walk_cycle_dist),
+        attr("fall_cycle_dist", &WalkerData::fall_cycle_dist),
+        attr("jump_end_vel", &WalkerData::jump_end_vel),
+        attr("fall_start_vel", &WalkerData::fall_start_vel),
+        attr("step_sound", &WalkerData::step_sound),
+        attr("land_sound", &WalkerData::land_sound),
+        attr("attack_sound", &WalkerData::attack_sound),
+        attr("hit_solid_sound", &WalkerData::hit_solid_sound),
+        attr("hit_soft_sound", &WalkerData::hit_soft_sound),
         attr("poses", &WalkerData::poses),
-        attr("sfx", &WalkerData::sfx),
         attr("decals", &WalkerData::decals)
     )
 )

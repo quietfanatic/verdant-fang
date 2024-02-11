@@ -100,50 +100,48 @@
             [#body_dead #head_dead #spear_dead]
         ]
     }]
-    data: [vf::WalkerData {
-        phys: {
-            body_box: [-6 0 6 30]
-            damage_box: [-3 12 3 30]
-            ground_acc: 0.3
-            ground_max: 2.5
-            ground_dec: 0.3
-            coast_dec: 0.2
-            air_acc: 0.2
-            air_max: 2
-            air_dec: 0
-            jump_vel: 3.4
-            gravity_jump: 0.11
-            gravity_fall: 0.2
-            gravity_drop: 0.3
-            gravity_damage: 0.1
-            drop_duration: 6
-            land_sequence: [4 4]
-            attack_sequence: [5 0 1 5 5 200]
-            hit_sequence: 24
-            dead_sequence: [16 8 6 8 10 10 10 10 80 120 120]
-            jump_crouch_lift: 4
-            dead_floor_lift: 10
-            hold_buffer: 6
-            walk_cycle_dist: 16
-            fall_cycle_dist: 16
-            jump_end_vel: 0.6
-            fall_start_vel: -0.6
-        }
-        decals: decals.ayu#
+    data: [vf::VerdantData {
+        body_box: [-6 0 6 30]
+        damage_box: [-3 12 3 30]
+        ground_acc: 0.3
+        ground_max: 2.5
+        ground_dec: 0.3
+        coast_dec: 0.2
+        air_acc: 0.2
+        air_max: 2
+        air_dec: 0
+        jump_vel: 3.4
+        gravity_jump: 0.11
+        gravity_fall: 0.2
+        gravity_drop: 0.3
+        gravity_damage: 0.1
+        drop_duration: 6
+        land_sequence: [4 4]
+        attack_sequence: [5 0 1 5 5 200]
+        hit_sequence: 24
+        dead_sequence: [16 8 6 8 10 10 10 10 80 120 120]
+        jump_crouch_lift: 4
+        dead_floor_lift: 10
+        hold_buffer: 6
+        walk_cycle_dist: 16
+        fall_cycle_dist: 16
+        jump_end_vel: 0.6
+        fall_start_vel: -0.6
+
+        step_sound: [
+            assets.ayu#step0
+            assets.ayu#step1
+            assets.ayu#step2
+            assets.ayu#step3
+            assets.ayu#step4
+        ]
+        land_sound: assets.ayu#pmf
+        attack_sound: assets.ayu#fwssh
+        hit_solid_sound: assets.ayu#tkk
+        hit_soft_sound: assets.ayu#doof
+        unhit_sound: assets.ayu#shluk
+
         poses: #poses
-        sfx: {
-            step: [
-                assets.ayu#step0
-                assets.ayu#step1
-                assets.ayu#step2
-                assets.ayu#step3
-                assets.ayu#step4
-            ]
-            land: assets.ayu#pmf
-            attack: assets.ayu#fwssh
-            hit_solid: assets.ayu#tkk
-            hit_soft: assets.ayu#doof
-            unhit: assets.ayu#shluk
-        }
+        decals: decals.ayu#
     }]
 }]
