@@ -3,9 +3,6 @@
 #include "../../dirt/ayu/reflection/describe.h"
 #include "../../dirt/glow/gl.h"
 
-//TEMP
-#include "../world/common.h"
-
 namespace vf {
 
 void Room::enter () {

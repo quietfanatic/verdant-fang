@@ -33,9 +33,11 @@
         [[-3 4] [-8 4] [-12 4] [-16 5]]
         [2 2 2 2]
     ]]
+    body_damagefallf: [vf::BodyFrame [#body [176 78] [4 13] [-5 5]]]
+    body_deadf: [vf::BodyFrame [#body [207 80] [9 3] [-5 0]]]
     head: [vf::LayeredTexture [{
         image: assets.ayu#layer2
-        bounds: [100 40 258 89]
+        bounds: [100 40 266 89]
     }]]
     head_neutral: [vf::Frame [#head [23 39]]]
     head_wave0:   [vf::Frame [#head [55 39]]]
@@ -43,10 +45,11 @@
     head_wave2:   [vf::Frame [#head [119 39]]]
     head_fall0:   [vf::Frame [#head [23 13]]]
     head_fall1:   [vf::Frame [#head [55 13]]]
-    head_back:    [vf::Frame [#head [151 39]]]
     head_down:    [vf::Frame [#head [23 39]]]
     head_damage:  [vf::Frame [#head [87 13]]]
     head_dead:    [vf::Frame [#head [121 17]]]
+    head_damagef: [vf::Frame [#head [132 17]]]
+    head_deadf:   [vf::Frame [#head [148 18]]]
     fang: [vf::LayeredTexture [
         {
             image: assets.ayu#layer0
@@ -62,10 +65,11 @@
     spear_neutral:    [vf::WeaponFrame [#fang [10 63]]]
     spear_preattack:  [vf::WeaponFrame [#fang [10 55]]]
     spear_attack:     [vf::WeaponFrame [#fang [10 50] [9 -1 27 1]]]
-    spear_damage:     [vf::WeaponFrame [#fang [10 40]]]
-    spear_damagefall: [vf::WeaponFrame [#fang [10 16]]]
+    spear_damage:     [vf::WeaponFrame [#fang [10 44]]]
+    spear_damagefall: [vf::WeaponFrame [#fang [10 12]]]
+    spear_damagefallf: [vf::WeaponFrame [#fang [10 31]]]
     spear_dead:       [vf::WeaponFrame [#fang [10 6]]]
-    poses: [vf::WalkerPoses {
+    poses: [vf::VerdantPoses {
         stand: [#body_stand #head_neutral #spear_neutral]
         crouch: [#body_crouch #head_neutral #spear_neutral]
         walk: [
@@ -102,6 +106,11 @@
             [#body_damage #head_damage #spear_damage]
             [#body_damagefall #head_damage #spear_damagefall]
             [#body_dead #head_dead #spear_dead]
+        ]
+        deadf: [
+            [#body_damage #head_damage #spear_damage]
+            [#body_damagefallf #head_damagef #spear_damagefallf]
+            [#body_deadf #head_deadf #spear_dead]
         ]
     }]
     data: [vf::VerdantData {

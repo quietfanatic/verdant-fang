@@ -341,6 +341,7 @@ void Walker::Resident_on_collide (
          // Bias toward contacting from above.
         if (height(overlap) - 2 <= width(overlap) && overlap.b == here.b) {
             pos.y += height(overlap);
+             // TODO: Compare relative to Solid's velocity if it has it.
             if (vel.y < 0) {
                 vel.y = 0;
                  // Land on block

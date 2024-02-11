@@ -16,6 +16,7 @@ struct DoorData {
 };
 
 void Door::init () {
+    types |= Types::Door;
     hb.layers_2 = Layers::Walker_Solid | Layers::Weapon_Solid;
     hb.box = data->hitbox;
     hitboxes = Slice<Hitbox>(&hb, 1);
@@ -67,6 +68,7 @@ void Door::Resident_before_step () {
 }
 
 void Door::Resident_draw () {
+     // TODO: Multiple layers for crushing
     draw_frame(data->frame, 0, pos, Z::Door);
 }
 

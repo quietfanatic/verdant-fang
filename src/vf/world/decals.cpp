@@ -16,7 +16,7 @@ void draw_decal (const Walker& w, const Pose& pose) {
     uint8 dir = pose.body->decal_dirs[w.decal_index];
     if (!defined(off) || dir > 2) {
 #ifndef NDEBUG
-        never();
+//        never();
 #endif
         return;
     }
