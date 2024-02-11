@@ -20,17 +20,19 @@ namespace vf {
 
  // WalkerState indicates roughly what state the character is in between frames.
  // Each state has an associated anim_phase and anim_timer, and what values are
- // valid for those depend on the state.
-enum class WalkerState {
-    Neutral,
-    Crouch,
-    Land,
-    Attack,
-    Hit,
-    Damage,
-    Dead,
-};
-using WS = WalkerState;
+ // valid for those depend on the state.  This does not include whether the
+ // walker is grounded (this is covered by .floor) or whether the walker is
+ // crouching (.crouch).
+using WalkerState = uint8;
+namespace WS {
+    constexpr WalkerState Neutral = 0;
+    constexpr WalkerState Land = 1;
+    constexpr WalkerState Attack = 2;
+    constexpr WalkerState Hit = 3;
+    constexpr WalkerState Damage = 4;
+    constexpr WalkerState Dead = 5;
+    constexpr WalkerState Custom = 6;
+}
 
  // WalkerBusiness indicates how "busy" this character is, which encompasses
  // whether they can move, whether they can attack or be attacked, etc.
@@ -141,6 +143,7 @@ struct Walker : Resident {
     Mind* mind = null;
     Vec vel;
     bool left = false;
+    bool crouch = false;
     WalkerState state = WS::Neutral;
      // Valid values of this depend on state.
     uint8 anim_phase = 0;

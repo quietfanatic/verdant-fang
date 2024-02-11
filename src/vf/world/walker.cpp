@@ -67,7 +67,6 @@ WalkerBusiness Walker::Walker_business () {
     auto& phys = data->phys;
     switch (state) {
         case WS::Neutral: return WB::Free;
-        case WS::Crouch: return WB::Free;
         case WS::Land: {
             expect(anim_phase < 2);
             if (anim_timer >= phys.land_sequence[anim_phase]) {
@@ -191,7 +190,7 @@ void Walker::Resident_before_step () {
     float acc = floor ? phys.ground_acc : phys.air_acc;
     float max = floor ? phys.ground_max : phys.air_max;
     float dec = floor
-        ? business == WB::Occupied || state == WS::Crouch
+        ? business == WB::Occupied || crouch
             ? phys.coast_dec : phys.ground_dec
         : phys.air_dec;
 
@@ -216,19 +215,22 @@ void Walker::Resident_before_step () {
     case WB::Free: {
          // Crouch or don't
         if (controls[Control::Down]) {
-            if (state != WS::Crouch) {
-                set_state(WS::Crouch);
+            if (!crouch) {
+                crouch = true;
+                if (business == WB::Interruptible) {
+                    set_state(WS::Neutral);
+                }
                 if (!floor) pos.y += phys.jump_crouch_lift;
             }
         }
-        else if (state == WS::Crouch) {
-            set_state(WS::Neutral);
-            walk_start_x = pos.x;
+        else if (crouch) {
+            crouch = false;
             if (!floor) pos.y -= phys.jump_crouch_lift;
+            walk_start_x = pos.x;
         }
 
          // Walk or don't
-        if (state == WS::Crouch && floor) decelerate = true;
+        if (crouch && floor) decelerate = true;
         else if (controls[Control::Left] && !controls[Control::Right]) {
             if (business == WB::Interruptible) {
                 set_state(WS::Neutral);
@@ -441,7 +443,13 @@ void Walker::Resident_draw () {
     Pose pose;
     switch (state) {
         case WS::Neutral: {
-            if (floor) {
+            if (crouch) {
+                pose = poses.crouch;
+                if (!floor) {
+                    pose.head = poses.jump[jump_frame()].head;
+                }
+            }
+            else if (floor) {
                 if (distance(walk_start_x, pos.x) >= 1) {
                     pose = poses.walk[walk_frame()];
                 }
@@ -449,13 +457,6 @@ void Walker::Resident_draw () {
             }
             else {
                 pose = poses.jump[jump_frame()];
-            }
-            break;
-        }
-        case WS::Crouch: {
-            pose = poses.crouch;
-            if (!floor) {
-                pose.head = poses.jump[jump_frame()].head;
             }
             break;
         }
@@ -636,17 +637,6 @@ AYU_DESCRIBE(vf::WalkerData,
         attr("poses", &WalkerData::poses),
         attr("sfx", &WalkerData::sfx),
         attr("decals", &WalkerData::decals)
-    )
-)
-
-AYU_DESCRIBE(vf::WalkerState,
-    values(
-        value("neutral", WS::Neutral),
-        value("crouch", WS::Crouch),
-        value("attack", WS::Attack),
-        value("land", WS::Land),
-        value("hit", WS::Hit),
-        value("dead", WS::Dead)
     )
 )
 
