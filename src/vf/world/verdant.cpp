@@ -42,9 +42,12 @@ void Verdant::Resident_on_collide (
             goto not_handled;
         }
         else if (overlap.t == here.t) {
-            set_state(WS::Dead);
-            anim_phase = 3;
-            damage_forward = true;
+            if (floor) {
+                set_state(WS::Dead);
+                anim_phase = 3;
+                damage_forward = true;
+                vel.x = 0;
+            }
             pos.y -= height(overlap);
             if (vel.y > 0) vel.y = 0;
         }
