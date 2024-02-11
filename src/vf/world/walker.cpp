@@ -91,7 +91,7 @@ WalkerBusiness Walker::Walker_business () {
             expect(anim_phase < 6);
             if (anim_timer >= data->attack_sequence[anim_phase]) {
                 if (anim_phase == 0) return WB::HoldAttack;
-                if (anim_phase == 6) {
+                if (anim_phase == 5) {
                     set_state(WS::Neutral);
                 }
                 else {
@@ -345,12 +345,16 @@ void Walker::Resident_on_collide (
                 vel.y = 0;
                  // Land on block
                 if (!floor && !new_floor) {
-                     // Cancel attack endlag with landing lag.  I don't like
-                     // this, but the alternative is cancelling landing lag with
-                     // attack endlag, which sounds nice but monsters end up
-                     // doing it all the time.
+                     // Cancel attack endlag with landing lag...but only if we
+                     // wouldn't get any extra control frames.  TODO: clean this
+                     // up.
                     if (state == WS::Neutral ||
-                        (state == WS::Attack && anim_phase >= 2)
+                        (state == WS::Attack && (
+                            (anim_phase == 4 &&
+                                anim_timer >= uint8(data->attack_sequence[anim_phase]
+                                                  - data->land_sequence[0])
+                            ) || anim_phase == 5
+                        ))
                     ) set_state(WS::Land);
                     if (state != WS::Dead) {
                         data->land_sound->play();
