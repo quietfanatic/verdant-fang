@@ -68,6 +68,8 @@ struct Pose {
     BodyFrame* body = null;
     Frame* head = null;
     WeaponFrame* weapon = null;
+    float z = Z::Actor;
+    bool damage_overlap = false;
 };
 
 struct WalkerPoses {
@@ -195,6 +197,8 @@ struct Walker : Resident {
     virtual WalkerBusiness Walker_business ();
      // You can supercall this or not.
     virtual void Walker_on_hit (const Hitbox&, Walker&, const Hitbox&);
+     // Handle posing for custom states here, otherwise supercall.
+    virtual Pose Walker_pose ();
 
      // Useful
     float left_flip (float v) const { return left ? -v : v; }

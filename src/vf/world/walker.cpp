@@ -436,79 +436,84 @@ void Walker::Resident_after_step () {
     }
 }
 
-void Walker::Resident_draw () {
+Pose Walker::Walker_pose () {
+    Pose r;
     auto& poses = *data->poses;
-    bool damage_overlap = false;
-    float z = Z::Actor;
-    Pose pose;
     switch (state) {
         case WS::Neutral: {
             if (crouch) {
-                pose = poses.crouch;
+                r = poses.crouch;
                 if (!floor) {
-                    pose.head = poses.jump[jump_frame()].head;
+                    r.head = poses.jump[jump_frame()].head;
                 }
             }
             else if (floor) {
                 if (distance(walk_start_x, pos.x) >= 1) {
-                    pose = poses.walk[walk_frame()];
+                    r = poses.walk[walk_frame()];
                 }
-                else pose = poses.stand;
+                else r = poses.stand;
             }
             else {
-                pose = poses.jump[jump_frame()];
+                r = poses.jump[jump_frame()];
             }
             break;
         }
         case WS::Land: {
-            pose = poses.land[anim_phase];
+            r = poses.land[anim_phase];
             break;
         }
         case WS::Attack: {
             expect(anim_phase < 6);
-            pose = poses.attack[anim_phase];
+            r = poses.attack[anim_phase];
              // If falling, use head from non-attacking poses
             if (!floor) {
-                pose.head = poses.jump[jump_frame()].head;
+                r.head = poses.jump[jump_frame()].head;
             }
             break;
         }
         case WS::Hit: {
-            pose = poses.attack[3];
+             // TODO: use dedicated hit pose array
+            r = poses.attack[3];
             if (!floor) {
-                pose.head = poses.jump[jump_frame()].head;
+                r.head = poses.jump[jump_frame()].head;
             }
             break;
         }
         case WS::Damage: {
             switch (anim_phase) {
                 case 0: case 1: case 2: {
-                    damage_overlap = true;
-                    pose = poses.damage[0]; break;
+                    r = poses.damage[0];
+                    r.damage_overlap = true;
+                    break;
                 }
-                case 3: case 4: pose = poses.damage[1]; break;
+                case 3: case 4: r = poses.damage[1]; break;
                 default: never();
             }
-            z = Z::Damage;
+            r.z = Z::Damage;
             break;
         }
         case WS::Dead: {
-            pose = poses.dead;
-            z = Z::Dead;
+            r = poses.dead;
+            r.z = Z::Dead;
             break;
         }
         default: never();
     }
+    return r;
+}
+
+void Walker::Resident_draw () {
+    Pose pose = Walker_pose();
     Vec scale {left ? -1 : 1, 1};
     if (pose.body) {
         Vec head_offset = pose.body->head * scale;
         if (pose.head) {
             draw_frame(
-                *pose.head, 0, pos + head_offset, z + Z::HeadOffset, scale
+                *pose.head, 0, pos + head_offset, pose.z + Z::HeadOffset, scale
             );
         }
-        draw_frame(*pose.body, 0, pos, z, scale);
-        if (damage_overlap && decal_index < max_decals) {
+        draw_frame(*pose.body, 0, pos, pose.z, scale);
+        if (pose.damage_overlap && decal_index < max_decals) {
             float cutoff = pose.body->decals[decal_index].x;
             Frame overlap = *pose.body;
             if (overlap.bounds.r > cutoff) overlap.bounds.r = cutoff;
@@ -532,7 +537,7 @@ void Walker::Resident_draw () {
             draw_frame(
                 *pose.weapon, weapon_state,
                 pos + weapon_offset,
-                (damage_overlap ? Z::Overlap : z) + Z::WeaponOffset,
+                (pose.damage_overlap ? Z::Overlap : pose.z) + Z::WeaponOffset,
                 scale
             );
         }
