@@ -29,9 +29,8 @@ namespace WS {
     constexpr WalkerState Land = 1;
     constexpr WalkerState Attack = 2;
     constexpr WalkerState Hit = 3;
-    constexpr WalkerState Damage = 4;
-    constexpr WalkerState Dead = 5;
-    constexpr WalkerState Custom = 6;
+    constexpr WalkerState Dead = 4;
+    constexpr WalkerState Custom = 5;
 }
 
  // WalkerBusiness indicates how "busy" this character is, which encompasses
@@ -75,12 +74,17 @@ struct Pose {
 struct WalkerPoses {
     Pose stand;
     Pose crouch;
+     // Six frame walk cycle
     Pose walk [6];
+     // vel positive, vel neutral, and two vel negative alternating.
     Pose jump [4];
+     // Occupied, interruptible
     Pose land [2];
+     // Preattack (before hold), preattack (hold), attack active, attack
+     // inactive, postattack occupied, postattack interruptible
     Pose attack [6];
-    Pose damage [2];
-    Pose dead;
+     // Standing, falling, laying
+    Pose dead [3];
 };
 
 struct WalkerPhys {
@@ -99,6 +103,8 @@ struct WalkerPhys {
     float gravity_drop;
     float gravity_damage;
     uint8 drop_duration;
+     // [0] is occupied.
+     // [1] is interruptible
     uint8 land_sequence [2];
      // [0] is preattack.  Phase will not advance to 1 until the attack button
      // is released.
@@ -108,14 +114,20 @@ struct WalkerPhys {
      // [4] is postattack, occupied.
      // [5] is postattack, interruptible.
     uint8 attack_sequence [6];
+     // Length of time to freeze when hitting a target.
     uint8 hit_sequence;
-     // [0] + [1] should match opponent's hit_sequence.  TODO: link them
-     // [2] is before starting to fall.
-     // [3] is minimum time to fall before landing.
-    uint8 damage_sequence [4];
-    uint8 dead_sequence [7];
+     // [0] + [1] is freeze frames during hit.  These should match opponent's
+     // hit_sequence so you're both frozen for the same time.  pose = dead[0]
+     // [2] is before starting to fall.  pose = dead[0]
+     // [3] is minimum time to fall before landing.  Phase won't advance to 4
+     // until floor is true.  pose = dead[1]
+     // [4]..[10] are laying down, varying only in decals.  pose = dead[2]
+    uint8 dead_sequence [11];
+     // When crouching in midair, lift feet this many pixels
     uint8 jump_crouch_lift;
+     // Applied between phases 2 and 3
     uint8 dead_floor_lift;
+     // Allow jumping and attacking if the button has been held this many frames
     uint8 hold_buffer;
      // For animation
     float walk_cycle_dist;

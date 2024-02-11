@@ -88,11 +88,11 @@
             [#body_postattack #head_down #axe_postattack]
             [#body_preattack #head_neutral #axe_preattack]
         ]
-        damage: [
+        dead: [
             [#body_damage #head_damage #axe_damage]
             [#body_damagefall #head_damage #axe_damagefall]
+            [#body_dead #head_dead #axe_dead]
         ]
-        dead: [#body_dead #head_dead #axe_dead]
     }]
     data: [vf::WalkerData {
         phys: {
@@ -114,8 +114,7 @@
             land_sequence: [8 4]
             attack_sequence: [8 0 1 7 8 200]
             hit_sequence: 24
-            damage_sequence: [14 10 10 8]
-            dead_sequence: [10 10 10 10 60 120 240]
+            dead_sequence: [14 10 10 8 10 10 10 10 60 120 240]
             jump_crouch_lift: 4
             dead_floor_lift: 10
             hold_buffer: 6

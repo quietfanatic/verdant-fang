@@ -127,47 +127,31 @@ WalkerBusiness Walker::Walker_business () {
                 return WB::Frozen;
             }
         }
-        case WS::Damage: {
-            expect(anim_phase < 5);
-             // Freeze timer at phase 4 (falling while damaged, past minimum
-             // fall time).
-            if (anim_phase == 4) {
-                if (floor) {
-                    set_state(WS::Dead);
+        case WS::Dead: {
+            expect(anim_phase < 11);
+            if (anim_phase == 10) {
+                 // End of animation (double meaning)
+                return WB::Occupied;
+            }
+            else if (anim_timer >= phys.dead_sequence[anim_phase]) {
+                if (anim_phase == 3 && !floor) {
+                     // Hold phase 3 until we land
+                    return WB::Occupied;
+                }
+                else {
+                    anim_phase += 1;
+                    anim_timer = 0;
+                    if (anim_phase == 3) pos.y += phys.dead_floor_lift;
                     return Walker_business();
                 }
-                else return WB::Occupied;
-            }
-            else if (anim_timer >= phys.damage_sequence[anim_phase]) {
-                anim_phase += 1;
-                anim_timer = 0;
-                return Walker_business();
             }
             else {
                 anim_timer += 1;
                 switch (anim_phase) {
                     case 0: case 1: case 2: return WB::Frozen;
-                    case 3: {
-                        if (anim_timer == 1 && floor) {
-                            pos.y += phys.dead_floor_lift;
-                        }
-                        return WB::Occupied;
-                    }
-                    default: never();
+                    default: return WB::Occupied;
                 }
             }
-        }
-        case WS::Dead: {
-            expect(anim_phase < 7);
-            if (anim_phase < 6) {
-                if (anim_timer >= phys.dead_sequence[anim_phase]) {
-                    anim_phase += 1;
-                    anim_timer = 0;
-                    return Walker_business();
-                }
-                else anim_timer += 1;
-            }
-            return WB::Occupied;
         }
         default: never();
     }
@@ -307,7 +291,8 @@ void Walker::Resident_before_step () {
         if (vel.y > phys.fall_start_vel || !defined(fall_start_y)) {
             fall_start_y = pos.y;
         }
-        vel.y -= state == WS::Damage ? phys.gravity_damage
+         // TODO: Differentiate between dead anim phases?
+        vel.y -= state == WS::Dead ? phys.gravity_damage
                : drop_timer == 0 ? phys.gravity_jump
                : drop_timer <= phys.drop_duration ? phys.gravity_drop
                : phys.gravity_fall;
@@ -328,7 +313,7 @@ void Walker::Resident_before_step () {
      // Set up hitboxes
     hbs[0].box = phys.body_box;
     if (left) hbs[0].fliph();
-    if (state != WS::Damage && state != WS::Dead && business != WB::Frozen) {
+    if (state != WS::Dead && business != WB::Frozen) {
         hbs[1].box = phys.damage_box;
         if (left) hbs[1].fliph();
     }
@@ -419,8 +404,8 @@ void Walker::Resident_on_collide (
 void Walker::Walker_on_hit (const Hitbox&, Walker& victim, const Hitbox&) {
      // Prevent undefined behavior (trying to draw decals when state is WS::Hit)
      // if two walkers hit each other at the same time.
-    if (state != WS::Damage) set_state(WS::Hit);
-    victim.set_state(WS::Damage);
+    if (state != WS::Dead) set_state(WS::Hit);
+    victim.set_state(WS::Dead);
     victim.data->sfx.attack->stop();
     data->sfx.hit_soft->play();
 }
@@ -479,21 +464,16 @@ Pose Walker::Walker_pose () {
             }
             break;
         }
-        case WS::Damage: {
+        case WS::Dead: {
             switch (anim_phase) {
                 case 0: case 1: case 2: {
-                    r = poses.damage[0];
+                    r = poses.dead[0];
                     r.damage_overlap = true;
                     break;
                 }
-                case 3: case 4: r = poses.damage[1]; break;
-                default: never();
+                case 3: r = poses.dead[1]; break;
+                default: r = poses.dead[2]; break;
             }
-            r.z = Z::Damage;
-            break;
-        }
-        case WS::Dead: {
-            r = poses.dead;
             r.z = Z::Dead;
             break;
         }
@@ -588,7 +568,6 @@ AYU_DESCRIBE(vf::WalkerPoses,
         attr("jump", &WalkerPoses::jump),
         attr("land", &WalkerPoses::land),
         attr("attack", &WalkerPoses::attack),
-        attr("damage", &WalkerPoses::damage),
         attr("dead", &WalkerPoses::dead)
     )
 )
@@ -613,7 +592,6 @@ AYU_DESCRIBE(vf::WalkerPhys,
         attr("land_sequence", &WalkerPhys::land_sequence),
         attr("attack_sequence", &WalkerPhys::attack_sequence),
         attr("hit_sequence", &WalkerPhys::hit_sequence),
-        attr("damage_sequence", &WalkerPhys::damage_sequence),
         attr("dead_sequence", &WalkerPhys::dead_sequence),
         attr("jump_crouch_lift", &WalkerPhys::jump_crouch_lift),
         attr("dead_floor_lift", &WalkerPhys::dead_floor_lift),

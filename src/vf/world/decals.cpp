@@ -20,42 +20,28 @@ void draw_decal (const Walker& w, const Pose& pose) {
 #endif
         return;
     }
-    uint8 phase;
-    float z;
-    switch (w.state) {
-        case WS::Damage: {
-            if (w.anim_phase < 4) phase = w.anim_phase;
-            else phase = 3;
-            z = Z::Overlap + Z::DecalOffset;
-            break;
-        }
-        case WS::Dead: {
-            expect(w.anim_phase < 7);
-            phase = 3 + w.anim_phase;
-            z = Z::Dead + Z::DecalOffset;
-            break;
-        }
-        default: never();
-    }
+    expect(w.state == WS::Dead);
     const Frame* frame;
     switch (dir) {
         case 0: {
-            expect(phase <= 3);
-            frame = &decal.dir_0[phase];
+            expect(w.anim_phase <= 3);
+            frame = &decal.dir_0[w.anim_phase];
             break;
         }
         case 1: {
-            expect(phase == 3);
-            frame = &decal.dir_1[phase - 3];
+            expect(w.anim_phase == 3);
+            frame = &decal.dir_1[w.anim_phase - 3];
             break;
         }
         case 2: {
-            expect(phase >= 3);
-            frame = &decal.dir_2[phase - 3];
+            expect(w.anim_phase >= 4);
+            frame = &decal.dir_2[w.anim_phase - 4];
             break;
         }
         default: never();
     }
+    float z = w.anim_phase < 3 ? Z::Overlap + Z::DecalOffset
+            : Z::Dead + Z::DecalOffset;
     draw_frame(*frame, 0, w.pos + off, z, {w.left ? -1 : 1, 1});
 }
 

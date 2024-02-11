@@ -94,11 +94,11 @@
             [#body_postattack #head_neutral #spear_preattack]
             [#body_preattack #head_neutral #spear_preattack]
         ]
-        damage: [
+        dead: [
             [#body_damage #head_damage #spear_damage]
             [#body_damagefall #head_damage #spear_damagefall]
+            [#body_dead #head_dead #spear_dead]
         ]
-        dead: [#body_dead #head_dead #spear_dead]
     }]
     data: [vf::WalkerData {
         phys: {
@@ -120,8 +120,7 @@
             land_sequence: [4 4]
             attack_sequence: [5 0 1 5 5 200]
             hit_sequence: 24
-            damage_sequence: [16 8 6 8]
-            dead_sequence: [10 10 10 10 80 120 120]
+            dead_sequence: [16 8 6 8 10 10 10 10 80 120 120]
             jump_crouch_lift: 4
             dead_floor_lift: 10
             hold_buffer: 6

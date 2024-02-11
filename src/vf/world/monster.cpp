@@ -20,9 +20,8 @@ void Monster::Walker_on_hit (
     victim.left = !left;
     bool high = pos.y - victim.pos.y > 8;
     uint8 decal_i = high ? 3 : 1;
-    expect(state == WS::Attack);
-    Vec weapon_offset = data->poses->attack[anim_phase].body->weapon;
-    auto& victim_body = *victim.data->poses->damage[0].body;
+    Vec weapon_offset = data->poses->attack[3].body->weapon;
+    auto& victim_body = *victim.data->poses->dead[0].body;
     float weapon_tip = pos.x + left_flip(
         weapon_offset.x + data->poses->attack[anim_phase].weapon->hitbox.r
     );
@@ -42,11 +41,13 @@ void Monster::Walker_on_hit (
 }
 
 void Monster::Resident_on_exit () {
-    if (state == WS::Damage || state == WS::Dead) {
-        set_state(WS::Dead);
-        anim_phase = 6;
+    if (state == WS::Dead) {
+         // Finish dying offscreen
+        anim_phase = 10;
+        anim_timer = 0;
     }
     else {
+         // Otherwise return to start
         pos = home_pos;
         vel = {};
         walk_start_x = pos.x;
@@ -91,10 +92,7 @@ Controls MonsterMind::Mind_think (Resident& s) {
     Controls r {};
     if (!(s.types & Types::Monster)) return r;
     auto& self = static_cast<Monster&>(s);
-    if (!target ||
-        target->state == WS::Damage ||
-        target->state == WS::Dead
-    ) return r;
+    if (!target || target->state == WS::Dead) return r;
     auto& phys = self.data->phys;
 
      // Calculcate some distances
@@ -142,7 +140,7 @@ Controls MonsterMind::Mind_think (Resident& s) {
     for (auto& other : self.room->residents) {
         if (&other == &s || !(other.types & Types::Monster)) continue;
         auto& fren = static_cast<Monster&>(other);
-        if (fren.state == WS::Dead || fren.state == WS::Damage) continue; // :(
+        if (fren.state == WS::Dead) continue; // :(
         auto dist = fren.pos.x - self.pos.x;
         if (self.left) dist = -dist;
         if (dist > 0 && dist < social_distance) {
