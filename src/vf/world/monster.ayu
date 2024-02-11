@@ -82,6 +82,8 @@
         ]
         attack: [
             [#body_preattack #head_neutral #axe_preattack]
+            [#body_preattack #head_neutral #axe_preattack]
+            [#body_attack #head_down #axe_attack]
             [#body_attack #head_down #axe_attack]
             [#body_postattack #head_down #axe_postattack]
             [#body_preattack #head_neutral #axe_preattack]
@@ -110,7 +112,7 @@
             gravity_damage: 0.1
             drop_duration: 6
             land_sequence: [8 4]
-            attack_sequence: [8 8 8 200]
+            attack_sequence: [8 0 1 7 8 200]
             hit_sequence: 24
             damage_sequence: [14 10 10 8]
             dead_sequence: [10 10 10 10 60 120 240]

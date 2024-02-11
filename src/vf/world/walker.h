@@ -10,6 +10,17 @@
 
 namespace vf {
 
+ // The data flow for the walker class looks like this.
+ //
+ //    WalkerState
+ //         |
+ //    WalkerBusiness  Controls
+ //              \      /
+ //              movement
+
+ // WalkerState indicates roughly what state the character is in between frames.
+ // Each state has an associated anim_phase and anim_timer, and what values are
+ // valid for those depend on the state.
 enum class WalkerState {
     Neutral,
     Crouch,
@@ -20,6 +31,25 @@ enum class WalkerState {
     Dead,
 };
 using WS = WalkerState;
+
+ // WalkerBusiness indicates how "busy" this character is, which encompasses
+ // whether they can move, whether they can attack or be attacked, etc.
+enum class WalkerBusiness {
+     // Do whatever you want
+    Free,
+     // Do whatever you want, but set state to Neutral first
+    Interruptible,
+     // You can't do anything except release the attack button to advance attack
+     // animation.
+    HoldAttack,
+     // You can't do anything, but the attack hitbox will be active.
+    DoAttack,
+     // You can't do anything.
+    Occupied,
+     // You are stuck in place.  You can't even fall.
+    Frozen,
+};
+using WB = WalkerBusiness;
 
 struct BodyFrame : Frame {
     Vec head;
@@ -44,7 +74,7 @@ struct WalkerPoses {
     Pose walk [6];
     Pose jump [4];
     Pose land [2];
-    Pose attack [4];
+    Pose attack [6];
     Pose damage [2];
     Pose dead;
 };
@@ -66,7 +96,14 @@ struct WalkerPhys {
     float gravity_damage;
     uint8 drop_duration;
     uint8 land_sequence [2];
-    uint8 attack_sequence [4];
+     // [0] is preattack.  Phase will not advance to 1 until the attack button
+     // is released.
+     // [1] is preattack.  Attack is imminent.
+     // [2] is when the attack hitbox is active.
+     // [3] is after the attack hitbox but the attack frame is still visible.
+     // [4] is postattack, occupied.
+     // [5] is postattack, interruptible.
+    uint8 attack_sequence [6];
     uint8 hit_sequence;
      // [0] + [1] should match opponent's hit_sequence.  TODO: link them
      // [2] is before starting to fall.
@@ -105,8 +142,17 @@ struct Walker : Resident {
     Vec vel;
     bool left = false;
     WalkerState state = WS::Neutral;
+     // Valid values of this depend on state.
     uint8 anim_phase = 0;
+     // This ranges from 0 to n where n is probably a *_sequence array element
+     // in the WalkerData.  0 typically means the animation hasn't been
+     // processed at all yet, so the normal range for anim_timer is 1..n, thus
+     // performing the animation for n frames.  If you set the state in
+     // Resident_before_move, you should recurse to Walker_business.  This way,
+     // animation limits of 0 will be properly respected and skip the animation
+     // phase entirely.
     uint32 anim_timer = 0;
+
      // More gravity a few frames after releasing jump
     uint32 drop_timer = 0;
     Resident* floor = null;
@@ -124,14 +170,7 @@ struct Walker : Resident {
      // body, damage, weapon
     Hitbox hbs [3];
 
-    enum class Business {
-        Free,
-        Interruptible,
-        Occupied,
-        Frozen
-    };
-    using B = Business;
-    Business business;
+    WalkerBusiness business;
 
     Walker ();
 
@@ -149,6 +188,8 @@ struct Walker : Resident {
     void Resident_draw () override;
     void Resident_on_exit () override;
      // Customization points.
+     // Handle custom states here, and supercall otherwise.
+    virtual WalkerBusiness Walker_business ();
      // You can supercall this or not.
     virtual void Walker_on_hit (const Hitbox&, Walker&, const Hitbox&);
 

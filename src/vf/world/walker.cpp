@@ -63,6 +63,117 @@ void Walker::Resident_set_pos (Vec p) {
     walk_start_x = p.x;
 }
 
+WalkerBusiness Walker::Walker_business () {
+    auto& phys = data->phys;
+    switch (state) {
+        case WS::Neutral: return WB::Free;
+        case WS::Crouch: return WB::Free;
+        case WS::Land: {
+            expect(anim_phase < 2);
+            if (anim_timer >= phys.land_sequence[anim_phase]) {
+                if (anim_phase == 1) {
+                    set_state(WS::Neutral);
+                }
+                else {
+                    anim_timer = 0;
+                    anim_phase += 1;
+                }
+                return Walker_business();
+            }
+            else {
+                anim_timer += 1;
+                switch (anim_phase) {
+                    case 0: return WB::Occupied;
+                    case 1: return WB::Interruptible;
+                    default: never();
+                }
+            }
+        }
+        case WS::Attack: {
+            expect(anim_phase < 6);
+            if (anim_timer >= phys.attack_sequence[anim_phase]) {
+                if (anim_phase == 0) return WB::HoldAttack;
+                if (anim_phase == 6) {
+                    set_state(WS::Neutral);
+                }
+                else {
+                    anim_timer = 0;
+                    anim_phase += 1;
+                }
+                return Walker_business();
+            }
+            else {
+                anim_timer += 1;
+                switch (anim_phase) {
+                    case 0: case 1: return WB::Occupied;
+                    case 2: return WB::DoAttack;
+                    case 3: case 4: return WB::Occupied;
+                    case 5: return WB::Interruptible;
+                    default: never();
+                }
+            }
+        }
+        case WS::Hit: {
+            expect(anim_phase == 0);
+            if (anim_timer >= phys.hit_sequence) {
+                 // TODO: move this to Verdant
+                if (data->sfx.unhit) data->sfx.unhit->play();
+                state = WS::Attack;
+                anim_phase = 4;
+                anim_timer = 0;
+                return Walker_business();
+            }
+            else {
+                anim_timer += 1;
+                return WB::Frozen;
+            }
+        }
+        case WS::Damage: {
+            expect(anim_phase < 5);
+             // Freeze timer at phase 4 (falling while damaged, past minimum
+             // fall time).
+            if (anim_phase == 4) {
+                if (floor) {
+                    set_state(WS::Dead);
+                    return Walker_business();
+                }
+                else return WB::Occupied;
+            }
+            else if (anim_timer >= phys.damage_sequence[anim_phase]) {
+                anim_phase += 1;
+                anim_timer = 0;
+                return Walker_business();
+            }
+            else {
+                anim_timer += 1;
+                switch (anim_phase) {
+                    case 0: case 1: case 2: return WB::Frozen;
+                    case 3: {
+                        if (anim_timer == 1 && floor) {
+                            pos.y += phys.dead_floor_lift;
+                        }
+                        return WB::Occupied;
+                    }
+                    default: never();
+                }
+            }
+        }
+        case WS::Dead: {
+            expect(anim_phase < 7);
+            if (anim_phase < 6) {
+                if (anim_timer >= phys.dead_sequence[anim_phase]) {
+                    anim_phase += 1;
+                    anim_timer = 0;
+                    return Walker_business();
+                }
+                else anim_timer += 1;
+            }
+            return WB::Occupied;
+        }
+        default: never();
+    }
+}
+
 void Walker::Resident_before_step () {
     auto& phys = data->phys;
 
@@ -72,130 +183,37 @@ void Walker::Resident_before_step () {
 
      // Advance animations and do state-dependent things
     expect(anim_timer < 255);
-    business = B::Free;
-    bool do_attack = false;
-    bool invincible = false;
-    switch (state) {
-        case WS::Neutral: break;
-        case WS::Crouch: break;
-        case WS::Land: {
-            expect(anim_phase < 2);
-            anim_timer += 1;
-            if (anim_timer > phys.land_sequence[anim_phase]) {
-                anim_timer = 0;
-                anim_phase += 1;
-            }
-            switch (anim_phase) {
-                case 0: business = B::Occupied; break;
-                case 1: business = B::Interruptible; break;
-                case 2: set_state(WS::Neutral); break;
-            }
-            break;
-        }
-        case WS::Attack: {
-            expect(anim_phase < 4);
-            anim_timer += 1;
-            if (anim_timer > phys.attack_sequence[anim_phase]) {
-                anim_timer = 0;
-                anim_phase += 1;
-            }
-            switch (anim_phase) {
-                case 0: {
-                    if (anim_timer == phys.attack_sequence[0]) {
-                         // Delay attack if the button is being held.
-                         // We're not really supposed to read the controls yet
-                         // but we need to do it before playing the sound
-                         // effect.
-                        if (controls[Control::Attack]) {
-                            anim_timer -= 1;
-                        }
-                        else {
-                            data->sfx.attack->play();
-                        }
-                    }
-                    business = B::Occupied; break;
-                }
-                case 1: {
-                    if (anim_timer == 1) do_attack = true;
-                    business = B::Occupied; break;
-                }
-                case 2: business = B::Occupied; break;
-                case 3: business = B::Interruptible; break;
-                case 4: set_state(WS::Neutral); break;
-            }
-            break;
-        }
-        case WS::Hit: {
-            expect(anim_phase == 0);
-            anim_timer += 1;
-            if (anim_timer > phys.hit_sequence) {
-                if (data->sfx.unhit) data->sfx.unhit->play();
-                state = WS::Attack;
-                anim_phase = 2;
-                anim_timer = 0;
-            }
-            business = B::Frozen;
-            invincible = true;
-            break;
-        }
-        case WS::Damage: {
-            expect(anim_phase < 5);
-            if (anim_phase < 4) {
-                anim_timer += 1;
-                if (anim_timer > phys.damage_sequence[anim_phase]) {
-                    anim_phase += 1;
-                    anim_timer = 0;
-                }
-            }
-            switch (anim_phase) {
-                case 0: case 1: case 2: business = B::Frozen; break;
-                case 3: {
-                    if (anim_timer == 0 && floor) {
-                        pos.y += phys.dead_floor_lift;
-                    }
-                    business = B::Occupied; break;
-                }
-                case 4: {
-                    if (floor) {
-                        set_state(WS::Dead);
-                    }
-                    business = B::Occupied; break;
-                }
-            }
-            invincible = true;
-            break;
-        }
-        case WS::Dead: {
-            expect(anim_phase < 7);
-            if (anim_phase < 6) {
-                anim_timer += 1;
-                if (anim_timer > phys.dead_sequence[anim_phase]) {
-                    anim_phase += 1;
-                    anim_timer = 0;
-                }
-            }
-            invincible = true;
-            business = B::Occupied; break;
-            break;
-        }
-        default: never();
-    }
+    expect(state != WS::Hit || anim_phase == 0);
+    business = Walker_business();
+    expect(state != WS::Hit || anim_phase == 0);
 
      // Choose some physics parameters
     float acc = floor ? phys.ground_acc : phys.air_acc;
     float max = floor ? phys.ground_max : phys.air_max;
     float dec = floor
-        ? business == B::Occupied || state == WS::Crouch
+        ? business == WB::Occupied || state == WS::Crouch
             ? phys.coast_dec : phys.ground_dec
         : phys.air_dec;
 
      // Try to move
     bool decelerate = false;
+    redo_move:;
     switch (business) {
-    case B::Frozen: break;
-    case B::Occupied: decelerate = true; break;
-    case B::Interruptible:
-    case B::Free: {
+    case WB::Frozen: vel = {0, 0}; break;
+    case WB::HoldAttack: {
+        expect(state == WS::Attack);
+        if (!controls[Control::Attack]) {
+            anim_phase = 1;
+            anim_timer = 0;
+            business = Walker_business();
+            goto redo_move;
+        }
+        decelerate = true; break;
+    }
+    case WB::DoAttack:
+    case WB::Occupied: decelerate = true; break;
+    case WB::Interruptible:
+    case WB::Free: {
          // Crouch or don't
         if (controls[Control::Down]) {
             if (state != WS::Crouch) {
@@ -212,7 +230,7 @@ void Walker::Resident_before_step () {
          // Walk or don't
         if (state == WS::Crouch && floor) decelerate = true;
         else if (controls[Control::Left] && !controls[Control::Right]) {
-            if (business == B::Interruptible) {
+            if (business == WB::Interruptible) {
                 set_state(WS::Neutral);
                 walk_start_x = pos.x;
             }
@@ -228,7 +246,7 @@ void Walker::Resident_before_step () {
             if (vel.x >= 0) walk_start_x = pos.x;
         }
         else if (controls[Control::Right]) {
-            if (business == B::Interruptible) {
+            if (business == WB::Interruptible) {
                 set_state(WS::Neutral);
                 walk_start_x = pos.x;
             }
@@ -251,7 +269,7 @@ void Walker::Resident_before_step () {
             ) {
                 vel.y += phys.jump_vel;
                 floor = null;
-                if (business == B::Interruptible) set_state(WS::Neutral);
+                if (business == WB::Interruptible) set_state(WS::Neutral);
             }
             drop_timer = 0;
         }
@@ -282,10 +300,7 @@ void Walker::Resident_before_step () {
         walk_start_x = pos.x;
     }
 
-    if (business == B::Frozen) {
-        vel = {0, 0};
-    }
-    else {
+    if (business != WB::Frozen) {
          // Fall
         if (vel.y > phys.fall_start_vel || !defined(fall_start_y)) {
             fall_start_y = pos.y;
@@ -311,15 +326,16 @@ void Walker::Resident_before_step () {
      // Set up hitboxes
     hbs[0].box = phys.body_box;
     if (left) hbs[0].fliph();
-    if (!invincible) {
+    if (state != WS::Damage && state != WS::Dead && business != WB::Frozen) {
         hbs[1].box = phys.damage_box;
         if (left) hbs[1].fliph();
     }
     else hbs[1].box = GNAN;
-    if (do_attack) {
-        hbs[2].box = data->poses->attack[1].body->weapon
-                   + data->poses->attack[1].weapon->hitbox;
+    if (business == WB::DoAttack) {
+        hbs[2].box = data->poses->attack[anim_phase].body->weapon
+                   + data->poses->attack[anim_phase].weapon->hitbox;
         if (left) hbs[2].fliph();
+        data->sfx.attack->play();
     }
     else hbs[2].box = GNAN;
 
@@ -408,7 +424,7 @@ void Walker::Walker_on_hit (const Hitbox&, Walker& victim, const Hitbox&) {
 }
 
 void Walker::Resident_after_step () {
-    if (business != B::Frozen) {
+    if (business != WB::Frozen) {
         floor = new_floor;
         new_floor = null;
     }
@@ -448,7 +464,7 @@ void Walker::Resident_draw () {
             break;
         }
         case WS::Attack: {
-            expect(anim_phase < 4);
+            expect(anim_phase < 6);
             pose = poses.attack[anim_phase];
              // If falling, use head from non-attacking poses
             if (!floor) {
@@ -457,7 +473,7 @@ void Walker::Resident_draw () {
             break;
         }
         case WS::Hit: {
-            pose = poses.attack[1];
+            pose = poses.attack[3];
             if (!floor) {
                 pose.head = poses.jump[jump_frame()].head;
             }

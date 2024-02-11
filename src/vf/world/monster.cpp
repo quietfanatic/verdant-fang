@@ -20,10 +20,11 @@ void Monster::Walker_on_hit (
     victim.left = !left;
     bool high = pos.y - victim.pos.y > 8;
     uint8 decal_i = high ? 3 : 1;
-    Vec weapon_offset = data->poses->attack[1].body->weapon;
+    expect(state == WS::Attack);
+    Vec weapon_offset = data->poses->attack[anim_phase].body->weapon;
     auto& victim_body = *victim.data->poses->damage[0].body;
     float weapon_tip = pos.x + left_flip(
-        weapon_offset.x + data->poses->attack[1].weapon->hitbox.r
+        weapon_offset.x + data->poses->attack[anim_phase].weapon->hitbox.r
     );
     Vec decal_pos = victim.pos + victim.left_flip(victim_body.decals[decal_i]);
     float depth = left_flip(weapon_tip - decal_pos.x);
@@ -102,7 +103,7 @@ Controls MonsterMind::Mind_think (Resident& s) {
     float attack_dist = predict(
         self, *target,
         self.floor ? -phys.coast_dec : -phys.air_dec,
-        phys.attack_sequence[0]
+        phys.attack_sequence[0] + phys.attack_sequence[1]
     );
      // For jump distance, use the amount of time it's likely to take for our
      // damage box to leave the hazard area of the target's weapon.
