@@ -18,9 +18,16 @@ struct VerdantPoses : WalkerPoses {
     Pose transform [11];
 };
 
+struct TransformSound {
+    Sound* sound;
+    uint8 phase;
+    uint8 timer;
+};
+
 struct VerdantData : WalkerData {
     uint8 transform_sequence [11];
     Sound* unhit_sound;
+    TransformSound transform_sounds [3];
 };
 
 Verdant::Verdant () {
@@ -30,12 +37,17 @@ Verdant::Verdant () {
 }
 
 WalkerBusiness Verdant::Walker_business () {
+    auto& vd = static_cast<VerdantData&>(*data);
     switch (state) {
         case VS::Transform: {
             transform_timer += 1;
             expect(anim_phase < 11);
-            auto vd = static_cast<VerdantData*>(data);
-            if (anim_timer >= vd->transform_sequence[anim_phase]) {
+            for (auto& ts : vd.transform_sounds) {
+                if (anim_phase == ts.phase && anim_timer == ts.timer) {
+                    ts.sound->play();
+                }
+            }
+            if (anim_timer >= vd.transform_sequence[anim_phase]) {
                 if (anim_phase == 10) {
                     transform_timer = 0;
                     set_state(WS::Neutral);
@@ -210,10 +222,19 @@ AYU_DESCRIBE(vf::VerdantPoses,
     )
 )
 
+AYU_DESCRIBE(vf::TransformSound,
+    elems(
+        elem(&TransformSound::sound),
+        elem(&TransformSound::phase),
+        elem(&TransformSound::timer)
+    )
+)
+
 AYU_DESCRIBE(vf::VerdantData,
     attrs(
         attr("vf::WalkerData", base<WalkerData>(), include),
         attr("transform_sequence", &VerdantData::transform_sequence),
-        attr("unhit_sound", &VerdantData::unhit_sound)
+        attr("unhit_sound", &VerdantData::unhit_sound),
+        attr("transform_sounds", &VerdantData::transform_sounds)
     )
 )

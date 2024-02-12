@@ -199,5 +199,11 @@
             8 8 30 -- clothes settle
         ]
         unhit_sound: assets.ayu#shluk
+        transform_sounds: [
+             -- When to play the sounds.  [sound anim_phase anim_timer]
+            [assets.ayu#pwsh 2 0]
+            [assets.ayu#shwp 4 24] -- 30+8+8 - 22
+            [assets.ayu#poiy 8 0]
+        ]
     }]
 }]
