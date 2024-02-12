@@ -1,9 +1,21 @@
 [ayu::Document {
-    body: [vf::LayeredTexture [{
-        image: assets.ayu#layer2
-         -- y down
-        bounds: [110 106 358 206]
-    }]]
+    body: [vf::LayeredTexture [
+        {
+            image: assets.ayu#layer0
+             -- y down
+            bounds: [110 84 358 206]
+        }
+        {
+            image: assets.ayu#layer1
+             -- y down
+            bounds: [110 84 358 206]
+        }
+        {
+            image: assets.ayu#layer2
+             -- y down
+            bounds: [110 84 358 206]
+        }
+    ]]
      -- y up
     body_stand:      [vf::BodyFrame [#body [13 69] [0 23] [-5 12]]]
     body_crouch:     [vf::BodyFrame [#body [84 76] [0 16] [-6 9]]]
@@ -36,7 +48,7 @@
     body_damagefallf: [vf::BodyFrame [#body [176 78] [4 13] [-5 5]]]
     body_deadf: [vf::BodyFrame [#body [207 80] [9 3] [-5 0]]]
     head: [vf::LayeredTexture [{
-        image: assets.ayu#layer2
+        image: assets.ayu#layer0
         bounds: [100 40 266 89]
     }]]
     head_neutral: [vf::Frame [#head [23 39]]]

@@ -491,16 +491,17 @@ void Walker::Resident_draw () {
     if (pose.body) {
         Vec head_offset = pose.body->head * scale;
         if (pose.head) {
-            draw_frame(
-                *pose.head, 0, pos + head_offset, pose.z + Z::HeadOffset, scale
+            draw_layers(
+                *pose.head, head_layers,
+                pos + head_offset, pose.z + Z::HeadOffset, scale
             );
         }
-        draw_frame(*pose.body, 0, pos, pose.z, scale);
+        draw_layers(*pose.body, body_layers, pos, pose.z, scale);
         if (pose.damage_overlap && decal_index < max_decals) {
             float cutoff = pose.body->decals[decal_index].x;
             Frame overlap = *pose.body;
             if (overlap.bounds.r > cutoff) overlap.bounds.r = cutoff;
-            draw_frame(overlap, 0, pos, Z::Overlap, scale);
+            draw_layers(overlap, body_layers, pos, Z::Overlap, scale);
             if (pose.head) {
                 overlap = *pose.head;
                  // Make sure to cancel the addition of head_offset to pos
@@ -508,17 +509,16 @@ void Walker::Resident_draw () {
                 if (overlap.bounds.r > head_cutoff) {
                     overlap.bounds.r = head_cutoff;
                 }
-                draw_frame(
-                    overlap, 0,
+                draw_layers(
+                    overlap, head_layers,
                     pos + head_offset, Z::Overlap + Z::HeadOffset, scale
                 );
             }
         }
         if (pose.weapon) {
-            expect(weapon_state < 3);
             Vec weapon_offset = pose.body->weapon * scale;
-            draw_frame(
-                *pose.weapon, weapon_state,
+            draw_layers(
+                *pose.weapon, weapon_layers,
                 pos + weapon_offset,
                 (pose.damage_overlap ? Z::Overlap : pose.z) + Z::WeaponOffset,
                 scale
@@ -529,7 +529,7 @@ void Walker::Resident_draw () {
 }
 
 void Walker::Resident_on_exit () {
-    weapon_state = 0;
+    weapon_layers = 0x1;
 }
 
 } using namespace vf;
@@ -630,6 +630,8 @@ AYU_DESCRIBE(vf::Walker,
         attr("fall_start_x", &Walker::walk_start_x, optional),
         attr("decal_type", &Walker::decal_type, optional),
         attr("decal_index", &Walker::decal_index, optional),
-        attr("weapon_state", &Walker::weapon_state, optional)
+        attr("body_layers", &Walker::body_layers, optional),
+        attr("head_layers", &Walker::head_layers, optional),
+        attr("weapon_layers", &Walker::weapon_layers, optional)
     )
 )

@@ -29,6 +29,20 @@ void draw_frame (
     Vec scale = {1, 1}
 );
 
+inline void draw_layers (
+    const Frame& frame,
+    uint32 layers,
+    Vec pos,
+    float z = 0,
+    Vec scale = {1, 1}
+) {
+    for (usize i = 0; i < 32; i++) {
+        if (layers & (1 << i)) {
+            draw_frame(frame, i, pos, z, scale);
+        }
+    }
+}
+
 void draw_texture (
     const glow::Texture&,
     const Rect& world_rect,

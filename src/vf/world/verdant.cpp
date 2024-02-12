@@ -1,4 +1,8 @@
 #include "verdant.h"
+
+#include "../../dirt/control/command.h"
+#include "../game/game.h"
+#include "../game/state.h"
 #include "door.h"
 
 namespace vf {
@@ -14,6 +18,7 @@ struct VerdantData : WalkerData {
 Verdant::Verdant () {
     types |= Types::Verdant;
     hbs[0].layers_2 |= Layers::LoadingZone_Verdant;
+    body_layers = 0x7;
 }
 
 WalkerBusiness Verdant::Walker_business () {
@@ -84,8 +89,8 @@ void Verdant::Walker_on_hit (
      // Stab
     victim.decal_type = DecalType::Stab;
     victim.decal_index = decal_i;
-    if (stab_depth > 12) weapon_state = 2;
-    else if (weapon_state < 1) weapon_state = 1;
+    if (stab_depth > 12) weapon_layers = 0x5;
+    else if (weapon_layers == 0x1) weapon_layers = 0x3;
      // Move victim vertically
     float height_diff = decal_pos.y - weapon_y;
     victim.pos.y -= height_diff;
@@ -116,6 +121,15 @@ Pose Verdant::Walker_pose () {
     }
     else return Walker::Walker_pose();
 }
+
+void set_body_layers_ (uint8 layers) {
+    if (auto game = current_game)
+    if (auto room = game->state().current_room)
+    if (auto v = room->find_with_types(Types::Verdant)) {
+        static_cast<Verdant*>(v)->body_layers = layers;
+    }
+}
+control::Command set_body_layers (set_body_layers_, "set_body_layers");
 
 } using namespace vf;
 

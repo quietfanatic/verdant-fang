@@ -13,7 +13,7 @@ struct Room {
     void step ();
     void draw ();
 
-     // Get first resident whose types includes these one (bitwise and).
+     // Get first resident whose types includes these ones (bitwise and).
      // Returns null if there is none.
     Resident* find_with_types (uint32 types);
 };

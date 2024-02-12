@@ -171,7 +171,10 @@ struct Walker : Resident {
     float fall_start_y = GNAN;
     DecalType decal_type = {};
     uint8 decal_index = -1;
-    uint8 weapon_state = 0;
+     // Bitset, each bit corresponding to a layer in the body LayeredTexture.
+    uint8 body_layers = 0x1;
+    uint8 head_layers = 0x1;
+    uint8 weapon_layers = 0x1;
 
      // Everything below here is only used within one frame, so don't serialize
      // it.

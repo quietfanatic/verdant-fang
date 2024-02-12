@@ -1,6 +1,6 @@
 [ayu::Document {
     body: [vf::LayeredTexture [{
-        image: assets.ayu#layer2
+        image: assets.ayu#layer0
          -- y down
         bounds: [171 214 411 314]
     }]]
@@ -32,7 +32,7 @@
         [2 2 2 2]
     ]]
     head: [vf::LayeredTexture [{
-        image: assets.ayu#layer2
+        image: assets.ayu#layer0
         bounds: [129 259 170 298]
     }]]
     head_neutral: [vf::Frame [#head [9 26]]]

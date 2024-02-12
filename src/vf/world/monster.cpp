@@ -29,8 +29,8 @@ void Monster::Walker_on_hit (
     float depth = left_flip(weapon_tip - decal_pos.x);
     victim.decal_type = high ? DecalType::SlashHigh : DecalType::SlashLow;
     victim.decal_index = decal_i;
-    if (high || depth > 4) weapon_state = 2;
-    else if (weapon_state < 1) weapon_state = 1;
+    if (high || depth > 4) weapon_layers = 0x5;
+    else if (weapon_layers == 0x1) weapon_layers = 0x3;
     if (depth > 6) {
         victim.pos.x += left_flip(depth - 6);
     }

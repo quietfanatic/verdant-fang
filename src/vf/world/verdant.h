@@ -6,7 +6,7 @@
 namespace vf {
 
 struct Verdant : Walker {
-    bool damage_forward = true;
+    bool damage_forward = false;
 
     Verdant ();
 
