@@ -3,60 +3,60 @@
         {
             image: assets.ayu#layer0
              -- y down
-            bounds: [110 84 358 206]
+            bounds: [110 84 342 192]
         }
         {
             image: assets.ayu#layer1
              -- y down
-            bounds: [110 84 358 206]
+            bounds: [110 84 342 192]
         }
         {
             image: assets.ayu#layer2
              -- y down
-            bounds: [110 84 358 206]
+            bounds: [110 84 342 192]
         }
     ]]
      -- y up
-    body_stand:      [vf::BodyFrame [#body [13 69] [0 23] [-5 12]]]
-    body_crouch:     [vf::BodyFrame [#body [84 76] [0 16] [-6 9]]]
-    body_walk0:      [vf::BodyFrame [#body [13 35] [1 23] [-5 12]]]
-    body_walk1:      [vf::BodyFrame [#body [48 35] [1 23] [-5 12]]]
-    body_walk2:      [vf::BodyFrame [#body [83 36] [1 22] [-5 11]]]
-    body_walk3:      [vf::BodyFrame [#body [118 35] [1 23] [-5 12]]]
-    body_walk4:      [vf::BodyFrame [#body [153 35] [1 23] [-5 12]]]
-    body_walk5:      [vf::BodyFrame [#body [188 36] [1 22] [-5 11]]]
-    body_fall1:      [vf::BodyFrame [#body [153 69] [1 23] [-5 12]]]
-    body_land:       [vf::BodyFrame [#body [49 71] [1 20] [-5 10]]]
-    body_preattack:  [vf::BodyFrame [#body [72 0] [0 23] [-11 19]]]
-    body_attack:     [vf::BodyFrame [#body [13 0] [4 22] [7 19]]]
-    body_postattack: [vf::BodyFrame [#body [112 0] [0 23] [-11 19]]]
+    body_stand:      [vf::BodyFrame [#body [14 55] [0 23] [-5 12]]]
+    body_crouch:     [vf::BodyFrame [#body [60 61] [0 16] [-6 9]]]
+    body_walk0:      [vf::BodyFrame [#body [14 29] [1 23] [-5 12]]]
+    body_walk1:      [vf::BodyFrame [#body [37 29] [1 23] [-5 12]]]
+    body_walk2:      [vf::BodyFrame [#body [60 29] [1 22] [-5 11]]]
+    body_walk3:      [vf::BodyFrame [#body [83 29] [1 23] [-5 12]]]
+    body_walk4:      [vf::BodyFrame [#body [106 29] [1 23] [-5 12]]]
+    body_walk5:      [vf::BodyFrame [#body [129 29] [1 22] [-5 11]]]
+    body_fall1:      [vf::BodyFrame [#body [83 56] [1 23] [-5 12]]]
+    body_land:       [vf::BodyFrame [#body [37 57] [1 20] [-5 10]]]
+    body_preattack:  [vf::BodyFrame [#body [154 28] [0 23] [-11 19]]]
+    body_attack:     [vf::BodyFrame [#body [172 28] [4 22] [7 19]]]
+    body_postattack: [vf::BodyFrame [#body [203 28] [0 23] [-11 19]]]
     body_damage: [vf::BodyFrame [
-        #body [150 0] [0 23] [-8 14]
+        #body [106 54] [0 23] [-8 14]
         [[0 13] [1 18] [0 22] [2 26]]
         [0 0 0 0]
     ]]
     body_damagefall: [vf::BodyFrame [
-        #body [185 10] [-8 13] [-4 -4]
+        #body [129 64] [-8 13] [-4 -4]
         [[-3 5] [-6 9] [-8 12] [-6 16]]
         [1 1 0 0]
     ]]
     body_dead: [vf::BodyFrame [
-        #body [225 11] [-13 3] [-4 0]
+        #body [182 70] [-13 3] [-4 0]
         [[-3 4] [-8 4] [-12 4] [-16 5]]
         [2 2 2 2]
     ]]
-    body_damagefallf: [vf::BodyFrame [#body [176 78] [4 13] [-5 5]]]
-    body_deadf: [vf::BodyFrame [#body [207 80] [9 3] [-5 0]]]
-    body_transform0: [vf::BodyFrame [#body [14 97] [-1 23]]]
-    body_transform1: [vf::BodyFrame [#body [37 97] [-1 23]]]
-    body_transform2: [vf::BodyFrame [#body [60 97] [-1 23]]]
-    body_transform3: [vf::BodyFrame [#body [83 97] [-1 23]]]
-    body_transform4: [vf::BodyFrame [#body [106 97] [-1 23]]]
-    body_transform5: [vf::BodyFrame [#body [129 97] [-1 23]]]
-    body_transform6: [vf::BodyFrame [#body [152 97] [-1 23]]]
-    body_transform7: [vf::BodyFrame [#body [175 97] [-1 23]]]
-    body_transform8: [vf::BodyFrame [#body [198 97] [-1 23]]]
-    body_transform9: [vf::BodyFrame [#body [221 97] [-1 23]]]
+    body_damagefallf: [vf::BodyFrame [#body [152 64] [4 13] [-5 5]]]
+    body_deadf: [vf::BodyFrame [#body [182 56] [9 3] [-5 0]]]
+    body_transform0: [vf::BodyFrame [#body [14 83] [-1 23]]]
+    body_transform1: [vf::BodyFrame [#body [37 83] [-1 23]]]
+    body_transform2: [vf::BodyFrame [#body [60 83] [-1 23]]]
+    body_transform3: [vf::BodyFrame [#body [83 83] [-1 23]]]
+    body_transform4: [vf::BodyFrame [#body [106 83] [-1 23]]]
+    body_transform5: [vf::BodyFrame [#body [129 83] [-1 23]]]
+    body_transform6: [vf::BodyFrame [#body [152 83] [-1 23]]]
+    body_transform7: [vf::BodyFrame [#body [175 83] [-1 23]]]
+    body_transform8: [vf::BodyFrame [#body [198 83] [-1 23]]]
+    body_transform9: [vf::BodyFrame [#body [221 83] [-1 23]]]
     head: [vf::LayeredTexture [{
         image: assets.ayu#layer0
         bounds: [100 40 266 89]

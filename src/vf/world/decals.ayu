@@ -32,7 +32,7 @@
             [#/slash_low/tex [6 79]]
             [#/slash_low/tex [13 79]]
             [#/slash_low/tex [20 79]]
-            [#/slash_low/tex [0 0]]
+            [null [0 0]]
         ]
         dir_1: [
             [#/slash_low/tex [7 63]]
