@@ -15,11 +15,11 @@ namespace VS {
 
 struct VerdantPoses : WalkerPoses {
     Pose deadf [3];
-    Pose transform [10];
+    Pose transform [11];
 };
 
 struct VerdantData : WalkerData {
-    uint8 transform_sequence [10];
+    uint8 transform_sequence [11];
     Sound* unhit_sound;
 };
 
@@ -32,10 +32,12 @@ Verdant::Verdant () {
 WalkerBusiness Verdant::Walker_business () {
     switch (state) {
         case VS::Transform: {
-            expect(anim_phase < 10);
+            transform_timer += 1;
+            expect(anim_phase < 11);
             auto vd = static_cast<VerdantData*>(data);
             if (anim_timer >= vd->transform_sequence[anim_phase]) {
-                if (anim_phase == 9) {
+                if (anim_phase == 10) {
+                    transform_timer = 0;
                     set_state(WS::Neutral);
                 }
                 else {
@@ -137,10 +139,11 @@ Pose Verdant::Walker_pose () {
     switch (state) {
         case VS::Transform: {
             Pose r;
-            expect(anim_phase < 10);
+            expect(anim_phase < 11);
             r = poses.transform[anim_phase];
             if (anim_phase < 4) r.body_layers = 0x5;
             else if (anim_phase == 4) r.body_layers = 0x1;
+            r.head = poses.walk[(transform_timer / 8) % 6].head;
             return r;
         }
         case WS::Dead: {
@@ -166,20 +169,36 @@ Pose Verdant::Walker_pose () {
     return Walker::Walker_pose();
 }
 
-void set_body_layers_ (uint8 layers) {
+static Verdant* find_verdant () {
     if (auto game = current_game)
     if (auto room = game->state().current_room)
     if (auto v = room->find_with_types(Types::Verdant)) {
-        static_cast<Verdant*>(v)->body_layers = layers;
+        return static_cast<Verdant*>(v);
+    }
+    return null;
+}
+
+void set_body_layers_ (uint8 layers) {
+    if (auto v = find_verdant()) {
+        v->body_layers = layers;
     }
 }
 control::Command set_body_layers (set_body_layers_, "set_body_layers");
+
+void do_transform_sequence_ () {
+    if (auto v = find_verdant()) {
+        v->set_state(VS::Transform);
+    }
+}
+control::Command do_transform_sequence (do_transform_sequence_, "do_transform_sequence");
 
 } using namespace vf;
 
 AYU_DESCRIBE(vf::Verdant,
     attrs(
-        attr("vf::Walker", base<Walker>(), include)
+        attr("vf::Walker", base<Walker>(), include),
+        attr("damage_forward", &Verdant::damage_forward, optional),
+        attr("transform_timer", &Verdant::transform_timer, optional)
     )
 )
 

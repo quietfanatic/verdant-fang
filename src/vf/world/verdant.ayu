@@ -48,14 +48,15 @@
     body_damagefallf: [vf::BodyFrame [#body [176 78] [4 13] [-5 5]]]
     body_deadf: [vf::BodyFrame [#body [207 80] [9 3] [-5 0]]]
     body_transform0: [vf::BodyFrame [#body [14 97] [-1 23]]]
-    body_transform1: [vf::BodyFrame [#body [41 97] [-1 23]]]
-    body_transform2: [vf::BodyFrame [#body [68 97] [-1 23]]]
-    body_transform3: [vf::BodyFrame [#body [95 97] [-1 23]]]
-    body_transform4: [vf::BodyFrame [#body [122 97] [-1 23]]]
-    body_transform5: [vf::BodyFrame [#body [149 97] [-1 23]]]
-    body_transform6: [vf::BodyFrame [#body [176 97] [-1 23]]]
-    body_transform7: [vf::BodyFrame [#body [203 97] [-1 23]]]
-    body_transform8: [vf::BodyFrame [#body [230 97] [-1 23]]]
+    body_transform1: [vf::BodyFrame [#body [37 97] [-1 23]]]
+    body_transform2: [vf::BodyFrame [#body [60 97] [-1 23]]]
+    body_transform3: [vf::BodyFrame [#body [83 97] [-1 23]]]
+    body_transform4: [vf::BodyFrame [#body [106 97] [-1 23]]]
+    body_transform5: [vf::BodyFrame [#body [129 97] [-1 23]]]
+    body_transform6: [vf::BodyFrame [#body [152 97] [-1 23]]]
+    body_transform7: [vf::BodyFrame [#body [175 97] [-1 23]]]
+    body_transform8: [vf::BodyFrame [#body [198 97] [-1 23]]]
+    body_transform9: [vf::BodyFrame [#body [221 97] [-1 23]]]
     head: [vf::LayeredTexture [{
         image: assets.ayu#layer0
         bounds: [100 40 266 89]
@@ -144,6 +145,7 @@
             [#body_transform6 #head_wave0]
             [#body_transform7 #head_wave0]
             [#body_transform8 #head_wave0]
+            [#body_transform9 #head_wave0]
         ]
     }]
     data: [vf::VerdantData {
@@ -191,10 +193,10 @@
 
         transform_sequence: [
             60 --before
-            10 10 10 --clothes dissolve
+            12 8 8 --clothes dissolve
             30 --naked
-            10 10 20 --clothes materialize
-            10 30 -- clothes settle
+            8 8 20 --clothes materialize
+            8 8 30 -- clothes settle
         ]
         unhit_sound: assets.ayu#shluk
     }]

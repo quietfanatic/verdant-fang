@@ -7,6 +7,8 @@ namespace vf {
 
 struct Verdant : Walker {
     bool damage_forward = false;
+     // Total transformation time, for hair animation
+    uint32 transform_timer = 0;
 
     Verdant ();
 
