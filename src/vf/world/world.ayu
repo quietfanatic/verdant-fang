@@ -40,6 +40,7 @@
         room: #start
         pos: [96 32]
         floor: #start_blocks
+        state: 5
     }]
     start_switch: [vf::Switch {
         room: #start

@@ -496,12 +496,18 @@ void Walker::Resident_draw () {
                 pos + head_offset, pose.z + Z::HeadOffset, scale
             );
         }
-        draw_layers(*pose.body, body_layers, pos, pose.z, scale);
+        draw_layers(
+            *pose.body, body_layers & pose.body_layers,
+            pos, pose.z, scale
+        );
         if (pose.damage_overlap && decal_index < max_decals) {
             float cutoff = pose.body->decals[decal_index].x;
             Frame overlap = *pose.body;
             if (overlap.bounds.r > cutoff) overlap.bounds.r = cutoff;
-            draw_layers(overlap, body_layers, pos, Z::Overlap, scale);
+            draw_layers(
+                overlap, body_layers & pose.body_layers,
+                pos, Z::Overlap, scale
+            );
             if (pose.head) {
                 overlap = *pose.head;
                  // Make sure to cancel the addition of head_offset to pos
@@ -558,8 +564,19 @@ AYU_DESCRIBE(vf::WeaponFrame,
 AYU_DESCRIBE(vf::Pose,
     elems(
         elem(&Pose::body),
-        elem(&Pose::head),
-        elem(&Pose::weapon)
+        elem(&Pose::head, optional),
+        elem(&Pose::weapon, optional),
+        elem(&Pose::z, optional),
+        elem(&Pose::damage_overlap, optional),
+        elem(member(&Pose::body_layers, prefer_hex), optional)
+    ),
+    attrs(
+        attr("body", &Pose::body, optional),
+        attr("head", &Pose::head, optional),
+        attr("weapon", &Pose::weapon, optional),
+        attr("z", &Pose::z, optional),
+        attr("damage_overlap", &Pose::damage_overlap, optional),
+        attr("body_layers", member(&Pose::body_layers, prefer_hex), optional)
     )
 )
 

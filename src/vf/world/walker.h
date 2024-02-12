@@ -69,6 +69,7 @@ struct Pose {
     WeaponFrame* weapon = null;
     float z = Z::Actor;
     bool damage_overlap = false;
+    uint8 body_layers = 0xff;
 };
 
 struct WalkerPoses {

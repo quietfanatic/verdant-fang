@@ -7,11 +7,19 @@
 
 namespace vf {
 
+namespace VS {
+    constexpr WalkerState Transform = WS::Custom + 0;
+     // Update world.ayu if this changes
+    static_assert(Transform == 5);
+};
+
 struct VerdantPoses : WalkerPoses {
     Pose deadf [3];
+    Pose transform [10];
 };
 
 struct VerdantData : WalkerData {
+    uint8 transform_sequence [10];
     Sound* unhit_sound;
 };
 
@@ -22,10 +30,32 @@ Verdant::Verdant () {
 }
 
 WalkerBusiness Verdant::Walker_business () {
-    if (state == WS::Hit && anim_phase == 1 &&
-        anim_timer == data->hit_sequence[1]
-    ) {
-        static_cast<VerdantData*>(data)->unhit_sound->play();
+    switch (state) {
+        case VS::Transform: {
+            expect(anim_phase < 10);
+            auto vd = static_cast<VerdantData*>(data);
+            if (anim_timer >= vd->transform_sequence[anim_phase]) {
+                if (anim_phase == 9) {
+                    set_state(WS::Neutral);
+                }
+                else {
+                    anim_phase += 1;
+                    anim_timer = 0;
+                }
+                return Walker_business();
+            }
+            else {
+                anim_timer += 1;
+                return WB::Occupied;
+            }
+        }
+        case WS::Hit: {
+            if (anim_phase == 1 && anim_timer == data->hit_sequence[1]) {
+                static_cast<VerdantData*>(data)->unhit_sound->play();
+            }
+            break;
+        }
+        default: break;
     }
     return Walker::Walker_business();
 }
@@ -103,23 +133,37 @@ void Verdant::Walker_on_hit (
 }
 
 Pose Verdant::Walker_pose () {
-    Pose r;
-    if (state == WS::Dead && damage_forward) {
-        auto poses = static_cast<VerdantPoses&>(*data->poses);
-         // Mirror the WS::Dead case in Walker::Walker_pos
-        switch (anim_phase) {
-            case 0: case 1: case 2: {
-                r = poses.deadf[0];
-                r.damage_overlap = true;
-                break;
-            }
-            case 3: r = poses.deadf[1]; break;
-            default: r = poses.deadf[2]; break;
+    auto poses = static_cast<VerdantPoses&>(*data->poses);
+    switch (state) {
+        case VS::Transform: {
+            Pose r;
+            expect(anim_phase < 10);
+            r = poses.transform[anim_phase];
+            if (anim_phase < 4) r.body_layers = 0x5;
+            else if (anim_phase == 4) r.body_layers = 0x1;
+            return r;
         }
-        r.z = Z::Dead;
-        return r;
+        case WS::Dead: {
+            if (damage_forward) {
+                Pose r;
+                 // Mirror the WS::Dead case in Walker::Walker_pos
+                switch (anim_phase) {
+                    case 0: case 1: case 2: {
+                        r = poses.deadf[0];
+                        r.damage_overlap = true;
+                        break;
+                    }
+                    case 3: r = poses.deadf[1]; break;
+                    default: r = poses.deadf[2]; break;
+                }
+                r.z = Z::Dead;
+                return r;
+            }
+            else break;
+        }
+        default: break;
     }
-    else return Walker::Walker_pose();
+    return Walker::Walker_pose();
 }
 
 void set_body_layers_ (uint8 layers) {
@@ -142,13 +186,15 @@ AYU_DESCRIBE(vf::Verdant,
 AYU_DESCRIBE(vf::VerdantPoses,
     attrs(
         attr("vf::WalkerPoses", base<WalkerPoses>(), include),
-        attr("deadf", &VerdantPoses::deadf)
+        attr("deadf", &VerdantPoses::deadf),
+        attr("transform", &VerdantPoses::transform)
     )
 )
 
 AYU_DESCRIBE(vf::VerdantData,
     attrs(
         attr("vf::WalkerData", base<WalkerData>(), include),
+        attr("transform_sequence", &VerdantData::transform_sequence),
         attr("unhit_sound", &VerdantData::unhit_sound)
     )
 )

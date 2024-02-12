@@ -47,6 +47,15 @@
     ]]
     body_damagefallf: [vf::BodyFrame [#body [176 78] [4 13] [-5 5]]]
     body_deadf: [vf::BodyFrame [#body [207 80] [9 3] [-5 0]]]
+    body_transform0: [vf::BodyFrame [#body [14 97] [-1 23]]]
+    body_transform1: [vf::BodyFrame [#body [41 97] [-1 23]]]
+    body_transform2: [vf::BodyFrame [#body [68 97] [-1 23]]]
+    body_transform3: [vf::BodyFrame [#body [95 97] [-1 23]]]
+    body_transform4: [vf::BodyFrame [#body [122 97] [-1 23]]]
+    body_transform5: [vf::BodyFrame [#body [149 97] [-1 23]]]
+    body_transform6: [vf::BodyFrame [#body [176 97] [-1 23]]]
+    body_transform7: [vf::BodyFrame [#body [203 97] [-1 23]]]
+    body_transform8: [vf::BodyFrame [#body [230 97] [-1 23]]]
     head: [vf::LayeredTexture [{
         image: assets.ayu#layer0
         bounds: [100 40 266 89]
@@ -124,6 +133,18 @@
             [#body_damagefallf #head_damagef #spear_damagefallf]
             [#body_deadf #head_deadf #spear_dead]
         ]
+        transform: [
+            {body:#body_transform0 head:#head_wave0 body_layers:5}
+            {body:#body_transform1 head:#head_wave0 body_layers:5}
+            {body:#body_transform2 head:#head_wave0 body_layers:5}
+            {body:#body_transform3 head:#head_wave0 body_layers:5}
+            {body:#body_transform4 head:#head_wave0 body_layers:1}
+            [#body_transform4 #head_wave0]
+            [#body_transform5 #head_wave0]
+            [#body_transform6 #head_wave0]
+            [#body_transform7 #head_wave0]
+            [#body_transform8 #head_wave0]
+        ]
     }]
     data: [vf::VerdantData {
         body_box: [-6 0 6 30]
@@ -164,9 +185,17 @@
         attack_sound: assets.ayu#fwssh
         hit_solid_sound: assets.ayu#tkk
         hit_soft_sound: assets.ayu#doof
-        unhit_sound: assets.ayu#shluk
 
         poses: #poses
         decals: decals.ayu#
+
+        transform_sequence: [
+            60 --before
+            10 10 10 --clothes dissolve
+            30 --naked
+            10 10 20 --clothes materialize
+            10 30 -- clothes settle
+        ]
+        unhit_sound: assets.ayu#shluk
     }]
 }]
