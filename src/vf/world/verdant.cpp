@@ -60,7 +60,7 @@ WalkerBusiness Verdant::Walker_business () {
             }
             else {
                 anim_timer += 1;
-                return WB::Occupied;
+                return WB::Frozen;
             }
         }
         case WS::Hit: {
