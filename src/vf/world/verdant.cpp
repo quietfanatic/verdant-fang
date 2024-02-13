@@ -117,6 +117,7 @@ void Verdant::Resident_on_collide (
                 anim_phase = 3;
                 damage_forward = true;
                 vel.x = 0;
+                door.crush = true;
             }
             pos.y -= height(overlap);
             if (vel.y > 0) vel.y = 0;

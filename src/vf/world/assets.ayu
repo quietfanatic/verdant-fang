@@ -19,18 +19,24 @@
         hitbox: [-5 -9 5 9]
         ready_frame: [#switch_tex [5 9]]
         cooldown_frame: [#switch_tex [18 9]]
-        activate_sfx: #koltik
+        activate_sound: #koltik
     }]
-    door_tex: [vf::LayeredTexture [{
-        image: #layer0
-        bounds: [54 12 77 76]
-    }]]
+    door_tex: [vf::LayeredTexture [
+        {
+            image: #layer0
+            bounds: [38 3 61 67]
+        } {
+            image: #layer1
+            bounds: [38 3 61 67]
+        }
+    ]]
     door: [vf::DoorData {
         hitbox: [-11 0 12 64]
         frame: [#door_tex [11 0]]
-        open_sfx: #gubuuw
-        close_sfx: #gruwwu
-        slam_sfx: #pkuwww
+        open_sound: #gubuuw
+        close_sound: #gruwwu
+        slam_sound: #pkuwww
+        crush_sound: #krshch
     }]
      -- For some reason, having these as mp3s breaks SDL2_mixer.  Perhaps it
      -- can't play mp3 files that are too short?
@@ -51,6 +57,7 @@
     gubuuw: [vf::Sound { source:assets/gubuuw.mp3 channel:4 }]
     gruwwu: [vf::Sound { source:assets/gruwwu.mp3 channel:4 }]
     pkuwww: [vf::Sound { source:assets/pkuwww.mp3 channel:4 }]
+    krshch: [vf::Sound { source:assets/krshch.mp3 channel:3 volume:0.8 }]
     pwsh: [vf::Sound { source:assets/pwsh.mp3 channel:1 }]
     shwp: [vf::Sound { source:assets/shwp.mp3 channel:1 }]
     poiy: [vf::Sound { source:assets/poiy.mp3 channel:1 }]

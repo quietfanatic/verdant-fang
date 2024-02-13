@@ -11,7 +11,7 @@ struct SwitchData {
     Rect hitbox;
     Frame ready_frame;
     Frame cooldown_frame;
-    Sound* activate_sfx;
+    Sound* activate_sound;
 };
 
 void Switch::init () {
@@ -35,7 +35,7 @@ void Switch::Resident_on_collide (const Hitbox&, Resident& o, const Hitbox&) {
         expect(o.types & Types::Walker);
         auto& w = static_cast<Walker&>(o);
         w.recoil();
-        w.hit_sound = data->activate_sfx;
+        w.hit_sound = data->activate_sound;
     }
 }
 
@@ -67,6 +67,6 @@ AYU_DESCRIBE(vf::SwitchData,
         attr("hitbox", &SwitchData::hitbox),
         attr("ready_frame", &SwitchData::ready_frame),
         attr("cooldown_frame", &SwitchData::cooldown_frame),
-        attr("activate_sfx", &SwitchData::activate_sfx)
+        attr("activate_sound", &SwitchData::activate_sound)
     )
 )

@@ -4,7 +4,8 @@
 namespace vf {
 
 namespace Z {
-    constexpr float BG = -300;
+    constexpr float BG = -400;
+    constexpr float DoorBehind = -300;
     constexpr float Dead = -200;
     constexpr float Door = -100;
     constexpr float Blocks = 0;

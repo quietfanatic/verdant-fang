@@ -10,9 +10,10 @@ namespace vf {
 struct DoorData {
     Rect hitbox;
     Frame frame;
-    Sound* open_sfx;
-    Sound* close_sfx;
-    Sound* slam_sfx;
+    Sound* open_sound;
+    Sound* close_sound;
+    Sound* slam_sound;
+    Sound* crush_sound;
 };
 
 void Door::init () {
@@ -61,15 +62,16 @@ void Door::Resident_before_step () {
         float next = closedness + vel / total_dist;
         if (next >= 0.999) {
             pos = closed_pos;
-            data->slam_sfx->play();
+            data->slam_sound->play();
+            if (crush) data->crush_sound->play();
         }
         else pos = lerp(open_pos, closed_pos, next);
     }
 }
 
 void Door::Resident_draw () {
-     // TODO: Multiple layers for crushing
-    draw_frame(data->frame, 0, pos, Z::Door);
+    draw_frame(data->frame, 0, pos, Z::DoorBehind);
+    draw_frame(data->frame, 1, pos, Z::Door);
 }
 
 void Door::Resident_on_exit () {
@@ -80,11 +82,11 @@ void Door::Resident_on_exit () {
 void Door::Activatable_activate () {
     if (pos == closed_pos) {
         open = true;
-        data->open_sfx->play();
+        data->open_sound->play();
     }
     else if (pos == open_pos) {
         open = false;
-        data->close_sfx->play();
+        data->close_sound->play();
     }
 }
 
@@ -106,8 +108,9 @@ AYU_DESCRIBE(vf::DoorData,
     attrs(
         attr("hitbox", &DoorData::hitbox),
         attr("frame", &DoorData::frame),
-        attr("open_sfx", &DoorData::open_sfx),
-        attr("close_sfx", &DoorData::close_sfx),
-        attr("slam_sfx", &DoorData::slam_sfx)
+        attr("open_sound", &DoorData::open_sound),
+        attr("close_sound", &DoorData::close_sound),
+        attr("slam_sound", &DoorData::slam_sound),
+        attr("crush_sound", &DoorData::crush_sound)
     )
 )

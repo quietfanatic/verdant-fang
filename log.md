@@ -107,7 +107,7 @@
   on brings the player closer to the character and sets a precedent that nudity
   will exist, so it isn't confusing when the witch has no pants.
 - Also I haven't finalized plans for the witch yet.
-- Did some small art and drawing adjusments.
+- Did some other small art and drawing adjusments.
 - Fixed the decals having bits cut off from the frame auto bounds system.
 - Planned work for tomorrow: Semisolid platforms, crouch stab, hiding enemies,
   think about witch some more.

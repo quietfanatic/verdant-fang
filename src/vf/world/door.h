@@ -12,6 +12,7 @@ struct Door : Resident, Activatable {
     Vec closed_pos = GNAN;
     Vec open_pos = GNAN;
     bool open = false;
+    bool crush = false;
     void init (); // Sets closed and open pos if they're not set
     void Resident_before_step () override;
     void Resident_draw () override;
