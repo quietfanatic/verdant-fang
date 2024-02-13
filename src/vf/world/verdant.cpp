@@ -33,6 +33,12 @@ struct VerdantData : WalkerData {
     Sound* unhit_sound;
 };
 
+ // Overrides movement during pre-transformation cutscene
+struct VerdantMind : Mind {
+    Mind* next;
+    Controls Mind_think (Resident&) override;
+};
+
 Verdant::Verdant () {
     types |= Types::Verdant;
     hbs[0].layers_2 |= Layers::LoadingZone_Verdant;
@@ -49,7 +55,7 @@ WalkerBusiness Verdant::Walker_business () {
                 transform_timer = 0;
                 return Walker_business();
             }
-            else return WB::Occupied;
+            else return WB::Free;
         }
         case VS::Transform: {
             transform_timer += 1;
@@ -84,15 +90,6 @@ WalkerBusiness Verdant::Walker_business () {
         default: break;
     }
     return Walker::Walker_business();
-}
-
-void Verdant::Walker_move (const Controls& controls) {
-    if (state == VS::PreTransform) {
-         // Walk into room before transformation
-        vel.x += data->ground_acc;
-        if (vel.x > data->ground_max) vel.x = data->ground_max;
-    }
-    else return Walker::Walker_move(controls);
 }
 
 void Verdant::Resident_on_collide (
@@ -263,6 +260,21 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
     else Walker::Walker_draw_weapon(pose);
 }
 
+Controls VerdantMind::Mind_think (Resident& r) {
+    if (r.types & Types::Verdant) {
+        auto& v = static_cast<Verdant&>(r);
+        if (v.state == VS::PreTransform) {
+            auto& vd = static_cast<VerdantData&>(*v.data);
+            auto dir = v.pos.x < vd.transform_pos.x
+                ? Control::Right : Control::Left;
+            Controls r = {};
+            r[dir] = 1;
+            return r;
+        }
+    }
+    return next->Mind_think(r);
+}
+
 static Verdant* find_verdant () {
     if (auto game = current_game)
     if (auto room = game->state().current_room)
@@ -320,5 +332,12 @@ AYU_DESCRIBE(vf::VerdantData,
         attr("transform_pos", &VerdantData::transform_pos),
         attr("transform_sounds", &VerdantData::transform_sounds),
         attr("unhit_sound", &VerdantData::unhit_sound)
+    )
+)
+
+AYU_DESCRIBE(vf::VerdantMind,
+    attrs(
+        attr("vf::Mind", base<Mind>(), include),
+        attr("next", &VerdantMind::next)
     )
 )

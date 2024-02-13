@@ -150,7 +150,15 @@ WalkerBusiness Walker::Walker_business () {
     }
 }
 
-void Walker::Walker_move (const Controls& controls) {
+void Walker::Resident_before_step () {
+     // Advance animations and do state-dependent things
+    expect(anim_timer < 255);
+    business = Walker_business();
+
+     // Read controls.
+    Controls controls;
+    if (mind) controls = mind->Mind_think(*this);
+
      // Choose some physics parameters
     float acc = floor ? data->ground_acc : data->air_acc;
     float max = floor ? data->ground_max : data->air_max;
@@ -160,7 +168,9 @@ void Walker::Walker_move (const Controls& controls) {
         : data->air_dec;
 
      // Try to move
+    bool walking = false;
     bool decelerate = false;
+    restart_move:
     switch (business) {
     case WB::Frozen: vel = {0, 0}; break;
     case WB::HoldAttack: {
@@ -169,7 +179,7 @@ void Walker::Walker_move (const Controls& controls) {
             anim_phase = 1;
             anim_timer = 0;
             business = Walker_business();
-            return Walker_move(controls);
+            goto restart_move;
         }
         decelerate = true; break;
     }
@@ -210,6 +220,7 @@ void Walker::Walker_move (const Controls& controls) {
                 if (vel.x < -max) vel.x = -max;
             }
             if (vel.x >= 0) walk_start_x = pos.x;
+            walking = !!floor;
         }
         else if (controls[Control::Right]) {
             if (business == WB::Interruptible) {
@@ -225,6 +236,7 @@ void Walker::Walker_move (const Controls& controls) {
                 if (vel.x > max) vel.x = max;
             }
             if (vel.x <= 0) walk_start_x = pos.x;
+            walking = !!floor;
         }
         else decelerate = true;
 
@@ -265,18 +277,6 @@ void Walker::Walker_move (const Controls& controls) {
         }
         walk_start_x = pos.x;
     }
-}
-
-void Walker::Resident_before_step () {
-     // Advance animations and do state-dependent things
-    expect(anim_timer < 255);
-    business = Walker_business();
-
-     // Read controls.
-    Controls controls;
-    if (mind) controls = mind->Mind_think(*this);
-     // Set velocity
-    Walker_move(controls);
 
     if (business != WB::Frozen) {
          // Fall
@@ -292,7 +292,7 @@ void Walker::Resident_before_step () {
          // Apply velocity and see if we need to play footstep sound
         auto walk_frame_before = walk_frame();
         pos += vel;
-        if (floor && state == WS::Neutral) {
+        if (walking) {
             auto walk_frame_after = walk_frame();
             if (walk_frame_before % 3 == 1 && walk_frame_after % 3 == 2) {
                 auto i = std::uniform_int_distribution(0, 4)(current_game->state().rng);

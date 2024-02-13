@@ -3,6 +3,7 @@
 
 [ayu::Document {
     player: [vf::Player { }]
+    verdant_mind: [vf::VerdantMind { next:#player }]
     chargey: [vf::MonsterMind {
         target: #verdant
         sight_range: 120
@@ -45,7 +46,7 @@
     }]
     verdant: [vf::Verdant {
         data: verdant.ayu#data
-        mind: #player
+        mind: #verdant_mind
         room: #start
         pos: [-16 32]
         floor: #start_blocks

@@ -18,10 +18,6 @@ namespace vf {
  //          |               |
  //    [WalkerBusiness]  [Controls]
  //              \        /
- //             Walker_move()
- //                  |
- //               [vel.x]
- //                  |
  //       fixed movement routines
  //                  |
  //           [pos, hitboxes]
@@ -216,8 +212,6 @@ struct Walker : Resident {
      // Customization points.
      // Handle custom states here, and supercall otherwise.
     virtual WalkerBusiness Walker_business ();
-     // Movement code, sets x velocity but not pos.
-    virtual void Walker_move (const Controls& controls);
      // You can supercall this or not.
     virtual void Walker_on_hit (const Hitbox&, Walker&, const Hitbox&);
      // Handle posing for custom states here, otherwise supercall.
