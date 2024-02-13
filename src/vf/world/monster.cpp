@@ -121,41 +121,86 @@ Controls MonsterMind::Mind_think (Resident& s) {
         jump_dist = -jump_dist;
     }
 
-    if (dist < 0) {
-        r[backward] = 1;
-    }
-    else if (attack_dist < attack_range) {
-        if (
-         // Don't attack too early when jumping unless the player is above.
-            (self.vel.y < 1 || target->pos.y > self.pos.y + 8) &&
-         // Don't hold preattack pose
-            (self.state != WS::Attack || self.anim_phase >= 3)
-        ) {
-            r[Control::Attack] = 1;
+    switch (self.alert_phase) {
+        case 0: {
+            if (length(dist) < sight_range) {
+                self.alert_phase += 1;
+            }
+            else break;
+            [[fallthrough]];
         }
-    }
-    else if (jump_dist < jump_range) {
-        r[forward] = 1;
-        r[Control::Jump] = 1;
-    }
-    else if (dist < sight_range) {
-        r[forward] = 1;
-    }
-
-    for (auto& other : self.room->residents) {
-        if (&other == &s || !(other.types & Types::Monster)) continue;
-        auto& fren = static_cast<Monster&>(other);
-        if (fren.state == WS::Dead) continue; // :(
-        auto dist = fren.pos.x - self.pos.x;
-        if (self.left) dist = -dist;
-        if (dist > 0 && dist < social_distance) {
-            if (jump_dist && fren.left != self.left) {
-                r[Control::Jump] = 1;
+        case 1: {
+            if (self.alert_timer >= alert_sequence[0]) {
+                self.alert_phase += 1;
+                self.alert_timer = 0;
             }
             else {
-                r[Control::Jump] = 0;
-                r[forward] = 0;
+                self.alert_timer += 1;
+                 // Do nothing, haven't reacted yet
+                break;
             }
+            [[fallthrough]];
+        }
+        case 2: {
+            if (self.alert_timer == 0) {
+                 // Alert other monsters
+                for (auto& r : self.room->residents) {
+                    if (!(r.types & Types::Monster)) continue;
+                    auto& fren = static_cast<Monster&>(r);
+                    if (fren.state == WS::Dead) continue;
+                    if (fren.alert_phase == 0) fren.alert_phase = 1;
+                }
+            }
+            if (self.alert_timer >= alert_sequence[1]) {
+                self.alert_phase += 1;
+                self.alert_timer = 0;
+            }
+            else {
+                self.alert_timer += 1;
+                 // Look at target
+                if (dist < 0) r[backward] = 1;
+                break;
+            }
+            [[fallthrough]];
+        }
+        case 3: {
+            if (dist < 0) {
+                r[backward] = 1;
+            }
+            else if (attack_dist < attack_range) {
+                if (
+                     // Don't attack too early when jumping unless the player is
+                     // above.
+                    (self.vel.y < 1 || target->pos.y > self.pos.y + 8) &&
+                     // Don't hold preattack pose
+                    (self.state != WS::Attack || self.anim_phase >= 3)
+                ) {
+                    r[Control::Attack] = 1;
+                }
+            }
+            else if (jump_dist < jump_range) {
+                r[forward] = 1;
+                r[Control::Jump] = 1;
+            }
+            else r[forward] = 1;
+             // Wait for or jump over other monsters
+            for (auto& other : self.room->residents) {
+                if (&other == &s || !(other.types & Types::Monster)) continue;
+                auto& fren = static_cast<Monster&>(other);
+                if (fren.state == WS::Dead) continue; // :(
+                auto dist = fren.pos.x - self.pos.x;
+                if (self.left) dist = -dist;
+                if (dist > 0 && dist < social_distance) {
+                    if (jump_dist && fren.left != self.left) {
+                        r[Control::Jump] = 1;
+                    }
+                    else {
+                        r[Control::Jump] = 0;
+                        r[forward] = 0;
+                    }
+                }
+            }
+            break;
         }
     }
     return r;
@@ -167,7 +212,9 @@ AYU_DESCRIBE(vf::Monster,
     attrs(
         attr("vf::Walker", base<Walker>(), include),
         attr("home_pos", &Monster::home_pos, optional),
-        attr("home_left", &Monster::home_left, collapse_optional)
+        attr("home_left", &Monster::home_left, collapse_optional),
+        attr("alert_phase", &Monster::alert_phase, optional),
+        attr("alert_timer", &Monster::alert_timer, optional)
     ),
     init<&Monster::init>()
 )
@@ -176,9 +223,11 @@ AYU_DESCRIBE(vf::MonsterMind,
     attrs(
         attr("vf::Mind", base<Mind>(), include),
         attr("target", &MonsterMind::target),
+        attr("alert_sequence", &MonsterMind::alert_sequence, optional),
         attr("sight_range", &MonsterMind::sight_range),
         attr("attack_range", &MonsterMind::attack_range),
         attr("jump_range", &MonsterMind::jump_range, optional),
-        attr("social_distance", &MonsterMind::social_distance)
+        attr("social_distance", &MonsterMind::social_distance),
+        attr("ambush_distance", &MonsterMind::ambush_distance, optional)
     )
 )
