@@ -13,11 +13,12 @@
     block: [vf::Frame [#block_tex [0 0] [0 0 32 32]]]
     switch_tex: [vf::LayeredTexture [{
         image: #layer0
-        bounds: [25 91 35 109]
+        bounds: [25 91 48 109]
     }]]
     switch: [vf::SwitchData {
         hitbox: [-5 -9 5 9]
-        frame: [#switch_tex [5 9]]
+        ready_frame: [#switch_tex [5 9]]
+        cooldown_frame: [#switch_tex [18 9]]
         activate_sfx: #koltik
     }]
     door_tex: [vf::LayeredTexture [{

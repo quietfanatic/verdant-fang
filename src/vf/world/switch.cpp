@@ -9,7 +9,8 @@ namespace vf {
 
 struct SwitchData {
     Rect hitbox;
-    Frame frame;
+    Frame ready_frame;
+    Frame cooldown_frame;
     Sound* activate_sfx;
 };
 
@@ -39,7 +40,10 @@ void Switch::Resident_on_collide (const Hitbox&, Resident& o, const Hitbox&) {
 }
 
 void Switch::Resident_draw () {
-    draw_frame(data->frame, 0, pos, Z::Switch);
+    draw_frame(
+        timer || cooldown ? data->cooldown_frame : data->ready_frame,
+        0, pos, Z::Switch
+    );
 }
 
 } using namespace vf;
@@ -61,7 +65,8 @@ AYU_DESCRIBE(vf::Switch,
 AYU_DESCRIBE(vf::SwitchData,
     attrs(
         attr("hitbox", &SwitchData::hitbox),
-        attr("frame", &SwitchData::frame),
+        attr("ready_frame", &SwitchData::ready_frame),
+        attr("cooldown_frame", &SwitchData::cooldown_frame),
         attr("activate_sfx", &SwitchData::activate_sfx)
     )
 )
