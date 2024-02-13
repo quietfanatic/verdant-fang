@@ -41,7 +41,7 @@ void draw_decal (const Walker& w, const Pose& pose) {
         default: never();
     }
     float z = w.anim_phase < 3 ? Z::Overlap + Z::DecalOffset
-            : Z::Dead + Z::DecalOffset;
+            : pose.z + Z::DecalOffset;
     draw_frame(*frame, 0, w.pos + off, z, {w.left ? -1 : 1, 1});
 }
 

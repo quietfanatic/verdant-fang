@@ -196,7 +196,6 @@ Pose Verdant::Walker_pose () {
                     case 3: r = poses.deadf[1]; break;
                     default: r = poses.deadf[2]; break;
                 }
-                r.z = Z::Dead;
                 return r;
             }
             else break;

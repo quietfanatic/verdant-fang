@@ -4,11 +4,13 @@
 namespace vf {
 
 namespace Z {
-    constexpr float BG = -600;
-    constexpr float DoorBehind = -500;
-    constexpr float Hiding = -400;
-    constexpr float Semisolid = -300;
-    constexpr float Dead = -200;
+     // Keep these in sync with monster.ayu and verdant.ayu
+    constexpr float BG = -700;
+    constexpr float DoorBehind = -600;
+    constexpr float Hiding = -500;
+    constexpr float Semisolid = -400;
+    constexpr float Dead = -300;
+    constexpr float DeadPlayer = -200;
     constexpr float Door = -100;
     constexpr float Blocks = 0;
     constexpr float Switch = 100;

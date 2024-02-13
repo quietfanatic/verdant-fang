@@ -1,3 +1,8 @@
+ -- Keep these in sync with common.h
+&z_deadplayer: -200
+&z_damage: 200
+&z_actor: 300
+
 [ayu::Document {
     body: [vf::LayeredTexture [
         {
@@ -145,32 +150,32 @@
             [#body_attack #head_neutral #spear_attack]
         ]
         dead: [
-            [#body_damage #head_damage #spear_damage]
-            [#body_damagefall #head_damage #spear_damagefall]
-            [#body_dead #head_dead #spear_dead]
+            [#body_damage #head_damage #spear_damage *z_deadplayer true]
+            [#body_damagefall #head_damage #spear_damagefall *z_deadplayer]
+            [#body_dead #head_dead #spear_dead *z_deadplayer]
         ]
         deadf: [
-            [#body_damage #head_damage #spear_damage]
-            [#body_damagefallf #head_damagef #spear_damagefallf]
-            [#body_deadf #head_deadf #spear_dead]
+            [#body_damage #head_damage #spear_damage *z_deadplayer true]
+            [#body_damagefallf #head_damagef #spear_damagefallf *z_deadplayer]
+            [#body_deadf #head_deadf #spear_dead *z_deadplayer]
         ]
         walk_hold: [
-            [#body_walkhold0 #head_wave0 #snake_held 300 false 0x5]
-            [#body_walkhold1 #head_wave1 #snake_held 300 false 0x5]
-            [#body_walkhold2 #head_wave2 #snake_held 300 false 0x5]
-            [#body_walkhold3 #head_wave0 #snake_held 300 false 0x5]
-            [#body_walkhold4 #head_wave1 #snake_held 300 false 0x5]
-            [#body_walkhold5 #head_wave2 #snake_held 300 false 0x5]
+            [#body_walkhold0 #head_wave0 #snake_held *z_actor false 0x5]
+            [#body_walkhold1 #head_wave1 #snake_held *z_actor false 0x5]
+            [#body_walkhold2 #head_wave2 #snake_held *z_actor false 0x5]
+            [#body_walkhold3 #head_wave0 #snake_held *z_actor false 0x5]
+            [#body_walkhold4 #head_wave1 #snake_held *z_actor false 0x5]
+            [#body_walkhold5 #head_wave2 #snake_held *z_actor false 0x5]
         ]
         transform: [
-            [#body_hold #head_neutral #snake_held 300 false 0x5]
-            [#body_lift0 #head_neutral #snake_air 300 false 0x5]
-            [#body_transform0 #head_neutral #snake_air 300 false 0x5]
+            [#body_hold #head_neutral #snake_held *z_actor false 0x5]
+            [#body_lift0 #head_neutral #snake_air *z_actor false 0x5]
+            [#body_transform0 #head_neutral #snake_air *z_actor false 0x5]
              -- Hair will wave based on a timer
-            [#body_transform1 #head_wave0 #snake_air 300 false 0x5]
-            [#body_transform2 #head_wave0 #snake_air 300 false 0x5]
-            [#body_transform3 #head_wave0 #snake_air 300 false 0x5]
-            [#body_transform4 #head_wave0 #snake_air 300 false 0x1]
+            [#body_transform1 #head_wave0 #snake_air *z_actor false 0x5]
+            [#body_transform2 #head_wave0 #snake_air *z_actor false 0x5]
+            [#body_transform3 #head_wave0 #snake_air *z_actor false 0x5]
+            [#body_transform4 #head_wave0 #snake_air *z_actor false 0x1]
             [#body_transform4 #head_wave0 #snake_long]
             [#body_transform5 #head_wave0 #snake_longgg]
             [#body_transform6 #head_wave0 #snake_longgg] -- weapon_layers = 5

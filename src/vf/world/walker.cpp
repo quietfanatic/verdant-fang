@@ -497,7 +497,6 @@ Pose Walker::Walker_pose () {
                 case 3: r = poses.dead[1]; break;
                 default: r = poses.dead[2]; break;
             }
-            r.z = Z::Dead;
             break;
         }
         default: never();

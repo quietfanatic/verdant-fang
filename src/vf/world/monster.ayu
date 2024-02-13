@@ -1,3 +1,6 @@
+ -- Keep these in sync with common.h
+&z_dead: -300
+&z_damage: 200
 [ayu::Document {
     body: [vf::LayeredTexture [{
         image: assets.ayu#layer0
@@ -93,9 +96,9 @@
             [#body_postattack #head_down #axe_postattack]
         ]
         dead: [
-            [#body_damage #head_damage #axe_damage]
-            [#body_damagefall #head_damage #axe_damagefall]
-            [#body_dead #head_dead #axe_dead]
+            [#body_damage #head_damage #axe_damage *z_damage true]
+            [#body_damagefall #head_damage #axe_damagefall *z_damage]
+            [#body_dead #head_dead #axe_dead *z_dead]
         ]
     }]
     data: [vf::WalkerData {
