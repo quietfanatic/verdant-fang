@@ -55,7 +55,7 @@
             bounds: [336 30 401 129]
         }]
         dir_0: [
-            [#/slash_high/tex [2 78] [-1 -1 1 3]]
+            [#/slash_high/tex [2 78] [-2 -1 1 4]]
             [#/slash_high/tex [10 78] [-2 -1 2 4]]
             [#/slash_high/tex [21 78] [-3 -2 3 5]]
             [#/slash_high/tex [30 78] [-3 -2 4 7]]
