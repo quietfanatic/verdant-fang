@@ -47,26 +47,26 @@
     ]]
     body_damagefallf: [vf::BodyFrame [#body [152 64] [4 13] [-1 2]]]
     body_deadf: [vf::BodyFrame [#body [182 56] [9 3] [-6 0]]]
+    body_walkhold0: [vf::BodyFrame [#body [14 2] [0 23] [4 20]]]
+    body_walkhold1: [vf::BodyFrame [#body [37 2] [0 23] [4 20]]]
+    body_walkhold2: [vf::BodyFrame [#body [60 2] [0 23] [4 20]]]
+    body_walkhold3: [vf::BodyFrame [#body [83 2] [0 23] [4 20]]]
+    body_walkhold4: [vf::BodyFrame [#body [106 2] [0 23] [4 20]]]
+    body_walkhold5: [vf::BodyFrame [#body [129 2] [0 23] [4 20]]]
+    body_hold: [vf::BodyFrame [#body [154 0] [0 23] [4 20]]]
+    body_lift0: [vf::BodyFrame [#body [172 0] [-1 23] [4 25]]]
      -- These do not directly correspond to pose indexes
-    body_transform0: [vf::BodyFrame [#body [14 83] [-1 23]]]
-    body_transform1: [vf::BodyFrame [#body [37 83] [-1 23]]]
-    body_transform2: [vf::BodyFrame [#body [60 83] [-1 23]]]
-    body_transform3: [vf::BodyFrame [#body [83 83] [-1 23]]]
-    body_transform4: [vf::BodyFrame [#body [106 83] [-1 23]]]
-    body_transform5: [vf::BodyFrame [#body [129 83] [-1 23]]]
-    body_transform6: [vf::BodyFrame [#body [152 83] [-1 23]]]
-    body_transform7: [vf::BodyFrame [#body [175 83] [-1 23]]]
-    body_transform8: [vf::BodyFrame [#body [198 83] [-1 23]]]
-    body_transform9: [vf::BodyFrame [#body [221 83] [-1 23]]]
-    body_walkhold0: [vf::BodyFrame [#body [14 2] [0 23]]]
-    body_walkhold1: [vf::BodyFrame [#body [37 2] [0 23]]]
-    body_walkhold2: [vf::BodyFrame [#body [60 2] [0 23]]]
-    body_walkhold3: [vf::BodyFrame [#body [83 2] [0 23]]]
-    body_walkhold4: [vf::BodyFrame [#body [106 2] [0 23]]]
-    body_walkhold5: [vf::BodyFrame [#body [129 2] [0 23]]]
-    body_hold: [vf::BodyFrame [#body [154 0] [0 23]]]
-    body_lift0: [vf::BodyFrame [#body [172 0] [-1 23]]]
-    body_lift1: [vf::BodyFrame [#body [192 0] [-1 23] [3 22]]]
+    body_transform0: [vf::BodyFrame [#body [14 83] [-1 23] [4 48]]]
+    body_transform1: [vf::BodyFrame [#body [37 83] [-1 23] [4 48]]]
+    body_transform2: [vf::BodyFrame [#body [60 83] [-1 23] [4 48]]]
+    body_transform3: [vf::BodyFrame [#body [83 83] [-1 23] [4 48]]]
+    body_transform4: [vf::BodyFrame [#body [106 83] [-1 23] [4 48]]]
+    body_transform5: [vf::BodyFrame [#body [129 83] [-1 23] [4 48]]]
+    body_transform6: [vf::BodyFrame [#body [152 83] [-1 23] [4 48]]]
+    body_transform7: [vf::BodyFrame [#body [175 83] [-1 23] [4 48]]]
+    body_transform8: [vf::BodyFrame [#body [198 83] [-1 23] [4 48]]]
+    body_transform9: [vf::BodyFrame [#body [221 83] [-1 23] [4 48]]]
+    body_lift1: [vf::BodyFrame [#body [192 0] [-1 23] [4 23]]]
     head: [vf::LayeredTexture [{
         image: assets.ayu#layer0
         bounds: [100 40 266 89]
@@ -82,8 +82,8 @@
     head_dead:    [vf::Frame [#head [121 17]]]
     head_damagef: [vf::Frame [#head [132 17]]]
     head_deadf:   [vf::Frame [#head [148 18]]]
-    fang: [vf::LayeredTexture [
-        {
+    fang: [vf::LayeredTexture {
+        layers: [{
             image: assets.ayu#layer0
             bounds: [3 109 109 223]
         } {
@@ -92,8 +92,15 @@
         } {
             image: assets.ayu#layer2
             bounds: [3 109 109 223]
-        }
-    ]]
+        }]
+         -- One of the frames has the origin above the snake
+        search_direction: [0 -1]
+    }]
+    snake_held: [vf::WeaponFrame [#fang [14 99]]]
+    snake_air: [vf::WeaponFrame [#fang [14 82]]]
+    snake_long: [vf::WeaponFrame [#fang [14 63]]]
+    snake_longgg: [vf::WeaponFrame [#fang [14 38]]]
+    spear_diagonal: [vf::WeaponFrame [#fang [14 14]]]
      -- The origin of spear frames is generally 1 behind the center end to end.
      -- Incidentally, this is also where the hitbox starts.  For the neutral
      -- body frame, this is [7 4] plus the center of the back hand.
@@ -148,29 +155,29 @@
             [#body_deadf #head_deadf #spear_dead]
         ]
         walk_hold: [
-            [#body_walkhold0 #head_wave0 null 300 false 0x5]
-            [#body_walkhold1 #head_wave1 null 300 false 0x5]
-            [#body_walkhold2 #head_wave2 null 300 false 0x5]
-            [#body_walkhold3 #head_wave0 null 300 false 0x5]
-            [#body_walkhold4 #head_wave1 null 300 false 0x5]
-            [#body_walkhold5 #head_wave2 null 300 false 0x5]
+            [#body_walkhold0 #head_wave0 #snake_held 300 false 0x5]
+            [#body_walkhold1 #head_wave1 #snake_held 300 false 0x5]
+            [#body_walkhold2 #head_wave2 #snake_held 300 false 0x5]
+            [#body_walkhold3 #head_wave0 #snake_held 300 false 0x5]
+            [#body_walkhold4 #head_wave1 #snake_held 300 false 0x5]
+            [#body_walkhold5 #head_wave2 #snake_held 300 false 0x5]
         ]
         transform: [
-            [#body_hold #head_neutral null 300 false 0x5]
-            [#body_lift0 #head_neutral null 300 false 0x5]
+            [#body_hold #head_neutral #snake_held 300 false 0x5]
+            [#body_lift0 #head_neutral #snake_air 300 false 0x5]
              -- Hair will wave based on a timer
-            [#body_transform0 #head_wave0 null 300 false 0x5]
-            [#body_transform1 #head_wave0 null 300 false 0x5]
-            [#body_transform2 #head_wave0 null 300 false 0x5]
-            [#body_transform3 #head_wave0 null 300 false 0x5]
-            [#body_transform4 #head_wave0 null 300 false 0x1]
-            [#body_transform4 #head_wave0]
-            [#body_transform5 #head_wave0]
-            [#body_transform6 #head_wave0]
-            [#body_transform7 #head_wave0]
-            [#body_transform8 #head_wave0]
-            [#body_transform9 #head_wave0]
-            [#body_lift1 #head_neutral]
+            [#body_transform0 #head_wave0 #snake_air 300 false 0x5]
+            [#body_transform1 #head_wave0 #snake_air 300 false 0x5]
+            [#body_transform2 #head_wave0 #snake_air 300 false 0x5]
+            [#body_transform3 #head_wave0 #snake_air 300 false 0x5]
+            [#body_transform4 #head_wave0 #snake_air 300 false 0x1]
+            [#body_transform4 #head_wave0 #snake_long]
+            [#body_transform5 #head_wave0 #snake_longgg]
+            [#body_transform6 #head_wave0 #snake_longgg] -- weapon_layers = 5
+            [#body_transform7 #head_wave0 #spear_diagonal] -- weapon_layers = 1
+            [#body_transform8 #head_wave0 #spear_diagonal]
+            [#body_transform9 #head_wave0 #spear_diagonal]
+            [#body_lift1 #head_neutral #spear_diagonal]
         ]
     }]
     data: [vf::VerdantData {
@@ -217,14 +224,14 @@
         decals: decals.ayu#
 
         transform_sequence: [
-            30 --holding snake
-            30 --lifting snake
-            60 --waiting
-            12 8 8 --clothes dissolve
-            30 --naked
-            8 8 20 --clothes materialize
-            8 8 30 -- clothes settle
-            30 --receiving spear
+            30 --0 holding snake
+            30 --1 lifting snake
+            30 --2 waiting
+            12 8 8 --3 4 5 clothes dissolving
+            30 --6 naked
+            8 8 20 --7 8 9 clothes assembling (fang transforming)
+            8 8 30 --10 11 12 clothes settling
+            30 --13 receiving spear
         ]
          -- Try to do transformation at this position
         transform_pos: [100 60]

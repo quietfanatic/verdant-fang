@@ -181,6 +181,8 @@ Pose Verdant::Walker_pose () {
             if (anim_phase >= 3 && anim_phase <= 13) {
                 r.head = poses.walk[(transform_timer / 8) % 6].head;
             }
+            if (anim_phase == 9) weapon_layers = 0x5;
+            else if (anim_phase == 10) weapon_layers = 0x1;
             return r;
         }
         case WS::Dead: {
@@ -225,7 +227,6 @@ control::Command set_body_layers (set_body_layers_, "set_body_layers");
 void do_transform_sequence_ () {
     if (auto v = find_verdant()) {
         v->set_state(VS::Transform);
-        v->anim_phase = 1;
     }
 }
 control::Command do_transform_sequence (do_transform_sequence_, "do_transform_sequence");

@@ -174,7 +174,11 @@ void draw_frames () {
 } using namespace vf;
 
 AYU_DESCRIBE(vf::LayeredTexture,
-    delegate(&LayeredTexture::layers)
+    delegate(&LayeredTexture::layers),
+    attrs(
+        attr("layers", &LayeredTexture::layers),
+        attr("search_direction", &LayeredTexture::search_direction, optional)
+    )
 )
 
 AYU_DESCRIBE(vf::Frame,
