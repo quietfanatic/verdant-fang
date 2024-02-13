@@ -100,3 +100,14 @@
   anticlimatic, thanks to all the refactoring work.
 - Planned work for Monday: Dunno!  Probably gonna play around with Witch some
   more.
+#####2024-02-12 M
+- Added the transformation scene!  I decided this was even more important than
+  the boss, to establish that the character is a magical-girl-like person and
+  the spear is a snake.  Also, showing nudity in the transformation scene early
+  on brings the player closer to the character and sets a precedent that nudity
+  will exist, so it isn't confusing when the witch has no pants.
+- Also I haven't finalized plans for the witch yet.
+- Did some small art and drawing adjusments.
+- Fixed the decals having bits cut off from the frame auto bounds system.
+- Planned work for tomorrow: Semisolid platforms, crouch stab, hiding enemies,
+  think about witch some more.
