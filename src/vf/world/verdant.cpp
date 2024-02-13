@@ -8,14 +8,16 @@
 namespace vf {
 
 namespace VS {
-    constexpr WalkerState Transform = WS::Custom + 0;
+    constexpr WalkerState PreTransform = WS::Custom + 0;
+    constexpr WalkerState Transform = WS::Custom + 1;
      // Update world.ayu if this changes
-    static_assert(Transform == 5);
+    static_assert(PreTransform == 5);
 };
 
 struct VerdantPoses : WalkerPoses {
     Pose deadf [3];
-    Pose transform [11];
+    Pose walk_hold [6];
+    Pose transform [14];
 };
 
 struct TransformSound {
@@ -25,9 +27,10 @@ struct TransformSound {
 };
 
 struct VerdantData : WalkerData {
-    uint8 transform_sequence [11];
-    Sound* unhit_sound;
+    uint8 transform_sequence [14];
+    Vec transform_pos;
     TransformSound transform_sounds [3];
+    Sound* unhit_sound;
 };
 
 Verdant::Verdant () {
@@ -39,16 +42,25 @@ Verdant::Verdant () {
 WalkerBusiness Verdant::Walker_business () {
     auto& vd = static_cast<VerdantData&>(*data);
     switch (state) {
+        case VS::PreTransform: {
+            expect(anim_phase == 0);
+            if (pos.x >= vd.transform_pos.x) {
+                set_state(VS::Transform);
+                transform_timer = 0;
+                return Walker_business();
+            }
+            else return WB::Occupied;
+        }
         case VS::Transform: {
             transform_timer += 1;
-            expect(anim_phase < 11);
+            expect(anim_phase < 14);
             for (auto& ts : vd.transform_sounds) {
                 if (anim_phase == ts.phase && anim_timer == ts.timer) {
                     ts.sound->play();
                 }
             }
             if (anim_timer >= vd.transform_sequence[anim_phase]) {
-                if (anim_phase == 10) {
+                if (anim_phase == 13) {
                     transform_timer = 0;
                     set_state(WS::Neutral);
                 }
@@ -60,7 +72,7 @@ WalkerBusiness Verdant::Walker_business () {
             }
             else {
                 anim_timer += 1;
-                return WB::Frozen;
+                return anim_phase == 0 ? WB::Occupied : WB::Frozen;
             }
         }
         case WS::Hit: {
@@ -72,6 +84,15 @@ WalkerBusiness Verdant::Walker_business () {
         default: break;
     }
     return Walker::Walker_business();
+}
+
+void Verdant::Walker_move (const Controls& controls) {
+    if (state == VS::PreTransform) {
+         // Walk into room before transformation
+        vel.x += data->ground_acc;
+        if (vel.x > data->ground_max) vel.x = data->ground_max;
+    }
+    else return Walker::Walker_move(controls);
 }
 
 void Verdant::Resident_on_collide (
@@ -149,13 +170,17 @@ void Verdant::Walker_on_hit (
 Pose Verdant::Walker_pose () {
     auto poses = static_cast<VerdantPoses&>(*data->poses);
     switch (state) {
+        case VS::PreTransform: {
+            return poses.walk_hold[walk_frame()];
+        }
         case VS::Transform: {
             Pose r;
-            expect(anim_phase < 11);
+            expect(anim_phase < 14);
             r = poses.transform[anim_phase];
-            if (anim_phase < 4) r.body_layers = 0x5;
-            else if (anim_phase == 4) r.body_layers = 0x1;
-            r.head = poses.walk[(transform_timer / 8) % 6].head;
+             // Wave hair magically
+            if (anim_phase >= 3 && anim_phase <= 13) {
+                r.head = poses.walk[(transform_timer / 8) % 6].head;
+            }
             return r;
         }
         case WS::Dead: {
@@ -200,6 +225,7 @@ control::Command set_body_layers (set_body_layers_, "set_body_layers");
 void do_transform_sequence_ () {
     if (auto v = find_verdant()) {
         v->set_state(VS::Transform);
+        v->anim_phase = 1;
     }
 }
 control::Command do_transform_sequence (do_transform_sequence_, "do_transform_sequence");
@@ -218,6 +244,7 @@ AYU_DESCRIBE(vf::VerdantPoses,
     attrs(
         attr("vf::WalkerPoses", base<WalkerPoses>(), include),
         attr("deadf", &VerdantPoses::deadf),
+        attr("walk_hold", &VerdantPoses::walk_hold),
         attr("transform", &VerdantPoses::transform)
     )
 )
@@ -234,7 +261,8 @@ AYU_DESCRIBE(vf::VerdantData,
     attrs(
         attr("vf::WalkerData", base<WalkerData>(), include),
         attr("transform_sequence", &VerdantData::transform_sequence),
-        attr("unhit_sound", &VerdantData::unhit_sound),
-        attr("transform_sounds", &VerdantData::transform_sounds)
+        attr("transform_pos", &VerdantData::transform_pos),
+        attr("transform_sounds", &VerdantData::transform_sounds),
+        attr("unhit_sound", &VerdantData::unhit_sound)
     )
 )

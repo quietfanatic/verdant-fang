@@ -160,15 +160,7 @@ WalkerBusiness Walker::Walker_business () {
     }
 }
 
-void Walker::Resident_before_step () {
-     // Read controls.
-    Controls controls;
-    if (mind) controls = mind->Mind_think(*this);
-
-     // Advance animations and do state-dependent things
-    expect(anim_timer < 255);
-    business = Walker_business();
-
+void Walker::Walker_move (const Controls& controls) {
      // Choose some physics parameters
     float acc = floor ? data->ground_acc : data->air_acc;
     float max = floor ? data->ground_max : data->air_max;
@@ -179,7 +171,6 @@ void Walker::Resident_before_step () {
 
      // Try to move
     bool decelerate = false;
-    redo_move:;
     switch (business) {
     case WB::Frozen: vel = {0, 0}; break;
     case WB::HoldAttack: {
@@ -188,7 +179,7 @@ void Walker::Resident_before_step () {
             anim_phase = 1;
             anim_timer = 0;
             business = Walker_business();
-            goto redo_move;
+            return Walker_move(controls);
         }
         decelerate = true; break;
     }
@@ -284,6 +275,18 @@ void Walker::Resident_before_step () {
         }
         walk_start_x = pos.x;
     }
+}
+
+void Walker::Resident_before_step () {
+     // Advance animations and do state-dependent things
+    expect(anim_timer < 255);
+    business = Walker_business();
+
+     // Read controls.
+    Controls controls;
+    if (mind) controls = mind->Mind_think(*this);
+     // Set velocity
+    Walker_move(controls);
 
     if (business != WB::Frozen) {
          // Fall

@@ -14,6 +14,8 @@ struct Verdant : Walker {
 
      // For handling custom hit animations
     WalkerBusiness Walker_business () override;
+     // For pre-transformation cutscene walking
+    void Walker_move (const Controls&) override;
      // Allow getting crushed by door
     void Resident_on_collide (const Hitbox&, Resident&, const Hitbox&) override;
      // Set decals on victim

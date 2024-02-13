@@ -17,36 +17,37 @@
         }
     ]]
      -- y up
-    body_stand:      [vf::BodyFrame [#body [14 55] [0 23] [-5 12]]]
-    body_crouch:     [vf::BodyFrame [#body [60 61] [0 16] [-6 9]]]
-    body_walk0:      [vf::BodyFrame [#body [14 29] [1 23] [-5 12]]]
-    body_walk1:      [vf::BodyFrame [#body [37 29] [1 23] [-5 12]]]
-    body_walk2:      [vf::BodyFrame [#body [60 29] [1 22] [-5 11]]]
-    body_walk3:      [vf::BodyFrame [#body [83 29] [1 23] [-5 12]]]
-    body_walk4:      [vf::BodyFrame [#body [106 29] [1 23] [-5 12]]]
-    body_walk5:      [vf::BodyFrame [#body [129 29] [1 22] [-5 11]]]
-    body_fall1:      [vf::BodyFrame [#body [83 56] [1 23] [-5 12]]]
-    body_land:       [vf::BodyFrame [#body [37 57] [1 20] [-5 10]]]
-    body_preattack:  [vf::BodyFrame [#body [154 28] [0 23] [-11 19]]]
-    body_attack:     [vf::BodyFrame [#body [172 28] [4 22] [7 19]]]
-    body_postattack: [vf::BodyFrame [#body [203 28] [0 23] [-11 19]]]
+    body_stand:      [vf::BodyFrame [#body [14 55] [0 23] [2 16]]]
+    body_crouch:     [vf::BodyFrame [#body [60 61] [0 16] [1 13]]]
+    body_walk0:      [vf::BodyFrame [#body [14 29] [1 23] [2 16]]]
+    body_walk1:      [vf::BodyFrame [#body [37 29] [1 23] [2 16]]]
+    body_walk2:      [vf::BodyFrame [#body [60 29] [1 22] [2 15]]]
+    body_walk3:      [vf::BodyFrame [#body [83 29] [1 23] [2 16]]]
+    body_walk4:      [vf::BodyFrame [#body [106 29] [1 23] [2 16]]]
+    body_walk5:      [vf::BodyFrame [#body [129 29] [1 22] [2 15]]]
+    body_fall1:      [vf::BodyFrame [#body [83 56] [1 23] [2 16]]]
+    body_land:       [vf::BodyFrame [#body [37 57] [1 20] [2 14]]]
+    body_preattack:  [vf::BodyFrame [#body [154 28] [0 23] [-2 19]]]
+    body_attack:     [vf::BodyFrame [#body [172 28] [4 22] [16 19]]]
+    body_postattack: [vf::BodyFrame [#body [203 28] [0 23] [-2 19]]]
     body_damage: [vf::BodyFrame [
-        #body [106 54] [0 23] [-8 14]
+        #body [106 54] [0 23] [0 17]
         [[0 13] [1 18] [0 22] [2 26]]
         [0 0 0 0]
     ]]
     body_damagefall: [vf::BodyFrame [
-        #body [129 64] [-8 13] [-4 -4]
+        #body [129 64] [-8 13] [3 2]
         [[-3 5] [-6 9] [-8 12] [-6 16]]
         [1 1 0 0]
     ]]
     body_dead: [vf::BodyFrame [
-        #body [182 70] [-13 3] [-4 0]
+        #body [182 70] [-13 3] [5 0]
         [[-3 4] [-8 4] [-12 4] [-16 5]]
         [2 2 2 2]
     ]]
-    body_damagefallf: [vf::BodyFrame [#body [152 64] [4 13] [-5 5]]]
-    body_deadf: [vf::BodyFrame [#body [182 56] [9 3] [-5 0]]]
+    body_damagefallf: [vf::BodyFrame [#body [152 64] [4 13] [-1 2]]]
+    body_deadf: [vf::BodyFrame [#body [182 56] [9 3] [-6 0]]]
+     -- These do not directly correspond to pose indexes
     body_transform0: [vf::BodyFrame [#body [14 83] [-1 23]]]
     body_transform1: [vf::BodyFrame [#body [37 83] [-1 23]]]
     body_transform2: [vf::BodyFrame [#body [60 83] [-1 23]]]
@@ -57,6 +58,15 @@
     body_transform7: [vf::BodyFrame [#body [175 83] [-1 23]]]
     body_transform8: [vf::BodyFrame [#body [198 83] [-1 23]]]
     body_transform9: [vf::BodyFrame [#body [221 83] [-1 23]]]
+    body_walkhold0: [vf::BodyFrame [#body [14 2] [0 23]]]
+    body_walkhold1: [vf::BodyFrame [#body [37 2] [0 23]]]
+    body_walkhold2: [vf::BodyFrame [#body [60 2] [0 23]]]
+    body_walkhold3: [vf::BodyFrame [#body [83 2] [0 23]]]
+    body_walkhold4: [vf::BodyFrame [#body [106 2] [0 23]]]
+    body_walkhold5: [vf::BodyFrame [#body [129 2] [0 23]]]
+    body_hold: [vf::BodyFrame [#body [154 0] [0 23]]]
+    body_lift0: [vf::BodyFrame [#body [172 0] [-1 23]]]
+    body_lift1: [vf::BodyFrame [#body [192 0] [-1 23] [3 22]]]
     head: [vf::LayeredTexture [{
         image: assets.ayu#layer0
         bounds: [100 40 266 89]
@@ -75,22 +85,25 @@
     fang: [vf::LayeredTexture [
         {
             image: assets.ayu#layer0
-            bounds: [49 106 86 186]
+            bounds: [3 109 109 223]
         } {
             image: assets.ayu#layer1
-            bounds: [49 106 86 186]
+            bounds: [3 109 109 223]
         } {
             image: assets.ayu#layer2
-            bounds: [49 106 86 186]
+            bounds: [3 109 109 223]
         }
     ]]
-    spear_neutral:    [vf::WeaponFrame [#fang [10 63]]]
-    spear_preattack:  [vf::WeaponFrame [#fang [10 55]]]
-    spear_attack:     [vf::WeaponFrame [#fang [10 50] [9 -1 27 1]]]
-    spear_damage:     [vf::WeaponFrame [#fang [10 44]]]
-    spear_damagefall: [vf::WeaponFrame [#fang [10 12]]]
-    spear_damagefallf: [vf::WeaponFrame [#fang [10 31]]]
-    spear_dead:       [vf::WeaponFrame [#fang [10 6]]]
+     -- The origin of spear frames is generally 1 behind the center end to end.
+     -- Incidentally, this is also where the hitbox starts.  For the neutral
+     -- body frame, this is [7 4] plus the center of the back hand.
+    spear_neutral:    [vf::WeaponFrame [#fang [87 104]]]
+    spear_preattack:  [vf::WeaponFrame [#fang [87 92]]]
+    spear_attack:     [vf::WeaponFrame [#fang [87 87] [0 -1 18 1]]]
+    spear_damage:     [vf::WeaponFrame [#fang [87 78]]]
+    spear_damagefall: [vf::WeaponFrame [#fang [87 65]]]
+    spear_damagefallf: [vf::WeaponFrame [#fang [87 51]]]
+    spear_dead:       [vf::WeaponFrame [#fang [87 43]]]
     poses: [vf::VerdantPoses {
         stand: [#body_stand #head_neutral #spear_neutral]
         crouch: [#body_crouch #head_neutral #spear_neutral]
@@ -134,18 +147,30 @@
             [#body_damagefallf #head_damagef #spear_damagefallf]
             [#body_deadf #head_deadf #spear_dead]
         ]
+        walk_hold: [
+            [#body_walkhold0 #head_wave0 null 300 false 0x5]
+            [#body_walkhold1 #head_wave1 null 300 false 0x5]
+            [#body_walkhold2 #head_wave2 null 300 false 0x5]
+            [#body_walkhold3 #head_wave0 null 300 false 0x5]
+            [#body_walkhold4 #head_wave1 null 300 false 0x5]
+            [#body_walkhold5 #head_wave2 null 300 false 0x5]
+        ]
         transform: [
-            {body:#body_transform0 head:#head_wave0 body_layers:5}
-            {body:#body_transform1 head:#head_wave0 body_layers:5}
-            {body:#body_transform2 head:#head_wave0 body_layers:5}
-            {body:#body_transform3 head:#head_wave0 body_layers:5}
-            {body:#body_transform4 head:#head_wave0 body_layers:1}
+            [#body_hold #head_neutral null 300 false 0x5]
+            [#body_lift0 #head_neutral null 300 false 0x5]
+             -- Hair will wave based on a timer
+            [#body_transform0 #head_wave0 null 300 false 0x5]
+            [#body_transform1 #head_wave0 null 300 false 0x5]
+            [#body_transform2 #head_wave0 null 300 false 0x5]
+            [#body_transform3 #head_wave0 null 300 false 0x5]
+            [#body_transform4 #head_wave0 null 300 false 0x1]
             [#body_transform4 #head_wave0]
             [#body_transform5 #head_wave0]
             [#body_transform6 #head_wave0]
             [#body_transform7 #head_wave0]
             [#body_transform8 #head_wave0]
             [#body_transform9 #head_wave0]
+            [#body_lift1 #head_neutral]
         ]
     }]
     data: [vf::VerdantData {
@@ -192,18 +217,23 @@
         decals: decals.ayu#
 
         transform_sequence: [
-            60 --before
+            30 --holding snake
+            30 --lifting snake
+            60 --waiting
             12 8 8 --clothes dissolve
             30 --naked
             8 8 20 --clothes materialize
             8 8 30 -- clothes settle
+            30 --receiving spear
         ]
-        unhit_sound: assets.ayu#shluk
+         -- Try to do transformation at this position
+        transform_pos: [100 60]
         transform_sounds: [
              -- When to play the sounds.  [sound anim_phase anim_timer]
-            [assets.ayu#pwsh 2 0]
-            [assets.ayu#shwp 4 24] -- 30+8+8 - 22
-            [assets.ayu#poiy 8 0]
+            [assets.ayu#pwsh 4 0]
+            [assets.ayu#shwp 6 24] -- 30+8+8 - 22
+            [assets.ayu#poiy 10 0]
         ]
+        unhit_sound: assets.ayu#shluk
     }]
 }]
