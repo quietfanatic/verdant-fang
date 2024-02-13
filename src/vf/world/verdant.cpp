@@ -69,6 +69,7 @@ WalkerBusiness Verdant::Walker_business () {
                 if (anim_phase == 13) {
                     transform_timer = 0;
                     set_state(WS::Neutral);
+                    current_game->state().save_checkpoint();
                 }
                 else {
                     anim_phase += 1;
@@ -278,6 +279,15 @@ static Verdant* find_verdant () {
     }
     return null;
 }
+
+void restart_if_dead_ () {
+    if (auto v = find_verdant()) {
+        if (v->state == WS::Dead) {
+            current_game->state().load_checkpoint = true;
+        }
+    }
+}
+control::Command restart_if_dead (restart_if_dead_, "restart_if_dead", "Restart from checkpoint if player is dead");
 
 void set_body_layers_ (uint8 layers) {
     if (auto v = find_verdant()) {

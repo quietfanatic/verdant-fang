@@ -29,8 +29,15 @@ struct State {
 
     ayu::Document world;
 
+    std::optional<ayu::Tree> checkpoint;
+
+     // Temporary, don't save
+    bool load_checkpoint = false;
+
     State ();
     void step ();
+
+    void save_checkpoint ();
 };
 
 } // vf

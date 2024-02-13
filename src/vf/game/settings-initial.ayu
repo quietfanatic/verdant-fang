@@ -20,6 +20,9 @@
         [[f4] [fullscreen]]
         [[f11] [fullscreen]]
         [[alt enter] [fullscreen]]
+        [[r] [restart_if_dead]]
+        [[ctrl r] [load_checkpoint]]
+         -- For testing and stuff
         [[ctrl s] [save_state]]
         [[ctrl l] [load_state]]
         [[ctrl 1] [set_body_layers 0x1]]
