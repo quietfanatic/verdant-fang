@@ -489,11 +489,7 @@ Pose Walker::Walker_pose () {
         }
         case WS::Dead: {
             switch (anim_phase) {
-                case 0: case 1: case 2: {
-                    r = poses.dead[0];
-                    r.damage_overlap = true;
-                    break;
-                }
+                case 0: case 1: case 2: r = poses.dead[0]; break;
                 case 3: r = poses.dead[1]; break;
                 default: r = poses.dead[2]; break;
             }
@@ -516,11 +512,12 @@ void Walker::Resident_draw () {
                 pos + head_offset, pose.z + Z::HeadOffset, scale
             );
         }
+        else ayu::dump(0);
         draw_layers(
             *pose.body, body_layers & pose.body_layers,
             pos, pose.z, scale
         );
-        if (pose.damage_overlap && decal_index < max_decals) {
+        if (!defined(z_override) && pose.damage_overlap && decal_index < max_decals) {
             float cutoff = pose.body->decals[decal_index].x;
             Frame overlap = *pose.body;
             if (overlap.bounds.r > cutoff) overlap.bounds.r = cutoff;

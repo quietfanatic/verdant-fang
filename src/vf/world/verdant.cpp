@@ -188,11 +188,7 @@ Pose Verdant::Walker_pose () {
                 Pose r;
                  // Mirror the WS::Dead case in Walker::Walker_pos
                 switch (anim_phase) {
-                    case 0: case 1: case 2: {
-                        r = poses.deadf[0];
-                        r.damage_overlap = true;
-                        break;
-                    }
+                    case 0: case 1: case 2: r = poses.deadf[0]; break;
                     case 3: r = poses.deadf[1]; break;
                     default: r = poses.deadf[2]; break;
                 }

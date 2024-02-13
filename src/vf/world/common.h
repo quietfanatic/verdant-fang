@@ -4,7 +4,7 @@
 namespace vf {
 
 namespace Z {
-     // Keep these in sync with monster.ayu and verdant.ayu
+     // Keep these in sync with monster.ayu, verdant.ayu, and world.ayu
     constexpr float BG = -700;
     constexpr float DoorBehind = -600;
     constexpr float Hiding = -500;
