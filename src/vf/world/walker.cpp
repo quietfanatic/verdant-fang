@@ -524,17 +524,21 @@ void Walker::Resident_draw () {
                 );
             }
         }
-        if (pose.weapon) {
-            Vec weapon_offset = pose.body->weapon * scale;
-            draw_layers(
-                *pose.weapon, weapon_layers,
-                pos + weapon_offset,
-                (pose.damage_overlap ? Z::Overlap : pose.z) + Z::WeaponOffset,
-                scale
-            );
-        }
+        Walker_draw_weapon(pose);
     }
     draw_decal(*this, pose);
+}
+
+void Walker::Walker_draw_weapon (const Pose& pose) {
+    Vec scale = {left ? -1 : 1, 1};
+    if (pose.weapon) {
+        draw_layers(
+            *pose.weapon, weapon_layers,
+            pos + pose.body->weapon * scale,
+            (pose.damage_overlap ? Z::Overlap : pose.z) + Z::WeaponOffset,
+            scale
+        );
+    }
 }
 
 void Walker::Resident_on_exit () {

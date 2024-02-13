@@ -218,6 +218,9 @@ struct Walker : Resident {
     virtual void Walker_on_hit (const Hitbox&, Walker&, const Hitbox&);
      // Handle posing for custom states here, otherwise supercall.
     virtual Pose Walker_pose ();
+     // Override drawing weapon.  Currently only used for making Fang hover
+     // during the transformation scene.
+    virtual void Walker_draw_weapon (const Pose& p);
 
      // Useful
     float left_flip (float v) const { return left ? -v : v; }

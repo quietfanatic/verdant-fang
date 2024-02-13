@@ -49,10 +49,10 @@
     body_deadf: [vf::BodyFrame [#body [182 56] [9 3] [-6 0]]]
     body_walkhold0: [vf::BodyFrame [#body [14 2] [0 23] [4 20]]]
     body_walkhold1: [vf::BodyFrame [#body [37 2] [0 23] [4 20]]]
-    body_walkhold2: [vf::BodyFrame [#body [60 2] [0 23] [4 20]]]
+    body_walkhold2: [vf::BodyFrame [#body [60 2] [0 22] [4 19]]]
     body_walkhold3: [vf::BodyFrame [#body [83 2] [0 23] [4 20]]]
     body_walkhold4: [vf::BodyFrame [#body [106 2] [0 23] [4 20]]]
-    body_walkhold5: [vf::BodyFrame [#body [129 2] [0 23] [4 20]]]
+    body_walkhold5: [vf::BodyFrame [#body [129 2] [0 22] [4 19]]]
     body_hold: [vf::BodyFrame [#body [154 0] [0 23] [4 20]]]
     body_lift0: [vf::BodyFrame [#body [172 0] [-1 23] [4 25]]]
      -- These do not directly correspond to pose indexes
@@ -165,8 +165,8 @@
         transform: [
             [#body_hold #head_neutral #snake_held 300 false 0x5]
             [#body_lift0 #head_neutral #snake_air 300 false 0x5]
+            [#body_transform0 #head_neutral #snake_air 300 false 0x5]
              -- Hair will wave based on a timer
-            [#body_transform0 #head_wave0 #snake_air 300 false 0x5]
             [#body_transform1 #head_wave0 #snake_air 300 false 0x5]
             [#body_transform2 #head_wave0 #snake_air 300 false 0x5]
             [#body_transform3 #head_wave0 #snake_air 300 false 0x5]
@@ -175,8 +175,8 @@
             [#body_transform5 #head_wave0 #snake_longgg]
             [#body_transform6 #head_wave0 #snake_longgg] -- weapon_layers = 5
             [#body_transform7 #head_wave0 #spear_diagonal] -- weapon_layers = 1
-            [#body_transform8 #head_wave0 #spear_diagonal]
-            [#body_transform9 #head_wave0 #spear_diagonal]
+            [#body_transform8 #head_wave1 #spear_diagonal]
+            [#body_transform9 #head_neutral #spear_diagonal]
             [#body_lift1 #head_neutral #spear_diagonal]
         ]
     }]

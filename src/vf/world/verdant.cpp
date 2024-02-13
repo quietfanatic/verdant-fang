@@ -178,7 +178,7 @@ Pose Verdant::Walker_pose () {
             expect(anim_phase < 14);
             r = poses.transform[anim_phase];
              // Wave hair magically
-            if (anim_phase >= 3 && anim_phase <= 13) {
+            if (anim_phase >= 3 && anim_phase <= 10) {
                 r.head = poses.walk[(transform_timer / 8) % 6].head;
             }
             if (anim_phase == 9) weapon_layers = 0x5;
@@ -206,6 +206,60 @@ Pose Verdant::Walker_pose () {
         default: break;
     }
     return Walker::Walker_pose();
+}
+
+void Verdant::Walker_draw_weapon (const Pose& pose) {
+    if (state == VS::Transform) {
+        auto& vd = static_cast<VerdantData&>(*data);
+        auto& poses = static_cast<VerdantPoses&>(*vd.poses);
+        Vec weapon_offset;
+        uint8 weapon_layers = 1;
+        Vec scale = {left ? -1 : 1, 1};
+        if (anim_phase == 1 || anim_phase == 2) {
+            float end = vd.transform_sequence[1] + vd.transform_sequence[2];
+             // anim_timer ranges from 1 to n here
+            float t = anim_timer - 1;
+            if (anim_phase == 2) t += vd.transform_sequence[1];
+            weapon_offset = lerp(
+                Vec(poses.transform[1].body->weapon),
+                Vec(poses.transform[2].body->weapon),
+                std::sin(t / end * float(4 / M_PI))
+            );
+        }
+        else if (anim_phase == 12 || anim_phase == 13) {
+            float end = vd.transform_sequence[12] + vd.transform_sequence[13];
+            float t = anim_timer - 1;
+            if (anim_phase == 13) t += vd.transform_sequence[12];
+            weapon_offset = lerp(
+                Vec(poses.transform[13].body->weapon),
+                Vec(poses.transform[12].body->weapon),
+                1 - std::sin(t / end * float(4 / M_PI))
+            );
+        }
+        else {
+            weapon_offset = pose.body->weapon;
+        }
+        if (anim_phase == 0 || anim_phase == 2 || anim_phase == 6) {
+             // Stick tongue out
+            if (anim_timer >= 10 && anim_timer < 22) {
+                if (anim_timer >= 14 && anim_timer < 18) {
+                    weapon_layers = 0x7;
+                }
+                else weapon_layers = 0x3;
+            }
+        }
+        else if (anim_phase == 9) {
+             // Glow
+            weapon_layers = 5;
+        }
+        draw_layers(
+            *pose.weapon, weapon_layers,
+            pos + weapon_offset * scale,
+            pose.z + Z::WeaponOffset,
+            scale
+        );
+    }
+    else Walker::Walker_draw_weapon(pose);
 }
 
 static Verdant* find_verdant () {

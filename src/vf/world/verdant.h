@@ -22,6 +22,8 @@ struct Verdant : Walker {
     void Walker_on_hit (const Hitbox&, Walker&, const Hitbox&) override;
      // For drawing damage forward frames
     Pose Walker_pose () override;
+     // For making Fang hover during transformation
+    void Walker_draw_weapon (const Pose&) override;
 };
 
 } // vf
