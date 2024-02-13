@@ -1,3 +1,5 @@
+ -- A lot of decals have separated pixels, so they need to have their bounds
+ -- specified explicitly.
 [vf::DecalData {
     stab: {
         tex: [{
@@ -5,22 +7,22 @@
             bounds: [337 323 393 356]
         }]
         dir_0: [
-            [#/stab/tex [3 28]]
-            [#/stab/tex [8 28]]
-            [#/stab/tex [14 28]]
-            [#/stab/tex [25 28]]
+            [#/stab/tex [3 28] [0 -2 1 2]]
+            [#/stab/tex [8 28] [-1 -3 1 2]]
+            [#/stab/tex [14 28] [-1 -3 8 2]]
+            [#/stab/tex [25 28] [0 -2 5 3]]
         ]
         dir_1: [
-            [#/stab/tex [5 18]]
+            [#/stab/tex [5 18] [-1 -1 4 4]]
         ]
         dir_2: [
-            [#/stab/tex [5 7]]
-            [#/stab/tex [12 7]]
-            [#/stab/tex [19 7]]
-            [#/stab/tex [26 7]]
-            [#/stab/tex [33 7]]
-            [#/stab/tex [40 7]]
-            [#/stab/tex [48 7]]
+            [#/stab/tex [5 7] [-3 -2 3 6]]
+            [#/stab/tex [12 7] [-2 -4 2 0]]
+            [#/stab/tex [19 7] [-2 -5 2 4]]
+            [#/stab/tex [26 7] [-2 -5 2 2]]
+            [#/stab/tex [33 7] [-2 -5 2 0]]
+            [#/stab/tex [40 7] [-3 -5 3 0]]
+            [#/stab/tex [48 7] [-4 -5 4 0]]
         ]
     }
     slash_low: {
@@ -29,22 +31,22 @@
             bounds: [335 132 395 222]
         }]
         dir_0: [
-            [#/slash_low/tex [6 79]]
-            [#/slash_low/tex [13 79]]
-            [#/slash_low/tex [20 79]]
+            [#/slash_low/tex [6 79] [-1 -5 1 4]]
+            [#/slash_low/tex [13 79] [-1 -6 2 5]]
+            [#/slash_low/tex [20 79] [-2 -7 4 5]]
             [null [0 0]]
         ]
         dir_1: [
-            [#/slash_low/tex [7 63]]
+            [#/slash_low/tex [7 63] [-2 -5 7 5]]
         ]
         dir_2: [
-            [#/slash_low/tex [38 79]]
-            [#/slash_low/tex [38 66]]
-            [#/slash_low/tex [38 53]]
-            [#/slash_low/tex [38 40]]
-            [#/slash_low/tex [38 29]]
-            [#/slash_low/tex [38 18]]
-            [#/slash_low/tex [38 7]]
+            [#/slash_low/tex [38 79] [-4 -1 7 6]]
+            [#/slash_low/tex [38 66] [-4 -3 8 3]]
+            [#/slash_low/tex [38 53] [-4 -4 8 5]]
+            [#/slash_low/tex [38 40] [-5 -4 10 3]]
+            [#/slash_low/tex [38 29] [-7 -4 11 2]]
+            [#/slash_low/tex [38 18] [-8 -4 12 2]]
+            [#/slash_low/tex [38 7] [-9 -4 13 2]]
         ]
     }
     slash_high: {
@@ -53,22 +55,22 @@
             bounds: [336 30 401 129]
         }]
         dir_0: [
-            [#/slash_high/tex [2 78]]
-            [#/slash_high/tex [10 78]]
-            [#/slash_high/tex [21 78]]
-            [#/slash_high/tex [30 78]]
+            [#/slash_high/tex [2 78] [-1 -1 1 3]]
+            [#/slash_high/tex [10 78] [-2 -1 2 4]]
+            [#/slash_high/tex [21 78] [-3 -2 3 5]]
+            [#/slash_high/tex [30 78] [-3 -2 4 7]]
         ]
         dir_1: [
             [null [0 0]]
         ]
         dir_2: [
-            [#/slash_high/tex [55 92]]
-            [#/slash_high/tex [55 78]]
-            [#/slash_high/tex [55 64]]
-            [#/slash_high/tex [55 50]]
-            [#/slash_high/tex [55 36]]
-            [#/slash_high/tex [55 22]]
-            [#/slash_high/tex [55 8]]
+            [#/slash_high/tex [55 92] [-7 -4 3 6]]
+            [#/slash_high/tex [55 78] [-9 -4 3 1]]
+            [#/slash_high/tex [55 64] [-9 -4 3 3]]
+            [#/slash_high/tex [55 50] [-9 -5 3 2]]
+            [#/slash_high/tex [55 36] [-9 -5 3 1]]
+            [#/slash_high/tex [55 22] [-9 -5 3 1]]
+            [#/slash_high/tex [55 8] [-9 -5 3 1]]
         ]
     }
 }]

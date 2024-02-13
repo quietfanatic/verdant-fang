@@ -40,7 +40,11 @@ struct FrameProgram : glow::Program {
 static FrameProgram* frame_program = null;
 
 void Frame::init () {
-    if (target && !bounds) {
+#ifdef NDEBUG
+     // Skip verifification in release builds
+    if (bounds) return;
+#endif
+    if (target) {
          // Check that all the layers are the same size
         IVec layers_size;
         for (auto& l : target->layers) {
@@ -60,42 +64,50 @@ void Frame::init () {
          // The image data we're working with has not been flipped yet, so
          // transform the coordinate system.
         auto flipv = [&](IVec p){ return IVec(p.x, layers_size.y - p.y - 1); };
-         // Find a non-transparent pixel
-        IVec start = offset;
-        for (;;) {
-            if (!contains(IRect(IVec(0, 0), layers_size), start)) {
-                raise(e_General,
-                    "Didn't find non-transparent pixel between offset and end "
-                    "of texture."
-                );
-            }
-            for (auto& l : layers) {
-                for (auto& corner : {
-                    IVec(-1, -1), IVec(0, -1), IVec(0, 0), IVec(-1, 0)
-                }) {
-                    IVec p = start + corner;
-                    if (contains(IRect(IVec(0, 0), layers_size), p) &&
-                        l[flipv(p)]
-                    ) {
-                        goto found_start;
+        IRect region;
+        if (bounds) region = bounds + offset;
+        else {
+             // Find a non-transparent pixel
+            IVec start = offset;
+            for (;;) {
+                if (!contains(IRect(IVec(0, 0), layers_size), start)) {
+                    raise(e_General,
+                        "Didn't find non-transparent pixel between offset and end "
+                        "of texture."
+                    );
+                }
+                for (auto& l : layers) {
+                    for (auto& corner : {
+                        IVec(-1, -1), IVec(0, -1), IVec(0, 0), IVec(-1, 0)
+                    }) {
+                        IVec p = start + corner;
+                        if (contains(IRect(IVec(0, 0), layers_size), p) &&
+                            l[flipv(p)]
+                        ) {
+                            goto found_start;
+                        }
                     }
                 }
+                start += target->search_direction;
             }
-            start += target->search_direction;
+            found_start:
+            region = {start, start};
         }
-        found_start:;
-         // Gradually expand bounds until we're surrounded by transparency
-        IRect region = {start, start};
+         // If bounds is not specified, gradually expand bounds until we're
+         // surrounded by transparency.  If bounds is specified, just verify
+         // that it's surrounded by transparency.
         check: for (auto& l : layers) {
              // Check left and right and corners
             auto yb = region.b > 0 ? region.b-1 : 0;
             auto ye = region.t < layers_size.y ? region.t+1 : layers_size.y;
             for (int32 y = yb; y != ye; y++) {
                 if (region.l > 0 && l[flipv(IVec(region.l-1, y))]) {
+                    if (bounds) goto bad_bounds;
                     region.l -= 1;
                     goto check;
                 }
                 if (region.r < layers_size.x && l[flipv(IVec(region.r, y))]) {
+                    if (bounds) goto bad_bounds;
                     region.r += 1;
                     goto check;
                 }
@@ -103,10 +115,12 @@ void Frame::init () {
              // Check bottom and top
             for (int32 x = region.l; x != region.r; x++) {
                 if (region.b > 0 && l[flipv(IVec(x, region.b-1))]) {
+                    if (bounds) goto bad_bounds;
                     region.b -= 1;
                     goto check;
                 }
                 if (region.t < layers_size.y && l[flipv(IVec(x, region.t))]) {
+                    if (bounds) goto bad_bounds;
                     region.t += 1;
                     goto check;
                 }
@@ -116,6 +130,9 @@ void Frame::init () {
          // Finally we're done, and we should have the smallest rectangle around
          // the start that's fully surrounded by transparent pixels.
         bounds = region - offset;
+        return;
+        bad_bounds:
+        raise(e_General, "Frame bounds are not surrounded by transparency.");
     }
 }
 
