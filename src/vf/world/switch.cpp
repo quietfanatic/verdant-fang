@@ -34,7 +34,7 @@ void Switch::Resident_on_collide (const Hitbox&, Resident& o, const Hitbox&) {
         else if (target) target->Activatable_activate();
         expect(o.types & Types::Walker);
         auto& w = static_cast<Walker&>(o);
-        w.recoil();
+        w.do_recoil = true;;
         w.hit_sound = data->activate_sound;
     }
 }

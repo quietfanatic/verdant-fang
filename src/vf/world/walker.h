@@ -186,7 +186,11 @@ struct Walker : Resident {
     uint8 weapon_layers = 0x1;
 
      // Everything below here is only used within one frame, so don't serialize
-     // it.
+     // any of it.
+
+     // Process recoil after collisions so we don't stack multiple recoils
+    bool do_recoil = false;
+     // Allow one hit sound to override another
     Sound* hit_sound;
     Resident* new_floor;
      // body, damage, weapon
@@ -200,8 +204,8 @@ struct Walker : Resident {
     uint8 walk_frame ();
     uint8 jump_frame ();
 
-     // Hit solid object
-    void recoil ();
+     // Land on solid object
+    void set_floor (Resident& o);
 
     void Resident_set_pos (Vec) override;
     void Resident_before_step ();

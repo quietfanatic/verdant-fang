@@ -6,9 +6,10 @@
 namespace vf {
 
 struct Scenery : Resident {
+    Frame* data;
+    float z = Z::BG;
+    Vec scale = {1, 1};
     Scenery ();
-    glow::Texture* tex;
-    Rect bounds;
     void Resident_draw () override;
 };
 

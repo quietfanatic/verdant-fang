@@ -8,7 +8,8 @@ namespace vf {
 
 Walker::Walker () {
     types |= Types::Walker;
-    hbs[0].layers_1 = Layers::Walker_Solid | Layers::Walker_Walker;
+    hbs[0].layers_1 = Layers::Walker_Solid | Layers::Walker_Walker
+                    | Layers::Walker_Semisolid;
     hbs[0].layers_2 = Layers::Walker_Walker;
     hbs[1].layers_2 = Layers::Weapon_Walker;
     hbs[2].layers_1 = Layers::Weapon_Solid | Layers::Weapon_Walker;
@@ -44,17 +45,6 @@ uint8 Walker::jump_frame () {
     else {
         float dist = distance(fall_start_y, pos.y);
         return 2 + geo::floor(dist / data->fall_cycle_dist) % 2;
-    }
-}
-
-void Walker::recoil () {
-    if (left) {
-        vel.x += 1;
-        if (vel.x < 0.5) vel.x = 0.5;
-    }
-    else {
-        vel.x -= 1;
-        if (vel.x > -0.5) vel.x = -0.5;
     }
 }
 
@@ -333,6 +323,27 @@ void Walker::Resident_before_step () {
     hit_sound = null;
 }
 
+void Walker::set_floor (Resident& o) {
+    if (!floor && !new_floor) {
+         // Cancel attack endlag with landing lag...but only if we
+         // wouldn't get any extra control frames.  TODO: clean this
+         // up.
+        if (state == WS::Neutral ||
+            (state == WS::Attack && (
+                (anim_phase == 4 &&
+                    anim_timer >= uint8(data->attack_sequence[anim_phase]
+                                      - data->land_sequence[0])
+                ) || anim_phase == 5
+            ))
+        ) set_state(WS::Land);
+        if (state != WS::Dead) {
+            data->land_sound->play();
+        }
+        walk_start_x = pos.x;
+    }
+    new_floor = &o;
+}
+
 void Walker::Resident_on_collide (
     const Hitbox& hb, Resident& o, const Hitbox& o_hb
 ) {
@@ -344,28 +355,10 @@ void Walker::Resident_on_collide (
          // Bias toward contacting from above.
         if (height(overlap) - 2 <= width(overlap) && overlap.b == here.b) {
             pos.y += height(overlap);
-             // TODO: Compare relative to Solid's velocity if it has it.
+             // Note, if solid has velocity, this will not take it into account
             if (vel.y < 0) {
                 vel.y = 0;
-                 // Land on block
-                if (!floor && !new_floor) {
-                     // Cancel attack endlag with landing lag...but only if we
-                     // wouldn't get any extra control frames.  TODO: clean this
-                     // up.
-                    if (state == WS::Neutral ||
-                        (state == WS::Attack && (
-                            (anim_phase == 4 &&
-                                anim_timer >= uint8(data->attack_sequence[anim_phase]
-                                                  - data->land_sequence[0])
-                            ) || anim_phase == 5
-                        ))
-                    ) set_state(WS::Land);
-                    if (state != WS::Dead) {
-                        data->land_sound->play();
-                    }
-                    walk_start_x = pos.x;
-                }
-                new_floor = &o;
+                set_floor(o);
             }
         }
          // The bias toward contacting the side so we don't hit our head upwards
@@ -389,6 +382,17 @@ void Walker::Resident_on_collide (
         }
         else never();
     }
+    else if (&hb == &hbs[0] && o_hb.layers_2 & Layers::Walker_Semisolid) {
+        Rect here = hb.box + pos;
+        Rect there = o_hb.box + o.pos;
+        Rect overlap = here & there;
+        expect(proper(overlap));
+        if (vel.y < 0 && overlap.b == here.b && height(overlap) <= 2 - vel.y) {
+            pos.y += height(overlap);
+            vel.y = 0;
+            set_floor(o);
+        }
+    }
     else if (&hb == &hbs[0] && o_hb.layers_2 & Layers::Walker_Walker) {
         auto& other = static_cast<Walker&>(o);
         if (state != WS::Dead && other.state != WS::Dead &&
@@ -401,7 +405,7 @@ void Walker::Resident_on_collide (
     }
     else if (&hb == &hbs[2] && o_hb.layers_2 & Layers::Weapon_Solid) {
         if (!hit_sound) hit_sound = data->hit_solid_sound;
-        recoil();
+        do_recoil = true;
     }
     else if (&hb == &hbs[2] && o_hb.layers_2 & Layers::Weapon_Walker) {
         Walker_on_hit(hb, static_cast<Walker&>(o), o_hb);
@@ -421,6 +425,17 @@ void Walker::Resident_after_step () {
     if (business != WB::Frozen) {
         floor = new_floor;
         new_floor = null;
+    }
+    if (do_recoil) {
+        if (left) {
+            vel.x += 1;
+            if (vel.x < 0.5) vel.x = 0.5;
+        }
+        else {
+            vel.x -= 1;
+            if (vel.x > -0.5) vel.x = -0.5;
+        }
+        do_recoil = false;
     }
     if (hit_sound) {
         hit_sound->play();

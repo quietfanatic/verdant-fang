@@ -45,22 +45,21 @@ void Frame::init () {
     if (bounds) return;
 #endif
     if (target) {
-         // Check that all the layers are the same size
-        IVec layers_size;
-        for (auto& l : target->layers) {
-            auto s = size(l.source.bounds);
-            if (layers_size && s != layers_size) {
-                raise(e_General,
-                    "LayeredTexture has inconsistent layer sizes"
-                );
-            }
-            layers_size = s;
-        }
          // Cache ImageRefs
         auto layers = UniqueArray<glow::ImageRef>(
             target->layers.size(),
             [&](usize i){ return target->layers[i].source; }
         );
+         // Check that all the layers are the same size
+        IVec layers_size;
+        for (auto& l : layers) {
+            if (layers_size && l.size != layers_size) {
+                raise(e_General,
+                    "LayeredTexture has inconsistent layer sizes"
+                );
+            }
+            layers_size = l.size;
+        }
          // The image data we're working with has not been flipped yet, so
          // transform the coordinate system.
         auto flipv = [&](IVec p){ return IVec(p.x, layers_size.y - p.y - 1); };

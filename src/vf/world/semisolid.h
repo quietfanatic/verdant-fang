@@ -1,15 +1,11 @@
-#pragma once
 #include "common.h"
 #include "../game/room.h"
 
 namespace vf {
 
-struct Block : Hitbox { };
-
-struct Blocks : Resident {
+struct Semisolid : Resident {
     Frame* data;
-    UniqueArray<Block> blocks;
-    Blocks ();
+    Hitbox hb;
     void init ();
     void Resident_draw () override;
 };

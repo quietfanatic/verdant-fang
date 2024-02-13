@@ -20,8 +20,8 @@
     start: [vf::Room { }]
     start_bg: [vf::Scenery {
         room: #start
-        tex: assets.ayu#cave_tex
-        bounds: [0 0 320 180]
+        data: assets.ayu#cave
+        pos: [0 0]
     }]
     start_blocks: [vf::Blocks {
         data: assets.ayu#block
@@ -30,9 +30,18 @@
             [-16 160] [16 160] [48 160] [80 160] [112 160] [144 160] [176 160] [208 160] [240 160] [272 160] [304 160]
             [-16 128] [16 128] [272 128] [304 128]
             [-16 96] [16 96] [272 96] [304 96]
-            [160 32]
             [-16 0] [16 0] [48 0] [80 0] [112 0] [144 0] [176 0] [208 0] [240 0] [272 0] [304 0]
         ]
+    }]
+    start_semi0: [vf::Semisolid {
+        data: assets.ayu#semisolid
+        room: #start
+        pos: [160 16]
+    }]
+    start_semi1: [vf::Semisolid {
+        data: assets.ayu#semisolid
+        room: #start
+        pos: [192 16]
     }]
     verdant: [vf::Verdant {
         data: verdant.ayu#data
@@ -44,7 +53,7 @@
     }]
     start_switch: [vf::Switch {
         room: #start
-        pos: [256 112]
+        pos: [260 144]
         data: assets.ayu#switch
         target: #start_to_den_door
     }]
@@ -63,8 +72,9 @@
     den: [vf::Room { }]
     den_bg: [vf::Scenery {
         room: #den
-        tex: assets.ayu#cave_tex
-        bounds: [320 0 0 180]
+        data: assets.ayu#cave
+        pos: [320 0]
+        scale: [-1 1]
     }]
     den_blocks: [vf::Blocks {
         data: assets.ayu#block
@@ -75,6 +85,18 @@
             [-16 96] [16 96] [272 96] [304 96]
             [-16 0] [16 0] [48 0] [80 0] [112 0] [144 0] [176 0] [208 0] [240 0] [272 0] [304 0]
         ]
+    }]
+    den_screen0: [vf::Scenery {
+        room: #den
+        data: assets.ayu#screen
+        pos: [160 32]
+        z: -300
+    }]
+    den_screen1: [vf::Scenery {
+        room: #den
+        data: assets.ayu#screen
+        pos: [192 32]
+        z: -300
     }]
 
     charger: [vf::Monster {
@@ -109,8 +131,8 @@
     atelier: [vf::Room { }]
     atelier_bg: [vf::Scenery {
         room: #atelier
-        tex: assets.ayu#cave_tex
-        bounds: [0 0 320 180]
+        data: assets.ayu#cave
+        pos: [0 0]
     }]
     atelier_blocks: [vf::Blocks {
         data: assets.ayu#block

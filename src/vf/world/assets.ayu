@@ -2,15 +2,29 @@
     layer0: [glow::FileImage { source:assets/layer0.png }]
     layer1: [glow::FileImage { source:assets/layer1.png }]
     layer2: [glow::FileImage { source:assets/layer2.png }]
+
     cave_img: [glow::FileImage { source:assets/cave.png }]
-    cave_tex: [glow::PixelTexture {
-        image: #cave_img
-    }]
+    cave_tex: [vf::LayeredTexture [{ image: #cave_img }]]
+    cave: [vf::Frame [#cave_tex [0 0] [0 0 360 180]]]
+
+    screen_tex: [vf::LayeredTexture [{
+        image: #layer0
+        bounds: [101 3 133 67]
+    }]]
+    screen: [vf::Frame [#screen_tex [0 0] [0 0 32 64]]]
+
     block_tex: [vf::LayeredTexture [{
         image: #layer0
         bounds: [3 3 35 35]
     }]]
     block: [vf::Frame [#block_tex [0 0] [0 0 32 32]]]
+
+    semisolid_tex: [vf::LayeredTexture [{
+        image: #layer0
+        bounds: [65 3 97 67]
+    }]]
+    semisolid: [vf::Frame [#semisolid_tex [0 0] [0 0 32 64]]]
+
     switch_tex: [vf::LayeredTexture [{
         image: #layer0
         bounds: [25 91 48 109]
@@ -21,6 +35,7 @@
         cooldown_frame: [#switch_tex [18 9]]
         activate_sound: #koltik
     }]
+
     door_tex: [vf::LayeredTexture [
         {
             image: #layer0
@@ -31,13 +46,15 @@
         }
     ]]
     door: [vf::DoorData {
-        hitbox: [-11 0 12 64]
-        frame: [#door_tex [11 0]]
+         -- Doors are an odd number of pixels wide.  Bias them left.
+        hitbox: [-12 0 11 64]
+        frame: [#door_tex [12 0]]
         open_sound: #gubuuw
         close_sound: #gruwwu
         slam_sound: #pkuwww
         crush_sound: #krshch
     }]
+
      -- For some reason, having these as mp3s breaks SDL2_mixer.  Perhaps it
      -- can't play mp3 files that are too short?
     step0: [vf::Sound { source:assets/step0.wav channel:0 volume:0.5 }]

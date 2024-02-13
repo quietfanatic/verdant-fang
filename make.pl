@@ -134,6 +134,7 @@ my @sources = (qw(
     vf/world/monster.cpp
     vf/world/verdant.cpp
     vf/world/scenery.cpp
+    vf/world/semisolid.cpp
     vf/world/switch.cpp
     vf/world/walker.cpp
     dirt/ayu/common.cpp

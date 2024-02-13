@@ -6,13 +6,12 @@
 
 namespace vf {
 
-Scenery::Scenery () { pos = {0, 0}; }
+Scenery::Scenery () {
+    types |= Types::Scenery;
+}
 
 void Scenery::Resident_draw () {
-    draw_texture(
-        *tex, bounds, {0, 0, length(width(bounds)), length(height(bounds))},
-        Z::BG
-    );
+    draw_frame(*data, 0, pos, z, scale);
 }
 
 } using namespace vf;
@@ -20,7 +19,8 @@ void Scenery::Resident_draw () {
 AYU_DESCRIBE(vf::Scenery,
     attrs(
         attr("vf::Resident", base<Resident>(), include),
-        attr("tex", &Scenery::tex),
-        attr("bounds", &Scenery::bounds)
+        attr("data", &Scenery::data),
+        attr("z", &Scenery::z, optional),
+        attr("scale", &Scenery::scale, optional)
     )
 )

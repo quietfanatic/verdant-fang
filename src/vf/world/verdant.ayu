@@ -69,19 +69,19 @@
     body_lift1: [vf::BodyFrame [#body [192 0] [-1 23] [4 23]]]
     head: [vf::LayeredTexture [{
         image: assets.ayu#layer0
-        bounds: [100 40 266 89]
+        bounds: [167 40 333 80]
     }]]
-    head_neutral: [vf::Frame [#head [23 39]]]
-    head_wave0:   [vf::Frame [#head [55 39]]]
-    head_wave1:   [vf::Frame [#head [87 39]]]
-    head_wave2:   [vf::Frame [#head [119 39]]]
-    head_fall0:   [vf::Frame [#head [23 13]]]
-    head_fall1:   [vf::Frame [#head [55 13]]]
-    head_down:    [vf::Frame [#head [23 39]]]
-    head_damage:  [vf::Frame [#head [87 13]]]
-    head_dead:    [vf::Frame [#head [121 17]]]
-    head_damagef: [vf::Frame [#head [132 17]]]
-    head_deadf:   [vf::Frame [#head [148 18]]]
+    head_neutral: [vf::Frame [#head [23 30]]]
+    head_wave0:   [vf::Frame [#head [55 30]]]
+    head_wave1:   [vf::Frame [#head [87 30]]]
+    head_wave2:   [vf::Frame [#head [119 30]]]
+    head_fall0:   [vf::Frame [#head [23 4]]]
+    head_fall1:   [vf::Frame [#head [55 4]]]
+    head_down:    [vf::Frame [#head [23 30]]]
+    head_damage:  [vf::Frame [#head [87 4]]]
+    head_dead:    [vf::Frame [#head [121 8]]]
+    head_damagef: [vf::Frame [#head [132 8]]]
+    head_deadf:   [vf::Frame [#head [148 9]]]
     fang: [vf::LayeredTexture {
         layers: [{
             image: assets.ayu#layer0

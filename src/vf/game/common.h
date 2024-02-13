@@ -7,6 +7,7 @@ namespace vf {
 using namespace geo;
 using namespace uni;
 namespace fs = std::filesystem;
+struct Frame;
 struct Game;
 struct Hitbox;
 struct Options;

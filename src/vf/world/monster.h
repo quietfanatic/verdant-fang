@@ -9,6 +9,8 @@ struct Monster : Walker {
     std::optional<bool> home_left;
      // Don't show blood on the axe until pulling it back
     uint8 delay_weapon_layers = 1;
+     // Shift z behind scenery
+    bool hiding = false;
     Monster ();
     void init (); 
      // Draw decals
