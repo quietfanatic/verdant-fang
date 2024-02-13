@@ -14,6 +14,11 @@ void Monster::init () {
     if (!home_left) home_left = left;
 }
 
+void Monster::Resident_before_step () {
+    Walker::Resident_before_step();
+    if (hide_phase == 1 || hide_phase == 2) z_override = Z::Hiding;
+}
+
 void Monster::Walker_on_hit (
     const Hitbox& hb, Walker& victim, const Hitbox& o_hb
 ) {
@@ -164,6 +169,39 @@ Controls MonsterMind::Mind_think (Resident& s) {
             [[fallthrough]];
         }
         case 3: {
+            if (defined(hiding_spot)) switch (self.hide_phase) {
+                case 0: {
+                    if (self.pos.x < hiding_spot + 24) {
+                        r[Control::Right] = 1;
+                        return r;
+                    }
+                    else self.hide_phase = 1;
+                    [[fallthrough]];
+                }
+                case 1: {
+                    if (!self.left && dist > 48) {
+                        self.hide_phase = 2;
+                    }
+                    else {
+                        if (self.pos.x > hiding_spot) {
+                            r[Control::Left] = 1;
+                        }
+                        else if (self.left) {
+                            r[Control::Right] = 1;
+                        }
+                        return r;
+                    }
+                    [[fallthrough]];
+                }
+                case 2: {
+                    if (self.pos.x > hiding_spot + 24) {
+                        self.hide_phase = 3;
+                    }
+                    [[fallthrough]];
+                }
+                case 3: break;
+                default: never();
+            }
             if (dist < 0) {
                 r[backward] = 1;
             }
@@ -188,8 +226,8 @@ Controls MonsterMind::Mind_think (Resident& s) {
                 if (&other == &s || !(other.types & Types::Monster)) continue;
                 auto& fren = static_cast<Monster&>(other);
                 if (fren.state == WS::Dead) continue; // :(
-                auto dist = fren.pos.x - self.pos.x;
-                if (self.left) dist = -dist;
+                if (fren.hide_phase == 1 || fren.hide_phase == 2) continue;
+                auto dist = self.left_flip(fren.pos.x - self.pos.x);
                 if (dist > 0 && dist < social_distance) {
                     if (jump_dist && fren.left != self.left) {
                         r[Control::Jump] = 1;
@@ -198,6 +236,7 @@ Controls MonsterMind::Mind_think (Resident& s) {
                         r[Control::Jump] = 0;
                         r[forward] = 0;
                     }
+                    break;
                 }
             }
             break;
@@ -214,7 +253,8 @@ AYU_DESCRIBE(vf::Monster,
         attr("home_pos", &Monster::home_pos, optional),
         attr("home_left", &Monster::home_left, collapse_optional),
         attr("alert_phase", &Monster::alert_phase, optional),
-        attr("alert_timer", &Monster::alert_timer, optional)
+        attr("alert_timer", &Monster::alert_timer, optional),
+        attr("hide_phase", &Monster::hide_phase, optional)
     ),
     init<&Monster::init>()
 )
@@ -228,6 +268,6 @@ AYU_DESCRIBE(vf::MonsterMind,
         attr("attack_range", &MonsterMind::attack_range),
         attr("jump_range", &MonsterMind::jump_range, optional),
         attr("social_distance", &MonsterMind::social_distance),
-        attr("ambush_distance", &MonsterMind::ambush_distance, optional)
+        attr("hiding_spot", &MonsterMind::hiding_spot, optional)
     )
 )

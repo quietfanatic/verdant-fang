@@ -151,6 +151,7 @@ WalkerBusiness Walker::Walker_business () {
 }
 
 void Walker::Resident_before_step () {
+    z_override = GNAN;
      // Advance animations and do state-dependent things
     expect(anim_timer < 255);
     business = Walker_business();
@@ -396,7 +397,8 @@ void Walker::Resident_on_collide (
     else if (&hb == &hbs[0] && o_hb.layers_2 & Layers::Walker_Walker) {
         auto& other = static_cast<Walker&>(o);
         if (state != WS::Dead && other.state != WS::Dead &&
-            !!floor == !!other.floor
+            !!floor == !!other.floor &&
+            !defined(z_override) && !defined(other.z_override)
         ) {
             float diff = pos.x < o.pos.x ? 1 : -1;
             pos.x -= diff;
@@ -505,6 +507,7 @@ Pose Walker::Walker_pose () {
 
 void Walker::Resident_draw () {
     Pose pose = Walker_pose();
+    if (defined(z_override)) pose.z = z_override;
     Vec scale {left ? -1 : 1, 1};
     if (pose.body) {
         Vec head_offset = pose.body->head * scale;

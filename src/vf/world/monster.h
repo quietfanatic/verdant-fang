@@ -1,5 +1,6 @@
 #pragma once
 #include "../game/controls.h"
+#include "scenery.h"
 #include "walker.h"
 
 namespace vf {
@@ -15,10 +16,15 @@ struct Monster : Walker {
      // 3: Combat
     uint8 alert_phase = 0;
     uint8 alert_timer = 0;
-     // Shift z behind scenery
-    bool hiding = false;
+     // 0: Run to right of hiding_spot
+     // 1: Run to hiding spot (z_override = Z::Hiding)
+     // 2: Jump out of hiding spot (z_override = Z::Hiding)
+     // 3: No longer hiding
+    uint8 hide_phase = 0;
     Monster ();
-    void init (); 
+    void init ();
+     // Set z_override
+    void Resident_before_step () override;
      // Draw decals
     void Walker_on_hit (const Hitbox&, Walker&, const Hitbox&) override;
      // Apply delayed weapon layers
@@ -32,8 +38,8 @@ struct MonsterMind : Mind {
     float attack_range;
     float jump_range = 0;
     float social_distance;
-    float ambush_distance = GINF;
     uint8 alert_sequence [2] = {10, 20};
+    float hiding_spot = GNAN;
     Controls Mind_think (Resident&) override;
 };
 

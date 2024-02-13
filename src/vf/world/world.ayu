@@ -17,6 +17,14 @@
         jump_range: 64
         social_distance: 64
     }]
+    hidey: [vf::MonsterMind {
+        target: #verdant
+        sight_range: 120
+        attack_range: 28
+        jump_range: 64
+        social_distance: 40
+        hiding_spot: 208 -- center of #den_screen1
+    }]
 
     start: [vf::Room { }]
     start_bg: [vf::Scenery {
@@ -101,17 +109,24 @@
     }]
 
     charger: [vf::Monster {
+        room: #den
         data: monster.ayu#data
         mind: #chargey
-        room: #den
-        pos: [256 32]
+        pos: [192 32]
         floor: #start_blocks
     }]
     jumper: [vf::Monster {
+        room: #den
         data: monster.ayu#data
         mind: #jumpy
+        pos: [256 32]
+        floor: #start_blocks
+    }]
+    hider: [vf::Monster {
         room: #den
-        pos: [288 32]
+        data: monster.ayu#data
+        mind: #hidey
+        pos: [224 32]
         floor: #start_blocks
     }]
 
