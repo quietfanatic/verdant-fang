@@ -33,6 +33,7 @@ struct Room {
  //         b.Resident_on_collide(b_hb, a, a_hb);
  //     }
 struct Hitbox {
+    Hitbox* next = null;
     uint32 layers_1 = 0;
     uint32 layers_2 = 0;
     Rect box;
@@ -45,7 +46,7 @@ struct Hitbox {
 struct Resident : Linked<Resident> {
     Room* room = null;
     Vec pos = GNAN;
-    Slice<Hitbox> hitboxes;
+    Hitbox* first_hitbox = null;
     uint32 types = 0;
     Room* get_room () const { return room; }
     void set_room (Room* r) {
@@ -55,6 +56,10 @@ struct Resident : Linked<Resident> {
     }
 
     void set_pos (Vec p) { Resident_set_pos(p); }
+
+    void clear_hitboxes () { first_hitbox = null; }
+    void add_hitbox (Hitbox& hb) { hb.next = first_hitbox; first_hitbox = &hb; }
+    void set_hitbox (Hitbox& hb) { hb.next = null; first_hitbox = &hb; }
 
      // The use case for Resident_set_pos is for Walker to reset its
      // walk_start_x.

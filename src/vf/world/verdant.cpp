@@ -41,7 +41,7 @@ struct VerdantMind : Mind {
 
 Verdant::Verdant () {
     types |= Types::Verdant;
-    hbs[0].layers_2 |= Layers::LoadingZone_Verdant;
+    body_hb.layers_2 |= Layers::LoadingZone_Verdant;
     body_layers = 0x7;
 }
 
@@ -302,6 +302,13 @@ void do_transform_sequence_ () {
     }
 }
 control::Command do_transform_sequence (do_transform_sequence_, "do_transform_sequence");
+
+void print_pos_ () {
+    if (auto v = find_verdant()) {
+        ayu::dump(v->pos);
+    }
+}
+control::Command print_pos (print_pos_, "print_pos");
 
 } using namespace vf;
 

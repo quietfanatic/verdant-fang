@@ -4,7 +4,10 @@
 
 namespace vf {
 
-struct Block : Hitbox { };
+struct Block {
+    Vec pos;
+    Hitbox hb;
+};
 
 struct Blocks : Resident {
     Frame* data;

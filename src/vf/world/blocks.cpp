@@ -12,27 +12,24 @@ Blocks::Blocks () {
 }
 
 void Blocks::init () {
+    clear_hitboxes();
     for (auto& b : blocks) {
-        b.layers_2 = Layers::Walker_Solid | Layers::Weapon_Solid;
-        b.box.r = b.box.l + 32;
-        b.box.t = b.box.b + 32;
+        b.hb.layers_2 = Layers::Walker_Solid | Layers::Weapon_Solid;
+        b.hb.box = b.pos + Rect(data->bounds);
+        add_hitbox(b.hb);
     }
-    hitboxes = blocks.reinterpret<Hitbox>();
 }
 
 void Blocks::Resident_draw () {
     for (auto& b : blocks) {
-        draw_frame(*data, 0, pos + lb(b.box), Z::Blocks);
+        draw_frame(*data, 0, pos + b.pos, Z::Blocks);
     }
 }
 
 } using namespace vf;
 
 AYU_DESCRIBE(vf::Block,
-    elems(
-        elem(ref_func<float>([](Block& v)->float&{ return v.box.l; })),
-        elem(ref_func<float>([](Block& v)->float&{ return v.box.b; }))
-    )
+    delegate(&Block::pos)
 )
 
 AYU_DESCRIBE(vf::Blocks,

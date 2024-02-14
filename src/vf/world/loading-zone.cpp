@@ -13,7 +13,7 @@ LoadingZone::LoadingZone () {
     types = Types::LoadingZone;
     pos = {0, 0};
     hb.layers_1 = Layers::LoadingZone_Verdant;
-    hitboxes = Slice<Hitbox>(&hb, 1);
+    set_hitbox(hb);
 }
 
 void LoadingZone::Resident_on_collide (const Hitbox&, Resident& o, const Hitbox&) {

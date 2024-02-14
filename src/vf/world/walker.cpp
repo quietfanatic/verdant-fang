@@ -8,13 +8,12 @@ namespace vf {
 
 Walker::Walker () {
     types |= Types::Walker;
-    hbs[0].layers_1 = Layers::Walker_Solid | Layers::Walker_Walker
+    body_hb.layers_1 = Layers::Walker_Solid | Layers::Walker_Walker
                     | Layers::Walker_Semisolid;
-    hbs[0].layers_2 = Layers::Walker_Walker;
-    hbs[1].layers_2 = Layers::Weapon_Walker;
-    hbs[2].layers_1 = Layers::Weapon_Solid | Layers::Weapon_Walker;
-    hbs[2].layers_2 = Layers::Switch_Weapon;
-    hitboxes = Slice<Hitbox>(&hbs[0], 3);
+    body_hb.layers_2 = Layers::Walker_Walker;
+    damage_hb.layers_2 = Layers::Weapon_Walker;
+    weapon_hb.layers_1 = Layers::Weapon_Solid | Layers::Weapon_Walker;
+    weapon_hb.layers_2 = Layers::Switch_Weapon;
 }
 
 void Walker::set_state (WalkerState st) {
@@ -303,28 +302,29 @@ void Walker::Resident_before_step () {
     }
 
      // Set up hitboxes
-    hbs[0].box = crouch ? data->crouch_body_box : data->body_box;
-    if (left) hbs[0].fliph();
+    clear_hitboxes();
+    body_hb.box = crouch ? data->crouch_body_box : data->body_box;
+    if (left) body_hb.fliph();
+    add_hitbox(body_hb);
     if (state != WS::Dead && business != WB::Frozen) {
-        hbs[1].box = crouch ? data->crouch_damage_box : data->damage_box;
-        if (left) hbs[1].fliph();
+        damage_hb.box = crouch ? data->crouch_damage_box : data->damage_box;
+        if (left) damage_hb.fliph();
+        add_hitbox(damage_hb);
     }
-    else hbs[1].box = GNAN;
     if (business == WB::DoAttack) {
         if (crouch) {
-            hbs[2].box = data->poses->crouch_attack[anim_phase].body->weapon
-                       + data->poses->crouch_attack[anim_phase].weapon->hitbox;
-            if (left) hbs[2].fliph();
+            weapon_hb.box = data->poses->crouch_attack[anim_phase].body->weapon
+                          + data->poses->crouch_attack[anim_phase].weapon->hitbox;
             data->crouch_attack_sound->play();
         }
         else {
-            hbs[2].box = data->poses->attack[anim_phase].body->weapon
-                       + data->poses->attack[anim_phase].weapon->hitbox;
-            if (left) hbs[2].fliph();
+            weapon_hb.box = data->poses->attack[anim_phase].body->weapon
+                          + data->poses->attack[anim_phase].weapon->hitbox;
             data->attack_sound->play();
         }
+        if (left) weapon_hb.fliph();
+        add_hitbox(weapon_hb);
     }
-    else hbs[2].box = GNAN;
 
      // Prepare for collision detection
     new_floor = null;
@@ -355,7 +355,7 @@ void Walker::set_floor (Resident& o) {
 void Walker::Resident_on_collide (
     const Hitbox& hb, Resident& o, const Hitbox& o_hb
 ) {
-    if (&hb == &hbs[0] && o_hb.layers_2 & Layers::Walker_Solid) {
+    if (&hb == &body_hb && o_hb.layers_2 & Layers::Walker_Solid) {
         Rect here = hb.box + pos;
         Rect there = o_hb.box + o.pos;
         Rect overlap = here & there;
@@ -390,7 +390,7 @@ void Walker::Resident_on_collide (
         }
         else never();
     }
-    else if (&hb == &hbs[0] && o_hb.layers_2 & Layers::Walker_Semisolid) {
+    else if (&hb == &body_hb && o_hb.layers_2 & Layers::Walker_Semisolid) {
         Rect here = hb.box + pos;
         Rect there = o_hb.box + o.pos;
         Rect overlap = here & there;
@@ -401,7 +401,7 @@ void Walker::Resident_on_collide (
             set_floor(o);
         }
     }
-    else if (&hb == &hbs[0] && o_hb.layers_2 & Layers::Walker_Walker) {
+    else if (&hb == &body_hb && o_hb.layers_2 & Layers::Walker_Walker) {
         auto& other = static_cast<Walker&>(o);
         if (state != WS::Dead && other.state != WS::Dead &&
             !!floor == !!other.floor &&
@@ -412,11 +412,11 @@ void Walker::Resident_on_collide (
             o.pos.x += diff;
         }
     }
-    else if (&hb == &hbs[2] && o_hb.layers_2 & Layers::Weapon_Solid) {
+    else if (&hb == &weapon_hb && o_hb.layers_2 & Layers::Weapon_Solid) {
         if (!hit_sound) hit_sound = data->hit_solid_sound;
         do_recoil = true;
     }
-    else if (&hb == &hbs[2] && o_hb.layers_2 & Layers::Weapon_Walker) {
+    else if (&hb == &weapon_hb && o_hb.layers_2 & Layers::Weapon_Walker) {
         auto& other = static_cast<Walker&>(o);
         if (!other.invincible) {
             Walker_on_hit(hb, other, o_hb);

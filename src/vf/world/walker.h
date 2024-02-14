@@ -196,8 +196,9 @@ struct Walker : Resident {
      // Allow one hit sound to override another
     Sound* hit_sound;
     Resident* new_floor;
-     // body, damage, weapon
-    Hitbox hbs [3];
+    Hitbox body_hb;
+    Hitbox damage_hb;
+    Hitbox weapon_hb;
 
     WalkerBusiness business;
 

@@ -20,7 +20,7 @@ void Door::init () {
     types |= Types::Door;
     hb.layers_2 = Layers::Walker_Solid | Layers::Weapon_Solid;
     hb.box = data->hitbox;
-    hitboxes = Slice<Hitbox>(&hb, 1);
+    set_hitbox(hb);
     Vec default_offset = Vec(0, height(data->hitbox));
     if (open) {
         if (!defined(open_pos)) open_pos = pos;

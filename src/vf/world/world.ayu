@@ -62,9 +62,11 @@
         data: verdant.ayu#data
         mind: #verdant_mind
         room: #start
-        pos: [-32 32]
+        --pos: [-32 32]
+        --room: #hive
+        pos: [16 64]
         floor: #start_blocks
-        state: 5 --VS::PreTransform
+        --state: 5 --VS::PreTransform
     }]
     start_switch: [vf::Switch {
         room: #start
@@ -158,8 +160,39 @@
         target_pos: [304 32]
         direction: [-1 0]
     }]
-    den_to_atelier: [vf::LoadingZone {
+    den_to_hive: [vf::LoadingZone {
         room: #den
+        bounds: [328 0 328 180]
+        target_room: #hive
+        target_pos: [16 64]
+    }]
+
+    hive: [vf::Room { }]
+    hive_bg: [vf::Scenery {
+        room: #hive
+        data: assets.ayu#cave
+        pos: [0 0]
+    }]
+    hive_blocks: [vf::Blocks {
+        data: assets.ayu#block
+        room: #hive
+         -- The floor here is lower than normal
+        blocks: [
+            [-16 160] [16 160] [48 160] [80 160] [112 160] [144 160] [176 160] [208 160] [240 160] [272 160] [304 160]
+            [-16 128] [16 128] [272 128] [304 128]
+            [-16 32] [16 32] [272 32] [304 32]
+            [-16 0] [16 0] [48 -16] [80 -16] [112 -16] [144 -16] [176 -16] [208 -16] [240 -16] [272 0] [304 0]
+        ]
+    }]
+
+    hive_to_den: [vf::LoadingZone {
+        room: #hive
+        bounds: [-8 0 -8 180]
+        target_room: #den
+        target_pos: [304 80]
+    }]
+    hive_to_atelier: [vf::LoadingZone {
+        room: #hive
         bounds: [328 0 328 180]
         target_room: #atelier
         target_pos: [16 32]
@@ -169,7 +202,8 @@
     atelier_bg: [vf::Scenery {
         room: #atelier
         data: assets.ayu#cave
-        pos: [0 0]
+        pos: [320 0]
+        scale: [-1 1]
     }]
     atelier_blocks: [vf::Blocks {
         data: assets.ayu#block
@@ -184,11 +218,11 @@
         ]
     }]
 
-    atelier_to_den: [vf::LoadingZone {
+    atelier_to_hive: [vf::LoadingZone {
         room: #atelier
         bounds: [-8 0 -8 180]
-        target_room: #den
-        target_pos: [304 80]
+        target_room: #hive
+        target_pos: [304 64]
         direction: [-1 0]
     }]
 }]

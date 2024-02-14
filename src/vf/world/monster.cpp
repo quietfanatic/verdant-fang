@@ -19,7 +19,7 @@ void Monster::Walker_on_hit (
 ) {
     victim.left = !left;
     Vec weapon_offset = data->poses->hit[0].body->weapon;
-    float victim_top = victim.pos.y + victim.hbs[1].box.t;
+    float victim_top = victim.pos.y + victim.damage_hb.box.t;
     float weapon_bottom = pos.y + weapon_offset.y +
         data->poses->hit[0].weapon->hitbox.b;
     bool high = victim_top - weapon_bottom < 17;

@@ -17,7 +17,7 @@ struct SwitchData {
 void Switch::init () {
     hb.layers_1 = Layers::Switch_Weapon;
     hb.box = data->hitbox;
-    hitboxes = Slice<Hitbox>(&hb, 1);
+    set_hitbox(hb);
 }
 
 void Switch::Resident_before_step () {
