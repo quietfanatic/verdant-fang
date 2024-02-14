@@ -304,10 +304,10 @@ void Walker::Resident_before_step () {
     }
 
      // Set up hitboxes
-    hbs[0].box = data->body_box;
+    hbs[0].box = crouch ? data->crouch_body_box : data->body_box;
     if (left) hbs[0].fliph();
     if (state != WS::Dead && business != WB::Frozen) {
-        hbs[1].box = data->damage_box;
+        hbs[1].box = crouch ? data->crouch_damage_box : data->damage_box;
         if (left) hbs[1].fliph();
     }
     else hbs[1].box = GNAN;
@@ -418,14 +418,18 @@ void Walker::Resident_on_collide (
         do_recoil = true;
     }
     else if (&hb == &hbs[2] && o_hb.layers_2 & Layers::Weapon_Walker) {
-        Walker_on_hit(hb, static_cast<Walker&>(o), o_hb);
+        auto& other = static_cast<Walker&>(o);
+        if (!defined(z_override) && !defined(other.z_override)) {
+            Walker_on_hit(hb, other, o_hb);
+        }
     }
 }
 
 void Walker::Walker_on_hit (const Hitbox&, Walker& victim, const Hitbox&) {
-     // Prevent undefined behavior (trying to draw decals when state is WS::Hit)
-     // if two walkers hit each other at the same time.
-    if (state != WS::Dead) set_state(WS::Hit);
+    if (state == WS::Dead) {
+        mutual_kill = victim.mutual_kill = true;
+    }
+    else set_state(WS::Hit);
     victim.set_state(WS::Dead);
     victim.data->attack_sound->stop();
     data->hit_soft_sound->play();
@@ -506,7 +510,11 @@ Pose Walker::Walker_pose () {
         }
         case WS::Dead: {
             switch (anim_phase) {
-                case 0: case 1: case 2: r = poses.dead[0]; break;
+                case 0: case 1: case 2: {
+                    r = mutual_kill ? poses.hit[0] : r = poses.dead[0];
+                    r.damage_overlap = true;
+                    break;
+                }
                 case 3: r = poses.dead[1]; break;
                 default: r = poses.dead[2]; break;
             }
@@ -563,10 +571,12 @@ void Walker::Resident_draw () {
 void Walker::Walker_draw_weapon (const Pose& pose) {
     Vec scale = {left ? -1 : 1, 1};
     if (pose.weapon) {
+        float z = pose.z;
+        if (pose.damage_overlap && !mutual_kill) z = Z::Overlap;
         draw_layers(
             *pose.weapon, weapon_layers,
             pos + pose.body->weapon * scale,
-            (pose.damage_overlap ? Z::Overlap : pose.z) + Z::WeaponOffset,
+            z + Z::WeaponOffset,
             scale
         );
     }
@@ -635,7 +645,9 @@ AYU_DESCRIBE(vf::WalkerPoses,
 AYU_DESCRIBE(vf::WalkerData,
     attrs(
         attr("body_box", &WalkerData::body_box),
+        attr("crouch_body_box", &WalkerData::crouch_body_box),
         attr("damage_box", &WalkerData::damage_box),
+        attr("crouch_damage_box", &WalkerData::crouch_damage_box),
         attr("ground_acc", &WalkerData::ground_acc),
         attr("ground_max", &WalkerData::ground_max),
         attr("ground_dec", &WalkerData::ground_dec),

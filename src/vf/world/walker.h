@@ -96,7 +96,9 @@ struct WalkerPoses {
 
 struct WalkerData {
     Rect body_box;
+    Rect crouch_body_box;
     Rect damage_box;
+    Rect crouch_damage_box;
     float ground_acc;
     float ground_max;
     float ground_dec;
@@ -182,6 +184,9 @@ struct Walker : Resident {
     uint8 body_layers = 0x1;
     uint8 head_layers = 0x1;
     uint8 weapon_layers = 0x1;
+     // For the rare case where two walkers kill eachother on the same frame,
+     // show them in hit[0] instead of dead[0]
+    bool mutual_kill = false;
 
      // Everything below here is only used within one frame, so don't serialize
      // any of it.

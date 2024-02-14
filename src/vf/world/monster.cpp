@@ -23,15 +23,19 @@ void Monster::Walker_on_hit (
     const Hitbox& hb, Walker& victim, const Hitbox& o_hb
 ) {
     victim.left = !left;
-    bool high = pos.y - victim.pos.y > 8;
-    uint8 decal_i = high ? 3 : 1;
     Vec weapon_offset = data->poses->hit[0].body->weapon;
+    float victim_top = victim.pos.y + victim.hbs[1].box.t;
+    float weapon_bottom = pos.y + weapon_offset.y +
+        data->poses->hit[0].weapon->hitbox.b;
+    bool high = victim_top - weapon_bottom < 17;
+    uint8 decal_i = high ? 3 : 1;
     auto& victim_body = *victim.data->poses->dead[0].body;
+    Vec decal_pos = victim.pos + victim.left_flip(victim_body.decals[decal_i]);
     float weapon_tip = pos.x + left_flip(
         weapon_offset.x + data->poses->hit[0].weapon->hitbox.r
     );
-    Vec decal_pos = victim.pos + victim.left_flip(victim_body.decals[decal_i]);
     float depth = left_flip(weapon_tip - decal_pos.x);
+
     victim.decal_type = high ? DecalType::SlashHigh : DecalType::SlashLow;
     victim.decal_index = decal_i;
     if (high || depth > 4) delay_weapon_layers = 0x5;
@@ -200,7 +204,7 @@ Controls MonsterMind::Mind_think (Resident& s) {
                     [[fallthrough]];
                 }
                 case 2: {
-                    if (self.pos.x > hiding_spot + 24) {
+                    if (self.pos.x > hiding_spot + 20) {
                         self.hide_phase = 3;
                     }
                     [[fallthrough]];
@@ -245,6 +249,12 @@ Controls MonsterMind::Mind_think (Resident& s) {
                     break;
                 }
             }
+             // If we're behind scenery, keep going right no matter what
+            if (self.hide_phase == 2) {
+                r[Control::Right] = 1;
+                r[Control::Left] = 0;
+            }
+
             break;
         }
     }

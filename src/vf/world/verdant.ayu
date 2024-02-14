@@ -33,7 +33,11 @@
     body_fall1:      [vf::BodyFrame [#body [83 78] [1 23] [2 16]]]
     body_land:       [vf::BodyFrame [#body [37 79] [1 20] [2 14]]]
     body_preattack:  [vf::BodyFrame [#body [154 50] [0 23] [-2 19]]]
-    body_attack:     [vf::BodyFrame [#body [172 50] [4 22] [16 19]]]
+    body_attack:     [vf::BodyFrame [
+        #body [172 50] [4 22] [16 19]
+        [[3 12] [4 17] [4 21] [6 25]]
+        [0 0 0 0]
+    ]]
     body_postattack: [vf::BodyFrame [#body [203 50] [0 23] [-2 19]]]
     body_damage: [vf::BodyFrame [
         #body [106 76] [0 23] [0 17]
@@ -199,7 +203,9 @@
     }]
     data: [vf::VerdantData {
         body_box: [-6 0 6 30]
+        crouch_body_box: [-6 0 6 20]
         damage_box: [-3 12 3 30]
+        crouch_damage_box: [-3 4 3 20]
         ground_acc: 0.3
         ground_max: 2.5
         ground_dec: 0.3

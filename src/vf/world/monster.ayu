@@ -17,7 +17,11 @@
     body_walk5:      [vf::BodyFrame [#body [188 36] [3 24] [0 20]]]
     body_land:       [vf::BodyFrame [#body [49 71] [2 23] [-1 19]]]
     body_preattack:  [vf::BodyFrame [#body [72 0] [1 25] [-2 25]]]
-    body_attack:     [vf::BodyFrame [#body [13 0] [7 22] [14 14]]]
+    body_attack:     [vf::BodyFrame [
+        #body [13 0] [7 22] [14 14]
+        [[4 13] [6 18] [7 22] [7 27]]
+        [0 0 0 0]
+    ]]
     body_postattack: [vf::BodyFrame [#body [112 0] [7 22] [14 14]]]
     body_damage:     [vf::BodyFrame [
         #body [150 0] [1 25] [-7 14]
@@ -111,7 +115,9 @@
     }]
     data: [vf::WalkerData {
         body_box: [-7 0 7 30]
+        crouch_body_box: [-7 0 7 30]
         damage_box: [-4 12 4 32]
+        crouch_damage_box: [-4 12 4 32]
         ground_acc: 0.18
         ground_max: 2.0
         ground_dec: 0.3
