@@ -36,8 +36,8 @@
         pos: [0 0]
     }]
     start_blocks: [vf::Blocks {
-        data: assets.ayu#block
         room: #start
+        data: assets.ayu#block
          -- Close off left side offscreen
         blocks: [
             [-16 160] [16 160] [48 160] [80 160] [112 160] [144 160] [176 160] [208 160] [240 160] [272 160] [304 160]
@@ -49,16 +49,16 @@
         ]
     }]
     start_semis: [vf::Semisolids {
-        data: assets.ayu#semisolid
         room: #start
+        data: assets.ayu#semisolid
         blocks: [[160 16] [192 16]]
     }]
     verdant: [vf::Verdant {
         data: verdant.ayu#data
         mind: #verdant_mind
-        room: #start
+        --room: #start
         --pos: [-32 32]
-        --room: #hive
+        room: #hive
         pos: [16 64]
         floor: #start_blocks
         --state: 5 --VS::PreTransform
@@ -89,8 +89,8 @@
         scale: [-1 1]
     }]
     den_blocks: [vf::Blocks {
-        data: assets.ayu#block
         room: #den
+        data: assets.ayu#block
         blocks: [
             [-16 160] [16 160] [48 160] [80 160] [112 160] [144 160] [176 160] [208 160] [240 160] [272 176] [304 176]
             [-16 128] [16 128] [272 144] [304 144]
@@ -169,14 +169,22 @@
         pos: [0 0]
     }]
     hive_blocks: [vf::Blocks {
-        data: assets.ayu#block
         room: #hive
+        data: assets.ayu#block
          -- The floor here is lower than normal
         blocks: [
             [-16 160] [16 160] [48 160] [80 160] [112 160] [144 160] [176 160] [208 160] [240 160] [272 160] [304 160]
             [-16 128] [16 128] [272 128] [304 128]
             [-16 32] [16 32] [272 32] [304 32]
             [-16 0] [16 0] [48 -16] [80 -16] [112 -16] [144 -16] [176 -16] [208 -16] [240 -16] [272 0] [304 0]
+        ]
+    }]
+    hive_semis: [vf::Semisolids {
+        room: #hive
+        data: assets.ayu#semisolid
+        blocks: [
+            [122 16] [144 16]
+            [176 -16] [208 -16]
         ]
     }]
 
