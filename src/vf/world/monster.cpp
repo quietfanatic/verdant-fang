@@ -14,11 +14,6 @@ void Monster::init () {
     if (!home_left) home_left = left;
 }
 
-void Monster::Resident_before_step () {
-    Walker::Resident_before_step();
-    if (hide_phase == 1 || hide_phase == 2) z_override = Z::Hiding;
-}
-
 void Monster::Walker_on_hit (
     const Hitbox& hb, Walker& victim, const Hitbox& o_hb
 ) {
@@ -49,6 +44,15 @@ void Monster::Walker_on_hit (
     Walker::Walker_on_hit(hb, victim, o_hb);
 }
 
+Pose Monster::Walker_pose () {
+    if (hide_phase >= 1 && hide_phase <= 3) {
+        Pose r = Walker::Walker_pose();
+        r.z = Z::Hiding;
+        return r;
+    }
+    else return Walker::Walker_pose();
+}
+
 void Monster::Walker_draw_weapon (const Pose& pose) {
     if (state == WS::Attack && anim_phase == 5) {
         weapon_layers = delay_weapon_layers;
@@ -74,7 +78,7 @@ void Monster::Resident_on_exit () {
         alert_phase = 0;
         alert_timer = 0;
         hide_phase = 0;
-        z_override = GNAN;
+        invincible = false;
     }
     Walker::Resident_on_exit();
 }
@@ -114,6 +118,7 @@ Controls MonsterMind::Mind_think (Resident& s) {
     if (!(s.types & Types::Monster)) return r;
     auto& self = static_cast<Monster&>(s);
     if (!target || target->state == WS::Dead) return r;
+    self.invincible = false;
 
      // Calculcate some distances
     float dist = target->pos.x - self.pos.x;
@@ -189,27 +194,34 @@ Controls MonsterMind::Mind_think (Resident& s) {
                     [[fallthrough]];
                 }
                 case 1: {
-                    if (!self.left && dist > 48) {
-                        self.hide_phase = 2;
+                    if (self.pos.x > hiding_spot) {
+                        r[Control::Left] = 1;
+                        return r;
+                    }
+                    else self.hide_phase = 2;
+                    [[fallthrough]];
+                }
+                case 2: {
+                    if (self.left) {
+                        r[Control::Right] = 1;
+                        return r;
+                    }
+                    else if (dist > 48) {
+                        self.hide_phase = 3;
                     }
                     else {
-                        if (self.pos.x > hiding_spot) {
-                            r[Control::Left] = 1;
-                        }
-                        else if (self.left) {
-                            r[Control::Right] = 1;
-                        }
+                        self.invincible = true;
                         return r;
                     }
                     [[fallthrough]];
                 }
-                case 2: {
+                case 3: {
                     if (self.pos.x > hiding_spot + 20) {
-                        self.hide_phase = 3;
+                        self.hide_phase = 4;
                     }
                     [[fallthrough]];
                 }
-                case 3: break;
+                case 4: break;
                 default: never();
             }
             if (dist < 0) {
@@ -254,7 +266,6 @@ Controls MonsterMind::Mind_think (Resident& s) {
                 r[Control::Right] = 1;
                 r[Control::Left] = 0;
             }
-
             break;
         }
     }

@@ -190,7 +190,7 @@ struct Walker : Resident {
 
      // Everything below here is only used within one frame, so don't serialize
      // any of it.
-    float z_override = GNAN;
+    bool invincible = false;
      // Process recoil after collisions so we don't stack multiple recoils
     bool do_recoil = false;
      // Allow one hit sound to override another

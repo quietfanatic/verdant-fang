@@ -18,15 +18,16 @@ struct Monster : Walker {
     uint8 alert_timer = 0;
      // 0: Run to right of hiding_spot
      // 1: Run to hiding spot (z_override = Z::Hiding)
-     // 2: Jump out of hiding spot (z_override = Z::Hiding)
-     // 3: No longer hiding
+     // 2: Hide (z_override = Z::Hiding, invincible)
+     // 3: Jump out of hiding spot (z_override = Z::Hiding)
+     // 4: No longer hiding
     uint8 hide_phase = 0;
     Monster ();
     void init ();
-     // Set z_override
-    void Resident_before_step () override;
      // Draw decals
     void Walker_on_hit (const Hitbox&, Walker&, const Hitbox&) override;
+     // Override z when hiding
+    Pose Walker_pose () override;
      // Apply delayed weapon layers
     void Walker_draw_weapon (const Pose&) override;
     void Resident_on_exit () override;
