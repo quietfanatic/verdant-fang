@@ -70,7 +70,7 @@ void Monster::Resident_on_exit () {
          // Otherwise return to start
         set_state(WS::Neutral);
         pos = home_pos;
-        vel = {};
+        vel = {0, 0};
         walk_start_x = pos.x;
         left = *home_left;
         weapon_layers = 1;

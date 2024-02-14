@@ -183,9 +183,14 @@
         room: #hive
         data: assets.ayu#semisolid
         blocks: [
-            [122 16] [144 16]
-            [176 -16] [208 -16]
+            [112 -16] [144 -16]
+            [176 16] [208 16]
         ]
+    }]
+    bug: [vf::Scenery {
+        room: #hive
+        data: assets.ayu#bug
+        pos: [220 128]
     }]
 
     hive_to_den: [vf::LoadingZone {

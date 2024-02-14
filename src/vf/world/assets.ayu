@@ -55,6 +55,13 @@
         crush_sound: #krshch
     }]
 
+     -- TEMP
+    bug_tex: [vf::LayeredTexture [{
+        image: #layer0
+        bounds: [155 329 183 357]
+    }]]
+    bug: [vf::Frame [#bug_tex [14 14]]]
+
      -- For some reason, having these as mp3s breaks SDL2_mixer.  Perhaps it
      -- can't play mp3 files that are too short?
     step0: [vf::Sound { source:assets/step0.wav channel:0 volume:0.5 }]
