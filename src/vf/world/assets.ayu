@@ -11,7 +11,7 @@
         image: #layer0
         bounds: [101 3 133 67]
     }]]
-    screen: [vf::Frame [#screen_tex [0 0] [0 0 32 64]]]
+    screen: [vf::Frame [#screen_tex [16 0] [-16 0 16 64]]]
 
     block_tex: [vf::LayeredTexture [{
         image: #layer0
@@ -23,7 +23,7 @@
         image: #layer0
         bounds: [65 3 97 67]
     }]]
-    semisolid: [vf::Frame [#semisolid_tex [0 0] [0 0 32 64]]]
+    semisolid: [vf::Frame [#semisolid_tex [16 0] [-16 0 16 64]]]
 
     switch_tex: [vf::LayeredTexture [{
         image: #layer0

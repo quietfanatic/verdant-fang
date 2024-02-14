@@ -104,13 +104,13 @@
     den_screen0: [vf::Scenery {
         room: #den
         data: assets.ayu#screen
-        pos: [136 32]
+        pos: [152 32]
         z: *z_semisolid
     }]
     den_screen1: [vf::Scenery {
         room: #den
         data: assets.ayu#screen
-        pos: [168 32]
+        pos: [184 32]
         z: *z_semisolid
     }]
 
