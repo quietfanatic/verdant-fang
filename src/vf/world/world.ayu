@@ -9,20 +9,20 @@
     verdant_mind: [vf::VerdantMind { next:#player }]
     chargey: [vf::MonsterMind {
         target: #verdant
-        sight_range: 120
+        sight_range: 128
         attack_range: 28
         social_distance: 40
     }]
     jumpy: [vf::MonsterMind {
         target: #verdant
-        sight_range: 120
+        sight_range: 128
         attack_range: 28
         jump_range: 64
         social_distance: 64
     }]
     hidey: [vf::MonsterMind {
         target: #verdant
-        sight_range: 120
+        sight_range: 128
         attack_range: 28
         jump_range: 64
         social_distance: 40
@@ -64,7 +64,7 @@
         room: #start
         pos: [-32 32]
         floor: #start_blocks
-        state: 5 --transform
+        state: 5 --VS::PreTransform
     }]
     start_switch: [vf::Switch {
         room: #start
