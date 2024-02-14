@@ -60,11 +60,17 @@ void Monster::Resident_on_exit () {
     }
     else {
          // Otherwise return to start
+        set_state(WS::Neutral);
         pos = home_pos;
         vel = {};
         walk_start_x = pos.x;
         left = *home_left;
-        set_state(WS::Neutral);
+        weapon_layers = 1;
+        delay_weapon_layers = 1;
+        alert_phase = 0;
+        alert_timer = 0;
+        hide_phase = 0;
+        z_override = GNAN;
     }
     Walker::Resident_on_exit();
 }

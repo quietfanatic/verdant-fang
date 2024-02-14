@@ -26,7 +26,7 @@
         attack_range: 28
         jump_range: 64
         social_distance: 40
-        hiding_spot: 176 -- center of #den_screen1
+        hiding_spot: 184 -- center of #den_screen1
     }]
 
     start: [vf::Room { }]
@@ -104,13 +104,13 @@
     den_screen0: [vf::Scenery {
         room: #den
         data: assets.ayu#screen
-        pos: [128 32]
+        pos: [136 32]
         z: *z_semisolid
     }]
     den_screen1: [vf::Scenery {
         room: #den
         data: assets.ayu#screen
-        pos: [160 32]
+        pos: [168 32]
         z: *z_semisolid
     }]
 
@@ -118,21 +118,21 @@
         room: #den
         data: monster.ayu#data
         mind: #chargey
-        pos: [160 32]
+        pos: [168 32]
         floor: #start_blocks
     }]
     jumper: [vf::Monster {
         room: #den
         data: monster.ayu#data
         mind: #jumpy
-        pos: [224 32]
+        pos: [232 32]
         floor: #start_blocks
     }]
     hider: [vf::Monster {
         room: #den
         data: monster.ayu#data
         mind: #hidey
-        pos: [192 32]
+        pos: [200 32]
         floor: #start_blocks
     }]
 
