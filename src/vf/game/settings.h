@@ -18,6 +18,7 @@ struct CommandBinding {
 };
 
 struct Settings {
+    uint32 audio_buffer = 512;
     bool true_fullscreen = false;
     UniqueArray<ControlBinding> controls;
      // Only returns 0 and 1, do counting in Mind

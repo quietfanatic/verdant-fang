@@ -105,9 +105,25 @@
   the boss, to establish that the character is a magical-girl-like person and
   the spear is a snake.  Also, showing nudity in the transformation scene early
   on brings the player closer to the character and sets a precedent that nudity
-  will exist, so it isn't confusing when the witch has no pants.
+  will exist, so it isn't as confusing when the witch has no pants.
 - Also I haven't finalized plans for the witch yet.
 - Did some other small art and drawing adjusments.
 - Fixed the decals having bits cut off from the frame auto bounds system.
 - Planned work for tomorrow: Semisolid platforms, crouch stab, hiding enemies,
   think about witch some more.
+#####2024-02-13 T
+- Not as many big additions as I'd hoped, but knocked off a bunch of smaller
+  todos.
+- Made semisolid platforms
+- Made an ambushing monster
+- Spent a lot of time working on monster AI.  It shows that I haven't done any
+  real NPC AI before.  I should reach for phase counters more quickly.  Maybe if
+  I had more time I'd replace the phase counters with some sort of clever
+  coroutine system, but I haven't really learned C++ coroutines yet.  Update:
+  This would not be appropriate, as C++ coroutines use dynamic allocation under
+  the hood.
+- Implemented checkpoints.  No transition yet.
+- Added crouch attacking.  This isn't really useful for combat but it feels nice
+  to have.
+- Planned work for tomorrow: Not entirely sure.  Could do restart transitions,
+  troll doors, flying bugs, or the boss.

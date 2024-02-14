@@ -1,13 +1,19 @@
 [vf::Settings {
+     -- Length of audio buffer (at 44100hz).  If the audio is choppy, try
+     -- increasing this to 1024.  SDL2_Mixer has a bug where it can't play MP3s
+     -- shorter than the buffer length, so you can't make this higher than 1024
+     -- right now.
+    audio_buffer: 512
      -- Make it so fullscreen mode sets the screen resolution.  If you have
      -- framerate problems in fullscreen mode due to a sucky graphics driver,
      -- then this option may help.  It may also screw with the sizes of all your
      -- other windows.
     true_fullscreen: false
+     -- Game controls.  These ignore modifiers.
     controls: [
+         -- Arrow controls
         [[z] confirm]
         [[x] back]
-        [[p] pause]
         [[left] left]
         [[right] right]
         [[up] up]
@@ -15,7 +21,20 @@
         [[z] jump]
         [[x] attack]
         [[c] special]
+         -- WASD controls
+        [[/] confirm]
+        [["."] back]
+        [[a] left]
+        [[d] right]
+        [[w] up]
+        [[s] down]
+        [[/] jump]
+        [["."] attack]
+        [[","] special]
+         -- Neither
+        [[p] pause]
     ]
+     -- Hotkeys.  These take modifiers into account.
     commands: [
         [[f4] [fullscreen]]
         [[f11] [fullscreen]]

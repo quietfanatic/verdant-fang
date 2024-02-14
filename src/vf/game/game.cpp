@@ -69,12 +69,14 @@ Game::Game () :
         ayu::load(settings_res);
     }
     else {
-        auto initial = ayu::SharedResource(
-            iri::constant("res:/vf/game/settings-initial.ayu")
+         // Copy file instead of renaming resource to keep the comments.
+        fs::copy_file(
+            ayu::resource_filename(
+                iri::constant("res:/vf/game/settings-initial.ayu")
+            ),
+            ayu::resource_filename(settings_res->name())
         );
-        ayu::load(initial);
-        ayu::rename(initial, settings_res);
-        ayu::save(settings_res);
+        ayu::load(settings_res);
     }
 
     if (ayu::source_exists(options_res->name())) {

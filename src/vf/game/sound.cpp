@@ -3,6 +3,8 @@
 #include <SDL2/SDL_mixer.h>
 #include "../../dirt/ayu/resources/resource.h"
 #include "../../dirt/glow/common.h"
+#include "game.h"
+#include "settings.h"
 
 namespace vf {
 
@@ -16,8 +18,14 @@ static void init_sound () {
      // OGG doesn't seem to work on mingw
     auto flags = MIX_INIT_MP3;
     glow::require_sdl(Mix_Init(flags) & flags);
+    uint32 buffer;
+    if (current_game) {
+        buffer = current_game->settings().audio_buffer;
+    }
+    else buffer = 512;  // Sound initted too early!?
+    if (current_game) 
     glow::require_sdl(!Mix_OpenAudio(
-        44100, AUDIO_S16SYS, 2, 512
+        44100, AUDIO_S16SYS, 2, buffer
     ));
     sound_initted = true;
 }
