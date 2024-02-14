@@ -72,6 +72,8 @@
     body_transform8: [vf::BodyFrame [#body [198 105] [-1 23] [4 48]]]
     body_transform9: [vf::BodyFrame [#body [221 105] [-1 23] [4 48]]]
     body_lift1: [vf::BodyFrame [#body [192 22] [-1 23] [4 23]]]
+    body_crouch_preattack: [vf::BodyFrame [#body [14 3] [0 16] [-1 10]]]
+    body_crouch_attack: [vf::BodyFrame [#body [33 3] [2 15] [14 10]]]
     head: [vf::LayeredTexture [{
         image: assets.ayu#layer0
         bounds: [167 40 333 80]
@@ -116,6 +118,8 @@
     spear_damagefall: [vf::WeaponFrame [#fang [87 65]]]
     spear_damagefallf: [vf::WeaponFrame [#fang [87 51]]]
     spear_dead:       [vf::WeaponFrame [#fang [87 43]]]
+    spear_crouch_preattack: [vf::WeaponFrame [#fang [87 37]]]
+    spear_crouch_attack: [vf::WeaponFrame [#fang [87 32] [0 -1 18 1]]]
     poses: [vf::VerdantPoses {
         stand: [#body_stand #head_neutral #spear_neutral]
         crouch: [#body_crouch #head_neutral #spear_neutral]
@@ -144,6 +148,14 @@
             [#body_attack #head_wave2 #spear_attack]
             [#body_postattack #head_neutral #spear_preattack]
             [#body_preattack #head_neutral #spear_preattack]
+        ]
+        crouch_attack: [
+            [#body_crouch_preattack #head_neutral #spear_crouch_preattack]
+            [#body_crouch_preattack #head_neutral #spear_crouch_preattack]
+            [#body_crouch_attack #head_wave0 #spear_crouch_attack]
+            [#body_crouch_attack #head_wave0 #spear_crouch_attack]
+            [#body_crouch_preattack #head_neutral #spear_crouch_preattack]
+            [#body_crouch_preattack #head_neutral #spear_crouch_preattack]
         ]
         hit: [
             [#body_attack #head_wave2 #spear_attack]
@@ -222,6 +234,7 @@
         ]
         land_sound: assets.ayu#pmf
         attack_sound: assets.ayu#fwssh
+        crouch_attack_sound: assets.ayu#fsh
         hit_solid_sound: assets.ayu#tkk
         hit_soft_sound: assets.ayu#doof
 

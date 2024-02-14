@@ -312,10 +312,18 @@ void Walker::Resident_before_step () {
     }
     else hbs[1].box = GNAN;
     if (business == WB::DoAttack) {
-        hbs[2].box = data->poses->attack[anim_phase].body->weapon
-                   + data->poses->attack[anim_phase].weapon->hitbox;
-        if (left) hbs[2].fliph();
-        data->attack_sound->play();
+        if (crouch) {
+            hbs[2].box = data->poses->crouch_attack[anim_phase].body->weapon
+                       + data->poses->crouch_attack[anim_phase].weapon->hitbox;
+            if (left) hbs[2].fliph();
+            data->crouch_attack_sound->play();
+        }
+        else {
+            hbs[2].box = data->poses->attack[anim_phase].body->weapon
+                       + data->poses->attack[anim_phase].weapon->hitbox;
+            if (left) hbs[2].fliph();
+            data->attack_sound->play();
+        }
     }
     else hbs[2].box = GNAN;
 
@@ -473,11 +481,20 @@ Pose Walker::Walker_pose () {
         }
         case WS::Attack: {
             expect(anim_phase < 6);
-            r = poses.attack[anim_phase];
-             // If falling, use head from non-attacking poses
-            if (!floor) {
-                r.head = poses.jump[jump_frame()].head;
+            if (crouch) {
+                r = poses.crouch_attack[anim_phase];
+                if (!floor) {
+                    r.head = poses.jump[jump_frame()].head;
+                }
             }
+            else {
+                r = poses.attack[anim_phase];
+                 // If falling, use head from non-attacking poses
+                if (!floor) {
+                    r.head = poses.jump[jump_frame()].head;
+                }
+            }
+
             break;
         }
         case WS::Hit: {
@@ -609,6 +626,7 @@ AYU_DESCRIBE(vf::WalkerPoses,
         attr("jump", &WalkerPoses::jump),
         attr("land", &WalkerPoses::land),
         attr("attack", &WalkerPoses::attack),
+        attr("crouch_attack", &WalkerPoses::crouch_attack),
         attr("hit", &WalkerPoses::hit),
         attr("dead", &WalkerPoses::dead)
     )
@@ -645,6 +663,7 @@ AYU_DESCRIBE(vf::WalkerData,
         attr("step_sound", &WalkerData::step_sound),
         attr("land_sound", &WalkerData::land_sound),
         attr("attack_sound", &WalkerData::attack_sound),
+        attr("crouch_attack_sound", &WalkerData::crouch_attack_sound),
         attr("hit_solid_sound", &WalkerData::hit_solid_sound),
         attr("hit_soft_sound", &WalkerData::hit_soft_sound),
         attr("poses", &WalkerData::poses),

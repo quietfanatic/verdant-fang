@@ -91,6 +91,14 @@
             [#body_postattack #head_down #axe_postattack]
             [#body_preattack #head_neutral #axe_preattack]
         ]
+        crouch_attack: [
+            [#body_preattack #head_neutral #axe_preattack]
+            [#body_preattack #head_neutral #axe_preattack]
+            [#body_attack #head_down #axe_attack]
+            [#body_attack #head_down #axe_attack]
+            [#body_postattack #head_down #axe_postattack]
+            [#body_preattack #head_neutral #axe_preattack]
+        ]
         hit: [
             [#body_attack #head_down #axe_attack]
             [#body_postattack #head_down #axe_postattack]
@@ -138,6 +146,7 @@
         ]
         land_sound: assets.ayu#pmf
         attack_sound: assets.ayu#shok
+        crouch_attack_sound: assets.ayu#shok
         hit_solid_sound: assets.ayu#tkk
         hit_soft_sound: assets.ayu#kkkww
 

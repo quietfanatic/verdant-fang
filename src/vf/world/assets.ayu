@@ -64,6 +64,7 @@
     step4: [vf::Sound { source:assets/step4.wav channel:0 volume:0.5 }]
     pmf: [vf::Sound { source:assets/pmf.mp3 channel:6 volume:0.4}]
     fwssh: [vf::Sound { source:assets/fwssh.mp3 channel:1 }]
+    fsh: [vf::Sound { source:assets/fwssh.mp3 channel:1 volume:0.6 }]
      -- temp
     tkk: [vf::Sound { source:assets/tkk.mp3 channel:5 volume:0.7 }]
     doof: [vf::Sound { source:assets/doof.mp3 channel:1 }]

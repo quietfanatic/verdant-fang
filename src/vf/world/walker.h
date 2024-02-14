@@ -88,6 +88,7 @@ struct WalkerPoses {
      // Preattack (before hold), preattack (hold), attack active, attack
      // inactive, postattack occupied, postattack interruptible
     Pose attack [6];
+    Pose crouch_attack [6];
     Pose hit [2];
      // Standing, falling, laying
     Pose dead [3];
@@ -144,6 +145,7 @@ struct WalkerData {
     Sound* step_sound [5];
     Sound* land_sound;
     Sound* attack_sound;
+    Sound* crouch_attack_sound;
     Sound* hit_solid_sound;
     Sound* hit_soft_sound;
     WalkerPoses* poses;
