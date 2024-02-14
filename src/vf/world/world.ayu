@@ -136,6 +136,18 @@
         floor: #start_blocks
     }]
 
+    den_switch: [vf::Switch {
+        room: #den
+        data: assets.ayu#switch
+        pos: [296 40]
+        target: #den_door
+    }]
+    den_door: [vf::Door {
+        room: #den
+        data: assets.ayu#door
+        pos: [288 80]
+    }]
+
     den_to_start: [vf::LoadingZone {
         room: #den
         bounds: [-8 0 -8 180]
