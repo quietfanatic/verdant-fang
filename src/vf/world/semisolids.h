@@ -3,9 +3,12 @@
 
 namespace vf {
 
-struct Semisolid : Resident {
+struct Block; // blocks.h
+
+struct Semisolids : Resident {
     Frame* data;
-    Hitbox hb;
+    UniqueArray<Block> blocks;
+    Semisolids ();
     void init ();
     void Resident_draw () override;
 };

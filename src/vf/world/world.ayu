@@ -48,15 +48,10 @@
             [-48 0] [-16 0] [16 0] [48 0] [80 0] [112 0] [144 0] [176 0] [208 0] [240 0] [272 0] [304 0]
         ]
     }]
-    start_semi0: [vf::Semisolid {
+    start_semis: [vf::Semisolids {
         data: assets.ayu#semisolid
         room: #start
-        pos: [160 16]
-    }]
-    start_semi1: [vf::Semisolid {
-        data: assets.ayu#semisolid
-        room: #start
-        pos: [192 16]
+        blocks: [[160 16] [192 16]]
     }]
     verdant: [vf::Verdant {
         data: verdant.ayu#data
