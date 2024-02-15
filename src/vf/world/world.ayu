@@ -200,7 +200,7 @@
         room: #hive
         data: bug.ayu#data
         mind: #buggy
-         -- Bug's pos is 9 above its bottom
+         -- Bug's bottom is 9 below its pos
         pos: [220 89]
         floor: #hive_semis
     }]

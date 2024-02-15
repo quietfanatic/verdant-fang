@@ -136,7 +136,7 @@
      -- body frame, this is [7 4] plus the center of the back hand.
     spear_neutral:    [vf::WeaponFrame [#fang [87 104]]]
     spear_preattack:  [vf::WeaponFrame [#fang [87 92]]]
-    spear_attack:     [vf::WeaponFrame [#fang [87 87] [0 -1 18 1]]]
+    spear_attack:     [vf::WeaponFrame [#fang [87 87] [-8 -1 18 1]]]
     spear_damage:     [vf::WeaponFrame [#fang [87 78]]]
     spear_damagefall: [vf::WeaponFrame [#fang [87 65]]]
     spear_damagefallf: [vf::WeaponFrame [#fang [87 51]]]

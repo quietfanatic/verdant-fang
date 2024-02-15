@@ -113,8 +113,6 @@ Controls BugMind::Mind_think (Resident& s) {
     actual_attack_area.r += target->data->damage_box.r;
     actual_attack_area.t -= target->data->damage_box.b;
     actual_attack_area = self.left_flip(actual_attack_area);
-    draw_rectangle(actual_attack_area + self.pos, glow::RGBA8(0xff000080), Z::Debug);
-    draw_rectangle(self.pos + attack_rel + Rect(-2, -2, 2, 2), glow::RGBA8(0x00ff0080), Z::Debug);
 
      // Note that unlike Monster's AI, our coordinate system is not flipped if
      // self is facing left.

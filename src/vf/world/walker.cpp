@@ -120,6 +120,7 @@ WalkerBusiness Walker::Walker_business () {
             }
         }
         case WS::Dead: {
+            fly = false;
             expect(anim_phase < 11);
             if (anim_phase == 10) {
                  // End of animation (double meaning)
@@ -448,14 +449,12 @@ void Walker::Resident_on_collide (
     }
     else if (&hb == &body_hb && o_hb.layers_2 & Layers::Walker_Walker) {
         auto& other = static_cast<Walker&>(o);
-        if (state != WS::Dead && other.state != WS::Dead &&
-            !!floor == !!other.floor &&
-            !invincible && !other.invincible
-        ) {
-            float diff = pos.x < o.pos.x ? 1 : -1;
-            pos.x -= diff;
-            o.pos.x += diff;
-        }
+        if (state == WS::Dead || other.state == WS::Dead) return;
+        if (!fly && !other.fly && !!floor != !!other.floor) return;
+        if (invincible || other.invincible) return;
+        float diff = pos.x < o.pos.x ? 1 : -1;
+        pos.x -= diff;
+        o.pos.x += diff;
     }
     else if (&hb == &weapon_hb && o_hb.layers_2 & Layers::Weapon_Solid) {
         if (!hit_sound) hit_sound = data->hit_solid_sound;
