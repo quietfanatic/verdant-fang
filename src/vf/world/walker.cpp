@@ -186,74 +186,113 @@ void Walker::Resident_before_step () {
     case WB::Occupied: decelerate = true; break;
     case WB::Interruptible:
     case WB::Free: {
-         // Crouch or don't
-        if (controls[Control::Down]) {
-            if (!crouch) {
-                crouch = true;
-                if (business == WB::Interruptible) {
-                    set_state(WS::Neutral);
-                }
-                if (!floor) pos.y += data->jump_crouch_lift;
-            }
-        }
-        else if (crouch) {
-            crouch = false;
-            if (!floor) pos.y -= data->jump_crouch_lift;
-            walk_start_x = pos.x;
-        }
-
-         // Walk or don't
-        if (crouch && floor) decelerate = true;
-        else if (controls[Control::Left] && !controls[Control::Right]) {
-            if (business == WB::Interruptible) {
-                set_state(WS::Neutral);
-                walk_start_x = pos.x;
-            }
-            left = true;
-            if (floor && vel.x == 0) {
-                 // Start moving at least one pixel
-                pos.x -= 1;
-            }
-            if (vel.x > -max) {
-                vel.x -= acc;
-                if (vel.x < -max) vel.x = -max;
-            }
-            if (vel.x >= 0) walk_start_x = pos.x;
-            walking = !!floor;
-        }
-        else if (controls[Control::Right]) {
-            if (business == WB::Interruptible) {
-                set_state(WS::Neutral);
-                walk_start_x = pos.x;
-            }
-            left = false;
-            if (floor && vel.x == 0) {
-                pos.x += 1;
-            }
-            if (vel.x < max) {
-                vel.x += acc;
-                if (vel.x > max) vel.x = max;
-            }
-            if (vel.x <= 0) walk_start_x = pos.x;
-            walking = !!floor;
-        }
-        else decelerate = true;
-
-         // Jump or don't
-        if (controls[Control::Jump]) {
-            if (floor && !controls[Control::Down] &&
-                controls[Control::Jump] <= data->hold_buffer
-            ) {
-                vel.y += data->jump_vel;
-                floor = null;
+        if (fly) {
+            if (controls[Control::Up] && !controls[Control::Down]) {
                 if (business == WB::Interruptible) set_state(WS::Neutral);
+                if (vel.y < max) {
+                    vel.y += acc;
+                    if (vel.y > max) vel.y = max;
+                }
             }
-            drop_timer = 0;
+            else if (controls[Control::Down]) {
+                if (business == WB::Interruptible) set_state(WS::Neutral);
+                if (vel.y > -max) {
+                    vel.y -= acc;
+                    if (vel.y < -max) vel.y = -max;
+                }
+            }
+            if (controls[Control::Left] && !controls[Control::Right]) {
+                if (business == WB::Interruptible) set_state(WS::Neutral);
+                left = true;
+                if (vel.x > -max) {
+                    vel.x -= acc;
+                    if (vel.x < -max) vel.x = -max;
+                }
+            }
+            else if (controls[Control::Right]) {
+                if (business == WB::Interruptible) set_state(WS::Neutral);
+                left = false;
+                if (vel.x < max) {
+                    vel.x += acc;
+                    if (vel.x > max) vel.x = max;
+                }
+            }
         }
         else {
-             // Allow drop_timer to count even when on floor
-            if (drop_timer < data->drop_duration) {
-                drop_timer += 1;
+             // Try flying
+            if (data->can_fly && controls[Control::Up]) {
+                fly = true;
+                goto restart_move;
+            }
+             // Crouch or don't
+            if (controls[Control::Down]) {
+                if (!crouch) {
+                    crouch = true;
+                    if (business == WB::Interruptible) {
+                        set_state(WS::Neutral);
+                    }
+                    if (!floor) pos.y += data->jump_crouch_lift;
+                }
+            }
+            else if (crouch) {
+                crouch = false;
+                if (!floor) pos.y -= data->jump_crouch_lift;
+                walk_start_x = pos.x;
+            }
+
+             // Walk or don't
+            if (crouch && floor) decelerate = true;
+            else if (controls[Control::Left] && !controls[Control::Right]) {
+                if (business == WB::Interruptible) {
+                    set_state(WS::Neutral);
+                    walk_start_x = pos.x;
+                }
+                left = true;
+                if (floor && vel.x == 0) {
+                     // Start moving at least one pixel
+                    pos.x -= 1;
+                }
+                if (vel.x > -max) {
+                    vel.x -= acc;
+                    if (vel.x < -max) vel.x = -max;
+                }
+                if (vel.x >= 0) walk_start_x = pos.x;
+                walking = !!floor;
+            }
+            else if (controls[Control::Right]) {
+                if (business == WB::Interruptible) {
+                    set_state(WS::Neutral);
+                    walk_start_x = pos.x;
+                }
+                left = false;
+                if (floor && vel.x == 0) {
+                    pos.x += 1;
+                }
+                if (vel.x < max) {
+                    vel.x += acc;
+                    if (vel.x > max) vel.x = max;
+                }
+                if (vel.x <= 0) walk_start_x = pos.x;
+                walking = !!floor;
+            }
+            else decelerate = true;
+
+             // Jump or don't
+            if (controls[Control::Jump]) {
+                if (floor && !controls[Control::Down] &&
+                    controls[Control::Jump] <= data->hold_buffer
+                ) {
+                    vel.y += data->jump_vel;
+                    floor = null;
+                    if (business == WB::Interruptible) set_state(WS::Neutral);
+                }
+                drop_timer = 0;
+            }
+            else {
+                 // Allow drop_timer to count even when on floor
+                if (drop_timer < data->drop_duration) {
+                    drop_timer += 1;
+                }
             }
         }
          // Attack or don't
@@ -284,6 +323,7 @@ void Walker::Resident_before_step () {
         }
          // TODO: Differentiate between dead anim phases?
         vel.y -= state == WS::Dead ? data->gravity_damage
+               : fly ? data->gravity_fly
                : drop_timer == 0 ? data->gravity_jump
                : drop_timer <= data->drop_duration ? data->gravity_drop
                : data->gravity_fall;
@@ -438,6 +478,7 @@ void Walker::Resident_after_step () {
     if (business != WB::Frozen) {
         floor = new_floor;
         new_floor = null;
+        if (floor) fly = false;
     }
     if (do_recoil) {
         if (left) {
@@ -590,7 +631,7 @@ AYU_DESCRIBE(vf::BodyFrame,
     elems(
         elem(&BodyFrame::target),
         elem(&BodyFrame::offset),
-        elem(&BodyFrame::head),
+        elem(&BodyFrame::head, optional),
         elem(&BodyFrame::weapon, optional),
         elem(&BodyFrame::decals, optional),
         elem(&BodyFrame::decal_dirs, optional)
@@ -632,6 +673,7 @@ AYU_DESCRIBE(vf::WalkerPoses,
         attr("crouch", &WalkerPoses::crouch),
         attr("walk", &WalkerPoses::walk),
         attr("jump", &WalkerPoses::jump),
+        attr("fly", &WalkerPoses::fly, optional),
         attr("land", &WalkerPoses::land),
         attr("attack", &WalkerPoses::attack),
         attr("crouch_attack", &WalkerPoses::crouch_attack),
@@ -658,6 +700,8 @@ AYU_DESCRIBE(vf::WalkerData,
         attr("gravity_fall", &WalkerData::gravity_fall),
         attr("gravity_drop", &WalkerData::gravity_drop),
         attr("gravity_damage", &WalkerData::gravity_damage),
+        attr("gravity_fly", &WalkerData::gravity_fly),
+        attr("can_fly", &WalkerData::can_fly),
         attr("drop_duration", &WalkerData::drop_duration),
         attr("land_sequence", &WalkerData::land_sequence),
         attr("attack_sequence", &WalkerData::attack_sequence),

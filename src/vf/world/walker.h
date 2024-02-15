@@ -83,6 +83,8 @@ struct WalkerPoses {
     Pose walk [6];
      // vel positive, vel neutral, and two vel negative alternating.
     Pose jump [4];
+     // Neutral, left, right
+    Pose fly [3];
      // Occupied, interruptible
     Pose land [2];
      // Preattack (before hold), preattack (hold), attack active, attack
@@ -111,6 +113,8 @@ struct WalkerData {
     float gravity_fall;
     float gravity_drop;
     float gravity_damage;
+    float gravity_fly;
+    bool can_fly;
     uint8 drop_duration;
      // [0] is occupied.
      // [1] is interruptible
@@ -160,6 +164,7 @@ struct Walker : Resident {
     Vec vel;
     bool left = false;
     bool crouch = false;
+    bool fly = false;
     WalkerState state = WS::Neutral;
      // Valid values of this depend on state.
     uint8 anim_phase = 0;

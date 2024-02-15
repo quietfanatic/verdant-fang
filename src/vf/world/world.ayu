@@ -187,9 +187,10 @@
             [176 16] [208 16]
         ]
     }]
-    bug: [vf::Scenery {
+    bug: [vf::Bug {
         room: #hive
-        data: assets.ayu#bug
+        data: bug.ayu#data
+        mind: #player
         pos: [220 128]
     }]
 

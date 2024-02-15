@@ -1,0 +1,112 @@
+ -- Keep these in sync with common.h
+&z_dead: -300
+&z_damage: 200
+[ayu::Document {
+    body: [vf::LayeredTexture [{
+        image: assets.ayu#layer0
+         -- y down
+        bounds: [153 326 181 358]
+    }]]
+    body_fly: [vf::BodyFrame [#body [13 14]]]
+     -- y up
+    poses: [vf::WalkerPoses {
+        stand: [#body_fly]
+        crouch: [#body_fly]
+        walk: [
+            [#body_fly]
+            [#body_fly]
+            [#body_fly]
+            [#body_fly]
+            [#body_fly]
+            [#body_fly]
+        ]
+        jump: [
+            [#body_fly]
+            [#body_fly]
+            [#body_fly]
+            [#body_fly]
+        ]
+        fly: [
+            [#body_fly]
+            [#body_fly]
+            [#body_fly]
+        ]
+        land: [
+            [#body_fly]
+            [#body_fly]
+        ]
+        attack: [
+            [#body_fly]
+            [#body_fly]
+            [#body_fly]
+            [#body_fly]
+            [#body_fly]
+            [#body_fly]
+        ]
+        crouch_attack: [
+            [#body_fly]
+            [#body_fly]
+            [#body_fly]
+            [#body_fly]
+            [#body_fly]
+            [#body_fly]
+        ]
+        hit: [
+            [#body_fly]
+            [#body_fly]
+        ]
+        dead: [
+            [#body_fly]
+            [#body_fly]
+            [#body_fly]
+        ]
+    }]
+    data: [vf::WalkerData {
+        body_box: [-5 -9 3 14]
+        crouch_body_box: [-5 -9 3 14]
+        damage_box: [-5 -9 3 14]
+        crouch_damage_box: [-5 -9 3 14]
+        ground_acc: 0.18
+        ground_max: 2.0
+        ground_dec: 0.3
+        coast_dec: 0.3
+        air_acc: 0.15
+        air_max: 3
+        air_dec: 0.15
+        jump_vel: 2
+        gravity_jump: 0.2
+        gravity_fall: 0.2
+        gravity_drop: 0.2
+        gravity_damage: 0.1
+        gravity_fly: 0.02
+        can_fly: true
+        drop_duration: 6
+        land_sequence: [8 4]
+        attack_sequence: [8 0 1 7 8 200]
+        hit_sequence: [16 10]
+        dead_sequence: [14 10 10 8 10 10 10 10 60 120 240]
+        jump_crouch_lift: 0
+        dead_floor_lift: 10
+        hold_buffer: 6
+        walk_cycle_dist: 16
+        fall_cycle_dist: 16
+        jump_end_vel: 0.6
+        fall_start_vel: -0.6
+
+        step_sound: [
+            assets.ayu#step0
+            assets.ayu#step1
+            assets.ayu#step2
+            assets.ayu#step3
+            assets.ayu#step4
+        ]
+        land_sound: assets.ayu#pmf
+        attack_sound: assets.ayu#shok
+        crouch_attack_sound: assets.ayu#shok
+        hit_solid_sound: assets.ayu#tkk
+        hit_soft_sound: assets.ayu#kkkww
+
+        poses: #poses
+        decals: decals.ayu#
+    }]
+}]
