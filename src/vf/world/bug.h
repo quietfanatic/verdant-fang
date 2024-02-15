@@ -36,7 +36,7 @@ struct BugMind : Mind {
     Rect roam_territory;
     IRange roam_interval;
      // How strict the bug adheres to its current roam position
-    float roam_tolerance = 3;
+    float roam_tolerance = 0;
      // Back up if we're too close to target
     float personal_space;
     Controls Mind_think (Resident&) override;

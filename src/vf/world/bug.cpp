@@ -63,9 +63,10 @@ Controls BugMind::Mind_think (Resident& s) {
         self.roam_pos.x = std::uniform_real_distribution<float>(
             roam_territory.l, roam_territory.r
         )(rng);
-        self.roam_pos.y = std::uniform_real_distribution<float>(
-            roam_territory.b, roam_territory.t
-        )(rng);
+         // Bias toward top of the room
+        float h = std::uniform_real_distribution<float>(0, 1)(rng);
+        self.roam_pos.y = roam_territory.b
+                        + height(roam_territory) * (1 - length2(1 - h));
 
         self.roam_timer = std::uniform_int_distribution(
             roam_interval.l, roam_interval.r
@@ -95,9 +96,10 @@ Controls BugMind::Mind_think (Resident& s) {
         quadratic(
             target->pos.y, target->vel.y,
              // Don't know what target's current gravity is because we can't
-             // read their inputs and we have no memory, so guess something in
-             // the middle.
-            target->floor ? 0 : -target->data->gravity_fall,
+             // read their inputs and we have no memory, so guess something.
+            target->floor ? 0
+            : target->vel.y > 0 ? -target->data->gravity_jump
+            : -target->data->gravity_fall,
             attack_delay
         )
     );

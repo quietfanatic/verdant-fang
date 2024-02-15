@@ -3,13 +3,16 @@
 #include "../../dirt/ayu/reflection/describe.h"
 #include "game.h"
 #include "settings.h"
+#include "state.h"
 
 namespace vf {
 
 Controls Player::Mind_think (Resident&) {
     auto inputs = current_game->settings().read_controls();
+    auto& rng = current_game->state().rng;
     for (usize i = 0; i < Control::N_Controls; i++) {
         if (inputs[i]) {
+            rng();
             if (controls[i] < 255) controls[i] += 1;
         }
         else controls[i] = 0;

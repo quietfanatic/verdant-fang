@@ -190,17 +190,26 @@
     }]
     buggy: [vf::BugMind {
         target: #verdant
-        sight_range: 200
+        sight_range: 180
         attack_area: [16 -12 36 -9]
         roam_territory: [64 32 256 144]
         roam_interval: [60 300]
-        personal_space: 12
+        personal_space: 20
     }]
     coochers: [vf::Bug {
         room: #hive
         data: bug.ayu#data
         mind: #buggy
-        pos: [220 128]
+         -- Bug's pos is 9 above its bottom
+        pos: [220 89]
+        floor: #hive_semis
+    }]
+    sallers: [vf::Bug {
+        room: #hive
+        data: bug.ayu#data
+        mind: #buggy
+        pos: [240 25]
+        floor: #hive_blocks
     }]
 
     hive_to_den: [vf::LoadingZone {
