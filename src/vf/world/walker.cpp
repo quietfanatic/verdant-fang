@@ -187,6 +187,8 @@ void Walker::Resident_before_step () {
     case WB::Interruptible:
     case WB::Free: {
         if (fly) {
+             // You are unable to change direction while flying, so you'll need
+             // to change directions in the mind.
             if (controls[Control::Up] && !controls[Control::Down]) {
                 if (business == WB::Interruptible) set_state(WS::Neutral);
                 if (vel.y < max) {
@@ -203,7 +205,6 @@ void Walker::Resident_before_step () {
             }
             if (controls[Control::Left] && !controls[Control::Right]) {
                 if (business == WB::Interruptible) set_state(WS::Neutral);
-//                left = true;
                 if (vel.x > -max) {
                     vel.x -= acc;
                     if (vel.x < -max) vel.x = -max;
@@ -211,7 +212,6 @@ void Walker::Resident_before_step () {
             }
             else if (controls[Control::Right]) {
                 if (business == WB::Interruptible) set_state(WS::Neutral);
-//                left = false;
                 if (vel.x < max) {
                     vel.x += acc;
                     if (vel.x > max) vel.x = max;
@@ -344,7 +344,9 @@ void Walker::Resident_before_step () {
 
      // Set up hitboxes
     clear_hitboxes();
-    body_hb.box = crouch ? data->crouch_body_box : data->body_box;
+    body_hb.box = state == WS::Dead ? data->dead_body_box
+                : crouch ? data->crouch_body_box
+                : data->body_box;
     if (left) body_hb.fliph();
     add_hitbox(body_hb);
     if (state != WS::Dead && business != WB::Frozen) {
@@ -619,7 +621,7 @@ void Walker::Resident_draw () {
 
 void Walker::Walker_draw_weapon (const Pose& pose) {
     Vec scale = {left ? -1 : 1, 1};
-    if (pose.weapon) {
+    if (pose.weapon && pose.weapon->target) {
         float z = pose.z;
         if (pose.damage_overlap && !mutual_kill) z = Z::Overlap;
         draw_layers(
@@ -695,6 +697,7 @@ AYU_DESCRIBE(vf::WalkerData,
     attrs(
         attr("body_box", &WalkerData::body_box),
         attr("crouch_body_box", &WalkerData::crouch_body_box),
+        attr("dead_body_box", &WalkerData::dead_body_box),
         attr("damage_box", &WalkerData::damage_box),
         attr("crouch_damage_box", &WalkerData::crouch_damage_box),
         attr("ground_acc", &WalkerData::ground_acc),

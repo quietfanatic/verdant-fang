@@ -99,6 +99,7 @@ struct WalkerPoses {
 struct WalkerData {
     Rect body_box;
     Rect crouch_body_box;
+    Rect dead_body_box;
     Rect damage_box;
     Rect crouch_damage_box;
     float ground_acc;

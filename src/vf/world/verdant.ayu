@@ -218,6 +218,9 @@
     data: [vf::VerdantData {
         body_box: [-6 0 6 30]
         crouch_body_box: [-6 0 6 20]
+         -- This only really reflects the dead backwards pose.  TODO on a hitbox
+         -- for the dead forwards pose.
+        dead_body_box: [-12 0 8 5]
         damage_box: [-3 12 3 30]
         crouch_damage_box: [-3 4 3 20]
         ground_acc: 0.3

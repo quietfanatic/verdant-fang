@@ -7,12 +7,29 @@
     body: [vf::LayeredTexture [{
         image: assets.ayu#layer0
          -- y down
-        bounds: [153 326 249 358]
+        bounds: [153 326 298 399]
     }]]
      -- y up
-    body_fly: [vf::BodyFrame [#body [15 14] [-1 5]]]
-    body_flyf: [vf::BodyFrame [#body [47 14] [0 5]]]
-    body_flyb: [vf::BodyFrame [#body [79 14] [-2 5]]]
+    body_fly: [vf::BodyFrame [#body [15 55] [-1 5]]]
+    body_flyf: [vf::BodyFrame [#body [47 55] [0 5]]]
+    body_flyb: [vf::BodyFrame [#body [79 55] [-2 5]]]
+    body_preattack: [vf::BodyFrame [#body [66 25] [-2 5]]]
+    body_attack: [vf::BodyFrame [#body [14 25] [-2 5] [0 0]]]
+    body_damage: [vf::BodyFrame [
+        #body [92 25] [-2 5] [0 0]
+        [[2 -4] [1 1] [0 6] [0 12]]
+        [0 0 0 0]
+    ]]
+    body_damagefall: [vf::BodyFrame [
+        #body [121 25] [-4 -3] [0 0]
+        [[4 -3] [1 1] [-2 5] [-6 10]]
+        [1 1 1 1]
+    ]]
+    body_dead: [vf::BodyFrame [
+        #body [115 53] [-5 -2] [0 0]
+        [[4 1] [-1 1] [-6 1] [-12 1]]
+        [2 2 2 2]
+    ]]
     wings: [vf::LayeredTexture [{
         image: assets.ayu#layer0
         bounds: [107 341 151 363]
@@ -20,6 +37,8 @@
     }]]
     wings_fly0: [vf::Frame [#wings [18 11]]]
     wings_fly1: [vf::Frame [#wings [40 11]]]
+     -- Empty frame for weapon just to carry the hitbox
+    tail_attack: [vf::WeaponFrame [null [0 0] [19 -12 35 -9]]]
     poses: [vf::WalkerPoses {
         stand: [#body_fly]
         crouch: [#body_fly]
@@ -49,36 +68,37 @@
             [#body_fly]
         ]
         attack: [
-            [#body_fly]
-            [#body_fly]
-            [#body_fly]
-            [#body_fly]
-            [#body_fly]
-            [#body_fly]
+            [#body_preattack]
+            [#body_preattack]
+            [#body_attack null #tail_attack]
+            [#body_attack]
+            [#body_preattack]
+            [#body_preattack]
         ]
         crouch_attack: [
-            [#body_fly]
-            [#body_fly]
-            [#body_fly]
-            [#body_fly]
-            [#body_fly]
-            [#body_fly]
+            [#body_preattack]
+            [#body_preattack]
+            [#body_attack null #tail_attack]
+            [#body_attack]
+            [#body_preattack]
+            [#body_preattack]
         ]
         hit: [
-            [#body_fly]
-            [#body_fly]
+            [#body_attack]
+            [#body_attack]
         ]
         dead: [
-            [#body_fly]
-            [#body_fly]
-            [#body_fly]
+            [#body_damage]
+            [#body_damagefall]
+            [#body_dead]
         ]
     }]
     data: [vf::WalkerData {
-        body_box: [-3 -9 5 14]
-        crouch_body_box: [-3 -9 5 14]
-        damage_box: [-3 -9 3 14]
-        crouch_damage_box: [-3 -9 5 14]
+        body_box: [-3 -9 4 14]
+        crouch_body_box: [-3 -9 4 14]
+        dead_body_box: [-12 -3 8 4]
+        damage_box: [-3 -9 4 14]
+        crouch_damage_box: [-3 -9 4 14]
         ground_acc: 0.18
         ground_max: 2.0
         ground_dec: 0.3
@@ -99,7 +119,7 @@
         hit_sequence: [16 10]
         dead_sequence: [14 10 10 8 10 10 10 10 60 120 240]
         jump_crouch_lift: 0
-        dead_floor_lift: 10
+        dead_floor_lift: 0
         hold_buffer: 6
         walk_cycle_dist: 16
         fall_cycle_dist: 16
