@@ -71,7 +71,7 @@ WalkerBusiness Verdant::Walker_business () {
                 if (anim_phase == 13) {
                     transform_timer = 0;
                     set_state(WS::Neutral);
-                    current_game->state().save_checkpoint();
+                    current_game->state().save_checkpoint = true;
                 }
                 else {
                     anim_phase += 1;

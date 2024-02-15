@@ -12,6 +12,7 @@ struct Transition {
     Room* target_room;
     Resident* migrant;
     Vec target_pos = GNAN;
+    uint8 checkpoint_level = 0;
     uint32 until_exit = 8;
     uint32 until_enter = 24;
 
@@ -32,12 +33,11 @@ struct State {
     std::optional<ayu::Tree> checkpoint;
 
      // Temporary, don't save
+    bool save_checkpoint = false;
     bool load_checkpoint = false;
 
     State ();
     void step ();
-
-    void save_checkpoint ();
 };
 
 } // vf

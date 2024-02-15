@@ -49,7 +49,7 @@ Command load_state (load_state_, "load_state", "Load game state");
 
 void save_checkpoint_ () {
     if (!current_game) return;
-    current_game->state().save_checkpoint();
+    current_game->state().save_checkpoint = true;
 }
 Command save_checkpoint (save_checkpoint_, "save_checkpoint", "Save checkpoint");
 

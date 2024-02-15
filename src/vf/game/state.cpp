@@ -4,6 +4,8 @@
 #include "../../dirt/ayu/traversal/to-tree.h"
 #include "../../dirt/control/command.h"
 #include "camera.h"
+#include "game.h"
+#include "options.h"
 #include "room.h"
 
 namespace vf {
@@ -25,6 +27,11 @@ bool Transition::step (State& state) {
             }
             state.current_room->enter();
             swap_world_tex();
+            auto& options = current_game->options();
+            ayu::dump(checkpoint_level, options.frustration);
+            if (checkpoint_level >= options.frustration) {
+                state.save_checkpoint = true;
+            }
              // fallthrough
         }
         else return true;
@@ -41,30 +48,32 @@ bool Transition::step (State& state) {
 State::State () : rng(0) { }
 
 void State::step () {
-    if (load_checkpoint) {
-        load_checkpoint = false;
-        if (checkpoint) {
-             // Preserve rng state so rng is different
-            uint32 save_rng = rng_uint32;
-             // Don't overwrite current checkpoint
-            ayu::Tree save_cp = move(*checkpoint);
-            checkpoint = {};
-            ayu::item_from_tree(this, save_cp);
-            checkpoint = move(save_cp);
-            rng_uint32 = save_rng;
-            transition = {};
-        }
-    }
     bool should_step = true;
     if (transition) should_step = transition->step(*this);
-    if (should_step && current_room) current_room->step(); 
+    if (should_step) {
+        if (save_checkpoint) {
+            save_checkpoint = false;
+             // Don't recursively nest checkpoints
+            checkpoint = {};
+            checkpoint = ayu::item_to_tree(this);
+        }
+        if (load_checkpoint) {
+            load_checkpoint = false;
+            if (checkpoint) {
+                 // Preserve rng state so rng is different
+                uint32 save_rng = rng_uint32;
+                 // Don't overwrite current checkpoint
+                ayu::Tree save_cp = move(*checkpoint);
+                checkpoint = {};
+                ayu::item_from_tree(this, save_cp);
+                checkpoint = move(save_cp);
+                rng_uint32 = save_rng;
+                transition = {};
+            }
+        }
+        if (current_room) current_room->step();
+    }
     current_frame += 1;
-}
-
-void State::save_checkpoint () {
-     // Don't recursively nest checkpoints
-    checkpoint = {};
-    checkpoint = ayu::item_to_tree(this);
 }
 
 } using namespace vf;

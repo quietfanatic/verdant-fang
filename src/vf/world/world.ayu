@@ -58,6 +58,7 @@
         bounds: [328 0 328 180]
         target_room: #den
         target_pos: [16 32]
+        checkpoint_level: 1
     }]
 
     den: [vf::Room { }]
@@ -161,6 +162,7 @@
         bounds: [328 0 328 180]
         target_room: #hive
         target_pos: [16 64]
+        checkpoint_level: 2
     }]
 
     hive: [vf::Room { }]
@@ -223,6 +225,7 @@
         bounds: [328 0 328 180]
         target_room: #atelier
         target_pos: [16 32]
+        checkpoint_level: 1
     }]
 
     atelier: [vf::Room { }]

@@ -116,7 +116,7 @@ Settings& Game::settings () {
 }
 
 Options& Game::options () {
-    return state_res->value().as_known<Options>();
+    return options_res->value().as_known<Options>();
 }
 
 State& Game::state () {
