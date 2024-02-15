@@ -127,3 +127,14 @@
   to have.
 - Planned work for tomorrow: Not entirely sure.  Could do restart transitions,
   troll doors, flying bugs, or the boss.
+#####2024-02-14 W
+- Starting implementing bugs.  Like, insects.  They only have a few animation
+  frames and no AI, but they can attack and be attacked.
+- Spent far too long worrying about how much code to share between walkers and
+  flyers before ending up with the choice of nearly all of it.
+- Made semisolids grouped into a single resident like blocks.  Made hitboxes in
+  linked lists instead of array slices so they can be non-contiguous.  Added z
+  offset to texture layers so model part offsets can be given in data instead of
+  code.
+- Planned work for tomorrow: Make bug spit venom.  Venom will be an important
+  mechanic for the story later on.
