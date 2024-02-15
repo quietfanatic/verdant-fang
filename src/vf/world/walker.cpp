@@ -568,7 +568,7 @@ Pose Walker::Walker_pose () {
                     break;
                 }
                 case 3: r = poses.damagefall; break;
-                default: r = poses.dead[0]; break;
+                default: r = poses.dead[anim_phase - 4]; break;
             }
             break;
         }

@@ -194,7 +194,7 @@ Pose Verdant::Walker_pose () {
                 switch (anim_phase) {
                     case 0: case 1: case 2: r = poses.damagef; break;
                     case 3: r = poses.damagefallf; break;
-                    default: r = poses.deadf[0]; break;
+                    default: r = poses.deadf[anim_phase - 4]; break;
                 }
                 return r;
             }

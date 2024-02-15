@@ -188,6 +188,12 @@
         damagefall: [#body_damagefall #head_damage #spear_damagefall *z_deadplayer]
         dead: [
             [#body_dead #head_dead #spear_dead *z_deadplayer]
+            [#body_dead #head_dead #spear_dead *z_deadplayer]
+            [#body_dead #head_dead #spear_dead *z_deadplayer]
+            [#body_dead #head_dead #spear_dead *z_deadplayer]
+            [#body_dead #head_dead #spear_dead *z_deadplayer]
+            [#body_dead #head_dead #spear_dead *z_deadplayer]
+            [#body_dead #head_dead #spear_dead *z_deadplayer]
         ]
         damagef: [#body_damage #head_damage #spear_damage *z_deadplayer true]
         damagefallf: [#body_damagefallf #head_damagef #spear_damagefallf *z_deadplayer]

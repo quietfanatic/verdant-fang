@@ -18,22 +18,22 @@
     body_attack: [vf::BodyFrame [#body [14 25] [-2 5] [0 0]]]
     body_damage: [vf::BodyFrame [
         #body [92 25] [-2 5] [0 0]
-        [[2 -4] [1 1] [0 6] [0 12]]
+        [[3 -4] [2 1] [1 6] [1 11]]
         [0 0 0 0]
     ]]
     body_damagefall: [vf::BodyFrame [
         #body [114 25] [-4 -3] [0 0]
-        [[4 -3] [1 1] [-2 5] [-6 10]]
+        [[4 -2] [1 2] [-2 6] [-6 10]]
         [1 1 1 1]
     ]]
     body_dead0: [vf::BodyFrame [
         #body [148 33] [-5 -2] [0 0]
-        [[4 1] [-1 1] [-6 1] [-12 1]]
+        [[4 2] [-1 2] [-6 2] [-11 2]]
         [2 2 2 2]
     ]]
     body_dead1: [vf::BodyFrame [
         #body [148 16] [-5 -2] [0 0]
-        [[4 1] [-1 1] [-6 1] [-12 1]]
+        [[4 2] [-1 2] [-6 2] [-11 2]]
         [2 2 2 2]
     ]]
     wings: [vf::LayeredTexture [{
@@ -97,6 +97,12 @@
         damage: [#body_damage]
         damagefall: [#body_damagefall]
         dead: [
+            [#body_dead0 #wings_dead]
+            [#body_dead1 #wings_dead]
+            [#body_dead0 #wings_dead]
+            [#body_dead1 #wings_dead]
+            [#body_dead0 #wings_dead]
+            [#body_dead1 #wings_dead]
             [#body_dead0 #wings_dead]
         ]
     }]

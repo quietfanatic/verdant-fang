@@ -120,6 +120,12 @@
         damagefall: [#body_damagefall #head_damage #axe_damagefall *z_damage]
         dead: [
             [#body_dead #head_dead #axe_dead *z_dead]
+            [#body_dead #head_dead #axe_dead *z_dead]
+            [#body_dead #head_dead #axe_dead *z_dead]
+            [#body_dead #head_dead #axe_dead *z_dead]
+            [#body_dead #head_dead #axe_dead *z_dead]
+            [#body_dead #head_dead #axe_dead *z_dead]
+            [#body_dead #head_dead #axe_dead *z_dead]
         ]
     }]
     data: [vf::WalkerData {

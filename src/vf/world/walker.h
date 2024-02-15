@@ -94,7 +94,7 @@ struct WalkerPoses {
     Pose hit [2];
     Pose damage;
     Pose damagefall;
-    Pose dead [1];
+    Pose dead [7];
 };
 
 enum class WalkerFlavor {
@@ -143,7 +143,7 @@ struct WalkerData {
      // [2] is before starting to fall.  pose = damage
      // [3] is minimum time to fall before landing.  Phase won't advance to 4
      // until floor is true.  pose = damagefall
-     // [4]..[10] are laying down, varying only in decals.  pose = dead
+     // [4]..[10] are laying down, varying only in decals.  pose = dead[n-4]
     uint8 dead_sequence [11];
      // When crouching in midair, lift feet this many pixels
     uint8 jump_crouch_lift;
