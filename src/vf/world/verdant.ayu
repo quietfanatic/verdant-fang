@@ -184,14 +184,14 @@
             [#body_attack #head_wave2 #spear_attack]
             [#body_attack #head_neutral #spear_attack]
         ]
+        damage: [#body_damage #head_damage #spear_damage *z_deadplayer true]
+        damagefall: [#body_damagefall #head_damage #spear_damagefall *z_deadplayer]
         dead: [
-            [#body_damage #head_damage #spear_damage *z_deadplayer true]
-            [#body_damagefall #head_damage #spear_damagefall *z_deadplayer]
             [#body_dead #head_dead #spear_dead *z_deadplayer]
         ]
+        damagef: [#body_damage #head_damage #spear_damage *z_deadplayer true]
+        damagefallf: [#body_damagefallf #head_damagef #spear_damagefallf *z_deadplayer]
         deadf: [
-            [#body_damage #head_damage #spear_damage *z_deadplayer true]
-            [#body_damagefallf #head_damagef #spear_damagefallf *z_deadplayer]
             [#body_deadf #head_deadf #spear_dead *z_deadplayer]
         ]
         walk_hold: [

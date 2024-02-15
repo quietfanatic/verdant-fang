@@ -15,7 +15,9 @@ namespace VS {
 };
 
 struct VerdantPoses : WalkerPoses {
-    Pose deadf [3];
+    Pose damagef;
+    Pose damagefallf;
+    Pose deadf [1];
     Pose walk_hold [6];
     Pose transform [14];
 };
@@ -132,7 +134,7 @@ void Verdant::Walker_on_hit (
     victim.left = !left;
      // Find place to stab
     Vec weapon_offset = data->poses->hit[0].body->weapon;
-    auto& victim_body = *victim.data->poses->dead[0].body;
+    auto& victim_body = *victim.data->poses->damage.body;
     usize min_dist = GINF;
     usize decal_i = -1;
     float weapon_y = pos.y + weapon_offset.y;
@@ -190,9 +192,9 @@ Pose Verdant::Walker_pose () {
                 Pose r;
                  // Mirror the WS::Dead case in Walker::Walker_pos
                 switch (anim_phase) {
-                    case 0: case 1: case 2: r = poses.deadf[0]; break;
-                    case 3: r = poses.deadf[1]; break;
-                    default: r = poses.deadf[2]; break;
+                    case 0: case 1: case 2: r = poses.damagef; break;
+                    case 3: r = poses.damagefallf; break;
+                    default: r = poses.deadf[0]; break;
                 }
                 return r;
             }
@@ -324,6 +326,8 @@ AYU_DESCRIBE(vf::Verdant,
 AYU_DESCRIBE(vf::VerdantPoses,
     attrs(
         attr("vf::WalkerPoses", base<WalkerPoses>(), include),
+        attr("damagef", &VerdantPoses::damagef),
+        attr("damagefallf", &VerdantPoses::damagefallf),
         attr("deadf", &VerdantPoses::deadf),
         attr("walk_hold", &VerdantPoses::walk_hold),
         attr("transform", &VerdantPoses::transform)

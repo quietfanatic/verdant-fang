@@ -24,7 +24,7 @@ void Monster::Walker_on_hit (
         data->poses->hit[0].weapon->hitbox.b;
     bool high = victim_top - weapon_bottom < 17;
     uint8 decal_i = high ? 3 : 1;
-    auto& victim_body = *victim.data->poses->dead[0].body;
+    auto& victim_body = *victim.data->poses->damage.body;
     Vec decal_pos = victim.pos + victim.left_flip(victim_body.decals[decal_i]);
     float weapon_tip = pos.x + left_flip(
         weapon_offset.x + data->poses->hit[0].weapon->hitbox.r

@@ -116,9 +116,9 @@
             [#body_attack #head_down #axe_attack]
             [#body_postattack #head_down #axe_postattack]
         ]
+        damage: [#body_damage #head_damage #axe_damage *z_damage true]
+        damagefall: [#body_damagefall #head_damage #axe_damagefall *z_damage]
         dead: [
-            [#body_damage #head_damage #axe_damage *z_damage true]
-            [#body_damagefall #head_damage #axe_damagefall *z_damage]
             [#body_dead #head_dead #axe_dead *z_dead]
         ]
     }]

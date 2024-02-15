@@ -563,12 +563,12 @@ Pose Walker::Walker_pose () {
         case WS::Dead: {
             switch (anim_phase) {
                 case 0: case 1: case 2: {
-                    r = mutual_kill ? poses.hit[0] : r = poses.dead[0];
+                    r = mutual_kill ? poses.hit[0] : r = poses.damage;
                     r.damage_overlap = true;
                     break;
                 }
-                case 3: r = poses.dead[1]; break;
-                default: r = poses.dead[2]; break;
+                case 3: r = poses.damagefall; break;
+                default: r = poses.dead[0]; break;
             }
             break;
         }
@@ -688,6 +688,8 @@ AYU_DESCRIBE(vf::WalkerPoses,
         attr("attack", &WalkerPoses::attack),
         attr("crouch_attack", &WalkerPoses::crouch_attack),
         attr("hit", &WalkerPoses::hit),
+        attr("damage", &WalkerPoses::damage),
+        attr("damagefall", &WalkerPoses::damagefall),
         attr("dead", &WalkerPoses::dead)
     )
 )

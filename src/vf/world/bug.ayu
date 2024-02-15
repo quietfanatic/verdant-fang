@@ -7,9 +7,10 @@
     body: [vf::LayeredTexture [{
         image: assets.ayu#layer0
          -- y down
-        bounds: [153 326 298 399]
+        bounds: [153 326 329 399]
     }]]
      -- y up
+    body_stand: [vf::BodyFrame [#body [109 58] [5 2]]]
     body_fly: [vf::BodyFrame [#body [15 55] [-1 5]]]
     body_flyf: [vf::BodyFrame [#body [47 55] [0 5]]]
     body_flyb: [vf::BodyFrame [#body [79 55] [-2 5]]]
@@ -21,12 +22,17 @@
         [0 0 0 0]
     ]]
     body_damagefall: [vf::BodyFrame [
-        #body [121 25] [-4 -3] [0 0]
+        #body [114 25] [-4 -3] [0 0]
         [[4 -3] [1 1] [-2 5] [-6 10]]
         [1 1 1 1]
     ]]
-    body_dead: [vf::BodyFrame [
-        #body [115 53] [-5 -2] [0 0]
+    body_dead0: [vf::BodyFrame [
+        #body [148 33] [-5 -2] [0 0]
+        [[4 1] [-1 1] [-6 1] [-12 1]]
+        [2 2 2 2]
+    ]]
+    body_dead1: [vf::BodyFrame [
+        #body [148 16] [-5 -2] [0 0]
         [[4 1] [-1 1] [-6 1] [-12 1]]
         [2 2 2 2]
     ]]
@@ -88,10 +94,10 @@
             [#body_attack]
             [#body_attack]
         ]
+        damage: [#body_damage]
+        damagefall: [#body_damagefall]
         dead: [
-            [#body_damage]
-            [#body_damagefall]
-            [#body_dead #wings_dead]
+            [#body_dead0 #wings_dead]
         ]
     }]
     data: [vf::WalkerData {

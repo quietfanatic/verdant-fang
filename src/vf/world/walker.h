@@ -92,8 +92,9 @@ struct WalkerPoses {
     Pose attack [6];
     Pose crouch_attack [6];
     Pose hit [2];
-     // Standing, falling, laying
-    Pose dead [3];
+    Pose damage;
+    Pose damagefall;
+    Pose dead [1];
 };
 
 enum class WalkerFlavor {
@@ -138,11 +139,11 @@ struct WalkerData {
      // animation.
     uint8 hit_sequence [2];
      // [0] + [1] is freeze frames during hit.  These should match opponent's
-     // hit_sequence so you're both frozen for the same time.  pose = dead[0]
-     // [2] is before starting to fall.  pose = dead[0]
+     // hit_sequence so you're both frozen for the same time.  pose = damage
+     // [2] is before starting to fall.  pose = damage
      // [3] is minimum time to fall before landing.  Phase won't advance to 4
-     // until floor is true.  pose = dead[1]
-     // [4]..[10] are laying down, varying only in decals.  pose = dead[2]
+     // until floor is true.  pose = damagefall
+     // [4]..[10] are laying down, varying only in decals.  pose = dead
     uint8 dead_sequence [11];
      // When crouching in midair, lift feet this many pixels
     uint8 jump_crouch_lift;
