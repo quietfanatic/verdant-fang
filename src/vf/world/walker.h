@@ -246,7 +246,12 @@ struct Walker : Resident {
 
      // Useful
     float left_flip (float v) const { return left ? -v : v; }
+     // Only flips x component of vector
     Vec left_flip (Vec v) const { return left ? Vec(-v.x, v.y) : v; }
+     // Flips rectangle horizontally around x=0 but keeps it proper.
+    Rect left_flip (const Rect& v) const {
+        return {left ? -v.r : v.l, v.b, left ? -v.l : v.r, v.t};
+    }
 };
 
 } // vf

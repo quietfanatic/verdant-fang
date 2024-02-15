@@ -21,11 +21,13 @@ void main () {
 &fragment: "#version 140
 
 uniform sampler2DRect u_tex;
+uniform vec4 u_tint;
 in vec2 v_tex_coords;
 out vec4 color;
 
 void main () {
     color = texture(u_tex, v_tex_coords);
+    color = u_tint * u_tint.a + color * (1 - u_tint.a);
 }"
 
 [ayu::Document {
@@ -39,5 +41,12 @@ void main () {
     fragment: [glow::Shader {
         type: GL_FRAGMENT_SHADER
         source: *fragment
+    }]
+    empty_img: [glow::UniqueImage {
+        size: [1 1]
+        pixels: [0x00000000]
+    }]
+    empty_tex: [glow::PixelTexture {
+        image: #empty_img
     }]
 }]

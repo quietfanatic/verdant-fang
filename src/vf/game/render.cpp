@@ -15,14 +15,17 @@ namespace vf {
 struct FrameProgram : glow::Program {
     int u_screen_rect = -1;
     int u_tex_rect = -1;
+    int u_tint = -1;
 
     void Program_after_link () override {
         u_screen_rect = glGetUniformLocation(id, "u_screen_rect");
         u_tex_rect = glGetUniformLocation(id, "u_tex_rect");
+        u_tint = glGetUniformLocation(id, "u_tint");
         int u_tex = glGetUniformLocation(id, "u_tex");
         glUniform1i(u_tex, 0);
         require(u_screen_rect != -1);
         require(u_tex_rect != -1);
+        require(u_tint != -1);
         require(u_tex != -1);
     }
 
@@ -31,6 +34,7 @@ struct FrameProgram : glow::Program {
         Rect tex_rect;
         uint32 tex;
         float z;
+        glow::RGBA8 tint;
     };
     static constexpr usize max_commands = 256;
     usize n_commands = 0;
@@ -136,20 +140,26 @@ void Frame::init () {
 }
 
 void draw_frame (
-    const Frame& frame, uint32 layer, Vec pos, float z, Vec scale
+    const Frame& frame,
+    uint32 layer,
+    Vec pos,
+    float z,
+    Vec scale,
+    glow::RGBA8 tint
 ) {
     expect(frame.bounds);
     Rect world_rect = pos + Rect(frame.bounds) * scale;
     Rect tex_rect = Rect(frame.bounds + frame.offset);
     auto& l = frame.target->layers[layer];
-    draw_texture(l, world_rect, tex_rect, z + l.z_offset);
+    draw_texture(l, world_rect, tex_rect, z + l.z_offset, tint);
 }
 
 void draw_texture (
     const glow::Texture& tex,
     const Rect& world_rect,
     const Rect& tex_rect,
-    float z
+    float z,
+    glow::RGBA8 tint
 ) {
     require(!!tex);
     require(tex.target == GL_TEXTURE_RECTANGLE);
@@ -162,8 +172,23 @@ void draw_texture (
     require(frame_program->n_commands < FrameProgram::max_commands);
     Rect screen_rect = world_to_screen(world_rect);
     frame_program->commands[frame_program->n_commands++] = FrameProgram::Command(
-        screen_rect, tex_rect, tex, z
+        screen_rect, tex_rect, tex, z, tint
     );
+}
+
+void draw_rectangle (
+    const Rect& world_rect,
+    glow::RGBA8 color,
+    float z
+) {
+    static glow::PixelTexture* empty_tex = null;
+    if (!empty_tex) {
+        ayu::global(&empty_tex);
+        empty_tex = ayu::ResourceRef(
+            iri::constant("res:/vf/game/render.ayu")
+        )["empty_tex"][1];
+    }
+    draw_texture(*empty_tex, world_rect, Rect(0, 0, 1, 1), z, color);
 }
 
 void draw_frames () {
@@ -182,6 +207,10 @@ void draw_frames () {
         auto& cmd = program.commands[indexes[i]];
         glUniform1fv(program.u_screen_rect, 4, &cmd.screen_rect.l);
         glUniform1fv(program.u_tex_rect, 4, &cmd.tex_rect.l);
+        glUniform4f(program.u_tint,
+            cmd.tint.r / 255.f, cmd.tint.g / 255.f,
+            cmd.tint.b / 255.f, cmd.tint.a / 255.f
+        );
         glBindTexture(GL_TEXTURE_RECTANGLE, cmd.tex);
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     }

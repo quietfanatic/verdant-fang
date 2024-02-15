@@ -2,37 +2,36 @@
 &z_dead: -300
 &z_damage: 200
 &z_wings_offset: 20
+&z_tail_offset: -10
 
 [ayu::Document {
     body: [vf::LayeredTexture [{
         image: assets.ayu#layer0
          -- y down
-        bounds: [153 326 329 399]
+        bounds: [153 326 289 382]
     }]]
      -- y up
-    body_stand: [vf::BodyFrame [#body [109 59] [5 2]]]
-    body_fly: [vf::BodyFrame [#body [15 55] [-1 5]]]
-    body_flyf: [vf::BodyFrame [#body [47 55] [0 5]]]
-    body_flyb: [vf::BodyFrame [#body [79 55] [-2 5]]]
-    body_preattack: [vf::BodyFrame [#body [66 25] [-2 5]]]
-    body_attack: [vf::BodyFrame [#body [14 25] [-2 5] [0 0]]]
-    body_damage: [vf::BodyFrame [
-        #body [92 25] [-2 5] [0 0]
+    body_h: [vf::BodyFrame [#body [15 49] [5 1] [-9 2]]]
+    body_f0: [vf::BodyFrame [#body [47 38] [0 5] [-2 -9]]]
+    body_v: [vf::BodyFrame [#body [66 38] [-1 5] [-1 -9]]]
+    body_b0: [vf::BodyFrame [#body [83 38] [-2 5] [1 -9]]]
+    body_b1: [vf::BodyFrame [
+        #body [101 38] [-2 5] [4 -9]
         [[3 -4] [2 1] [1 6] [1 11]]
         [0 0 0 0]
     ]]
     body_damagefall: [vf::BodyFrame [
-        #body [114 25] [-4 -3] [0 0]
+        #body [123 38] [-4 -3] [6 -7]
         [[4 -2] [1 2] [-2 6] [-6 10]]
         [1 1 1 1]
     ]]
     body_dead0: [vf::BodyFrame [
-        #body [148 33] [-5 -2] [0 0]
+        #body [20 24] [-5 -2] [9 1]
         [[4 2] [-1 2] [-6 2] [-11 2]]
         [2 2 2 2]
     ]]
     body_dead1: [vf::BodyFrame [
-        #body [148 16] [-5 -2] [0 0]
+        #body [20 7] [-5 -2] [9 1]
         [[4 2] [-1 2] [-6 2] [-11 2]]
         [2 2 2 2]
     ]]
@@ -41,69 +40,81 @@
         bounds: [107 333 151 363]
         z_offset: *z_wings_offset
     }]]
+    wings_h: [vf::Frame [#wings [19 28]]]
     wings_fly0: [vf::Frame [#wings [18 11]]]
     wings_fly1: [vf::Frame [#wings [40 11]]]
     wings_dead: [vf::Frame [#wings [25 22]]]
-     -- Empty frame for weapon just to carry the hitbox
-    tail_attack: [vf::WeaponFrame [null [0 0] [19 -12 35 -9]]]
+    tail: [vf::LayeredTexture [{
+        image: assets.ayu#layer0
+        bounds: [46 334 102 387]
+        z_offset: *z_tail_offset
+    }]]
+    tail_h: [vf::WeaponFrame [#tail [37 38]]]
+    tail_v: [vf::WeaponFrame [#tail [16 38]]]
+    tail_b0: [vf::WeaponFrame [#tail [31 38]]]
+    tail_preattack: [vf::WeaponFrame [#tail [15 24]]]
+    tail_attack: [vf::WeaponFrame [#tail [18 31] [15 -3 31 0]]]
+    tail_damage: [vf::WeaponFrame [#tail [37 22]]]
+    tail_damagefall: [vf::WeaponFrame [#tail [43 19]]]
+    tail_dead: [vf::WeaponFrame [#tail [10 8]]]
     poses: [vf::WalkerPoses {
-        stand: [#body_stand]
-        crouch: [#body_stand]
+        stand: [#body_h #wings_h #tail_h]
+        crouch: [#body_h #wings_h #tail_h]
         walk: [
-            [#body_stand]
-            [#body_stand]
-            [#body_stand]
-            [#body_stand]
-            [#body_stand]
-            [#body_stand]
+            [#body_h #wings_h #tail_h]
+            [#body_h #wings_h #tail_h]
+            [#body_h #wings_h #tail_h]
+            [#body_h #wings_h #tail_h]
+            [#body_h #wings_h #tail_h]
+            [#body_h #wings_h #tail_h]
         ]
         jump: [
-            [#body_fly]
-            [#body_fly]
-            [#body_fly]
-            [#body_fly]
+            [#body_h #wings_h #tail_h]
+            [#body_h #wings_h #tail_h]
+            [#body_h #wings_h #tail_h]
+            [#body_h #wings_h #tail_h]
         ]
         fly: [
-             -- We're going to override the wing frame while flying with these
-             -- two wing frames animating in a cycle
-            [#body_fly #wings_fly0]
-            [#body_flyf #wings_fly1]
-            [#body_flyb]
+             -- Any pose with #wings_fly0 or #wings_fly1 will have its wings
+             -- overwritten with one of the first two wings parts in this array.
+            [#body_v #wings_fly0 #tail_v]
+            [#body_f0 #wings_fly1 #tail_v]
+            [#body_b0 #wings_fly0 #tail_b0]
         ]
         land: [
-            [#body_stand]
-            [#body_stand]
+            [#body_h #wings_h #tail_h]
+            [#body_h #wings_h #tail_h]
         ]
         attack: [
-            [#body_preattack]
-            [#body_preattack]
-            [#body_attack null #tail_attack]
-            [#body_attack]
-            [#body_preattack]
-            [#body_preattack]
+            [#body_b0 #wings_fly0 #tail_preattack]
+            [#body_b0 #wings_fly0 #tail_preattack]
+            [#body_b1 #wings_fly0 #tail_attack]
+            [#body_b1 #wings_fly0 #tail_attack]
+            [#body_b0 #wings_fly0 #tail_preattack]
+            [#body_b0 #wings_fly0 #tail_preattack]
         ]
         crouch_attack: [
-            [#body_preattack]
-            [#body_preattack]
-            [#body_attack null #tail_attack]
-            [#body_attack]
-            [#body_preattack]
-            [#body_preattack]
+            [#body_b0 #wings_fly0 #tail_preattack]
+            [#body_b0 #wings_fly0 #tail_preattack]
+            [#body_b1 #wings_fly0 #tail_attack]
+            [#body_b1 #wings_fly0 #tail_attack]
+            [#body_b0 #wings_fly0 #tail_preattack]
+            [#body_b0 #wings_fly0 #tail_preattack]
         ]
         hit: [
-            [#body_attack]
-            [#body_attack]
+            [#body_b1 #wings_fly0 #tail_attack]
+            [#body_b1 #wings_fly0 #tail_attack]
         ]
-        damage: [#body_damage]
-        damagefall: [#body_damagefall]
+        damage: [#body_b1 #wings_fly0 #tail_damage *z_damage]
+        damagefall: [#body_damagefall #wings_fly0 #tail_damagefall *z_damage]
         dead: [
-            [#body_dead0 #wings_dead]
-            [#body_dead1 #wings_dead]
-            [#body_dead0 #wings_dead]
-            [#body_dead1 #wings_dead]
-            [#body_dead0 #wings_dead]
-            [#body_dead1 #wings_dead]
-            [#body_dead0 #wings_dead]
+            [#body_dead0 #wings_dead #tail_dead *z_dead]
+            [#body_dead1 #wings_dead #tail_dead *z_dead]
+            [#body_dead0 #wings_dead #tail_dead *z_dead]
+            [#body_dead1 #wings_dead #tail_dead *z_dead]
+            [#body_dead0 #wings_dead #tail_dead *z_dead]
+            [#body_dead1 #wings_dead #tail_dead *z_dead]
+            [#body_dead0 #wings_dead #tail_dead *z_dead]
         ]
     }]
     data: [vf::WalkerData {
@@ -128,7 +139,7 @@
         can_fly: true
         drop_duration: 6
         land_sequence: [8 4]
-        attack_sequence: [8 0 1 7 8 200]
+        attack_sequence: [12 0 1 7 12 200]
         hit_sequence: [16 10]
         dead_sequence: [14 10 10 8 10 10 10 10 60 120 240]
         dead_floor_lift: 0

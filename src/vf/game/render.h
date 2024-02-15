@@ -30,7 +30,8 @@ void draw_frame (
     uint32 layer,
     Vec pos,
     float z = 0,
-    Vec scale = {1, 1}
+    Vec scale = {1, 1},
+    glow::RGBA8 tint = {}
 );
 
 inline void draw_layers (
@@ -38,11 +39,12 @@ inline void draw_layers (
     uint32 layers,
     Vec pos,
     float z = 0,
-    Vec scale = {1, 1}
+    Vec scale = {1, 1},
+    glow::RGBA8 tint = {}
 ) {
     for (usize i = 0; i < 32; i++) {
         if (layers & (1 << i)) {
-            draw_frame(frame, i, pos, z, scale);
+            draw_frame(frame, i, pos, z, scale, tint);
         }
     }
 }
@@ -51,6 +53,13 @@ void draw_texture (
     const glow::Texture&,
     const Rect& world_rect,
     const Rect& tex_rect,
+    float z = 0,
+    glow::RGBA8 tint = {}
+);
+
+void draw_rectangle (
+    const Rect& world_rect,
+    glow::RGBA8 color,
     float z = 0
 );
 

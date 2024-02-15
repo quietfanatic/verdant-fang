@@ -23,13 +23,12 @@ void Bug::Resident_before_step () {
 }
 
 Pose Bug::Walker_pose () {
-    if (floor || (state == WS::Dead && anim_phase >= 4)) {
-        return Walker::Walker_pose();
-    }
     auto& poses = *data->poses;
     Pose r = Walker::Walker_pose();
      // Using the head segment for the wings
-    r.head = wings_timer < 3 ? poses.fly[0].head : poses.fly[1].head;
+    if (r.head == poses.fly[0].head || r.head == poses.fly[1].head) {
+        r.head = wings_timer < 3 ? poses.fly[0].head : poses.fly[1].head;
+    }
     return r;
 }
 
@@ -103,9 +102,6 @@ Controls BugMind::Mind_think (Resident& s) {
         )
     );
     Vec attack_rel = pred_target_pos - pred_attack_pos;
-     // Work with right-facing coordinates
-    rel = self.left_flip(rel);
-    attack_rel = self.left_flip(attack_rel);
     Rect actual_attack_area = attack_area;
      // Take target's hitbox into account when deciding to attack.  To increase
      // hitbox size, decrease l and b and increase r and t.  Target hitbox's l
@@ -114,6 +110,12 @@ Controls BugMind::Mind_think (Resident& s) {
     actual_attack_area.b -= target->data->damage_box.t;
     actual_attack_area.r += target->data->damage_box.r;
     actual_attack_area.t -= target->data->damage_box.b;
+    actual_attack_area = self.left_flip(actual_attack_area);
+    draw_rectangle(actual_attack_area + self.pos, glow::RGBA8(0xff000080), Z::Debug);
+    draw_rectangle(self.pos + attack_rel + Rect(-2, -2, 2, 2), glow::RGBA8(0x00ff0080), Z::Debug);
+
+     // Note that unlike Monster's AI, our coordinate system is not flipped if
+     // self is facing left.
 
     next_alert_phase:
     if (self.alert_phase == 0) {
@@ -152,13 +154,16 @@ Controls BugMind::Mind_think (Resident& s) {
              // Start flying
             r[Control::Up] = 1;
         }
-        else if (rel.x < 0) {
+        else if (self.left_flip(rel.x) < 0) {
              // Turn around here because flying physics don't allow turning
              // around
             self.left = !self.left;
         }
         else if (contains(actual_attack_area, attack_rel)) {
             r[Control::Attack] = 1;
+        }
+        else if (length2(rel) < length2(personal_space)) {
+            r[self.left ? Control::Right : Control::Left] = 1;
         }
         else {
             if (self.roam_timer == 0) {
@@ -207,6 +212,7 @@ AYU_DESCRIBE(vf::BugMind,
         attr("alert_sequence", &BugMind::alert_sequence, optional),
         attr("roam_territory", &BugMind::roam_territory),
         attr("roam_interval", &BugMind::roam_interval),
-        attr("roam_tolerance", &BugMind::roam_tolerance, optional)
+        attr("roam_tolerance", &BugMind::roam_tolerance, optional),
+        attr("personal_space", &BugMind::personal_space)
     )
 )
