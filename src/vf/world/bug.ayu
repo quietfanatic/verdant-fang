@@ -7,8 +7,14 @@
          -- y down
         bounds: [153 326 181 358]
     }]]
-    body_fly: [vf::BodyFrame [#body [13 14]]]
      -- y up
+    body_fly: [vf::BodyFrame [#body [13 14] [1 5]]]
+    wings: [vf::LayeredTexture [{
+        image: assets.ayu#layer0
+        bounds: [107 341 151 363]
+    }]]
+    wings_fly0: [vf::Frame [#wings [18 11]]]
+    wings_fly1: [vf::Frame [#wings [40 11]]]
     poses: [vf::WalkerPoses {
         stand: [#body_fly]
         crouch: [#body_fly]
@@ -27,8 +33,9 @@
             [#body_fly]
         ]
         fly: [
-            [#body_fly]
-            [#body_fly]
+             -- We're going to override the wing frame while flying
+            [#body_fly #wings_fly0]
+            [#body_fly #wings_fly1]
             [#body_fly]
         ]
         land: [

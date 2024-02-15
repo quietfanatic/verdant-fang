@@ -502,7 +502,16 @@ Pose Walker::Walker_pose () {
     auto& poses = *data->poses;
     switch (state) {
         case WS::Neutral: {
-            if (crouch) {
+            if (fly) {
+                if (vel.x < -1) {
+                    r = poses.fly[1];
+                }
+                else if (vel.x > 1) {
+                    r = poses.fly[2];
+                }
+                else r = poses.fly[0];
+            }
+            else if (crouch) {
                 r = poses.crouch;
                 if (!floor) {
                     r.head = poses.jump[jump_frame()].head;
