@@ -73,7 +73,7 @@ void Frame::init () {
              // Find a non-transparent pixel
             IVec start = offset;
             for (;;) {
-                if (!contains(IRect(IVec(0, 0), layers_size), start)) {
+                if (!contains(IRect(IVec(-1, -1), layers_size + IVec(1, 1)), start)) {
                     raise(e_General,
                         "Didn't find non-transparent pixel between offset and end "
                         "of texture."
@@ -255,7 +255,17 @@ AYU_DESCRIBE(vf::Frame,
     init<&Frame::init>()
 )
 
+AYU_DESCRIBE(vf::TransitionType,
+    values(
+        value("wipe_left", TransitionType::WipeLeft),
+        value("wipe_right", TransitionType::WipeRight),
+        value("wipe_up", TransitionType::WipeUp),
+        value("wipe_down", TransitionType::WipeDown),
+        value("aperture_close", TransitionType::ApertureClose),
+        value("aperture_open", TransitionType::ApertureOpen)
+    )
+)
+
 AYU_DESCRIBE(vf::FrameProgram,
     delegate(base<glow::Program>())
 )
-

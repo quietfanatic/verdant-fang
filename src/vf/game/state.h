@@ -12,7 +12,7 @@ struct Transition {
     Room* target_room;
     Resident* migrant;
     Vec target_pos = GNAN;
-    uint8 checkpoint_level = 0;
+    bool set_checkpoint = false;
     uint32 until_exit = 8;
     uint32 until_enter = 24;
 

@@ -5,7 +5,6 @@
 #include "../../dirt/control/command.h"
 #include "camera.h"
 #include "game.h"
-#include "options.h"
 #include "room.h"
 
 namespace vf {
@@ -27,11 +26,7 @@ bool Transition::step (State& state) {
             }
             state.current_room->enter();
             swap_world_tex();
-            auto& options = current_game->options();
-            ayu::dump(checkpoint_level, options.frustration);
-            if (checkpoint_level >= options.frustration) {
-                state.save_checkpoint = true;
-            }
+            if (set_checkpoint) state.save_checkpoint = true;
              // fallthrough
         }
         else return true;

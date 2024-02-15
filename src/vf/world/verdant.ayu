@@ -199,6 +199,12 @@
         damagefallf: [#body_damagefallf #head_damagef #spear_damagefallf *z_deadplayer]
         deadf: [
             [#body_deadf #head_deadf #spear_dead *z_deadplayer]
+            [#body_deadf #head_deadf #spear_dead *z_deadplayer]
+            [#body_deadf #head_deadf #spear_dead *z_deadplayer]
+            [#body_deadf #head_deadf #spear_dead *z_deadplayer]
+            [#body_deadf #head_deadf #spear_dead *z_deadplayer]
+            [#body_deadf #head_deadf #spear_dead *z_deadplayer]
+            [#body_deadf #head_deadf #spear_dead *z_deadplayer]
         ]
         walk_hold: [
             [#body_walkhold0 #head_wave0 #snake_held *z_actor false 0x5]
@@ -252,7 +258,7 @@
         land_sequence: [4 4]
         attack_sequence: [6 0 1 6 6 200]
         hit_sequence: [12 12]
-        dead_sequence: [16 8 6 8 10 10 10 10 80 120 120]
+        dead_sequence: [16 8 6 8 10 10 10 10 60 60 60]
         jump_crouch_lift: 4
         dead_floor_lift: 10
         hold_buffer: 6

@@ -10,6 +10,7 @@ struct Verdant : Walker {
     bool damage_forward = false;
      // Total transformation time, for hair animation
     uint32 transform_timer = 0;
+    Room* limbo = null;
 
     Verdant ();
 
@@ -24,5 +25,7 @@ struct Verdant : Walker {
      // For making Fang hover during transformation
     void Walker_draw_weapon (const Pose&) override;
 };
+
+Verdant* find_verdant ();
 
 } // vf

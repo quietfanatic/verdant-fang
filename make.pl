@@ -131,6 +131,7 @@ my @sources = (qw(
     vf/world/bug.cpp
     vf/world/decals.cpp
     vf/world/door.cpp
+    vf/world/limbo-platform.cpp
     vf/world/loading-zone.cpp
     vf/world/monster.cpp
     vf/world/verdant.cpp

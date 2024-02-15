@@ -1,6 +1,7 @@
 #include "verdant.h"
 
 #include "../../dirt/control/command.h"
+#include "../game/camera.h"
 #include "../game/game.h"
 #include "../game/state.h"
 #include "door.h"
@@ -17,7 +18,7 @@ namespace VS {
 struct VerdantPoses : WalkerPoses {
     Pose damagef;
     Pose damagefallf;
-    Pose deadf [1];
+    Pose deadf [7];
     Pose walk_hold [6];
     Pose transform [14];
 };
@@ -87,6 +88,21 @@ WalkerBusiness Verdant::Walker_business () {
         case WS::Hit: {
             if (anim_phase == 1 && anim_timer == data->hit_sequence[1]) {
                 static_cast<VerdantData*>(data)->unhit_sound->play();
+            }
+            break;
+        }
+        case WS::Dead: {
+            if (limbo && room != limbo && anim_phase == 10) {
+                auto& state = current_game->state();
+                state.transition = Transition{
+                    .target_room = limbo,
+                    .migrant = this,
+                    .target_pos = pos,
+                    .until_exit = 1,
+                    .until_enter = 1
+                };
+                start_transition_effect(TransitionType::ApertureClose);
+                set_transition_center(pos);
             }
             break;
         }
@@ -274,7 +290,7 @@ Controls VerdantMind::Mind_think (Resident& r) {
     return next->Mind_think(r);
 }
 
-static Verdant* find_verdant () {
+Verdant* find_verdant () {
     if (auto game = current_game)
     if (auto room = game->state().current_room)
     if (auto v = room->find_with_types(Types::Verdant)) {
@@ -319,7 +335,8 @@ AYU_DESCRIBE(vf::Verdant,
     attrs(
         attr("vf::Walker", base<Walker>(), include),
         attr("damage_forward", &Verdant::damage_forward, optional),
-        attr("transform_timer", &Verdant::transform_timer, optional)
+        attr("transform_timer", &Verdant::transform_timer, optional),
+        attr("limbo", &Verdant::limbo, optional)
     )
 )
 

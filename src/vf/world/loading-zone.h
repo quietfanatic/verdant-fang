@@ -1,4 +1,5 @@
 #pragma once
+#include "../game/camera.h"
 #include "../game/room.h"
 #include "common.h"
 
@@ -8,7 +9,7 @@ struct LoadingZone : Resident {
     Hitbox hb;
     Room* target_room;
     Vec target_pos;
-    Vec direction = {1, 0};
+    TransitionType transition = TransitionType::WipeLeft;
      // Trigger a checkpoint if frustration is at most this value.
     uint8 checkpoint_level = 0;
     LoadingZone ();

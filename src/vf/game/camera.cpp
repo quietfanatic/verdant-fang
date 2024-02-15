@@ -11,7 +11,7 @@
 
 namespace vf {
 
-static uint32 wipe_timer = 0;
+static uint32 transition_timer = 0;
 static glow::Texture world_tex;
 static glow::Texture old_tex;
 static GLuint world_fb;
@@ -24,19 +24,22 @@ struct ZoomProgram : glow::Program {
 };
 static ZoomProgram* zoom_program = null;
 
-struct WipeProgram : glow::Program {
-    int u_wipe_pos;
-    int u_wipe_dir;
+struct TransitionProgram : glow::Program {
+    int u_type;
+    int u_t;
+    int u_center;
     void Program_after_link () override {
-        u_wipe_pos = glGetUniformLocation(id, "u_wipe_pos");
-        require(u_wipe_pos != -1);
-        u_wipe_dir = glGetUniformLocation(id, "u_wipe_dir");
-        require(u_wipe_dir != -1);
+        u_type = glGetUniformLocation(id, "u_type");
+        require(u_type != -1);
+        u_t = glGetUniformLocation(id, "u_t");
+        require(u_t != -1);
+        u_center = glGetUniformLocation(id, "u_center");
+        require(u_center != -1);
         int u_tex = glGetUniformLocation(id, "u_tex");
         glUniform1i(u_tex, 0);
     }
 };
-static WipeProgram* wipe_program = null;
+static TransitionProgram* transition_program = null;
 
 static void setup_camera () {
     world_tex = glow::Texture(GL_TEXTURE_2D);
@@ -78,11 +81,11 @@ void begin_camera () {
             iri::constant("res:/vf/game/camera.ayu")
         )["zoom_program"][1];
     }
-    if (!wipe_program) {
-        ayu::global(&wipe_program);
-        wipe_program = ayu::ResourceRef(
+    if (!transition_program) {
+        ayu::global(&transition_program);
+        transition_program = ayu::ResourceRef(
             iri::constant("res:/vf/game/camera.ayu")
-        )["wipe_program"][1];
+        )["transition_program"][1];
     }
     if (!world_fb) setup_camera();
     glBindFramebuffer(GL_FRAMEBUFFER, world_fb);
@@ -92,15 +95,15 @@ void begin_camera () {
 
 void end_camera () {
     draw_frames();
-    if (wipe_timer) {
-        wipe_timer -= 1;
-        wipe_program->use();
-        float wipe_t = float(wipe_timer) / wipe_duration;
+    if (transition_timer) {
+        transition_timer -= 1;
+        transition_program->use();
+        float t = float(transition_timer) / transition_duration;
          // Ease in and out a bit
-        wipe_t = (1.f - std::cos(wipe_t * float(M_PI))) / 2.f;
+        t = (1.f - std::cos(t * float(M_PI))) / 2.f;
         glUniform1f(
-            wipe_program->u_wipe_pos,
-            lerp(-0.1f, 1.1f, wipe_t)
+            transition_program->u_t,
+            lerp(-0.1f, 1.1f, t)
         );
         glBindTexture(GL_TEXTURE_2D, old_tex);
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
@@ -116,20 +119,19 @@ void end_camera () {
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 }
 
-void start_transition_effect (Vec direction) {
-    expect(length2(direction) == 1);
-    wipe_program->use();
-    glUniform1i(wipe_program->u_wipe_dir,
-          direction.x > 0.4 ? 0
-        : direction.y > 0.4 ? 1
-        : direction.x < 0.4 ? 2
-        :                     3
-    );
+void set_transition_center (Vec center) {
+    transition_program->use();
+    glUniform2f(transition_program->u_center, center.x, center.y);
+}
+
+void start_transition_effect (TransitionType type) {
+    transition_program->use();
+    glUniform1i(transition_program->u_type, int(type));
 }
 
 void swap_world_tex () {
     using std::swap; swap(world_tex, old_tex);
-    wipe_timer = wipe_duration;
+    transition_timer = transition_duration;
     glBindFramebuffer(GL_FRAMEBUFFER, world_fb);
     glFramebufferTexture2D(
         GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, world_tex, 0
@@ -162,6 +164,6 @@ AYU_DESCRIBE(vf::ZoomProgram,
     delegate(base<glow::Program>())
 )
 
-AYU_DESCRIBE(vf::WipeProgram,
+AYU_DESCRIBE(vf::TransitionProgram,
     delegate(base<glow::Program>())
 )

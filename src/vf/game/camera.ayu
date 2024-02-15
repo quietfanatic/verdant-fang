@@ -38,60 +38,84 @@ void main () {
     color = texture(u_tex, v_tex_coords);
 }"
 
-&wipe_fragment: "#version 140
+&transition_fragment: "#version 140
 
 uniform sampler2D u_tex;
-uniform float u_wipe_pos;
-uniform int u_wipe_dir;
+uniform int u_type;
+uniform float u_t;
+uniform vec2 u_center;
 in vec2 v_tex_coords;
 out vec4 color;
 
 const float wipe_width = 0.16;
 const float wipe_height = 0.09;
-const vec4 wipe_colors [2] = vec4[2](
+const vec4 colors [2] = vec4[2](
     vec4(0.3, 0.3, 0.3, 1.0),
     vec4(0.25, 0.25, 0.25, 1.0)
 );
 
 void main () {
-    float distance;
-    int color_index;
-    switch (u_wipe_dir) {
+    if (u_type >= 0 && u_type <= 3) {
+         // Wipe transitions
+        float dist;
+        int color_index;
          // Make a nice snakey wipe.  I know this code is messy, I haven't
          // bothered to clean it up yet.
-        case 0: {
-            float wipe_pos = u_wipe_pos - sin(v_tex_coords.y * 9) / 16 * 0.6;
-            distance = v_tex_coords.x - wipe_pos;
-            color_index = mod(v_tex_coords.y * 9 + cos(distance * 10), 2) < 1 ? 0 : 1;
-            break;
+        if (u_type == 0) {
+             // left
+            float t = u_t - sin(v_tex_coords.y * 9) / 16 * 0.6;
+            dist = v_tex_coords.x - t;
+            color_index = mod(v_tex_coords.y * 9 + cos(dist * 10), 2) < 1 ? 0 : 1;
         }
-        case 1: {
-            float wipe_pos = u_wipe_pos - sin(v_tex_coords.x * 16) / 9 * 0.6;
-            distance = v_tex_coords.y - wipe_pos;
-            color_index = mod(v_tex_coords.x * 16 + cos(distance * 10), 2) < 1 ? 0 : 1;
-            break;
+        else if (u_type == 1) {
+             // right
+            float t = u_t - sin(v_tex_coords.y * 9) / 16 * 0.6;
+            dist = 1 - v_tex_coords.x - t;
+            color_index = mod(v_tex_coords.y * 9 + cos(dist * 10), 2) < 1 ? 0 : 1;
         }
-        case 2: {
-            float wipe_pos = u_wipe_pos - sin(v_tex_coords.y * 9) / 16 * 0.6;
-            distance = 1 - v_tex_coords.x - wipe_pos;
-            color_index = mod(v_tex_coords.y * 9 + cos(distance * 10), 2) < 1 ? 0 : 1;
-            break;
+        else if (u_type == 2) {
+             // up
+            float t = u_t - sin(v_tex_coords.x * 16) / 9 * 0.6;
+            dist = v_tex_coords.y - t;
+            color_index = mod(v_tex_coords.x * 16 + cos(dist * 10), 2) < 1 ? 0 : 1;
         }
-        case 3: {
-            float wipe_pos = u_wipe_pos - sin(v_tex_coords.x * 16) / 9 * 0.6;
-            distance = 1 - v_tex_coords.y - wipe_pos;
-            color_index = mod(v_tex_coords.x * 16 + cos(distance * 10), 2) < 1 ? 0 : 1;
-            break;
+        else if (u_type == 3) {
+             // down
+            float t = u_t - sin(v_tex_coords.x * 16) / 9 * 0.6;
+            dist = 1 - v_tex_coords.y - t;
+            color_index = mod(v_tex_coords.x * 16 + cos(dist * 10), 2) < 1 ? 0 : 1;
+        }
+        if (dist < -wipe_width / 2) {
+            color = texture(u_tex, v_tex_coords);
+        }
+        else if (dist < wipe_width / 2) {
+            color = colors[color_index];
+        }
+        else {
+            color = vec4(0);
         }
     }
-    if (distance < -wipe_width / 2) {
-        color = texture(u_tex, v_tex_coords);
+    else if (u_type == 4) {
+         // Aperture close
+        float dist = distance(gl_FragCoord.xy, u_center);
+        float max_dist = 320;
+        if (dist < max_dist * (1 - u_t)) {
+            color = texture(u_tex, v_tex_coords);
+        }
+        else {
+            color = vec4(0);
+        }
     }
-    else if (distance < wipe_width / 2) {
-        color = wipe_colors[color_index];
-    }
-    else {
-        color = vec4(0);
+    else if (u_type == 5) {
+         // Aperture open
+        float dist = distance(gl_FragCoord.xy, u_center);
+        float max_dist = 320;
+        if (dist > max_dist * (1 - u_t)) {
+            color = texture(u_tex, v_tex_coords);
+        }
+        else {
+            color = vec4(0);
+        }
     }
 }"
 
@@ -107,15 +131,15 @@ void main () {
     zoom_program: [vf::ZoomProgram {
         shaders: [#zoom_vertex #zoom_fragment]
     }]
-    wipe_vertex: [glow::Shader {
+    transition_vertex: [glow::Shader {
         type: GL_VERTEX_SHADER
         source: *vertex
     }]
-    wipe_fragment: [glow::Shader {
+    transition_fragment: [glow::Shader {
         type: GL_FRAGMENT_SHADER
-        source: *wipe_fragment
+        source: *transition_fragment
     }]
-    wipe_program: [vf::WipeProgram {
-        shaders: [#wipe_vertex #wipe_fragment]
+    transition_program: [vf::TransitionProgram {
+        shaders: [#transition_vertex #transition_fragment]
     }]
 }]

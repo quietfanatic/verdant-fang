@@ -101,7 +101,7 @@ AYU_DESCRIBE(vf::Door,
         attr("open_pos", &Door::open_pos, optional),
         attr("open", &Door::open, optional)
     ),
-    init<&Door::init>()
+    init<&Door::init>(10)
 )
 
 AYU_DESCRIBE(vf::DoorData,
