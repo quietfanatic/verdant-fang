@@ -20,6 +20,9 @@ struct Bug : Walker {
     void init ();
      // Animate wings
     void Resident_before_step () override;
+     // Apply decals
+    void Walker_on_hit (const Hitbox&, Walker&, const Hitbox&) override;
+     // Animate wings
     Pose Walker_pose () override;
     void Resident_on_exit () override;
 };

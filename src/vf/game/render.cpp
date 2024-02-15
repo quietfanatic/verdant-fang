@@ -150,6 +150,13 @@ void draw_frame (
     expect(frame.bounds);
     Rect world_rect = pos + Rect(frame.bounds) * scale;
     Rect tex_rect = Rect(frame.bounds + frame.offset);
+    if (layer >= frame.target->layers.size()) {
+#ifdef NDEBUG
+        never();
+#else
+        return;
+#endif
+    }
     auto& l = frame.target->layers[layer];
     draw_texture(l, world_rect, tex_rect, z + l.z_offset, tint);
 }
