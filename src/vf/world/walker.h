@@ -83,7 +83,7 @@ struct WalkerPoses {
     Pose walk [6];
      // vel positive, vel neutral, and two vel negative alternating.
     Pose jump [4];
-     // Neutral, left, right
+     // Neutral, forward, backward
     Pose fly [3];
      // Occupied, interruptible
     Pose land [2];

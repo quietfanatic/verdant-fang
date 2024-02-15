@@ -1,11 +1,15 @@
 #pragma once
+#include "../../dirt/glow/image-texture.h"
 #include "common.h"
-namespace glow { struct PixelTexture; struct Texture; }
 
 namespace vf {
 
+struct TextureLayer : glow::PixelTexture {
+    float z_offset = 0;
+};
+
 struct LayeredTexture {
-    UniqueArray<glow::PixelTexture> layers;
+    UniqueArray<TextureLayer> layers;
      // If a frame is given with an offset that doesn't have any non-transparent
      // pixels nearby, search in this direction for non-transparent pixels
      // (default up).

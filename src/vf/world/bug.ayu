@@ -1,17 +1,22 @@
  -- Keep these in sync with common.h
 &z_dead: -300
 &z_damage: 200
+&z_wings_offset: 20
+
 [ayu::Document {
     body: [vf::LayeredTexture [{
         image: assets.ayu#layer0
          -- y down
-        bounds: [153 326 181 358]
+        bounds: [153 326 249 358]
     }]]
      -- y up
-    body_fly: [vf::BodyFrame [#body [13 14] [1 5]]]
+    body_fly: [vf::BodyFrame [#body [15 14] [-1 5]]]
+    body_flyf: [vf::BodyFrame [#body [47 14] [0 5]]]
+    body_flyb: [vf::BodyFrame [#body [79 14] [-2 5]]]
     wings: [vf::LayeredTexture [{
         image: assets.ayu#layer0
         bounds: [107 341 151 363]
+        z_offset: *z_wings_offset
     }]]
     wings_fly0: [vf::Frame [#wings [18 11]]]
     wings_fly1: [vf::Frame [#wings [40 11]]]
@@ -33,10 +38,11 @@
             [#body_fly]
         ]
         fly: [
-             -- We're going to override the wing frame while flying
+             -- We're going to override the wing frame while flying with these
+             -- two wing frames animating in a cycle
             [#body_fly #wings_fly0]
-            [#body_fly #wings_fly1]
-            [#body_fly]
+            [#body_flyf #wings_fly1]
+            [#body_flyb]
         ]
         land: [
             [#body_fly]
@@ -69,10 +75,10 @@
         ]
     }]
     data: [vf::WalkerData {
-        body_box: [-5 -9 3 14]
-        crouch_body_box: [-5 -9 3 14]
-        damage_box: [-5 -9 3 14]
-        crouch_damage_box: [-5 -9 3 14]
+        body_box: [-3 -9 5 14]
+        crouch_body_box: [-3 -9 5 14]
+        damage_box: [-3 -9 3 14]
+        crouch_damage_box: [-3 -9 5 14]
         ground_acc: 0.18
         ground_max: 2.0
         ground_dec: 0.3

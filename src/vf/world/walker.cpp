@@ -203,7 +203,7 @@ void Walker::Resident_before_step () {
             }
             if (controls[Control::Left] && !controls[Control::Right]) {
                 if (business == WB::Interruptible) set_state(WS::Neutral);
-                left = true;
+//                left = true;
                 if (vel.x > -max) {
                     vel.x -= acc;
                     if (vel.x < -max) vel.x = -max;
@@ -211,12 +211,13 @@ void Walker::Resident_before_step () {
             }
             else if (controls[Control::Right]) {
                 if (business == WB::Interruptible) set_state(WS::Neutral);
-                left = false;
+//                left = false;
                 if (vel.x < max) {
                     vel.x += acc;
                     if (vel.x > max) vel.x = max;
                 }
             }
+            else decelerate = true;
         }
         else {
              // Try flying
@@ -503,10 +504,10 @@ Pose Walker::Walker_pose () {
     switch (state) {
         case WS::Neutral: {
             if (fly) {
-                if (vel.x < -1) {
+                if (left_flip(vel.x) > 0.5) {
                     r = poses.fly[1];
                 }
-                else if (vel.x > 1) {
+                else if (left_flip(vel.x) < -0.5) {
                     r = poses.fly[2];
                 }
                 else r = poses.fly[0];
@@ -582,7 +583,7 @@ void Walker::Resident_draw () {
         if (pose.head) {
             draw_layers(
                 *pose.head, head_layers,
-                pos + head_offset, pose.z + Z::HeadOffset, scale
+                pos + head_offset, pose.z, scale
             );
         }
         else ayu::dump(0);
@@ -607,7 +608,7 @@ void Walker::Resident_draw () {
                 }
                 draw_layers(
                     overlap, head_layers,
-                    pos + head_offset, Z::Overlap + Z::HeadOffset, scale
+                    pos + head_offset, Z::Overlap, scale
                 );
             }
         }
@@ -624,8 +625,7 @@ void Walker::Walker_draw_weapon (const Pose& pose) {
         draw_layers(
             *pose.weapon, weapon_layers,
             pos + pose.body->weapon * scale,
-            z + Z::WeaponOffset,
-            scale
+            z, scale
         );
     }
 }

@@ -4,7 +4,7 @@
 namespace vf {
 
 namespace Z {
-     // Keep these in sync with monster.ayu, verdant.ayu, and world.ayu
+     // Keep these in sync with the declarations at the top of *.ayu
     constexpr float BG = -700;
     constexpr float DoorBehind = -600;
     constexpr float Hiding = -500;
@@ -18,8 +18,9 @@ namespace Z {
     constexpr float Actor = 300;
     constexpr float Overlap = 400;
     constexpr float HeadOffset = -10;
-    constexpr float DecalOffset = 10;
-    constexpr float WeaponOffset = 20;
+    constexpr float WingsOffset = 10;
+    constexpr float DecalOffset = 20;
+    constexpr float WeaponOffset = 30;
 }
 
 namespace Types {

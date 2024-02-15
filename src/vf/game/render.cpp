@@ -141,7 +141,8 @@ void draw_frame (
     expect(frame.bounds);
     Rect world_rect = pos + Rect(frame.bounds) * scale;
     Rect tex_rect = Rect(frame.bounds + frame.offset);
-    draw_texture(frame.target->layers[layer], world_rect, tex_rect, z);
+    auto& l = frame.target->layers[layer];
+    draw_texture(l, world_rect, tex_rect, z + l.z_offset);
 }
 
 void draw_texture (
@@ -188,6 +189,13 @@ void draw_frames () {
 }
 
 } using namespace vf;
+
+AYU_DESCRIBE(vf::TextureLayer,
+    attrs(
+        attr("glow::PixelTexture", base<glow::PixelTexture>(), include),
+        attr("z_offset", &TextureLayer::z_offset, optional)
+    )
+)
 
 AYU_DESCRIBE(vf::LayeredTexture,
     delegate(&LayeredTexture::layers),
