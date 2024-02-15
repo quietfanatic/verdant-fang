@@ -1,6 +1,7 @@
 #include "monster.h"
 
 #include "../../dirt/ayu/reflection/describe.h"
+#include "quadratics.h"
 #include "verdant.h"
 
 namespace vf {
@@ -83,20 +84,7 @@ void Monster::Resident_on_exit () {
     Walker::Resident_on_exit();
 }
 
- // Evaluate quadratic, but stopping when velocity reaches 0 instead of going
- // backwards.
-float quadratic_until_stop (float p, float v, float a, float t) {
-     // 0 = v + at
-     // -v = at
-     // -v/a = t
-    if (a) {
-        float peak_t = -(v / a);
-        if (peak_t >= 0 && t > peak_t) t = peak_t;
-    }
-    return p + v*t + a*(t*t);
-}
-
-float predict (Walker& self, Walker& target, float self_acc, float time) {
+static float predict (Walker& self, Walker& target, float self_acc, float time) {
     auto predicted_x = quadratic_until_stop(
         self.pos.x, self.vel.x,
         self.left ? -self_acc : self_acc,
@@ -122,7 +110,7 @@ Controls MonsterMind::Mind_think (Resident& s) {
 
      // Calculcate some distances
     float dist = target->pos.x - self.pos.x;
-     // Predict where target will be when attack animation finishes.
+     // Predict where target will be when attack hitbox comes out.
     float attack_dist = predict(
         self, *target,
         self.floor ? -self.data->coast_dec : -self.data->air_dec,

@@ -146,9 +146,11 @@ struct WalkerData {
      // [4]..[10] are laying down, varying only in decals.  pose = dead[n-4]
     uint8 dead_sequence [11];
      // When crouching in midair, lift feet this many pixels
-    uint8 jump_crouch_lift;
+    uint8 jump_crouch_lift = 0;
      // Applied between phases 2 and 3
     uint8 dead_floor_lift;
+     // Applied when flying from ground
+    uint8 fly_floor_lift = 0;
      // Allow jumping and attacking if the button has been held this many frames
     uint8 hold_buffer;
      // For animation

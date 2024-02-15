@@ -223,6 +223,7 @@ void Walker::Resident_before_step () {
              // Try flying
             if (data->can_fly && controls[Control::Up]) {
                 fly = true;
+                if (floor) pos.y += data->fly_floor_lift;
                 goto restart_move;
             }
              // Crouch or don't
@@ -434,6 +435,7 @@ void Walker::Resident_on_collide (
         else never();
     }
     else if (&hb == &body_hb && o_hb.layers_2 & Layers::Walker_Semisolid) {
+        if (fly) return;
         Rect here = hb.box + pos;
         Rect there = o_hb.box + o.pos;
         Rect overlap = here & there;
@@ -727,8 +729,9 @@ AYU_DESCRIBE(vf::WalkerData,
         attr("attack_sequence", &WalkerData::attack_sequence),
         attr("hit_sequence", &WalkerData::hit_sequence),
         attr("dead_sequence", &WalkerData::dead_sequence),
-        attr("jump_crouch_lift", &WalkerData::jump_crouch_lift),
+        attr("jump_crouch_lift", &WalkerData::jump_crouch_lift, optional),
         attr("dead_floor_lift", &WalkerData::dead_floor_lift),
+        attr("fly_floor_lift", &WalkerData::fly_floor_lift, optional),
         attr("hold_buffer", &WalkerData::hold_buffer),
         attr("walk_cycle_dist", &WalkerData::walk_cycle_dist),
         attr("fall_cycle_dist", &WalkerData::fall_cycle_dist),

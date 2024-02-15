@@ -7,27 +7,6 @@
 [ayu::Document {
     player: [vf::Player { }]
     verdant_mind: [vf::VerdantMind { next:#player }]
-    chargey: [vf::MonsterMind {
-        target: #verdant
-        sight_range: 128
-        attack_range: 28
-        social_distance: 40
-    }]
-    jumpy: [vf::MonsterMind {
-        target: #verdant
-        sight_range: 128
-        attack_range: 28
-        jump_range: 64
-        social_distance: 64
-    }]
-    hidey: [vf::MonsterMind {
-        target: #verdant
-        sight_range: 128
-        attack_range: 28
-        jump_range: 64
-        social_distance: 40
-        hiding_spot: 184 -- center of #den_screen1
-    }]
 
     start: [vf::Room { }]
     start_bg: [vf::Scenery {
@@ -56,12 +35,12 @@
     verdant: [vf::Verdant {
         data: verdant.ayu#data
         mind: #verdant_mind
-        room: #start
-        pos: [-32 32]
-        --room: #hive
-        --pos: [16 64]
+        --room: #start
+        --pos: [-32 32]
+        --state: 5 --VS::PreTransform
+        room: #hive
+        pos: [16 64]
         floor: #start_blocks
-        state: 5 --VS::PreTransform
     }]
     start_switch: [vf::Switch {
         room: #start
@@ -113,22 +92,44 @@
         pos: [184 32]
         z: *z_semisolid
     }]
-
-    charger: [vf::Monster {
+     -- Monster personalities
+    chargey: [vf::MonsterMind {
+        target: #verdant
+        sight_range: 128
+        attack_range: 28
+        social_distance: 40
+    }]
+    jumpy: [vf::MonsterMind {
+        target: #verdant
+        sight_range: 128
+        attack_range: 28
+        jump_range: 64
+        social_distance: 64
+    }]
+    hidey: [vf::MonsterMind {
+        target: #verdant
+        sight_range: 128
+        attack_range: 28
+        jump_range: 64
+        social_distance: 40
+        hiding_spot: 184 -- center of #den_screen1
+    }]
+     -- Monsters
+    clyde: [vf::Monster {
         room: #den
         data: monster.ayu#data
         mind: #chargey
         pos: [168 32]
         floor: #start_blocks
     }]
-    jumper: [vf::Monster {
+    nancy: [vf::Monster {
         room: #den
         data: monster.ayu#data
         mind: #jumpy
         pos: [232 32]
         floor: #start_blocks
     }]
-    hider: [vf::Monster {
+    amber: [vf::Monster {
         room: #den
         data: monster.ayu#data
         mind: #hidey
@@ -187,10 +188,17 @@
             [176 16] [208 16]
         ]
     }]
-    bug: [vf::Bug {
+    buggy: [vf::BugMind {
+        target: #verdant
+        sight_range: 200
+        attack_area: [16 -12 36 -9]
+        roam_territory: [64 32 256 144]
+        roam_interval: [60 300]
+    }]
+    coochers: [vf::Bug {
         room: #hive
         data: bug.ayu#data
-        mind: #player
+        mind: #buggy
         pos: [220 128]
     }]
 
