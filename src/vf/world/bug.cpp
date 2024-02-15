@@ -11,6 +11,9 @@ void Bug::Resident_before_step () {
 }
 
 Pose Bug::Walker_pose () {
+    if (state == WS::Dead && anim_phase >= 4) {
+        return Walker::Walker_pose();
+    }
     auto& poses = *data->poses;
     Pose r = Walker::Walker_pose();
      // Using the head segment for the wings

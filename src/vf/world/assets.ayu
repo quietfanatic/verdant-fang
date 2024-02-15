@@ -2,6 +2,12 @@
     layer0: [glow::FileImage { source:assets/layer0.png }]
     layer1: [glow::FileImage { source:assets/layer1.png }]
     layer2: [glow::FileImage { source:assets/layer2.png }]
+     -- A little silly to have a whole nother image just for some differently
+     -- colored decals.  However, due to compression, it's only 1.3K on disk and
+     -- while playing the game, only the area necessary for the texture is
+     -- stored.  It just loads a whole bunch of unnecessary pixels while loading
+     -- is all.
+    layer3: [glow::FileImage { source:assets/layer3.png }]
 
     cave_img: [glow::FileImage { source:assets/cave.png }]
     cave_tex: [vf::LayeredTexture [{ image: #cave_img }]]

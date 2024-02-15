@@ -170,5 +170,6 @@
 
         poses: #poses
         decals: decals.ayu#
+        flavor: strawberry
     }]
 }]

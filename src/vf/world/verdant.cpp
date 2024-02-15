@@ -153,8 +153,9 @@ void Verdant::Walker_on_hit (
      // Stab
     victim.decal_type = DecalType::Stab;
     victim.decal_index = decal_i;
-    if (stab_depth > 12) weapon_layers = 0x5;
-    else if (weapon_layers == 0x1) weapon_layers = 0x3;
+    if (victim.data->flavor == WF::Lemon) weapon_layers |= 0x8;
+    else if (stab_depth > 12) weapon_layers |= 0x4;
+    else weapon_layers |= 0x2;
      // Move victim vertically
     float height_diff = decal_pos.y - weapon_y;
     victim.pos.y -= height_diff;

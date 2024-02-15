@@ -96,6 +96,12 @@ struct WalkerPoses {
     Pose dead [3];
 };
 
+enum class WalkerFlavor {
+    Strawberry,
+    Lemon
+};
+using WF = WalkerFlavor;
+
 struct WalkerData {
     Rect body_box;
     Rect crouch_body_box;
@@ -157,6 +163,7 @@ struct WalkerData {
     Sound* hit_soft_sound;
     WalkerPoses* poses;
     DecalData* decals;
+    WalkerFlavor flavor;
 };
 
 struct Walker : Resident {

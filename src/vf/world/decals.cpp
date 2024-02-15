@@ -42,7 +42,8 @@ void draw_decal (const Walker& w, const Pose& pose) {
     }
     float z = w.anim_phase < 3 ? Z::Overlap + Z::DecalOffset
             : pose.z + Z::DecalOffset;
-    draw_frame(*frame, 0, w.pos + off, z, {w.left ? -1 : 1, 1});
+    uint32 layer = w.data->flavor == WF::Lemon ? 1 : 0;
+    draw_frame(*frame, layer, w.pos + off, z, {w.left ? -1 : 1, 1});
 }
 
 } using namespace vf;

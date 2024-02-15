@@ -32,11 +32,12 @@
     ]]
     wings: [vf::LayeredTexture [{
         image: assets.ayu#layer0
-        bounds: [107 341 151 363]
+        bounds: [107 333 151 363]
         z_offset: *z_wings_offset
     }]]
     wings_fly0: [vf::Frame [#wings [18 11]]]
     wings_fly1: [vf::Frame [#wings [40 11]]]
+    wings_dead: [vf::Frame [#wings [25 22]]]
      -- Empty frame for weapon just to carry the hitbox
     tail_attack: [vf::WeaponFrame [null [0 0] [19 -12 35 -9]]]
     poses: [vf::WalkerPoses {
@@ -90,7 +91,7 @@
         dead: [
             [#body_damage]
             [#body_damagefall]
-            [#body_dead]
+            [#body_dead #wings_dead]
         ]
     }]
     data: [vf::WalkerData {
@@ -141,5 +142,6 @@
 
         poses: #poses
         decals: decals.ayu#
+        flavor: lemon
     }]
 }]

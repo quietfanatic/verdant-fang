@@ -588,7 +588,6 @@ void Walker::Resident_draw () {
                 pos + head_offset, pose.z, scale
             );
         }
-        else ayu::dump(0);
         draw_layers(
             *pose.body, body_layers & pose.body_layers,
             pos, pose.z, scale
@@ -693,6 +692,13 @@ AYU_DESCRIBE(vf::WalkerPoses,
     )
 )
 
+AYU_DESCRIBE(vf::WalkerFlavor,
+    values(
+        value("strawberry", WF::Strawberry),
+        value("lemon", WF::Lemon)
+    )
+)
+
 AYU_DESCRIBE(vf::WalkerData,
     attrs(
         attr("body_box", &WalkerData::body_box),
@@ -733,7 +739,8 @@ AYU_DESCRIBE(vf::WalkerData,
         attr("hit_solid_sound", &WalkerData::hit_solid_sound),
         attr("hit_soft_sound", &WalkerData::hit_soft_sound),
         attr("poses", &WalkerData::poses),
-        attr("decals", &WalkerData::decals)
+        attr("decals", &WalkerData::decals),
+        attr("flavor", &WalkerData::flavor)
     )
 )
 

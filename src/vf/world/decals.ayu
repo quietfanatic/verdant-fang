@@ -5,6 +5,9 @@
         tex: [{
             image: assets.ayu#layer0
             bounds: [337 323 393 356]
+        } {
+            image: assets.ayu#layer1
+            bounds: [337 323 393 356]
         }]
         dir_0: [
             [#/stab/tex [3 28] [0 -2 1 2]]
