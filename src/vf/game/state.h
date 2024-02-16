@@ -11,7 +11,7 @@ namespace vf {
 
 struct Transition {
     Room* target_room;
-    Resident* migrant;
+    Resident* migrant = null;
     Vec target_pos = GNAN;
     TransitionType type = TransitionType::WipeLeft;
     bool set_checkpoint = false;

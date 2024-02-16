@@ -19,10 +19,10 @@ struct LimboPlatform : Resident {
             pos = v->pos;
              // Hacky adjust position based on pose
             if (v->damage_forward) {
-                pos.x += 4;
+                pos.x += v->left_flip(4);
             }
             else {
-                pos.x -= 9;
+                pos.x -= v->left_flip(9);
             }
         }
     }

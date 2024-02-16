@@ -17,11 +17,11 @@
     verdant: [vf::Verdant {
         data: verdant.ayu#data
         mind: #verdant_mind
-        room: #start
-        pos: [-32 32]
---        state: 5 --VS::PreTransform
-        --room: #hive
-        --pos: [16 64]
+        --room: #start
+        --pos: [-32 32]
+        --state: 5 --VS::PreTransform
+        room: #hive
+        pos: [16 64]
         floor: #start_blocks
         limbo: #limbo
     }]
@@ -227,6 +227,7 @@
         bounds: [-8 0 -8 180]
         target_room: #den
         target_pos: [304 80]
+        transition: wipe_right
     }]
     hive_to_atelier: [vf::LoadingZone {
         room: #hive
