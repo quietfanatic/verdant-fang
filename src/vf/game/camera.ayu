@@ -66,28 +66,28 @@ void main () {
         if (u_type == 0) {
              // left
              // Apply a little wobbliness dependent on y
-            float t = wide_t - sin(v_tex_coords.y * 9) / 16 * 0.6;
+            float t = wide_t + sin(v_tex_coords.y * 9) / 16 * 0.6;
              // t=0 means wipe is at right side of the screen
-            dist = v_tex_coords.x - t;
+            dist = 1 - v_tex_coords.x - t;
              // Make rounded stripes
             color_index = mod(v_tex_coords.y * 9 + cos(dist * 10), 2) < 1 ? 0 : 1;
         }
         else if (u_type == 1) {
              // right
-            float t = wide_t - sin(v_tex_coords.y * 9) / 16 * 0.6;
-            dist = 1 - v_tex_coords.x - t;
+            float t = wide_t + sin(v_tex_coords.y * 9) / 16 * 0.6;
+            dist = v_tex_coords.x - t;
             color_index = mod(v_tex_coords.y * 9 + cos(dist * 10), 2) < 1 ? 0 : 1;
         }
         else if (u_type == 2) {
              // up
-            float t = wide_t - sin(v_tex_coords.x * 16) / 9 * 0.6;
-            dist = v_tex_coords.y - t;
+            float t = wide_t + sin(v_tex_coords.x * 16) / 9 * 0.6;
+            dist = 1 - v_tex_coords.y - t;
             color_index = mod(v_tex_coords.x * 16 + cos(dist * 10), 2) < 1 ? 0 : 1;
         }
         else if (u_type == 3) {
              // down
-            float t = wide_t - sin(v_tex_coords.x * 16) / 9 * 0.6;
-            dist = 1 - v_tex_coords.y - t;
+            float t = wide_t + sin(v_tex_coords.x * 16) / 9 * 0.6;
+            dist = v_tex_coords.y - t;
             color_index = mod(v_tex_coords.x * 16 + cos(dist * 10), 2) < 1 ? 0 : 1;
         }
         if (dist < -wipe_width / 2) {

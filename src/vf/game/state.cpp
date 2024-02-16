@@ -13,12 +13,12 @@ namespace vf {
 bool Transition::step (State& state) {
     if (timer == 0) {
         set_transition_type(type);
-        set_transition_side(false);
+        set_transition_side(true);
          // fallthrough
     }
     if (timer < exit_at) {
         timer += 1;
-        set_transition_t(float(end_at - timer) / end_at);
+        set_transition_t(float(timer) / end_at);
         return true;
     }
     else if (timer == exit_at) {
@@ -30,18 +30,18 @@ bool Transition::step (State& state) {
         }
         state.current_room->enter();
         swap_world_tex();
-        set_transition_side(true);
+        set_transition_side(false);
         if (set_checkpoint) state.save_checkpoint = true;
          // fallthrough
     }
     if (timer < enter_at) {
         timer += 1;
-        set_transition_t(float(end_at - timer) / end_at);
+        set_transition_t(float(timer) / end_at);
         return false;
     }
     else if (timer < end_at) {
         timer += 1;
-        set_transition_t(float(end_at - timer) / end_at);
+        set_transition_t(float(timer) / end_at);
         return true;
     }
     else {
@@ -62,7 +62,11 @@ void State::step () {
             save_checkpoint = false;
              // Don't recursively nest checkpoints
             checkpoint = {};
+             // Don't save transition state to checkpoint
+            Transition save_tr = move(*transition);
+            transition = {};
             checkpoint = ayu::item_to_tree(this);
+            transition = move(save_tr);
         }
         if (load_checkpoint) {
             load_checkpoint = false;
