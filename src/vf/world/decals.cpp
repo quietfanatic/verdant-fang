@@ -11,7 +11,7 @@ void draw_decal (Walker& w, const Pose& pose) {
         draw_frame(
             data.paralyze.symbol[(w.paralyze_symbol_timer / 4) % 2],
             0,
-            w.pos + Vec(0, 30),
+            w.pos + Vec(0, 24),
             Z::Symbol
         );
         w.paralyze_symbol_timer -= 1;

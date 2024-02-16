@@ -318,6 +318,9 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
 void Verdant::Resident_on_exit () {
     decal_type = DecalType::None;
     decal_index = -1;
+    poison_level = 0;
+    stun_duration = 0;
+    paralyze_symbol_timer = 0;
     Walker::Resident_on_exit();
 }
 
