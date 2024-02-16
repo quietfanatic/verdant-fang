@@ -62,12 +62,6 @@ WalkerBusiness Bug::Walker_business () {
                 set_state(WS::Neutral);
             }
             else {
-                if (anim_phase == 1) {
-                    projectile_state = 1;
-                    projectile_pos = pos + left_flip(bd.spit_mouth_offset);
-                    projectile_vel = left_flip(Vec(2, 0));
-                    if (bd.spit_sound) bd.spit_sound->play();
-                }
                 anim_phase += 1;
                 anim_timer = 0;
             }
@@ -81,8 +75,26 @@ WalkerBusiness Bug::Walker_business () {
     else return Walker::Walker_business();
 }
 
-void Bug::Walker_special () {
-    set_state(BS::Spit);
+void Bug::Walker_move (const Controls& controls) {
+    auto& bd = static_cast<BugData&>(*data);
+    if (state == BS::Spit && anim_phase == 2 && anim_timer == 1) {
+        projectile_state = 1;
+        projectile_pos = pos + left_flip(bd.spit_mouth_offset);
+        if (controls[Control::Up] && !controls[Control::Down]) {
+            projectile_vel = left_flip(Vec(2, 2));
+        }
+        else if (controls[Control::Down]) {
+            projectile_vel = left_flip(Vec(1, 0));
+        }
+        else projectile_vel = left_flip(Vec(3, 0));
+        if (bd.spit_sound) bd.spit_sound->play();
+    }
+    if (business == WB::Free && controls[Control::Special] &&
+        controls[Control::Special] <= data->hold_buffer
+    ) {
+        set_state(BS::Spit);
+    }
+    Walker::Walker_move(controls);
 }
 
 void Bug::Resident_before_step () {
@@ -337,9 +349,21 @@ Controls BugMind::Mind_think (Resident& s) {
     else if (self.alert_phase == 2) {
         if (target->state == WS::Dead) {
             self.fly = false;
-            return r;
         }
-        if (self.state == WS::Attack && self.anim_phase < 3) {
+        else if (self.state == BS::Spit) {
+             // Aim spit.  Reuse attack_rel even though it's probably not
+             // very accurate.
+            if (attack_rel.y > 0 || attack_rel.x > 120) {
+                r[Control::Up] = 1;
+            }
+            else if (attack_rel.x > 30) {
+                 // Neutral
+            }
+            else {
+                r[Control::Down] = 1;
+            }
+        }
+        else if (self.state == WS::Attack && self.anim_phase < 3) {
              // Occupied with attacking, don't do anything else
         }
         else if (self.floor) {

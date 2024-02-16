@@ -35,7 +35,7 @@ struct Bug : Walker {
      // Handle BS::Spit
     WalkerBusiness Walker_business () override;
      // Spit
-    void Walker_special () override;
+    void Walker_move (const Controls&) override;
      // Animate wings
     void Resident_before_step () override;
      // Projectile collision
@@ -68,7 +68,7 @@ struct BugMind : Mind {
      // Min and max time to spit.
     IRange spit_interval;
      // Don't spit unless speed is less than this
-    float spit_stability_requirement = 1;
+    float spit_stability_requirement = 2;
     Controls Mind_think (Resident&) override;
 };
 

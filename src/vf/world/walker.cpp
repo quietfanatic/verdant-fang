@@ -162,15 +162,7 @@ WalkerBusiness Walker::Walker_business () {
     }
 }
 
-void Walker::Resident_before_step () {
-     // Advance animations and do state-dependent things
-    expect(anim_timer < 255);
-    business = Walker_business();
-
-     // Read controls.
-    Controls controls;
-    if (mind) controls = mind->Mind_think(*this);
-
+void Walker::Walker_move (const Controls& controls) {
      // Choose some physics parameters
     float acc = floor ? data->ground_acc : data->air_acc;
     float max = floor ? data->ground_max : data->air_max;
@@ -310,13 +302,8 @@ void Walker::Resident_before_step () {
                 }
             }
         }
-        if (controls[Control::Special] &&
-            controls[Control::Special] <= data->hold_buffer
-        ) {
-            Walker_special();
-        }
          // Attack or don't
-        else if (controls[Control::Attack] &&
+        if (controls[Control::Attack] &&
             controls[Control::Attack] <= data->hold_buffer
         ) {
             set_state(WS::Attack);
@@ -361,6 +348,19 @@ void Walker::Resident_before_step () {
             }
         }
     }
+}
+
+void Walker::Resident_before_step () {
+     // Advance animations and do state-dependent things
+    expect(anim_timer < 255);
+    business = Walker_business();
+
+     // Read controls.
+    Controls controls;
+    if (mind) controls = mind->Mind_think(*this);
+
+     // Move
+    Walker_move(controls);
 
      // Set up hitboxes
     clear_hitboxes();
