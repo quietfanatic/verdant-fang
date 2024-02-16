@@ -446,6 +446,8 @@ void Walker::Resident_on_collide (
         Rect overlap = here & there;
         expect(proper(overlap));
         if (vel.y < 0 && overlap.b == here.b && height(overlap) <= 2 - vel.y) {
+            // Hack to make dead bodies not hang over the edge as much
+            if (state == WS::Dead && !contains(lr(there), pos.x)) return;
             pos.y += height(overlap);
             set_floor(o);
             vel.y = 0;

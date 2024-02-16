@@ -201,7 +201,8 @@
     buggy: [vf::BugMind {
         target: #verdant
         sight_range: 180
-        attack_area: [16 -12 36 -9]
+         -- Make attack area somewhat larger than tail
+        attack_area: [6 -12 40 -5]
         roam_territory: [64 32 256 144]
         roam_interval: [60 300]
         personal_space: 20

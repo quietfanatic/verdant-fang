@@ -58,6 +58,9 @@ void Bug::Walker_on_hit (const Hitbox& hb, Walker& victim, const Hitbox& o_hb) {
     if (stab_depth < -2) {
         pos.x += left_flip(2 - stab_depth);
     }
+    else if (stab_depth > 16) {
+        pos.x -= left_flip(stab_depth - 16);
+    }
      // Supercall
     Walker::Walker_on_hit(hb, victim, o_hb);
 }

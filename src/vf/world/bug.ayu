@@ -2,7 +2,9 @@
 &z_dead: -300
 &z_damage: 200
 &z_wings_offset: 20
-&z_tail_offset: -10
+&z_tail_offset0: -10
+&z_tail_offset1: -9
+&z_tail_offset2: -8
 
 [ayu::Document {
     body: [vf::LayeredTexture [{
@@ -44,11 +46,21 @@
     wings_fly0: [vf::Frame [#wings [18 11]]]
     wings_fly1: [vf::Frame [#wings [40 11]]]
     wings_dead: [vf::Frame [#wings [25 22]]]
-    tail: [vf::LayeredTexture [{
-        image: assets.ayu#layer0
-        bounds: [46 334 102 387]
-        z_offset: *z_tail_offset
-    }]]
+    tail: [vf::LayeredTexture [
+        {
+            image: assets.ayu#layer0
+            bounds: [46 334 102 387]
+            z_offset: *z_tail_offset0
+        } {
+            image: assets.ayu#layer1
+            bounds: [46 334 102 387]
+            z_offset: *z_tail_offset1
+        } {
+            image: assets.ayu#layer2
+            bounds: [46 334 102 387]
+            z_offset: *z_tail_offset2
+        }
+    ]]
     tail_h: [vf::WeaponFrame [#tail [37 38]]]
     tail_v: [vf::WeaponFrame [#tail [16 38]]]
     tail_b0: [vf::WeaponFrame [#tail [31 38]]]
@@ -61,18 +73,18 @@
         stand: [#body_h #wings_h #tail_h]
         crouch: [#body_h #wings_h #tail_h]
         walk: [
-            [#body_h #wings_h #tail_h]
-            [#body_h #wings_h #tail_h]
-            [#body_h #wings_h #tail_h]
-            [#body_h #wings_h #tail_h]
-            [#body_h #wings_h #tail_h]
-            [#body_h #wings_h #tail_h]
+            [#body_h #wings_fly0 #tail_h]
+            [#body_h #wings_fly0 #tail_h]
+            [#body_h #wings_fly0 #tail_h]
+            [#body_h #wings_fly0 #tail_h]
+            [#body_h #wings_fly0 #tail_h]
+            [#body_h #wings_fly0 #tail_h]
         ]
         jump: [
-            [#body_h #wings_h #tail_h]
-            [#body_h #wings_h #tail_h]
-            [#body_h #wings_h #tail_h]
-            [#body_h #wings_h #tail_h]
+            [#body_h #wings_fly0 #tail_h]
+            [#body_h #wings_fly0 #tail_h]
+            [#body_h #wings_fly0 #tail_h]
+            [#body_h #wings_fly0 #tail_h]
         ]
         fly: [
              -- Any pose with #wings_fly0 or #wings_fly1 will have its wings
@@ -139,7 +151,7 @@
         can_fly: true
         drop_duration: 6
         land_sequence: [8 4]
-        attack_sequence: [12 0 1 7 12 200]
+        attack_sequence: [12 0 1 7 12 0]
         hit_sequence: [16 10]
         dead_sequence: [14 10 10 8 10 10 10 10 60 120 240]
         dead_floor_lift: 0
