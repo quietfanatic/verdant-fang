@@ -239,6 +239,8 @@ struct Walker : Resident {
      // Customization points.
      // Handle custom states here, and supercall otherwise.
     virtual WalkerBusiness Walker_business ();
+     // Do a special move
+    virtual void Walker_special () { }
      // You can supercall this or not.
     virtual void Walker_on_hit (const Hitbox&, Walker&, const Hitbox&);
      // Handle posing for custom states here, otherwise supercall.

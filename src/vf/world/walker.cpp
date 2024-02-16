@@ -310,9 +310,15 @@ void Walker::Resident_before_step () {
                 }
             }
         }
+        if (controls[Control::Special] &&
+            controls[Control::Special] <= data->hold_buffer
+        ) {
+            Walker_special();
+        }
          // Attack or don't
-        if (controls[Control::Attack] &&
-            controls[Control::Attack] <= data->hold_buffer) {
+        else if (controls[Control::Attack] &&
+            controls[Control::Attack] <= data->hold_buffer
+        ) {
             set_state(WS::Attack);
         }
         break;

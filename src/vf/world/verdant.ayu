@@ -284,6 +284,11 @@
         decals: decals.ayu#
         flavor: strawberry
 
+         -- Bias center upward to be closer to face.  Not that it matters
+         -- because we aren't actually using this as of this writing :3
+        center: [0 18]
+        dead_center: [-8 3]
+        dead_center_forward: [4 3]
         transform_sequence: [
             30 --0 holding snake
             30 --1 lifting snake

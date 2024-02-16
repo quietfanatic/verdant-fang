@@ -212,7 +212,7 @@
         attack_area: [6 -12 40 -5]
         roam_territory: [64 32 256 144]
         roam_interval: [60 300]
-        personal_space: 20
+        spit_interval: [120 300]
     }]
     coochers: [vf::Bug {
         room: #hive

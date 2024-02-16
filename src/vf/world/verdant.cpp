@@ -30,6 +30,9 @@ struct TransformSound {
 };
 
 struct VerdantData : WalkerData {
+    Vec center;
+    Vec dead_center;
+    Vec dead_center_forward;
     uint8 transform_sequence [14];
     Vec transform_pos;
     TransformSound transform_sounds [3];
@@ -46,6 +49,21 @@ Verdant::Verdant () {
     types |= Types::Verdant;
     body_hb.layers_2 |= Layers::LoadingZone_Verdant;
     body_layers = 0x7;
+}
+
+Vec Verdant::visual_center () {
+    auto& vd = static_cast<VerdantData&>(*data);
+    auto& poses = static_cast<VerdantPoses&>(*vd.poses);
+    Pose pose = Walker_pose();
+    if (pose.body == poses.dead[0].body) {
+        return left_flip(vd.dead_center);
+    }
+    else if (pose.body == poses.deadf[0].body) {
+        return left_flip(vd.dead_center_forward);
+    }
+    else {
+        return left_flip(vd.center);
+    }
 }
 
 WalkerBusiness Verdant::Walker_business () {
@@ -96,10 +114,7 @@ WalkerBusiness Verdant::Walker_business () {
                  // Horrible hard-coded values, too busy to do this properly
                 auto& state = current_game->state();
                 Vec target = pos;
-                Vec focus = target + Vec(
-                    left_flip(damage_forward ? 4 : -8),
-                    3
-                );
+                Vec focus = target + visual_center();
                 if (focus.x < 36) {
                     target.x += 36 - focus.x;
                     focus.x = 36;
@@ -393,6 +408,9 @@ AYU_DESCRIBE(vf::TransformSound,
 AYU_DESCRIBE(vf::VerdantData,
     attrs(
         attr("vf::WalkerData", base<WalkerData>(), include),
+        attr("center", &VerdantData::center),
+        attr("dead_center", &VerdantData::dead_center),
+        attr("dead_center_forward", &VerdantData::dead_center_forward),
         attr("transform_sequence", &VerdantData::transform_sequence),
         attr("transform_pos", &VerdantData::transform_pos),
         attr("transform_sounds", &VerdantData::transform_sounds),

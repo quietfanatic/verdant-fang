@@ -19,8 +19,9 @@ struct Bug : Walker {
     uint8 alert_phase = 0;
     uint8 alert_timer = 0;
     Vec roam_pos;
-     // Counts down
+     // These count down
     uint32 roam_timer = 0;
+    uint32 spit_timer = 0;
      // 0 = nonexistent
      // 1 = moving
      // 2 = splashing
@@ -33,6 +34,8 @@ struct Bug : Walker {
     void init ();
      // Handle BS::Spit
     WalkerBusiness Walker_business () override;
+     // Spit
+    void Walker_special () override;
      // Animate wings
     void Resident_before_step () override;
      // Projectile collision
@@ -50,17 +53,20 @@ struct BugMind : Mind {
     Walker* target = null;
      // Unlike Monster, this is a 2D distance
     float sight_range;
+    uint8 alert_sequence = 10;
+     // Back up if we're too close to target
+    float personal_space = 20;
      // Area the bug thinks its tail hitbox covers.  Does not include target's
      // hitbox (that's added in calculations later).
     Rect attack_area;
-    uint8 alert_sequence = 10;
      // Where the bug can roam, in absolute room coordinates
     Rect roam_territory;
+     // Min and max time to pick a new roam location
     IRange roam_interval;
      // How strict the bug adheres to its current roam position
     float roam_tolerance = 0;
-     // Back up if we're too close to target
-    float personal_space;
+     // Min and max time to spit.
+    IRange spit_interval;
     Controls Mind_think (Resident&) override;
 };
 

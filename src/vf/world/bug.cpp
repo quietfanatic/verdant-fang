@@ -79,6 +79,10 @@ WalkerBusiness Bug::Walker_business () {
     else return Walker::Walker_business();
 }
 
+void Bug::Walker_special () {
+    set_state(BS::Spit);
+}
+
 void Bug::Resident_before_step () {
     wings_timer += 1;
     if (wings_timer >= 6) wings_timer = 0;
@@ -386,12 +390,13 @@ AYU_DESCRIBE(vf::BugMind,
         attr("vf::Mind", base<Mind>(), include),
         attr("target", &BugMind::target),
         attr("sight_range", &BugMind::sight_range),
-        attr("attack_area", &BugMind::attack_area),
         attr("alert_sequence", &BugMind::alert_sequence, optional),
+        attr("personal_space", &BugMind::personal_space, optional),
+        attr("attack_area", &BugMind::attack_area),
         attr("roam_territory", &BugMind::roam_territory),
         attr("roam_interval", &BugMind::roam_interval),
         attr("roam_tolerance", &BugMind::roam_tolerance, optional),
-        attr("personal_space", &BugMind::personal_space)
+        attr("spit_interval", &BugMind::spit_interval)
     )
 )
 

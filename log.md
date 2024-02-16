@@ -138,3 +138,19 @@
   code.
 - Planned work for tomorrow: Make bug spit venom.  Venom will be an important
   mechanic for the story later on.
+#####2024-02-15 H
+- Halfway point!
+- Implemented more art, animation, AI, and decals for bugs.  Implemented a bunch
+  of untested code for spitting venom, but haven't tried it out yet.
+- Spent a long time on the architecture under checkpoints and transitions.
+  They're better now, but I can't help but feel like the time wasn't very well spent.
+- Implemented aperture-style transitions and a nice looking death screen, with a
+  "press R to restart" message that looks better than I thought it would.
+- Did some emergency performance work on AYU, not to a whole lot of avail.
+  Keeping the location cache in to\_tree helps a lot though.
+- Added decorative light streaming in from the cave entrance.  I though it
+  wouldn't look good, but it surprisingly works if it has a subtle enough color.
+  It balances against the blue switch on the other side of the room.
+- Planned work for tomorrow: Spitting!  Maybe start work on Witch some, as
+  another flying entity?  I should also maybe start in on music too...oh but
+  there are a bunch of sound effects I need to add too...uhhhhh

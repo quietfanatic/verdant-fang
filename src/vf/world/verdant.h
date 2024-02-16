@@ -14,6 +14,9 @@ struct Verdant : Walker {
 
     Verdant ();
 
+     // Relative to self.pos
+    Vec visual_center ();
+
      // For handling custom hit animations
     WalkerBusiness Walker_business () override;
      // Allow getting crushed by door
