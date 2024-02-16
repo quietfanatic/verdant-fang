@@ -9,7 +9,7 @@ constexpr uint32 transition_duration = 30;
 
 template <class T>
 T world_to_screen (const T& world) {
-    return world / (camera_size / 2) - Vec(1, 1);
+    return Rect(round(world)) / (camera_size / 2) - Vec(1, 1);
 }
 
 void begin_camera ();
