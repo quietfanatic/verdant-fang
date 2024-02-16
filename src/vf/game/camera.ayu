@@ -91,7 +91,7 @@ void main () {
             color_index = mod(v_tex_coords.x * 16 + cos(dist * 10), 2) < 1 ? 0 : 1;
         }
         if (dist < -wipe_width / 2) {
-            if (u_side) color = texture(u_tex, v_tex_coords);
+            if (u_side) color = vec4(texture(u_tex, v_tex_coords).rgb, 1);
             else color = vec4(0);
         }
         else if (dist < wipe_width / 2) {
@@ -99,7 +99,7 @@ void main () {
         }
         else {
             if (u_side) color = vec4(0);
-            else color = texture(u_tex, v_tex_coords);
+            else color = vec4(texture(u_tex, v_tex_coords).rgb, 1);
         }
     }
     else if (u_type == 4) {
@@ -107,12 +107,12 @@ void main () {
         float dist = distance(gl_FragCoord.xy, u_center);
         float max_dist = 320;
         if (dist > max_dist * (1 - u_t)) {
-            if (u_side) color = texture(u_tex, v_tex_coords);
+            if (u_side) color = vec4(texture(u_tex, v_tex_coords).rgb, 1);
             else color = vec4(0);
         }
         else {
             if (u_side) color = vec4(0);
-            else color = texture(u_tex, v_tex_coords);
+            else color = vec4(texture(u_tex, v_tex_coords).rgb, 1);
         }
     }
     else if (u_type == 5) {
@@ -120,12 +120,12 @@ void main () {
         float dist = distance(gl_FragCoord.xy, u_center);
         float max_dist = 320;
         if (dist < max_dist * u_t) {
-            if (u_side) color = texture(u_tex, v_tex_coords);
+            if (u_side) color = vec4(texture(u_tex, v_tex_coords).rgb, 1);
             else color = vec4(0);
         }
         else {
             if (u_side) color = vec4(0);
-            else color = texture(u_tex, v_tex_coords);
+            else color = vec4(texture(u_tex, v_tex_coords).rgb, 1);
         }
     }
 }"
