@@ -1,4 +1,5 @@
 &z_semisolid: -400
+&z_light: 600
 
 -- Block boundary coordinates
 --   0  16  32  48  64  80  96 112 128 144 160 176 192 208 224 240 256 272 288 304 320
@@ -17,11 +18,11 @@
     verdant: [vf::Verdant {
         data: verdant.ayu#data
         mind: #verdant_mind
-        --room: #start
-        --pos: [-32 32]
-        --state: 6 --VS::PreTransform
-        room: #hive
-        pos: [16 64]
+        room: #start
+        pos: [-32 32]
+        state: 6 --VS::PreTransform
+        --room: #hive
+        --pos: [16 64]
         floor: #start_blocks
         limbo: #limbo
     }]
@@ -31,6 +32,12 @@
         room: #start
         data: assets.ayu#cave
         pos: [0 0]
+    }]
+    start_light: [vf::Scenery {
+        room: #start
+        data: assets.ayu#outside_light
+        pos: [0 32]
+        z: *z_light
     }]
     start_blocks: [vf::Blocks {
         room: #start

@@ -76,7 +76,7 @@ void State::step () {
              // Don't recursively nest checkpoints
             checkpoint = {};
              // Don't save transition state to checkpoint
-            Transition save_tr = move(*transition);
+            std::optional<Transition> save_tr = move(transition);
             transition = {};
             checkpoint = ayu::item_to_tree(this);
             transition = move(save_tr);

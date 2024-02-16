@@ -13,6 +13,12 @@
     cave_tex: [vf::LayeredTexture [{ image: #cave_img }]]
     cave: [vf::Frame [#cave_tex [0 0] [0 0 360 180]]]
 
+    light_tex: [vf::LayeredTexture [{
+        image: #layer0
+        bounds: [1 232 65 296]
+    }]]
+    outside_light: [vf::Frame [#light_tex [0 0] [0 0 64 64]]]
+
     screen_tex: [vf::LayeredTexture [{
         image: #layer0
         bounds: [101 3 133 67]

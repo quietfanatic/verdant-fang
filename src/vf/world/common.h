@@ -18,6 +18,7 @@ namespace Z {
     constexpr float Actor = 300;
     constexpr float Overlap = 400;
     constexpr float Projectile = 500;
+    constexpr float Light = 600;
     constexpr float Debug = 1000000;
     constexpr float HeadOffset = -10;
     constexpr float WingsOffset = 10;

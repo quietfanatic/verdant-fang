@@ -93,12 +93,29 @@ WalkerBusiness Verdant::Walker_business () {
         }
         case WS::Dead: {
             if (limbo && room != limbo && anim_phase == 10) {
+                 // Horrible hard-coded values, too busy to do this properly
                 auto& state = current_game->state();
                 Vec target = pos;
-                if (target.x < 40) target.x = 40;
-                if (target.x > 280) target.x = 280;
-                if (target.y < 12) target.y = 12;
-                if (target.y > 156) target.y = 156;
+                Vec focus = target + Vec(
+                    left_flip(damage_forward ? 4 : -8),
+                    3
+                );
+                if (focus.x < 36) {
+                    target.x += 36 - focus.x;
+                    focus.x = 36;
+                }
+                if (focus.x > 284) {
+                    target.x += 284 - focus.x;
+                    focus.x = 284;
+                }
+                if (focus.y < 17) {
+                    target.y += 17 - focus.y;
+                    focus.y = 17;
+                }
+                if (focus.y > 155) {
+                    target.y += 155 - focus.y;
+                    focus.y = 155;
+                }
                 state.transition = Transition{
                     .target_room = limbo,
                     .migrant = this,
@@ -107,11 +124,7 @@ WalkerBusiness Verdant::Walker_business () {
                     .exit_at = 0,
                     .enter_at = 0
                 };
-                Vec center = target + Vec(
-                    left_flip(damage_forward ? 4 : -8),
-                    3
-                );
-                set_transition_center(center);
+                set_transition_center(focus);
             }
             break;
         }
