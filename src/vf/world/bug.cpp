@@ -90,7 +90,8 @@ void Bug::Walker_move (const Controls& controls) {
         if (bd.spit_sound) bd.spit_sound->play();
     }
     if (business == WB::Free && controls[Control::Special] &&
-        controls[Control::Special] <= data->hold_buffer
+        controls[Control::Special] <= data->hold_buffer &&
+        projectile_state == 0
     ) {
         set_state(BS::Spit);
     }

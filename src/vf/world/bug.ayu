@@ -87,10 +87,10 @@
             [#body_h #wings_fly0 #tail_h]
         ]
         jump: [
-            [#body_h #wings_fly0 #tail_h]
-            [#body_h #wings_fly0 #tail_h]
-            [#body_h #wings_fly0 #tail_h]
-            [#body_h #wings_fly0 #tail_h]
+            [#body_v #wings_fly0 #tail_v]
+            [#body_v #wings_fly0 #tail_v]
+            [#body_v #wings_fly0 #tail_v]
+            [#body_v #wings_fly0 #tail_v]
         ]
         fly: [
              -- Any pose with #wings_fly0 or #wings_fly1 will have its wings
