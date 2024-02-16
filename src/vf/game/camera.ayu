@@ -106,7 +106,7 @@ void main () {
          // Aperture close
         float dist = distance(gl_FragCoord.xy, u_center);
         float max_dist = 320;
-        if (dist < max_dist * u_t) {
+        if (dist > max_dist * (1 - u_t)) {
             if (u_side) color = texture(u_tex, v_tex_coords);
             else color = vec4(0);
         }
@@ -119,7 +119,7 @@ void main () {
          // Aperture open
         float dist = distance(gl_FragCoord.xy, u_center);
         float max_dist = 320;
-        if (dist > max_dist * (1 - u_t)) {
+        if (dist < max_dist * u_t) {
             if (u_side) color = texture(u_tex, v_tex_coords);
             else color = vec4(0);
         }

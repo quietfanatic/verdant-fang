@@ -275,6 +275,12 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
     else Walker::Walker_draw_weapon(pose);
 }
 
+void Verdant::Resident_on_exit () {
+    decal_type = DecalType::None;
+    decal_index = -1;
+    Walker::Resident_on_exit();
+}
+
 Controls VerdantMind::Mind_think (Resident& r) {
     if (r.types & Types::Verdant) {
         auto& v = static_cast<Verdant&>(r);

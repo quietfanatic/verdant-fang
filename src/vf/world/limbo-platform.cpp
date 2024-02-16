@@ -17,6 +17,13 @@ struct LimboPlatform : Resident {
     void Resident_on_enter () override {
         if (auto v = find_verdant()) {
             pos = v->pos;
+             // Hacky adjust position based on pose
+            if (v->damage_forward) {
+                pos.x += 4;
+            }
+            else {
+                pos.x -= 9;
+            }
         }
     }
     void Resident_draw () override {

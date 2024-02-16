@@ -24,6 +24,8 @@ struct Verdant : Walker {
     Pose Walker_pose () override;
      // For making Fang hover during transformation
     void Walker_draw_weapon (const Pose&) override;
+     // Reset decals
+    void Resident_on_exit () override;
 };
 
 Verdant* find_verdant ();
