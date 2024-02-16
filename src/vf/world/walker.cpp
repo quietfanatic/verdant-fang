@@ -50,6 +50,7 @@ uint8 Walker::jump_frame () {
 void Walker::Resident_set_pos (Vec p) {
     Resident::Resident_set_pos(p);
     walk_start_x = p.x;
+    vel = {0, 0};
 }
 
 WalkerBusiness Walker::Walker_business () {
@@ -376,21 +377,24 @@ void Walker::Resident_before_step () {
     hit_sound = null;
 }
 
+ // This read y velocity so you need to call it before setting vel.y
 void Walker::set_floor (Resident& o) {
     if (!floor && !new_floor) {
-         // Cancel attack endlag with landing lag...but only if we
-         // wouldn't get any extra control frames.  TODO: clean this
-         // up.
-        if (state == WS::Neutral ||
-            (state == WS::Attack && (
-                (anim_phase == 4 &&
-                    anim_timer >= uint8(data->attack_sequence[anim_phase]
-                                      - data->land_sequence[0])
-                ) || anim_phase == 5
-            ))
-        ) set_state(WS::Land);
-        if (state != WS::Dead) {
-            data->land_sound->play();
+        if (vel.y < -1) {
+             // Cancel attack endlag with landing lag...but only if we
+             // wouldn't get any extra control frames.  TODO: clean this
+             // up.
+            if (state == WS::Neutral ||
+                (state == WS::Attack && (
+                    (anim_phase == 4 &&
+                        anim_timer >= uint8(data->attack_sequence[anim_phase]
+                                          - data->land_sequence[0])
+                    ) || anim_phase == 5
+                ))
+            ) set_state(WS::Land);
+            if (state != WS::Dead) {
+                data->land_sound->play();
+            }
         }
         walk_start_x = pos.x;
     }
@@ -410,8 +414,8 @@ void Walker::Resident_on_collide (
             pos.y += height(overlap);
              // Note, if solid has velocity, this will not take it into account
             if (vel.y < 0) {
-                vel.y = 0;
                 set_floor(o);
+                vel.y = 0;
             }
         }
          // The bias toward contacting the side so we don't hit our head upwards
@@ -443,8 +447,8 @@ void Walker::Resident_on_collide (
         expect(proper(overlap));
         if (vel.y < 0 && overlap.b == here.b && height(overlap) <= 2 - vel.y) {
             pos.y += height(overlap);
-            vel.y = 0;
             set_floor(o);
+            vel.y = 0;
         }
     }
     else if (&hb == &body_hb && o_hb.layers_2 & Layers::Walker_Walker) {
