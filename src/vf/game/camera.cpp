@@ -102,7 +102,6 @@ void end_camera () {
         transition_program->use();
          // Ease in and out a bit
         float t = (1.f - std::cos(transition_t * float(M_PI))) / 2.f;
-        ayu::dump(transition_t, t);
         glUniform1f(transition_program->u_t, t);
         glBindTexture(GL_TEXTURE_2D, old_tex);
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
