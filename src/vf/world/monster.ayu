@@ -173,6 +173,7 @@
         crouch_attack_sound: assets.ayu#shok
         hit_solid_sound: assets.ayu#tkk
         hit_soft_sound: assets.ayu#kkkww
+        paralyzed_sound: assets.ayu#piwiwi
 
         poses: #poses
         decals: decals.ayu#

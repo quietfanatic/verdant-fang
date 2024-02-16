@@ -5,9 +5,18 @@
 
 namespace vf {
 
-void draw_decal (const Walker& w, const Pose& pose) {
-    if (w.decal_type == DecalType::None || w.decal_index >= max_decals) return;
+void draw_decal (Walker& w, const Pose& pose) {
     auto& data = *w.data->decals;
+    if (w.paralyze_symbol_timer) {
+        draw_frame(
+            data.paralyze.symbol[(w.paralyze_symbol_timer / 4) % 2],
+            0,
+            w.pos + Vec(0, 30),
+            Z::Symbol
+        );
+        w.paralyze_symbol_timer -= 1;
+    }
+    if (w.decal_type == DecalType::None || w.decal_index >= max_decals) return;
     auto& decal = w.decal_type == DecalType::Stab ? data.stab
                 : w.decal_type == DecalType::SlashLow ? data.slash_low
                 : w.decal_type == DecalType::SlashHigh ? data.slash_high
@@ -66,10 +75,18 @@ AYU_DESCRIBE(vf::Decal,
     )
 )
 
+AYU_DESCRIBE(vf::Paralyze,
+    attrs(
+        attr("tex", &Paralyze::tex),
+        attr("symbol", &Paralyze::symbol)
+    )
+)
+
 AYU_DESCRIBE(vf::DecalData,
     attrs(
         attr("stab", &DecalData::stab),
         attr("slash_low", &DecalData::slash_low),
-        attr("slash_high", &DecalData::slash_high)
+        attr("slash_high", &DecalData::slash_high),
+        attr("paralyze", &DecalData::paralyze)
     )
 )

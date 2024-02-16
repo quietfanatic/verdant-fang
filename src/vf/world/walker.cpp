@@ -351,6 +351,23 @@ void Walker::Walker_move (const Controls& controls) {
 }
 
 void Walker::Resident_before_step () {
+     // Do poison
+    if (poison_level && state != WS::Dead) {
+        if (poison_timer >= 180) {
+            if (poison_level >= 3) {
+                set_state(WS::Dead);
+                paralyze_symbol_timer = 60;
+            }
+            else {
+                set_state(WS::Stun);
+                stun_duration = poison_level * 30;
+                paralyze_symbol_timer = stun_duration;
+                poison_timer = 0;
+            }
+            if (data->paralyzed_sound) data->paralyzed_sound->play();
+        }
+        else poison_timer += 1;
+    }
      // Advance animations and do state-dependent things
     expect(anim_timer < 255);
     business = Walker_business();
@@ -769,6 +786,7 @@ AYU_DESCRIBE(vf::WalkerData,
         attr("crouch_attack_sound", &WalkerData::crouch_attack_sound),
         attr("hit_solid_sound", &WalkerData::hit_solid_sound),
         attr("hit_soft_sound", &WalkerData::hit_soft_sound),
+        attr("paralyzed_sound", &WalkerData::paralyzed_sound, optional),
         attr("poses", &WalkerData::poses),
         attr("decals", &WalkerData::decals),
         attr("flavor", &WalkerData::flavor)
@@ -791,6 +809,8 @@ AYU_DESCRIBE(vf::Walker,
         attr("fall_start_x", &Walker::walk_start_x, optional),
         attr("decal_type", &Walker::decal_type, optional),
         attr("decal_index", &Walker::decal_index, optional),
+        attr("poison_level", &Walker::poison_level, optional),
+        attr("poison_timer", &Walker::poison_timer, optional),
         attr("body_layers", &Walker::body_layers, optional),
         attr("head_layers", &Walker::head_layers, optional),
         attr("weapon_layers", &Walker::weapon_layers, optional)

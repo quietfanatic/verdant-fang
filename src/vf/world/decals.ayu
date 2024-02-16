@@ -76,4 +76,14 @@
             [#/slash_high/tex [55 8] [-9 -5 3 1]]
         ]
     }
+    paralyze: {
+        tex: [{
+            image: assets.ayu#layer0
+            bounds: [340 61 368 87]
+        }]
+        symbol: [
+            [#/paralyze/tex [14 19] [-13 -4 13 5]]
+            [#/paralyze/tex [14 6] [-13 -4 13 5]]
+        ]
+    }
 }]

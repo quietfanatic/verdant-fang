@@ -99,4 +99,5 @@
     poiy: [vf::Sound { source:assets/poiy.mp3 channel:1 }]
     spit: [vf::Sound { source:assets/spit.mp3 channel:5 volume:0.8 }]
     splat: [vf::Sound { source:assets/splat.mp3 channel:5 }]
+    piwiwi: [vf::Sound { source:assets/piwiwi.mp3 channel:7 }]
 }]

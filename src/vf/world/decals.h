@@ -21,14 +21,20 @@ struct Decal {
     Frame dir_2 [7];
 };
 
+struct Paralyze {
+    vf::LayeredTexture tex;
+    Frame symbol [2];
+};
+
 struct DecalData {
     Decal stab;
     Decal slash_low;
     Decal slash_high;
+    Paralyze paralyze;
 };
 
 struct Walker;
 struct Pose;
-void draw_decal (const Walker&, const Pose&);
+void draw_decal (Walker&, const Pose&);
 
 } // vf

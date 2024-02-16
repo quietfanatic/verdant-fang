@@ -118,10 +118,13 @@ void Bug::Resident_on_collide (
     }
     else if (&hb == &projectile_hb && o_hb.layers_2 & Layers::Projectile_Walker) {
         auto& victim = static_cast<Walker&>(o);
-        if (victim.state != WS::Dead && !victim.invincible) {
+        if (victim.state != WS::Dead && !victim.invincible &&
+            !(victim.types & Types::Bug)
+        ) {
             auto& bd = static_cast<BugData&>(*data);
             victim.set_state(WS::Stun);
             victim.stun_duration = bd.projectile_stun;
+            victim.poison_level += 1;
              // Don't play sound twice on double collision (probably doesn't
              // matter if it has an assigned channel)
             if (projectile_state == 1) {
@@ -351,8 +354,9 @@ Controls BugMind::Mind_think (Resident& s) {
             self.fly = false;
         }
         else if (self.state == BS::Spit) {
-             // Aim spit.  Reuse attack_rel even though it's probably not
-             // very accurate.
+             // Aim projectile.  Reuse attack_rel even though it's probably not
+             // very accurate.  All the numbers here are spitball estimates
+             // anyway.
             if (attack_rel.y > 0 || attack_rel.x > 120) {
                 r[Control::Up] = 1;
             }
