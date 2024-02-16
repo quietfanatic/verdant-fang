@@ -28,8 +28,8 @@ struct BugData : WalkerData {
 
 Bug::Bug () {
     types |= Types::Bug;
-    projectile_hb.layers_1 = Layers::Projectile_Walker;
-    projectile_hb.layers_2 = Layers::Projectile_Solid;
+    projectile_hb.layers_1 = Layers::Projectile_Walker
+                           | Layers::Projectile_Solid;
 }
 
 void Bug::init () {

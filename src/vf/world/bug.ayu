@@ -42,7 +42,7 @@
     spitball0: [vf::Frame [#body [92 18]]]
     spitball1: [vf::Frame [#body [99 18]]]
     spitball_splash0: [vf::Frame [#body [107 18]]]
-    spitball_splash1: [vf::Frame [#body [115 18]]]
+    spitball_splash1: [vf::Frame [#body [115 18] [-4 -4 4 4]]]
     wings: [vf::LayeredTexture [{
         image: assets.ayu#layer0
         bounds: [107 333 151 363]
@@ -200,6 +200,6 @@
         projectile_hit_sequence: [8 8]
         projectile_stun: 30
         spit_sound: assets.ayu#spit
-        projectile_hit_sound: null
+        projectile_hit_sound: assets.ayu#splat
     }]
 }]
