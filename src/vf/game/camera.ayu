@@ -44,6 +44,7 @@ uniform sampler2D u_tex;
 uniform int u_type;
 uniform float u_t;
 uniform vec2 u_center;
+uniform bool u_side;
 in vec2 v_tex_coords;
 out vec4 color;
 
@@ -56,6 +57,7 @@ const vec4 colors [2] = vec4[2](
 
 void main () {
     if (u_type >= 0 && u_type <= 3) {
+        float wide_t = mix(-0.1, 1.1, u_t);
          // Wipe transitions
         float dist;
         int color_index;
@@ -63,47 +65,54 @@ void main () {
          // bothered to clean it up yet.
         if (u_type == 0) {
              // left
-            float t = u_t - sin(v_tex_coords.y * 9) / 16 * 0.6;
+             // Apply a little wobbliness dependent on y
+            float t = wide_t - sin(v_tex_coords.y * 9) / 16 * 0.6;
+             // t=0 means wipe is at right side of the screen
             dist = v_tex_coords.x - t;
+             // Make rounded stripes
             color_index = mod(v_tex_coords.y * 9 + cos(dist * 10), 2) < 1 ? 0 : 1;
         }
         else if (u_type == 1) {
              // right
-            float t = u_t - sin(v_tex_coords.y * 9) / 16 * 0.6;
+            float t = wide_t - sin(v_tex_coords.y * 9) / 16 * 0.6;
             dist = 1 - v_tex_coords.x - t;
             color_index = mod(v_tex_coords.y * 9 + cos(dist * 10), 2) < 1 ? 0 : 1;
         }
         else if (u_type == 2) {
              // up
-            float t = u_t - sin(v_tex_coords.x * 16) / 9 * 0.6;
+            float t = wide_t - sin(v_tex_coords.x * 16) / 9 * 0.6;
             dist = v_tex_coords.y - t;
             color_index = mod(v_tex_coords.x * 16 + cos(dist * 10), 2) < 1 ? 0 : 1;
         }
         else if (u_type == 3) {
              // down
-            float t = u_t - sin(v_tex_coords.x * 16) / 9 * 0.6;
+            float t = wide_t - sin(v_tex_coords.x * 16) / 9 * 0.6;
             dist = 1 - v_tex_coords.y - t;
             color_index = mod(v_tex_coords.x * 16 + cos(dist * 10), 2) < 1 ? 0 : 1;
         }
         if (dist < -wipe_width / 2) {
-            color = texture(u_tex, v_tex_coords);
+            if (u_side) color = texture(u_tex, v_tex_coords);
+            else color = vec4(0);
         }
         else if (dist < wipe_width / 2) {
             color = colors[color_index];
         }
         else {
-            color = vec4(0);
+            if (u_side) color = vec4(0);
+            else color = texture(u_tex, v_tex_coords);
         }
     }
     else if (u_type == 4) {
          // Aperture close
         float dist = distance(gl_FragCoord.xy, u_center);
         float max_dist = 320;
-        if (dist < max_dist * (1 - u_t)) {
-            color = texture(u_tex, v_tex_coords);
+        if (dist < max_dist * u_t) {
+            if (u_side) color = texture(u_tex, v_tex_coords);
+            else color = vec4(0);
         }
         else {
-            color = vec4(0);
+            if (u_side) color = vec4(0);
+            else color = texture(u_tex, v_tex_coords);
         }
     }
     else if (u_type == 5) {
@@ -111,10 +120,12 @@ void main () {
         float dist = distance(gl_FragCoord.xy, u_center);
         float max_dist = 320;
         if (dist > max_dist * (1 - u_t)) {
-            color = texture(u_tex, v_tex_coords);
+            if (u_side) color = texture(u_tex, v_tex_coords);
+            else color = vec4(0);
         }
         else {
-            color = vec4(0);
+            if (u_side) color = vec4(0);
+            else color = texture(u_tex, v_tex_coords);
         }
     }
 }"

@@ -11,7 +11,7 @@
 
 namespace vf {
 
-static uint32 transition_timer = 0;
+static float transition_t = GNAN;
 static glow::Texture world_tex;
 static glow::Texture old_tex;
 static GLuint world_fb;
@@ -28,6 +28,7 @@ struct TransitionProgram : glow::Program {
     int u_type;
     int u_t;
     int u_center;
+    int u_side;
     void Program_after_link () override {
         u_type = glGetUniformLocation(id, "u_type");
         require(u_type != -1);
@@ -35,6 +36,8 @@ struct TransitionProgram : glow::Program {
         require(u_t != -1);
         u_center = glGetUniformLocation(id, "u_center");
         require(u_center != -1);
+        u_side = glGetUniformLocation(id, "u_side");
+        require(u_side != -1);
         int u_tex = glGetUniformLocation(id, "u_tex");
         glUniform1i(u_tex, 0);
     }
@@ -95,16 +98,11 @@ void begin_camera () {
 
 void end_camera () {
     draw_frames();
-    if (transition_timer) {
-        transition_timer -= 1;
+    if (defined(transition_t)) {
         transition_program->use();
-        float t = float(transition_timer) / transition_duration;
          // Ease in and out a bit
-        t = (1.f - std::cos(t * float(M_PI))) / 2.f;
-        glUniform1f(
-            transition_program->u_t,
-            lerp(-0.1f, 1.1f, t)
-        );
+        float t = (1.f - std::cos(transition_t * float(M_PI))) / 2.f;
+        glUniform1f(transition_program->u_t, t);
         glBindTexture(GL_TEXTURE_2D, old_tex);
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     }
@@ -124,14 +122,22 @@ void set_transition_center (Vec center) {
     glUniform2f(transition_program->u_center, center.x, center.y);
 }
 
-void start_transition_effect (TransitionType type) {
+void set_transition_type (TransitionType type) {
     transition_program->use();
     glUniform1i(transition_program->u_type, int(type));
 }
 
+void set_transition_t (float t) {
+    transition_t = t;
+}
+
+void set_transition_side (bool side) {
+    transition_program->use();
+    glUniform1i(transition_program->u_side, int(side));
+}
+
 void swap_world_tex () {
     using std::swap; swap(world_tex, old_tex);
-    transition_timer = transition_duration;
     glBindFramebuffer(GL_FRAMEBUFFER, world_fb);
     glFramebufferTexture2D(
         GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, world_tex, 0

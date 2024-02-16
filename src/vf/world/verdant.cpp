@@ -98,10 +98,10 @@ WalkerBusiness Verdant::Walker_business () {
                     .target_room = limbo,
                     .migrant = this,
                     .target_pos = pos,
-                    .until_exit = 1,
-                    .until_enter = 1
+                    .type = TransitionType::ApertureClose,
+                    .exit_at = 0,
+                    .enter_at = 0
                 };
-                start_transition_effect(TransitionType::ApertureClose);
                 set_transition_center(pos);
             }
             break;

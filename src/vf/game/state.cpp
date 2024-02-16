@@ -9,35 +9,47 @@
 
 namespace vf {
 
-struct Scheduled {
-    uint64 frame;
-    control::Statement action;
-};
-
  // If this returns false, don't step the room.
 bool Transition::step (State& state) {
-    if (until_exit) {
-        if (!--until_exit) {
-            state.current_room->exit();
-            state.current_room = target_room;
-            if (migrant) {
-                migrant->set_room(state.current_room);
-                migrant->set_pos(target_pos);
-            }
-            state.current_room->enter();
-            swap_world_tex();
-            if (set_checkpoint) state.save_checkpoint = true;
-             // fallthrough
-        }
-        else return true;
+    if (timer == 0) {
+        set_transition_type(type);
+        set_transition_side(false);
+         // fallthrough
     }
-    if (until_enter) {
-        --until_enter;
+    if (timer < exit_at) {
+        timer += 1;
+        set_transition_t(float(end_at - timer) / end_at);
+        return true;
+    }
+    else if (timer == exit_at) {
+        state.current_room->exit();
+        state.current_room = target_room;
+        if (migrant) {
+            migrant->set_room(state.current_room);
+            migrant->set_pos(target_pos);
+        }
+        state.current_room->enter();
+        swap_world_tex();
+        set_transition_side(true);
+        if (set_checkpoint) state.save_checkpoint = true;
+         // fallthrough
+    }
+    if (timer < enter_at) {
+        timer += 1;
+        set_transition_t(float(end_at - timer) / end_at);
         return false;
     }
-     // Delete self
-    state.transition = {};
-    return true;
+    else if (timer < end_at) {
+        timer += 1;
+        set_transition_t(float(end_at - timer) / end_at);
+        return true;
+    }
+    else {
+         // Delete self
+        set_transition_t(GNAN);
+        state.transition = {};
+        return true;
+    }
 }
 
 State::State () : rng(0) { }
@@ -78,8 +90,11 @@ AYU_DESCRIBE(vf::Transition,
         attr("target_room", &Transition::target_room),
         attr("migrant", &Transition::migrant),
         attr("target_pos", &Transition::target_pos),
-        attr("until_exit", &Transition::until_exit),
-        attr("until_enter", &Transition::until_enter)
+        attr("set_checkpoint", &Transition::set_checkpoint),
+        attr("exit_at", &Transition::exit_at),
+        attr("enter_at", &Transition::enter_at),
+        attr("end_at", &Transition::end_at),
+        attr("timer", &Transition::timer)
     )
 )
 

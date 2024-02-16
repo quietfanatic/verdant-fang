@@ -2,6 +2,7 @@
 #include <random>
 #include "../../dirt/ayu/resources/document.h"
 #include "../../dirt/ayu/resources/global.h"
+#include "camera.h"
 #include "common.h"
 
 namespace control { struct Statement; }
@@ -12,9 +13,12 @@ struct Transition {
     Room* target_room;
     Resident* migrant;
     Vec target_pos = GNAN;
+    TransitionType type = TransitionType::WipeLeft;
     bool set_checkpoint = false;
-    uint32 until_exit = 8;
-    uint32 until_enter = 24;
+    uint32 exit_at = 8;
+    uint32 enter_at = 24;
+    uint32 end_at = 30;
+    uint32 timer = 0;
 
     bool step (State&);
 };

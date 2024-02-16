@@ -26,7 +26,11 @@ enum class TransitionType {
 
  // center is only used for apertures.  Center is in world coordinates.
 void set_transition_center (Vec center);
-void start_transition_effect (TransitionType type);
+void set_transition_type (TransitionType type);
+ // Set to GNAN to disable
+void set_transition_t (float t);
+ // Depends on transition type
+void set_transition_side (bool side);
  // You must do this before the area after the wipe is visible.
 void swap_world_tex ();
 

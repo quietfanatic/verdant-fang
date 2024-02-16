@@ -2,7 +2,6 @@
 
 #include "../../dirt/ayu/reflection/describe.h"
 #include "../../dirt/control/command.h"
-#include "../game/camera.h"
 #include "../game/game.h"
 #include "../game/state.h"
 #include "../game/options.h"
@@ -26,9 +25,9 @@ void LoadingZone::Resident_on_collide (const Hitbox&, Resident& o, const Hitbox&
         .target_room = target_room,
         .migrant = &o,
         .target_pos = target_pos,
+        .type = transition,
         .set_checkpoint = checkpoint_level <= options.frustration
     };
-    start_transition_effect(transition);
 }
 
 } using namespace vf;
