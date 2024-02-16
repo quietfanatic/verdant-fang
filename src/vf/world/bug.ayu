@@ -37,6 +37,12 @@
         [[4 2] [-1 2] [-6 2] [-11 2]]
         [2 2 2 2]
     ]]
+    body_spit0: [vf::BodyFrame [#body [47 11] [0 5] [-2 9]]]
+    body_spit1: [vf::BodyFrame [#body [70 11] [0 5] [-2 9]]]
+    spitball0: [vf::Frame [#body [92 18]]]
+    spitball1: [vf::Frame [#body [99 18]]]
+    spitball_splash0: [vf::Frame [#body [107 18]]]
+    spitball_splash1: [vf::Frame [#body [115 18]]]
     wings: [vf::LayeredTexture [{
         image: assets.ayu#layer0
         bounds: [107 333 151 363]
@@ -69,7 +75,7 @@
     tail_damage: [vf::WeaponFrame [#tail [37 22]]]
     tail_damagefall: [vf::WeaponFrame [#tail [43 19]]]
     tail_dead: [vf::WeaponFrame [#tail [10 8]]]
-    poses: [vf::WalkerPoses {
+    poses: [vf::BugPoses {
         stand: [#body_h #wings_h #tail_h]
         crouch: [#body_h #wings_h #tail_h]
         walk: [
@@ -128,8 +134,15 @@
             [#body_dead1 #wings_dead #tail_dead *z_dead]
             [#body_dead0 #wings_dead #tail_dead *z_dead]
         ]
+        spit: [
+            [#body_spit0 #wings_fly0 #tail_v]
+            [#body_spit1 #wings_fly0 #tail_v]
+            [#body_spit0 #wings_fly0 #tail_v]
+        ]
+        projectile: [#spitball0 #spitball1]
+        projectile_hit: [#spitball_splash0 #spitball_splash1]
     }]
-    data: [vf::WalkerData {
+    data: [vf::BugData {
         body_box: [-4 -9 5 14]
         crouch_body_box: [-4 -9 5 14]
         dead_body_box: [-12 -3 8 4]
@@ -147,7 +160,7 @@
         gravity_fall: 0.2
         gravity_drop: 0.2
         gravity_damage: 0.1
-        gravity_fly: 0.02
+        gravity_fly: 0.01
         can_fly: true
         drop_duration: 6
         land_sequence: [8 4]
@@ -178,5 +191,15 @@
         poses: #poses
         decals: decals.ayu#
         flavor: lemon
+        projectile_box: [-2 -2 2 2]
+        spit_sequence: [10 20 30]
+        spit_mouth_offset: [10 9]
+        projectile_gravity: 0.1
+        projectile_duration: 240
+        projectile_anim_cycle: 8
+        projectile_hit_sequence: [8 8]
+        projectile_stun: 30
+        spit_sound: null
+        projectile_hit_sound: null
     }]
 }]

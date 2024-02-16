@@ -17,6 +17,7 @@ namespace Z {
     constexpr float Damage = 200;
     constexpr float Actor = 300;
     constexpr float Overlap = 400;
+    constexpr float Projectile = 500;
     constexpr float Debug = 1000000;
     constexpr float HeadOffset = -10;
     constexpr float WingsOffset = 10;
@@ -43,6 +44,8 @@ namespace Layers {
     constexpr uint32 Weapon_Walker = 1 << 4;
     constexpr uint32 LoadingZone_Verdant = 1 << 5;
     constexpr uint32 Switch_Weapon = 1 << 6;
+    constexpr uint32 Projectile_Walker = 1 << 7;
+    constexpr uint32 Projectile_Solid = 1 << 8;
 }
 
 } // vf

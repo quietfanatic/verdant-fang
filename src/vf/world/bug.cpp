@@ -7,8 +7,29 @@
 
 namespace vf {
 
+struct BugPoses : WalkerPoses {
+    Pose spit [3];
+    Frame* projectile [2];
+    Frame* projectile_hit [2];
+};
+
+struct BugData : WalkerData {
+    Rect projectile_box;
+    uint8 spit_sequence [3];
+    Vec spit_mouth_offset;
+    float projectile_gravity;
+    uint32 projectile_duration;
+    uint8 projectile_anim_cycle;
+    uint8 projectile_hit_sequence [2];
+    uint8 projectile_stun;
+    Sound* spit_sound;
+    Sound* projectile_hit_sound;
+};
+
 Bug::Bug () {
     types |= Types::Bug;
+    projectile_hb.layers_1 = Layers::Projectile_Walker;
+    projectile_hb.layers_2 = Layers::Projectile_Solid;
 }
 
 void Bug::init () {
@@ -16,10 +37,83 @@ void Bug::init () {
     if (!home_left) home_left = left;
 }
 
+WalkerBusiness Bug::Walker_business () {
+    auto& bd = static_cast<BugData&>(*data);
+    if (projectile_state == 1) {
+        projectile_vel.y -= bd.projectile_gravity;
+        projectile_pos += projectile_vel;
+        projectile_timer += 1;
+    }
+    else if (projectile_state == 2) {
+        uint32 dur = bd.projectile_hit_sequence[0]
+                   + bd.projectile_hit_sequence[1];
+        if (projectile_timer >= dur) {
+            projectile_state = 0;
+            projectile_timer = 0;
+            projectile_pos = GNAN;
+            projectile_vel = GNAN;
+        }
+        else projectile_timer += 1;
+    }
+    if (state == BS::Spit) {
+        expect(anim_phase < 3);
+        if (anim_timer >= bd.spit_sequence[anim_phase]) {
+            if (anim_phase == 2) {
+                set_state(WS::Neutral);
+            }
+            else {
+                projectile_state = 0;
+                projectile_pos = pos + left_flip(bd.spit_mouth_offset);
+                projectile_vel = left_flip(Vec(2, 0));
+                if (bd.spit_sound) bd.spit_sound->play();
+                anim_phase += 1;
+                anim_timer = 0;
+            }
+            return Walker_business();
+        }
+        else {
+            anim_timer += 1;
+            return WB::Occupied;
+        }
+    }
+    else return Walker::Walker_business();
+}
+
 void Bug::Resident_before_step () {
     wings_timer += 1;
     if (wings_timer >= 6) wings_timer = 0;
     Walker::Resident_before_step();
+    if (projectile_state == 1) {
+        auto& bd = static_cast<BugData&>(*data);
+         // projectile_pos is absolute, but hitbox is relative to self pos
+        projectile_hb.box = projectile_pos - pos + bd.projectile_box;
+        add_hitbox(projectile_hb);
+    }
+}
+
+void Bug::Resident_on_collide (
+    const Hitbox& hb, Resident& o, const Hitbox& o_hb
+) {
+    if (&hb == &projectile_hb && o_hb.layers_2 & Layers::Projectile_Solid) {
+        projectile_state = 2;
+        projectile_timer = 0;
+    }
+    else if (&hb == &projectile_hb && o_hb.layers_2 & Layers::Projectile_Walker) {
+        auto& victim = static_cast<Walker&>(o);
+        if (victim.state != WS::Dead && !victim.invincible) {
+            auto& bd = static_cast<BugData&>(*data);
+            victim.set_state(WS::Stun);
+            victim.stun_duration = bd.projectile_stun;
+             // Don't play sound twice on double collision (probably doesn't
+             // matter if it has an assigned channel)
+            if (projectile_state == 1) {
+                if (bd.projectile_hit_sound) bd.projectile_hit_sound->play();
+            }
+        }
+        projectile_state = 2;
+        projectile_timer = 0;
+    }
+    else Walker::Resident_on_collide(hb, o, o_hb);
 }
 
 void Bug::Walker_on_hit (const Hitbox& hb, Walker& victim, const Hitbox& o_hb) {
@@ -66,13 +160,39 @@ void Bug::Walker_on_hit (const Hitbox& hb, Walker& victim, const Hitbox& o_hb) {
 }
 
 Pose Bug::Walker_pose () {
-    auto& poses = *data->poses;
-    Pose r = Walker::Walker_pose();
+    auto& bd = static_cast<BugData&>(*data);
+    auto& poses = static_cast<BugPoses&>(*bd.poses);
+    Pose r;
+    if (state == BS::Spit) {
+        r = poses.spit[anim_phase];
+    }
+    else r = Walker::Walker_pose();
      // Using the head segment for the wings
     if (r.head == poses.fly[0].head || r.head == poses.fly[1].head) {
         r.head = wings_timer < 3 ? poses.fly[0].head : poses.fly[1].head;
     }
     return r;
+}
+
+void Bug::Resident_draw () {
+    auto& bd = static_cast<BugData&>(*data);
+    auto& poses = static_cast<BugPoses&>(*bd.poses);
+    Frame* projectile_frame = null;
+    if (projectile_state == 1) {
+        projectile_frame = poses.projectile[
+            (projectile_timer * 2 / bd.projectile_anim_cycle) % 2
+        ];
+    }
+    else if (projectile_state == 2) {
+        if (projectile_timer < bd.projectile_hit_sequence[0]) {
+            projectile_frame = poses.projectile_hit[0];
+        }
+        else projectile_frame = poses.projectile_hit[1];
+    }
+    if (projectile_frame) {
+        draw_frame(*projectile_frame, 0, projectile_pos, Z::Projectile);
+    }
+    Walker::Resident_draw();
 }
 
 void Bug::Resident_on_exit () {
@@ -272,5 +392,30 @@ AYU_DESCRIBE(vf::BugMind,
         attr("roam_interval", &BugMind::roam_interval),
         attr("roam_tolerance", &BugMind::roam_tolerance, optional),
         attr("personal_space", &BugMind::personal_space)
+    )
+)
+
+AYU_DESCRIBE(vf::BugPoses,
+    attrs(
+        attr("vf::WalkerPoses", base<WalkerPoses>(), include),
+        attr("spit", &BugPoses::spit),
+        attr("projectile", &BugPoses::projectile),
+        attr("projectile_hit", &BugPoses::projectile_hit)
+    )
+)
+
+AYU_DESCRIBE(vf::BugData,
+    attrs(
+        attr("vf::WalkerData", base<WalkerData>(), include),
+        attr("projectile_box", &BugData::projectile_box),
+        attr("spit_sequence", &BugData::spit_sequence),
+        attr("spit_mouth_offset", &BugData::spit_mouth_offset),
+        attr("projectile_gravity", &BugData::projectile_gravity),
+        attr("projectile_duration", &BugData::projectile_duration),
+        attr("projectile_anim_cycle", &BugData::projectile_anim_cycle),
+        attr("projectile_hit_sequence", &BugData::projectile_hit_sequence),
+        attr("projectile_stun", &BugData::projectile_stun),
+        attr("spit_sound", &BugData::spit_sound),
+        attr("projectile_hit_sound", &BugData::projectile_hit_sound)
     )
 )

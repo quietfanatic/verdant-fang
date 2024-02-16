@@ -19,7 +19,7 @@
         mind: #verdant_mind
         --room: #start
         --pos: [-32 32]
-        --state: 5 --VS::PreTransform
+        --state: 6 --VS::PreTransform
         room: #hive
         pos: [16 64]
         floor: #start_blocks

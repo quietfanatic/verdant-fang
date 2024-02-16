@@ -12,7 +12,7 @@ namespace VS {
     constexpr WalkerState PreTransform = WS::Custom + 0;
     constexpr WalkerState Transform = WS::Custom + 1;
      // Update world.ayu if this changes
-    static_assert(PreTransform == 5);
+    static_assert(PreTransform == 6);
 };
 
 struct VerdantPoses : WalkerPoses {

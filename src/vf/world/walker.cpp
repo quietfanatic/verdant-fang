@@ -120,6 +120,17 @@ WalkerBusiness Walker::Walker_business () {
                 return WB::Frozen;
             }
         }
+        case WS::Stun: {
+            fly = false;
+            if (anim_timer >= stun_duration) {
+                set_state(WS::Neutral);
+                return Walker_business();
+            }
+            else {
+                anim_timer += 1;
+                return WB::Occupied;
+            }
+        }
         case WS::Dead: {
             fly = false;
             expect(anim_phase < 11);
@@ -565,6 +576,10 @@ Pose Walker::Walker_pose () {
             if (!floor) {
                 r.head = poses.jump[jump_frame()].head;
             }
+            break;
+        }
+        case WS::Stun: {
+            r = poses.damage;
             break;
         }
         case WS::Dead: {

@@ -33,8 +33,9 @@ namespace WS {
     constexpr WalkerState Land = 1;
     constexpr WalkerState Attack = 2;
     constexpr WalkerState Hit = 3;
-    constexpr WalkerState Dead = 4;
-    constexpr WalkerState Custom = 5;
+    constexpr WalkerState Stun = 4;
+    constexpr WalkerState Dead = 5;
+    constexpr WalkerState Custom = 6;
 }
 
  // WalkerBusiness indicates how "busy" this character is, which encompasses
@@ -203,6 +204,8 @@ struct Walker : Resident {
      // For the rare case where two walkers kill eachother on the same frame,
      // show them in hit[0] instead of dead[0]
     bool mutual_kill = false;
+     // Used if state == WS::Stun
+    uint8 stun_duration = 0;
 
      // Everything below here is only used within one frame, so don't serialize
      // any of it.

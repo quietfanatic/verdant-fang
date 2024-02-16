@@ -4,6 +4,11 @@
 
 namespace vf {
 
+namespace BugState {
+    constexpr WalkerState Spit = WS::Custom + 0;
+}
+namespace BS = BugState;
+
 struct Bug : Walker {
     Vec home_pos = GNAN;
     std::optional<bool> home_left;
@@ -16,14 +21,28 @@ struct Bug : Walker {
     Vec roam_pos;
      // Counts down
     uint32 roam_timer = 0;
+     // 0 = nonexistent
+     // 1 = moving
+     // 2 = splashing
+    uint8 projectile_state = 0;
+    uint32 projectile_timer = 0;
+    Vec projectile_pos = GNAN;
+    Vec projectile_vel = GNAN;
+    Hitbox projectile_hb;
     Bug ();
     void init ();
+     // Handle BS::Spit
+    WalkerBusiness Walker_business () override;
      // Animate wings
     void Resident_before_step () override;
+     // Projectile collision
+    void Resident_on_collide (const Hitbox&, Resident&, const Hitbox&) override;
      // Apply decals
     void Walker_on_hit (const Hitbox&, Walker&, const Hitbox&) override;
      // Animate wings
     Pose Walker_pose () override;
+     // Draw projectile
+    void Resident_draw () override;
     void Resident_on_exit () override;
 };
 
