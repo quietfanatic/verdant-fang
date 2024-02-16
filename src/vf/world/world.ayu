@@ -25,7 +25,6 @@
         pos: [16 64]
         floor: #start_blocks
         limbo: #limbo
-        poison_level: 2
     }]
 
     start: [vf::Room { }]
@@ -62,7 +61,7 @@
         room: #start
         pos: [260 144]
         data: assets.ayu#switch
-        target: #start_to_den_door
+        activate: [#start_to_den_door]
     }]
     start_to_den_door: [vf::Door {
         room: #start
@@ -158,7 +157,7 @@
         room: #den
         data: assets.ayu#switch
         pos: [296 40]
-        target: #den_door
+        activate: [#den_door]
     }]
     den_door: [vf::Door {
         room: #den
@@ -195,7 +194,8 @@
             [-16 160] [16 160] [48 160] [80 160] [112 160] [144 160] [176 160] [208 160] [240 160] [272 160] [304 160]
             [-16 128] [16 128] [272 128] [304 128]
             [-16 32] [16 32] [272 32] [304 32]
-            [-16 0] [16 0] [48 -16] [80 -16] [112 -16] [144 -16] [176 -16] [208 -16] [240 -16] [272 0] [304 0]
+             -- Leave one block out, it's a secret door
+            [-16 0] [48 -16] [80 -16] [112 -16] [144 -16] [176 -16] [208 -16] [240 -16] [272 0] [304 0]
         ]
     }]
     hive_semis: [vf::Semisolids {
@@ -229,6 +229,30 @@
         mind: #buggy
         pos: [240 25]
         floor: #hive_blocks
+    }]
+    hive_switch: [vf::Switch {
+        room: #hive
+        data: assets.ayu#switch
+        pos: [260 144]
+        activate: [#hive_secret_door #hive_secret_switch]
+    }]
+    hive_secret_door: [vf::Door {
+        room: #hive
+        data: assets.ayu#block_door
+        pos: [16 0]
+        open_pos: [16 -16]
+    }]
+    hive_secret_switch: [vf::Switch {
+        room: #hive
+        data: assets.ayu#switch
+        pos: [34 24]
+        activate: [#hive_door]
+        active: false
+    }]
+    hive_door: [vf::Door {
+        room: #hive
+        data: assets.ayu#door
+        pos: [288 64]
     }]
 
     hive_to_den: [vf::LoadingZone {

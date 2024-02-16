@@ -70,8 +70,7 @@ void Door::Resident_before_step () {
 }
 
 void Door::Resident_draw () {
-    draw_frame(data->frame, 0, pos, Z::DoorBehind);
-    draw_frame(data->frame, 1, pos, Z::Door);
+    draw_all_layers(data->frame, pos, Z::Door);
 }
 
 void Door::Resident_on_exit () {

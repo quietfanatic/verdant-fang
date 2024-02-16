@@ -49,6 +49,18 @@ inline void draw_layers (
     }
 }
 
+inline void draw_all_layers (
+    const Frame& frame,
+    Vec pos,
+    float z = 0,
+    Vec scale = {1, 1},
+    glow::RGBA8 tint = {}
+) {
+    for (usize i = 0; i < frame.target->layers.size(); i++) {
+        draw_frame(frame, i, pos, z, scale, tint);
+    }
+}
+
 void draw_texture (
     const glow::Texture&,
     const Rect& world_rect,

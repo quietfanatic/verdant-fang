@@ -11,9 +11,9 @@ namespace Z {
     constexpr float Semisolid = -400;
     constexpr float Dead = -300;
     constexpr float DeadPlayer = -200;
-    constexpr float Door = -100;
-    constexpr float Blocks = 0;
-    constexpr float Switch = 100;
+    constexpr float Switch = -100;
+    constexpr float Door = 0;
+    constexpr float Blocks = 100;
     constexpr float Damage = 200;
     constexpr float Actor = 300;
     constexpr float Overlap = 400;

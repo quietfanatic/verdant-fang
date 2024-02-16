@@ -1,3 +1,5 @@
+&z_door_behind_offset+door: -600
+
 [ayu::Document {
     layer0: [glow::FileImage { source:assets/layer0.png }]
     layer1: [glow::FileImage { source:assets/layer1.png }]
@@ -52,6 +54,7 @@
         {
             image: #layer0
             bounds: [38 3 61 67]
+            z_offset: *z_door_behind_offset+door
         } {
             image: #layer1
             bounds: [38 3 61 67]
@@ -61,6 +64,14 @@
          -- Doors are an odd number of pixels wide.  Bias them left.
         hitbox: [-12 0 11 64]
         frame: [#door_tex [12 0]]
+        open_sound: #gubuuw
+        close_sound: #gruwwu
+        slam_sound: #pkuwww
+        crush_sound: #krshch
+    }]
+    block_door: [vf::DoorData {
+        hitbox: [0 0 32 32]
+        frame: [#block_tex [0 0] [0 0 32 32]]
         open_sound: #gubuuw
         close_sound: #gruwwu
         slam_sound: #pkuwww
