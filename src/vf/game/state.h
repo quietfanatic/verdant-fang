@@ -41,6 +41,7 @@ struct State {
     bool load_checkpoint = false;
 
     State ();
+    void load_initial ();
     void step ();
 };
 

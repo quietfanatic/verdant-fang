@@ -95,16 +95,9 @@ Game::Game () :
         ayu::load(state_res);
     }
     else {
-        ayu::SharedResource world (iri::constant("res:/vf/world/world.ayu"));
         state_res->set_value(ayu::Dynamic::make<State>());
         auto& state = state_res->get_value().as<State>();
-        Resident* v = world["verdant"][1];
-        if (v) {
-            state.current_room = v->room;
-        }
-        else state.current_room = world["start"][1];
-        state.world = move(world->value().as<ayu::Document>());
-        ayu::force_unload(world);
+        state.load_initial();
          // Don't save state yet
     }
 }

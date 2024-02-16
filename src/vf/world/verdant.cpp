@@ -94,15 +94,24 @@ WalkerBusiness Verdant::Walker_business () {
         case WS::Dead: {
             if (limbo && room != limbo && anim_phase == 10) {
                 auto& state = current_game->state();
+                Vec target = pos;
+                if (target.x < 40) target.x = 40;
+                if (target.x > 280) target.x = 280;
+                if (target.y < 12) target.y = 12;
+                if (target.y > 156) target.y = 156;
                 state.transition = Transition{
                     .target_room = limbo,
                     .migrant = this,
-                    .target_pos = pos,
+                    .target_pos = target,
                     .type = TransitionType::ApertureClose,
                     .exit_at = 0,
                     .enter_at = 0
                 };
-                set_transition_center(pos);
+                Vec center = target + Vec(
+                    left_flip(damage_forward ? 4 : -8),
+                    3
+                );
+                set_transition_center(center);
             }
             break;
         }

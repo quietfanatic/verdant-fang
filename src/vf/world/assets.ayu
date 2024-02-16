@@ -63,9 +63,9 @@
 
     limbo_tex: [vf::LayeredTexture [{
         image: #layer0
-        bounds: [12 245 60 257]
+        bounds: [429 53 497 84]
     }]]
-    limbo_platform: [vf::Frame [#limbo_tex [24 12]]]
+    limbo_platform: [vf::Frame [#limbo_tex [34 12] [-34 -12 34 19]]]
 
      -- For some reason, having these as mp3s breaks SDL2_mixer.  Perhaps it
      -- can't play mp3 files that are too short?

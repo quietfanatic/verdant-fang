@@ -1,8 +1,10 @@
 #include "state.h"
 
 #include "../../dirt/ayu/reflection/describe.h"
+#include "../../dirt/ayu/resources/resource.h"
 #include "../../dirt/ayu/traversal/to-tree.h"
 #include "../../dirt/control/command.h"
+#include "../../dirt/iri/iri.h"
 #include "camera.h"
 #include "game.h"
 #include "room.h"
@@ -54,6 +56,17 @@ bool Transition::step (State& state) {
 
 State::State () : rng(0) { }
 
+void State::load_initial () {
+    ayu::SharedResource initial (iri::constant("res:/vf/world/world.ayu"));
+    Resident* v = initial["verdant"][1];
+    if (v) {
+        current_room = v->room;
+    }
+    else current_room = initial["start"][1];
+    world = move(initial->value().as<ayu::Document>());
+    ayu::force_unload(initial);
+}
+
 void State::step () {
     bool should_step = true;
     if (transition) should_step = transition->step(*this);
@@ -80,6 +93,10 @@ void State::step () {
                 checkpoint = move(save_cp);
                 rng_uint32 = save_rng;
                 transition = {};
+            }
+            else {
+                 // No checkpoint?  Uh...reload from initial world?
+                load_initial();
             }
         }
         if (current_room) current_room->step();

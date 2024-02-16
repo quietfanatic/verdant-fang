@@ -22,7 +22,7 @@ struct LimboPlatform : Resident {
                 pos.x += v->left_flip(4);
             }
             else {
-                pos.x -= v->left_flip(9);
+                pos.x -= v->left_flip(8);
             }
         }
     }
