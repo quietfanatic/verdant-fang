@@ -97,4 +97,5 @@
     pwsh: [vf::Sound { source:assets/pwsh.mp3 channel:1 }]
     shwp: [vf::Sound { source:assets/shwp.mp3 channel:1 }]
     poiy: [vf::Sound { source:assets/poiy.mp3 channel:1 }]
+    spit: [vf::Sound { source:assets/spit.mp3 channel:3 }]
 }]

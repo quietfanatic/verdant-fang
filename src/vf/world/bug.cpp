@@ -62,10 +62,12 @@ WalkerBusiness Bug::Walker_business () {
                 set_state(WS::Neutral);
             }
             else {
-                projectile_state = 0;
-                projectile_pos = pos + left_flip(bd.spit_mouth_offset);
-                projectile_vel = left_flip(Vec(2, 0));
-                if (bd.spit_sound) bd.spit_sound->play();
+                if (anim_phase == 1) {
+                    projectile_state = 1;
+                    projectile_pos = pos + left_flip(bd.spit_mouth_offset);
+                    projectile_vel = left_flip(Vec(2, 0));
+                    if (bd.spit_sound) bd.spit_sound->play();
+                }
                 anim_phase += 1;
                 anim_timer = 0;
             }
@@ -222,7 +224,7 @@ Controls BugMind::Mind_think (Resident& s) {
     Controls r {};
     if (!(s.types & Types::Bug)) return r;
     auto& self = static_cast<Bug&>(s);
-    if (!target || target->state == WS::Dead) return r;
+    if (!target) return r;
 
 
     auto set_roam_timer = [&]{
@@ -252,6 +254,12 @@ Controls BugMind::Mind_think (Resident& s) {
 
         self.roam_timer = std::uniform_int_distribution(
             roam_interval.l, roam_interval.r
+        )(rng);
+    };
+    auto set_spit_timer = [&]{
+        auto& rng = current_game->state().rng;
+        self.spit_timer = std::uniform_int_distribution(
+            spit_interval.l, spit_interval.r
         )(rng);
     };
 
@@ -308,6 +316,15 @@ Controls BugMind::Mind_think (Resident& s) {
     }
     else if (self.alert_phase == 1) {
         if (self.alert_timer >= alert_sequence) {
+             // Alert other bugs
+            for (auto& r : self.room->residents) {
+                if (!(r.types & Types::Bug)) continue;
+                auto& fren = static_cast<Bug&>(r);
+                if (fren.state == WS::Dead) continue;
+                if (fren.alert_phase == 0) fren.alert_phase = 1;
+            }
+            set_roam_timer();
+            set_spit_timer();
             self.alert_phase = 2;
             self.alert_timer = 0;
             goto next_alert_phase;
@@ -318,16 +335,9 @@ Controls BugMind::Mind_think (Resident& s) {
         }
     }
     else if (self.alert_phase == 2) {
-        if (self.alert_timer == 0) {
-             // Alert other bugs
-            for (auto& r : self.room->residents) {
-                if (!(r.types & Types::Bug)) continue;
-                auto& fren = static_cast<Bug&>(r);
-                if (fren.state == WS::Dead) continue;
-                if (fren.alert_phase == 0) fren.alert_phase = 1;
-            }
-            set_roam_timer();
-            self.alert_timer += 1;
+        if (target->state == WS::Dead) {
+            self.fly = false;
+            return r;
         }
         if (self.state == WS::Attack && self.anim_phase < 3) {
              // Occupied with attacking, don't do anything else
@@ -364,6 +374,15 @@ Controls BugMind::Mind_think (Resident& s) {
             else if (self.pos.y > self.roam_pos.y + roam_tolerance) {
                 r[Control::Down] = 1;
             }
+            if (self.spit_timer == 0) {
+                if (
+                    length2(self.vel) <= length2(spit_stability_requirement)
+                ) {
+                    r[Control::Special] = 1;
+                    set_spit_timer();
+                }
+            }
+            else self.spit_timer -= 1;
         }
     }
     return r;
@@ -380,7 +399,8 @@ AYU_DESCRIBE(vf::Bug,
         attr("alert_phase", &Bug::alert_phase, optional),
         attr("alert_timer", &Bug::alert_timer, optional),
         attr("roam_pos", &Bug::roam_pos, optional),
-        attr("roam_timer", &Bug::roam_timer, optional)
+        attr("roam_timer", &Bug::roam_timer, optional),
+        attr("spit_timer", &Bug::spit_timer, optional)
     ),
     init<&Bug::init>()
 )
@@ -396,7 +416,8 @@ AYU_DESCRIBE(vf::BugMind,
         attr("roam_territory", &BugMind::roam_territory),
         attr("roam_interval", &BugMind::roam_interval),
         attr("roam_tolerance", &BugMind::roam_tolerance, optional),
-        attr("spit_interval", &BugMind::spit_interval)
+        attr("spit_interval", &BugMind::spit_interval),
+        attr("apit_stability_requirement", &BugMind::spit_stability_requirement, optional)
     )
 )
 

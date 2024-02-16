@@ -18,11 +18,11 @@
     verdant: [vf::Verdant {
         data: verdant.ayu#data
         mind: #verdant_mind
-        room: #start
-        pos: [-32 32]
-        state: 6 --VS::PreTransform
-        --room: #hive
-        --pos: [16 64]
+        --room: #start
+        --pos: [-32 32]
+        --state: 6 --VS::PreTransform
+        room: #hive
+        pos: [16 64]
         floor: #start_blocks
         limbo: #limbo
     }]

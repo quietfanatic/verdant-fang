@@ -11,7 +11,7 @@ Walker::Walker () {
     body_hb.layers_1 = Layers::Walker_Solid | Layers::Walker_Walker
                     | Layers::Walker_Semisolid;
     body_hb.layers_2 = Layers::Walker_Walker;
-    damage_hb.layers_2 = Layers::Weapon_Walker;
+    damage_hb.layers_2 = Layers::Weapon_Walker | Layers::Projectile_Walker;
     weapon_hb.layers_1 = Layers::Weapon_Solid | Layers::Weapon_Walker;
     weapon_hb.layers_2 = Layers::Switch_Weapon;
 }

@@ -14,7 +14,8 @@ Blocks::Blocks () {
 void Blocks::init () {
     clear_hitboxes();
     for (auto& b : blocks) {
-        b.hb.layers_2 = Layers::Walker_Solid | Layers::Weapon_Solid;
+        b.hb.layers_2 = Layers::Walker_Solid | Layers::Weapon_Solid
+                      | Layers::Projectile_Solid;
         b.hb.box = b.pos + Rect(data->bounds);
         add_hitbox(b.hb);
     }

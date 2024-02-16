@@ -156,9 +156,9 @@
         air_max: 2
         air_dec: 0.1
         jump_vel: 2
-        gravity_jump: 0.2
-        gravity_fall: 0.2
-        gravity_drop: 0.2
+        gravity_jump: 0.01
+        gravity_fall: 0.01
+        gravity_drop: 0.01
         gravity_damage: 0.1
         gravity_fly: 0.01
         can_fly: true
@@ -199,7 +199,7 @@
         projectile_anim_cycle: 8
         projectile_hit_sequence: [8 8]
         projectile_stun: 30
-        spit_sound: null
+        spit_sound: assets.ayu#spit
         projectile_hit_sound: null
     }]
 }]
