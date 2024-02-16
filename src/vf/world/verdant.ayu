@@ -66,6 +66,7 @@
         [2 2 2 2]
     ]]
     body_damagefallf: [vf::BodyFrame [#body [152 86] [4 13] [-1 2]]]
+    body_downf: [vf::BodyFrame [#body [211 86] [7 6] [-6 0]]]
     body_deadf: [vf::BodyFrame [#body [182 78] [9 3] [-6 0]]]
     body_walkhold0: [vf::BodyFrame [#body [14 24] [0 23] [4 20]]]
     body_walkhold1: [vf::BodyFrame [#body [37 24] [0 23] [4 20]]]
@@ -197,6 +198,7 @@
         ]
         damagef: [#body_damage #head_damage #spear_damage *z_deadplayer true]
         damagefallf: [#body_damagefallf #head_damagef #spear_damagefallf *z_deadplayer]
+        downf: [#body_downf #head_damagef #spear_dead *z_deadplayer]
         deadf: [
             [#body_deadf #head_deadf #spear_dead *z_deadplayer]
             [#body_deadf #head_deadf #spear_dead *z_deadplayer]
@@ -251,7 +253,7 @@
         gravity_jump: 0.11
         gravity_fall: 0.2
         gravity_drop: 0.3
-        gravity_damage: 0.1
+        gravity_dead: 0.1
         gravity_fly: 0.1
         can_fly: false
         drop_duration: 6

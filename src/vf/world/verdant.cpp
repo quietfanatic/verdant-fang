@@ -18,6 +18,7 @@ namespace VS {
 struct VerdantPoses : WalkerPoses {
     Pose damagef;
     Pose damagefallf;
+    Pose downf;
     Pose deadf [7];
     Pose walk_hold [6];
     Pose transform [14];
@@ -68,6 +69,7 @@ Vec Verdant::visual_center () {
 
 WalkerBusiness Verdant::Walker_business () {
     auto& vd = static_cast<VerdantData&>(*data);
+    if (state != WS::Stun && state != WS::Dead) damage_forward = false;
     switch (state) {
         case VS::PreTransform: {
             expect(anim_phase == 0);
@@ -109,7 +111,17 @@ WalkerBusiness Verdant::Walker_business () {
             }
             break;
         }
+        case WS::Stun: {
+            if (poison_level == 2 && anim_timer == 0 && paralyze_symbol_timer && floor) {
+                damage_forward = true;
+                if (floor) pos.y += data->dead_floor_lift;
+            }
+            break;
+        }
         case WS::Dead: {
+            if (poison_level == 3 && anim_phase == 0 && anim_timer == 0) {
+                damage_forward = true;
+            }
             if (limbo && room != limbo && anim_phase == 10) {
                  // Horrible hard-coded values, too busy to do this properly
                 auto& state = current_game->state();
@@ -242,6 +254,12 @@ Pose Verdant::Walker_pose () {
             if (anim_phase == 9) weapon_layers = 0x5;
             else if (anim_phase == 10) weapon_layers = 0x1;
             return r;
+        }
+        case WS::Stun: {
+            if (poison_level == 2 && paralyze_symbol_timer) {
+                return floor ? poses.downf : poses.damagefallf;
+            }
+            else break;
         }
         case WS::Dead: {
             if (damage_forward) {
@@ -394,6 +412,7 @@ AYU_DESCRIBE(vf::VerdantPoses,
         attr("vf::WalkerPoses", base<WalkerPoses>(), include),
         attr("damagef", &VerdantPoses::damagef),
         attr("damagefallf", &VerdantPoses::damagefallf),
+        attr("downf", &VerdantPoses::downf),
         attr("deadf", &VerdantPoses::deadf),
         attr("walk_hold", &VerdantPoses::walk_hold),
         attr("transform", &VerdantPoses::transform)

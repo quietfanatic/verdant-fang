@@ -25,6 +25,7 @@
         pos: [16 64]
         floor: #start_blocks
         limbo: #limbo
+        poison_level: 2
     }]
 
     start: [vf::Room { }]

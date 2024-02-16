@@ -330,7 +330,8 @@ void Walker::Walker_move (const Controls& controls) {
             fall_start_y = pos.y;
         }
          // TODO: Differentiate between dead anim phases?
-        vel.y -= state == WS::Dead ? data->gravity_damage
+        vel.y -= state == WS::Stun ? data->gravity_fall
+               : state == WS::Dead ? data->gravity_dead
                : fly ? data->gravity_fly
                : drop_timer == 0 ? data->gravity_jump
                : drop_timer <= data->drop_duration ? data->gravity_drop
@@ -764,7 +765,7 @@ AYU_DESCRIBE(vf::WalkerData,
         attr("gravity_jump", &WalkerData::gravity_jump),
         attr("gravity_fall", &WalkerData::gravity_fall),
         attr("gravity_drop", &WalkerData::gravity_drop),
-        attr("gravity_damage", &WalkerData::gravity_damage),
+        attr("gravity_dead", &WalkerData::gravity_dead),
         attr("gravity_fly", &WalkerData::gravity_fly),
         attr("can_fly", &WalkerData::can_fly),
         attr("drop_duration", &WalkerData::drop_duration),

@@ -145,7 +145,7 @@
         gravity_jump: 0.2
         gravity_fall: 0.2
         gravity_drop: 0.2
-        gravity_damage: 0.1
+        gravity_dead: 0.1
         gravity_fly: 0.1
         can_fly: false
         drop_duration: 6

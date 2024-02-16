@@ -121,7 +121,7 @@ struct WalkerData {
     float gravity_jump;
     float gravity_fall;
     float gravity_drop;
-    float gravity_damage;
+    float gravity_dead;
     float gravity_fly;
     bool can_fly;
     uint8 drop_duration;
