@@ -103,13 +103,28 @@ Controls BugMind::Mind_think (Resident& s) {
 
     auto set_roam_timer = [&]{
         auto& rng = current_game->state().rng;
-        self.roam_pos.x = std::uniform_real_distribution<float>(
-            roam_territory.l, roam_territory.r
-        )(rng);
-         // Bias toward top of the room
-        float h = std::uniform_real_distribution<float>(0, 1)(rng);
-        self.roam_pos.y = roam_territory.b
-                        + height(roam_territory) * (1 - length2(1 - h));
+         // Limit number of roam_pos choices
+        for (usize i = 0; i < 8; i++) {
+            self.roam_pos.x = std::uniform_real_distribution<float>(
+                roam_territory.l, roam_territory.r
+            )(rng);
+             // Bias toward top of the room
+            float h = std::uniform_real_distribution<float>(0, 1)(rng);
+            self.roam_pos.y = roam_territory.b
+                            + height(roam_territory) * (1 - length2(1 - h));
+             // Rechoose roam position if it overlaps with another bug's roam
+             // position.
+            for (auto& r : self.room->residents) {
+                if (!(r.types & Types::Bug)) continue;
+                auto& fren = static_cast<Bug&>(r);
+                if (fren.state == WS::Dead) continue; // :(
+                if (distance2(self.roam_pos, fren.roam_pos) < length2(32)) {
+                    goto rechoose;
+                }
+            }
+            break;
+            rechoose:;
+        }
 
         self.roam_timer = std::uniform_int_distribution(
             roam_interval.l, roam_interval.r
