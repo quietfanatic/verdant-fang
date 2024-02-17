@@ -71,7 +71,7 @@ void State::step () {
     bool should_step = true;
     if (transition) should_step = transition->step(*this);
     if (should_step) {
-        if (save_checkpoint) {
+        if (save_checkpoint && !transition) {
             save_checkpoint = false;
              // Don't recursively nest checkpoints
             checkpoint = {};
@@ -81,7 +81,7 @@ void State::step () {
             checkpoint = ayu::item_to_tree(this);
             transition = move(save_tr);
         }
-        if (load_checkpoint) {
+        if (load_checkpoint && !transition) {
             load_checkpoint = false;
             if (checkpoint) {
                  // Preserve rng state so rng is different

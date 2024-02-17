@@ -15,8 +15,8 @@ struct Transition {
     Vec target_pos = GNAN;
     TransitionType type = TransitionType::WipeLeft;
     bool set_checkpoint = false;
-    uint32 exit_at = 8;
-    uint32 enter_at = 24;
+    uint32 exit_at = 6;
+    uint32 enter_at = 20;
     uint32 end_at = 30;
     uint32 timer = 0;
 
