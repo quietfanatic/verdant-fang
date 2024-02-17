@@ -144,9 +144,9 @@
     spear_dead:       [vf::WeaponFrame [#fang [87 43]]]
     spear_crouch_preattack: [vf::WeaponFrame [#fang [87 37]]]
     spear_crouch_attack: [vf::WeaponFrame [#fang [87 32] [0 -1 18 1]]]
-    spear_h: [vf::Frame [#fang [48 113]]]
-    snake_h_longg: [vf::Frame [#fang [48 119]]]
-    snake_h: [vf::Frame [#fang [51 131]]]
+    spear_h: [vf::Frame [#fang [52 113]]]
+    snake_h_longg: [vf::Frame [#fang [52 119]]]
+    snake_h: [vf::Frame [#fang [55 131]]]
     poses: [vf::VerdantPoses {
         stand: [#body_stand #head_neutral #spear_neutral]
         crouch: [#body_crouch #head_neutral #spear_neutral]

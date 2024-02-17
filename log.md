@@ -154,3 +154,17 @@
 - Planned work for tomorrow: Spitting!  Maybe start work on Witch some, as
   another flying entity?  I should also maybe start in on music too...oh but
   there are a bunch of sound effects I need to add too...uhhhhh
+####2024-02-16 F
+- Still didn't implement much of the final boss, but I did get some very
+  important work done.
+- Made bugs spit poison and implemented poison/paralysis, including related art
+  and sounds.  The bug AI still needs better aim.
+- Revised transition and checkpoint code yet again, this time making checkpoint
+  management somewhat saner (though it has to go through the transition system,
+  even to save checkpoints while not in a transition).
+- Implemented aperture open transition when loading a checkpoint.
+- Implemented snake animation for game over screen, and revised and vastly
+  imptroved the dead/force-restart-\>limbo-\>restart sequence.
+- Haven't implemented anything yet, but drew some art for the captured-by-final-
+  boss scene.
+- Planned work for tomorrow: More boss cutscene work.  And maybe music.
