@@ -45,7 +45,7 @@
     ]]
     head: [vf::LayeredTexture [{
         image: assets.ayu#layer0
-        bounds: [129 259 170 298]
+        bounds: [252 277 295 316]
         z_offset: *z_head_offset
     }]]
     head_neutral: [vf::Frame [#head [9 26]]]
@@ -55,15 +55,15 @@
     axe: [vf::LayeredTexture [
         {
             image: assets.ayu#layer0
-            bounds: [66 223 116 298]
+            bounds: [120 238 168 313]
             z_offset: *z_weapon_offset0
         } {
             image: assets.ayu#layer1
-            bounds: [66 223 116 298]
+            bounds: [120 238 168 313]
             z_offset: *z_weapon_offset1
         } {
             image: assets.ayu#layer2
-            bounds: [66 223 116 298]
+            bounds: [120 238 168 313]
             z_offset: *z_weapon_offset2
         }
     ]]

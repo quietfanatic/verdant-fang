@@ -139,14 +139,13 @@ void Bug::Resident_on_collide (
 }
 
 void Bug::Walker_on_hit (const Hitbox& hb, Walker& victim, const Hitbox& o_hb) {
-     // We haven't implemented backstabbing so turn victim around.
-    victim.left = !left;
      // Find place to stab
     Vec weapon_offset = data->poses->hit[0].body->weapon;
+    auto& weapon_frame = *data->poses->hit[0].weapon;
     auto& victim_body = *victim.data->poses->damage.body;
     usize min_dist = GINF;
     usize decal_i = -1;
-    float weapon_y = pos.y + weapon_offset.y;
+    float weapon_y = pos.y + weapon_offset.y + center(weapon_frame.hitbox).y;
     for (usize i = 0; i < max_decals; i++) {
         float decal_y = victim.pos.y + victim_body.decals[i].y;
         float dist = distance(decal_y, weapon_y);
@@ -164,9 +163,9 @@ void Bug::Walker_on_hit (const Hitbox& hb, Walker& victim, const Hitbox& o_hb) {
      // Stab
     victim.decal_type = DecalType::Stab;
     victim.decal_index = decal_i;
-    if (victim.data->flavor == WF::Lemon) weapon_layers |= 0x8;
-    else if (stab_depth > 12) weapon_layers |= 0x4;
-    else weapon_layers |= 0x2;
+    if (victim.data->flavor == WF::Lemon) pending_weapon_layers |= 0x8;
+    else if (stab_depth > 12) pending_weapon_layers |= 0x4;
+    else pending_weapon_layers |= 0x2;
      // Move victim vertically
     float height_diff = decal_pos.y - weapon_y;
     victim.pos.y -= height_diff;

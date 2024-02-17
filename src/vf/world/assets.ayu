@@ -17,7 +17,7 @@
 
     light_tex: [vf::LayeredTexture [{
         image: #layer0
-        bounds: [1 232 65 296]
+        bounds: [503 1 567 65]
     }]]
     outside_light: [vf::Frame [#light_tex [0 0] [0 0 64 64]]]
 

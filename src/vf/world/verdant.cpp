@@ -196,8 +196,6 @@ void Verdant::Resident_on_collide (
 void Verdant::Walker_on_hit (
     const Hitbox& hb, Walker& victim, const Hitbox& o_hb
 ) {
-     // We haven't implemented backstabbing so turn victim around.
-    victim.left = !left;
      // Find place to stab
     Vec weapon_offset = data->poses->hit[0].body->weapon;
     auto& victim_body = *victim.data->poses->damage.body;
@@ -221,9 +219,9 @@ void Verdant::Walker_on_hit (
      // Stab
     victim.decal_type = DecalType::Stab;
     victim.decal_index = decal_i;
-    if (victim.data->flavor == WF::Lemon) weapon_layers |= 0x8;
-    else if (stab_depth > 12) weapon_layers |= 0x4;
-    else weapon_layers |= 0x2;
+    if (victim.data->flavor == WF::Lemon) pending_weapon_layers |= 0x8;
+    else if (stab_depth > 12) pending_weapon_layers |= 0x4;
+    else pending_weapon_layers |= 0x2;
      // Move victim vertically
     float height_diff = decal_pos.y - weapon_y;
     victim.pos.y -= height_diff;
@@ -331,7 +329,12 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
             scale
         );
     }
-    else Walker::Walker_draw_weapon(pose);
+    else {
+        if (state != WS::Hit) {
+            weapon_layers = pending_weapon_layers;
+        }
+        Walker::Walker_draw_weapon(pose);
+    }
 }
 
 void Verdant::Resident_on_exit () {
@@ -340,6 +343,8 @@ void Verdant::Resident_on_exit () {
     poison_level = 0;
     stun_duration = 0;
     paralyze_symbol_timer = 0;
+    weapon_layers = 0x1;
+    pending_weapon_layers = 0x1;
     Walker::Resident_on_exit();
 }
 

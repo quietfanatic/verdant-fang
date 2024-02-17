@@ -108,6 +108,7 @@ WalkerBusiness Walker::Walker_business () {
                     state = WS::Attack;
                     anim_phase = 4;
                     anim_timer = 0;
+                    weapon_layers = pending_weapon_layers;
                 }
                 else {
                     anim_phase += 1;
@@ -691,10 +692,6 @@ void Walker::Walker_draw_weapon (const Pose& pose) {
     }
 }
 
-void Walker::Resident_on_exit () {
-    weapon_layers = 0x1;
-}
-
 } using namespace vf;
 
 AYU_DESCRIBE(vf::BodyFrame,
@@ -832,6 +829,7 @@ AYU_DESCRIBE(vf::Walker,
         attr("body_layers", &Walker::body_layers, optional),
         attr("head_layers", &Walker::head_layers, optional),
         attr("weapon_layers", &Walker::weapon_layers, optional),
+        attr("pending_weapon_layers", &Walker::pending_weapon_layers, optional),
         attr("mutual_kill", &Walker::mutual_kill, optional),
         attr("stun_duration", &Walker::stun_duration, optional),
         attr("no_crouch_timer", &Walker::no_crouch_timer, optional)

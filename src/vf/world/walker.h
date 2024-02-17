@@ -205,6 +205,8 @@ struct Walker : Resident {
     uint8 body_layers = 0x1;
     uint8 head_layers = 0x1;
     uint8 weapon_layers = 0x1;
+     // Don't put blood on weapon until pulling it back.
+    uint8 pending_weapon_layers = 0x1;
      // For the rare case where two walkers kill eachother on the same frame,
      // show them in hit[0] instead of dead[0]
     bool mutual_kill = false;
@@ -242,7 +244,6 @@ struct Walker : Resident {
     void Resident_on_collide (const Hitbox&, Resident&, const Hitbox&) override;
     void Resident_after_step () override;
     void Resident_draw () override;
-    void Resident_on_exit () override;
      // Customization points.
      // Handle custom states here, and supercall otherwise.
     virtual WalkerBusiness Walker_business ();

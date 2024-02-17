@@ -34,8 +34,8 @@ void Monster::Walker_on_hit (
 
     victim.decal_type = high ? DecalType::SlashHigh : DecalType::SlashLow;
     victim.decal_index = decal_i;
-    if (high || depth > 4) delay_weapon_layers = 0x5;
-    else if (delay_weapon_layers == 0x1) delay_weapon_layers = 0x3;
+    if (high || depth > 4) pending_weapon_layers = 0x5;
+    else if (pending_weapon_layers == 0x1) pending_weapon_layers = 0x3;
     if (depth > 6) {
         victim.pos.x += left_flip(depth - 6);
     }
@@ -55,9 +55,6 @@ Pose Monster::Walker_pose () {
 }
 
 void Monster::Walker_draw_weapon (const Pose& pose) {
-    if (state == WS::Attack && anim_phase == 5) {
-        weapon_layers = delay_weapon_layers;
-    }
     return Walker::Walker_draw_weapon(pose);
 }
 
@@ -74,8 +71,6 @@ void Monster::Resident_on_exit () {
         vel = {0, 0};
         walk_start_x = pos.x;
         left = *home_left;
-        weapon_layers = 1;
-        delay_weapon_layers = 1;
         alert_phase = 0;
         alert_timer = 0;
         hide_phase = 0;

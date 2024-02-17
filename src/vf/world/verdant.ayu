@@ -16,19 +16,19 @@
         {
             image: assets.ayu#layer0
              -- y down
-            bounds: [110 84 342 214]
+            bounds: [110 84 356 214]
             z_offset: *z_body_offset0
         }
         {
             image: assets.ayu#layer1
              -- y down
-            bounds: [110 84 342 214]
+            bounds: [110 84 356 214]
             z_offset: *z_body_offset1
         }
         {
             image: assets.ayu#layer2
              -- y down
-            bounds: [110 84 342 214]
+            bounds: [110 84 356 214]
             z_offset: *z_body_offset2
         }
     ]]
@@ -109,19 +109,19 @@
     fang: [vf::LayeredTexture {
         layers: [{
             image: assets.ayu#layer0
-            bounds: [3 109 109 223]
+            bounds: [3 217 109 331]
             z_offset: *z_weapon_offset0
         } {
             image: assets.ayu#layer1
-            bounds: [3 109 109 223]
+            bounds: [3 217 109 331]
             z_offset: *z_weapon_offset1
         } {
             image: assets.ayu#layer2
-            bounds: [3 109 109 223]
+            bounds: [3 217 109 331]
             z_offset: *z_weapon_offset2
         } {
             image: assets.ayu#layer3
-            bounds: [3 109 109 223]
+            bounds: [3 217 109 331]
             z_offset: *z_weapon_offset3
         }]
          -- One of the frames has the origin above the snake
