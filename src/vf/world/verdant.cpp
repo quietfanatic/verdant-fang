@@ -98,9 +98,9 @@ void Verdant::go_to_limbo () {
             target.y += 17 - focus.y;
             focus.y = 17;
         }
-        if (focus.y > 155) {
-            target.y += 155 - focus.y;
-            focus.y = 155;
+        if (focus.y > 140) {
+            target.y += 140 - focus.y;
+            focus.y = 140;
         }
         state.transition = Transition{
             .target_room = limbo,
@@ -137,7 +137,9 @@ WalkerBusiness Verdant::Walker_business () {
         }
         return WB::Frozen;
     }
-    if (state != WS::Stun && state != WS::Dead) damage_forward = false;
+    if (state != WS::Stun && state != WS::Dead && state != VS::FangHelp) {
+        damage_forward = false;
+    }
     switch (state) {
         case VS::PreTransform: {
             expect(anim_phase == 0);
@@ -333,7 +335,7 @@ Pose Verdant::Walker_pose () {
             else break;
         }
         case VS::FangHelp: {
-            return damage_forward ? poses.deadf[10] : poses.dead[10];
+            return damage_forward ? poses.deadf[6] : poses.dead[6];
         }
         default: break;
     }
@@ -393,8 +395,8 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
         );
     }
     else if (state == VS::FangHelp) {
-        Vec initial_pos = pose.body->weapon;
-        Vec final_pos = visual_center() + Vec(0, 12);
+        Vec initial_pos = left_flip(pose.body->weapon);
+        Vec final_pos = visual_center() + Vec(0, 14);
         uint32 current_time = anim_timer;
         uint32 total_time = 0;
         for (usize i = 0; i < 5; i++) {
@@ -407,7 +409,7 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
         draw_layers(
             *poses.fang_help[anim_phase],
             weapon_layers,
-            pos + lerp(initial_pos, final_pos, t) * scale,
+            pos + lerp(initial_pos, final_pos, t),
             pose.z + Z::WeaponOffset, scale,
             anim_phase == 1 ? vd.transform_magic_color : weapon_tint
         );
