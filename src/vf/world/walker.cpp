@@ -371,7 +371,7 @@ void Walker::Resident_before_step () {
         if (poison_timer >= 180) {
             if (poison_level >= 3) {
                 set_state(WS::Dead);
-                paralyze_symbol_timer = 60;
+                paralyze_symbol_timer = 90;
             }
             else {
                 set_state(WS::Stun);
