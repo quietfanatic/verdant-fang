@@ -11,6 +11,7 @@ namespace vf {
 namespace VS {
     constexpr WalkerState PreTransform = WS::Custom + 0;
     constexpr WalkerState Transform = WS::Custom + 1;
+    constexpr WalkerState FangHelp = WS::Custom + 2;
      // Update world.ayu if this changes
     static_assert(PreTransform == 6);
 };
@@ -22,6 +23,7 @@ struct VerdantPoses : WalkerPoses {
     Pose deadf [7];
     Pose walk_hold [6];
     Pose transform [14];
+    Frame* fang_help [6];
 };
 
 struct TransformSound {
@@ -40,6 +42,14 @@ struct VerdantData : WalkerData {
     TransformSound transform_sounds [3];
     uint8 revive_sequence [5];
     glow::RGBA8 revive_tint [6];
+     // Phases are:
+     // 0 = spear form
+     // 1 = spear form glow
+     // 2 = snake form long
+     // 3 = snake form uncurling
+     // 4 = snake form normal (still rising)
+     // 5 = snake_form_normal (timer stops)
+    uint8 fang_help_sequence [5];
     Sound* unhit_sound;
 };
 
@@ -180,8 +190,29 @@ WalkerBusiness Verdant::Walker_business () {
             if (poison_level == 3 && anim_phase == 0 && anim_timer == 0) {
                 damage_forward = true;
             }
-            if (anim_phase == 10) go_to_limbo();
+            if (anim_phase == 10) {
+                if (room != limbo) {
+                    go_to_limbo();
+                }
+                else {
+                    set_state(VS::FangHelp);
+                    return Walker_business();
+                }
+            }
             break;
+        }
+        case VS::FangHelp: {
+            expect(anim_phase < 6);
+            if (anim_phase == 5 || current_game->state().transition) {
+                 // Do nothing
+            }
+            else if (anim_timer >= vd.fang_help_sequence[anim_phase]) {
+                anim_phase += 1;
+                anim_timer = 0;
+                return Walker_business();
+            }
+            else anim_timer += 1;
+            return WB::Frozen;
         }
         default: break;
     }
@@ -301,19 +332,22 @@ Pose Verdant::Walker_pose () {
             }
             else break;
         }
+        case VS::FangHelp: {
+            return damage_forward ? poses.deadf[10] : poses.dead[10];
+        }
         default: break;
     }
     return Walker::Walker_pose();
 }
 
 void Verdant::Walker_draw_weapon (const Pose& pose) {
+    auto& vd = static_cast<VerdantData&>(*data);
+    auto& poses = static_cast<VerdantPoses&>(*vd.poses);
+    Vec scale = {left ? -1 : 1, 1};
     if (state == VS::Transform) {
-        auto& vd = static_cast<VerdantData&>(*data);
-        auto& poses = static_cast<VerdantPoses&>(*vd.poses);
         Vec weapon_offset;
         glow::RGBA8 tint = weapon_tint;
         uint8 weapon_layers = 1;
-        Vec scale = {left ? -1 : 1, 1};
         if (anim_phase == 1 || anim_phase == 2) {
             float end = vd.transform_sequence[1] + vd.transform_sequence[2];
              // anim_timer ranges from 1 to n here
@@ -358,6 +392,26 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
             scale, tint
         );
     }
+    else if (state == VS::FangHelp) {
+        Vec initial_pos = pose.body->weapon;
+        Vec final_pos = visual_center() + Vec(0, 12);
+        uint32 current_time = anim_timer;
+        uint32 total_time = 0;
+        for (usize i = 0; i < 5; i++) {
+            if (anim_phase > i) {
+                current_time += vd.fang_help_sequence[i];
+            }
+            total_time += vd.fang_help_sequence[i];
+        }
+        float t = std::sin(float(current_time) / total_time * float(M_PI / 2));
+        draw_layers(
+            *poses.fang_help[anim_phase],
+            weapon_layers,
+            pos + lerp(initial_pos, final_pos, t) * scale,
+            pose.z + Z::WeaponOffset, scale,
+            anim_phase == 1 ? vd.transform_magic_color : weapon_tint
+        );
+    }
     else Walker::Walker_draw_weapon(pose);
 }
 
@@ -398,7 +452,7 @@ Verdant* find_verdant () {
 
 void restart_if_dead_ () {
     if (auto v = find_verdant()) {
-        if (v->state == WS::Dead) {
+        if (v->state == WS::Dead || v->state == VS::FangHelp) {
             v->go_to_limbo();
             v->revive_phase = 1;
             v->revive_timer = 0;
@@ -457,7 +511,8 @@ AYU_DESCRIBE(vf::VerdantPoses,
         attr("downf", &VerdantPoses::downf),
         attr("deadf", &VerdantPoses::deadf),
         attr("walk_hold", &VerdantPoses::walk_hold),
-        attr("transform", &VerdantPoses::transform)
+        attr("transform", &VerdantPoses::transform),
+        attr("fang_help", &VerdantPoses::fang_help)
     )
 )
 
@@ -481,6 +536,7 @@ AYU_DESCRIBE(vf::VerdantData,
         attr("transform_sounds", &VerdantData::transform_sounds),
         attr("revive_sequence", &VerdantData::revive_sequence),
         attr("revive_tint", &VerdantData::revive_tint),
+        attr("fang_help_sequence", &VerdantData::fang_help_sequence),
         attr("unhit_sound", &VerdantData::unhit_sound)
     )
 )

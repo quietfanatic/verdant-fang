@@ -109,19 +109,19 @@
     fang: [vf::LayeredTexture {
         layers: [{
             image: assets.ayu#layer0
-            bounds: [3 217 109 331]
+            bounds: [3 191 109 331]
             z_offset: *z_weapon_offset0
         } {
             image: assets.ayu#layer1
-            bounds: [3 217 109 331]
+            bounds: [3 191 109 331]
             z_offset: *z_weapon_offset1
         } {
             image: assets.ayu#layer2
-            bounds: [3 217 109 331]
+            bounds: [3 191 109 331]
             z_offset: *z_weapon_offset2
         } {
             image: assets.ayu#layer3
-            bounds: [3 217 109 331]
+            bounds: [3 191 109 331]
             z_offset: *z_weapon_offset3
         }]
          -- One of the frames has the origin above the snake
@@ -129,9 +129,9 @@
     }]
     snake_held: [vf::WeaponFrame [#fang [14 99]]]
     snake_air: [vf::WeaponFrame [#fang [14 82]]]
-    snake_long: [vf::WeaponFrame [#fang [14 63]]]
-    snake_longgg: [vf::WeaponFrame [#fang [14 38]]]
-    spear_diagonal: [vf::WeaponFrame [#fang [14 14]]]
+    snake_diag: [vf::WeaponFrame [#fang [14 63]]]
+    snake_diag_longg: [vf::WeaponFrame [#fang [14 38]]]
+    spear_diag: [vf::WeaponFrame [#fang [14 14]]]
      -- The origin of spear frames is generally 1 behind the center end to end.
      -- Incidentally, this is also where the hitbox starts.  For the neutral
      -- body frame, this is [7 4] plus the center of the back hand.
@@ -144,6 +144,9 @@
     spear_dead:       [vf::WeaponFrame [#fang [87 43]]]
     spear_crouch_preattack: [vf::WeaponFrame [#fang [87 37]]]
     spear_crouch_attack: [vf::WeaponFrame [#fang [87 32] [0 -1 18 1]]]
+    spear_h: [vf::Frame [#fang [48 113]]]
+    snake_h_longg: [vf::Frame [#fang [48 119]]]
+    snake_h: [vf::Frame [#fang [51 131]]]
     poses: [vf::VerdantPoses {
         stand: [#body_stand #head_neutral #spear_neutral]
         crouch: [#body_crouch #head_neutral #spear_neutral]
@@ -225,14 +228,15 @@
             [#body_transform2 #head_wave0 #snake_air *z_actor false 0x5]
             [#body_transform3 #head_wave0 #snake_air *z_actor false 0x5]
             [#body_transform4 #head_wave0 #snake_air *z_actor false 0x1]
-            [#body_transform4 #head_wave0 #snake_long]
-            [#body_transform5 #head_wave0 #snake_longgg]
-            [#body_transform6 #head_wave0 #snake_longgg] -- weapon_layers = 5
-            [#body_transform7 #head_wave0 #spear_diagonal] -- weapon_layers = 1
-            [#body_transform8 #head_wave1 #spear_diagonal]
-            [#body_transform9 #head_neutral #spear_diagonal]
-            [#body_lift1 #head_neutral #spear_diagonal]
+            [#body_transform4 #head_wave0 #snake_diag]
+            [#body_transform5 #head_wave0 #snake_diag_longg]
+            [#body_transform6 #head_wave0 #snake_diag_longg] -- tint
+            [#body_transform7 #head_wave0 #spear_diag]
+            [#body_transform8 #head_wave1 #spear_diag]
+            [#body_transform9 #head_neutral #spear_diag]
+            [#body_lift1 #head_neutral #spear_diag]
         ]
+        fang_help: [#spear_h #spear_h #snake_h_longg #snake_h #snake_air #snake_air]
     }]
     data: [vf::VerdantData {
         body_box: [-6 0 6 30]
@@ -314,6 +318,7 @@
         ]
         revive_sequence: [8 8 16 8 8]
         revive_tint: [0xccddaa60 0xccddaaa0 0xccddaaff 0xa3af8dff 0x7c8271ff 0x555555ff]
+        fang_help_sequence: [8 8 8 20 30]
         unhit_sound: assets.ayu#shluk
     }]
 }]

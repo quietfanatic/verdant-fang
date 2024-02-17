@@ -703,6 +703,9 @@ AYU_DESCRIBE(vf::BodyFrame,
         elem(&BodyFrame::decals, optional),
         elem(&BodyFrame::decal_dirs, optional)
     ),
+    attrs(
+        attr("vf::Frame", base<Frame>(), include)
+    ),
     init([](BodyFrame& v){ v.init(); })
 )
 
@@ -711,6 +714,9 @@ AYU_DESCRIBE(vf::WeaponFrame,
         elem(&WeaponFrame::target),
         elem(&WeaponFrame::offset),
         elem(&WeaponFrame::hitbox, optional)
+    ),
+    attrs(
+        attr("vf::Frame", base<Frame>(), include)
     ),
     init([](WeaponFrame& v){ v.init(); })
 )
