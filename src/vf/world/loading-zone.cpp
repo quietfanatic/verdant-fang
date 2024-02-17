@@ -18,15 +18,17 @@ LoadingZone::LoadingZone () {
 
 void LoadingZone::Resident_on_collide (const Hitbox&, Resident& o, const Hitbox&) {
     expect(o.types & Types::Verdant);
+    auto& v = static_cast<Verdant&>(o);
     auto& state = current_game->state();
     auto& options = current_game->options();
-    if (state.transition) return;  // LoadingZone already scheduled
+    if (state.transition) return;  // Transition already ongoing
     state.transition = Transition{
         .target_room = target_room,
         .migrant = &o,
         .target_pos = target_pos,
         .type = transition,
-        .set_checkpoint = checkpoint_level >= options.frustration
+        .save_checkpoint = checkpoint_level >= options.frustration,
+        .checkpoint_transition_center = target_pos + v.visual_center(),
     };
 }
 

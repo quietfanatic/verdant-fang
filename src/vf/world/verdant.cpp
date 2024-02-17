@@ -11,6 +11,7 @@ namespace vf {
 namespace VS {
     constexpr WalkerState PreTransform = WS::Custom + 0;
     constexpr WalkerState Transform = WS::Custom + 1;
+    constexpr WalkerState Revive = WS::Custom + 2;
      // Update world.ayu if this changes
     static_assert(PreTransform == 6);
 };
@@ -38,6 +39,8 @@ struct VerdantData : WalkerData {
     Vec transform_pos;
     glow::RGBA8 transform_magic_color;
     TransformSound transform_sounds [3];
+    uint8 revive_sequence [5];
+    glow::RGBA8 revive_tint [6];
     Sound* unhit_sound;
 };
 
@@ -93,7 +96,7 @@ WalkerBusiness Verdant::Walker_business () {
                 if (anim_phase == 13) {
                     transform_timer = 0;
                     set_state(WS::Neutral);
-                    current_game->state().save_checkpoint = true;
+                    current_game->state().save_checkpoint(pos + visual_center());
                 }
                 else {
                     anim_phase += 1;
@@ -123,38 +126,60 @@ WalkerBusiness Verdant::Walker_business () {
             if (poison_level == 3 && anim_phase == 0 && anim_timer == 0) {
                 damage_forward = true;
             }
-            if (limbo && room != limbo && anim_phase == 10) {
-                 // Horrible hard-coded values, too busy to do this properly
+            if (anim_phase == 10 || revive) {
                 auto& state = current_game->state();
-                Vec target = pos;
-                Vec focus = target + visual_center();
-                if (focus.x < 36) {
-                    target.x += 36 - focus.x;
-                    focus.x = 36;
+                if (limbo && room != limbo) {
+                     // Horrible hard-coded values, too busy to do this properly
+                    Vec target = pos;
+                    Vec focus = target + visual_center();
+                    if (focus.x < 36) {
+                        target.x += 36 - focus.x;
+                        focus.x = 36;
+                    }
+                    if (focus.x > 284) {
+                        target.x += 284 - focus.x;
+                        focus.x = 284;
+                    }
+                    if (focus.y < 17) {
+                        target.y += 17 - focus.y;
+                        focus.y = 17;
+                    }
+                    if (focus.y > 155) {
+                        target.y += 155 - focus.y;
+                        focus.y = 155;
+                    }
+                    state.transition = Transition{
+                        .target_room = limbo,
+                        .migrant = this,
+                        .target_pos = target,
+                        .type = TransitionType::ApertureClose,
+                        .exit_at = 0,
+                        .enter_at = 0
+                    };
+                    set_transition_center(focus);
                 }
-                if (focus.x > 284) {
-                    target.x += 284 - focus.x;
-                    focus.x = 284;
+                else if (revive && !state.transition) {
+                    set_state(VS::Revive);
+                    return Walker_business();
                 }
-                if (focus.y < 17) {
-                    target.y += 17 - focus.y;
-                    focus.y = 17;
-                }
-                if (focus.y > 155) {
-                    target.y += 155 - focus.y;
-                    focus.y = 155;
-                }
-                state.transition = Transition{
-                    .target_room = limbo,
-                    .migrant = this,
-                    .target_pos = target,
-                    .type = TransitionType::ApertureClose,
-                    .exit_at = 0,
-                    .enter_at = 0
-                };
-                set_transition_center(focus);
             }
             break;
+        }
+        case VS::Revive: {
+            expect(anim_phase < 6);
+            if (anim_phase == 5) {
+                auto& state = current_game->state();
+                if (!state.transition) state.load_checkpoint();
+            }
+            else if (anim_timer >= vd.revive_sequence[anim_phase]) {
+                anim_phase += 1;
+                anim_timer = 0;
+                return Walker_business();
+            }
+            else anim_timer += 1;
+            body_tint = vd.revive_tint[anim_phase];
+            weapon_tint = vd.revive_tint[anim_phase];
+            return WB::Occupied;
         }
         default: break;
     }
@@ -274,6 +299,9 @@ Pose Verdant::Walker_pose () {
             }
             else break;
         }
+        case VS::Revive: {
+            return damage_forward ? poses.deadf[10] : poses.dead[1];
+        }
         default: break;
     }
     return Walker::Walker_pose();
@@ -331,12 +359,7 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
             scale, weapon_tint
         );
     }
-    else {
-        if (state != WS::Hit) {
-            weapon_layers = pending_weapon_layers;
-        }
-        Walker::Walker_draw_weapon(pose);
-    }
+    else Walker::Walker_draw_weapon(pose);
 }
 
 void Verdant::Resident_on_exit () {
@@ -377,11 +400,20 @@ Verdant* find_verdant () {
 void restart_if_dead_ () {
     if (auto v = find_verdant()) {
         if (v->state == WS::Dead) {
-            current_game->state().load_checkpoint = true;
+            v->revive = true;
         }
     }
 }
 control::Command restart_if_dead (restart_if_dead_, "restart_if_dead", "Restart from checkpoint if player is dead");
+
+void force_restart_ () {
+    if (auto v = find_verdant()) {
+        v->set_state(WS::Dead);
+        v->anim_phase = 10;
+        v->revive = true;
+    }
+}
+control::Command force_restart (force_restart_, "force_restart", "Restart from checkpoint even if player is alive.");
 
 void set_body_layers_ (uint8 layers) {
     if (auto v = find_verdant()) {
@@ -445,6 +477,8 @@ AYU_DESCRIBE(vf::VerdantData,
         attr("transform_pos", &VerdantData::transform_pos),
         attr("transform_magic_color", &VerdantData::transform_magic_color),
         attr("transform_sounds", &VerdantData::transform_sounds),
+        attr("revive_sequence", &VerdantData::revive_sequence),
+        attr("revive_tint", &VerdantData::revive_tint),
         attr("unhit_sound", &VerdantData::unhit_sound)
     )
 )

@@ -305,13 +305,15 @@
          -- Try to do transformation at this position.  Y coordinate currently
          -- ignored.
         transform_pos: [100 60]
-        transform_magic_color: 0xc5d9abff
+        transform_magic_color: 0xccddaaff
         transform_sounds: [
              -- When to play the sounds.  [sound anim_phase anim_timer]
             [assets.ayu#pwsh 4 0]
             [assets.ayu#shwp 6 24] -- 30+8+8 - 22
             [assets.ayu#poiy 10 0]
         ]
+        revive_sequence: [10 10 30 10 10]
+        revive_tint: [0xccddaa60 0xccddaaa0 0xccddaaff 0xa3af8dff 0x7c8271ff 0x555555ff]
         unhit_sound: assets.ayu#shluk
     }]
 }]

@@ -646,12 +646,12 @@ void Walker::Resident_draw () {
         if (pose.head) {
             draw_layers(
                 *pose.head, head_layers,
-                pos + head_offset, pose.z, scale
+                pos + head_offset, pose.z, scale, body_tint
             );
         }
         draw_layers(
             *pose.body, body_layers & pose.body_layers,
-            pos, pose.z, scale
+            pos, pose.z, scale, body_tint
         );
         if (pose.damage_overlap && decal_index < max_decals) {
             float cutoff = pose.body->decals[decal_index].x;
@@ -659,7 +659,7 @@ void Walker::Resident_draw () {
             if (overlap.bounds.r > cutoff) overlap.bounds.r = cutoff;
             draw_layers(
                 overlap, body_layers & pose.body_layers,
-                pos, Z::Overlap, scale
+                pos, Z::Overlap, scale, body_tint
             );
             if (pose.head) {
                 overlap = *pose.head;
@@ -670,7 +670,7 @@ void Walker::Resident_draw () {
                 }
                 draw_layers(
                     overlap, head_layers,
-                    pos + head_offset, Z::Overlap, scale
+                    pos + head_offset, Z::Overlap, scale, body_tint
                 );
             }
         }
@@ -687,7 +687,7 @@ void Walker::Walker_draw_weapon (const Pose& pose) {
         draw_layers(
             *pose.weapon, weapon_layers,
             pos + pose.body->weapon * scale,
-            z, scale
+            z, scale, weapon_tint
         );
     }
 }
@@ -821,6 +821,8 @@ AYU_DESCRIBE(vf::Walker,
         attr("floor", &Walker::floor, optional),
         attr("walk_start_x", &Walker::walk_start_x, optional),
         attr("fall_start_x", &Walker::walk_start_x, optional),
+        attr("body_tint", &Walker::body_tint, optional),
+        attr("weapon_tint", &Walker::weapon_tint, optional),
         attr("decal_type", &Walker::decal_type, optional),
         attr("decal_index", &Walker::decal_index, optional),
         attr("poison_level", &Walker::poison_level, optional),

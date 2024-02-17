@@ -40,7 +40,7 @@
         [[f11] [fullscreen]]
         [[alt enter] [fullscreen]]
         [[r] [restart_if_dead]]
-        [[ctrl r] [load_checkpoint]]
+        [[ctrl r] [force_restart]]
          -- For testing and stuff
         [[ctrl s] [save_state]]
         [[ctrl l] [load_state]]

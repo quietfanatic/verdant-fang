@@ -47,16 +47,4 @@ void load_state_ () {
 }
 Command load_state (load_state_, "load_state", "Load game state");
 
-void save_checkpoint_ () {
-    if (!current_game) return;
-    current_game->state().save_checkpoint = true;
-}
-Command save_checkpoint (save_checkpoint_, "save_checkpoint", "Save checkpoint");
-
-void load_checkpoint_ () {
-    if (!current_game) return;
-    current_game->state().load_checkpoint = true;
-}
-Command load_checkpoint (load_checkpoint_, "load_checkpoint", "Load last saved checkpoint");
-
 } // vf

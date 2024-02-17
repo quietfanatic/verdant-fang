@@ -196,6 +196,8 @@ struct Walker : Resident {
      // For animations
     float walk_start_x = GNAN;
     float fall_start_y = GNAN;
+    glow::RGBA8 body_tint = 0;
+    glow::RGBA8 weapon_tint = 0;
     DecalType decal_type = {};
     uint8 decal_index = -1;
     uint8 poison_level = 0;

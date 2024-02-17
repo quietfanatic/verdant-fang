@@ -11,6 +11,7 @@ struct Verdant : Walker {
      // Total transformation time, for hair animation
     uint32 transform_timer = 0;
     Room* limbo = null;
+    bool revive = false;
 
     Verdant ();
 
