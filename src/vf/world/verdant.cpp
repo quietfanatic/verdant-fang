@@ -36,6 +36,7 @@ struct VerdantData : WalkerData {
     Vec dead_center_forward;
     uint8 transform_sequence [14];
     Vec transform_pos;
+    glow::RGBA8 transform_magic_color;
     TransformSound transform_sounds [3];
     Sound* unhit_sound;
 };
@@ -283,6 +284,7 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
         auto& vd = static_cast<VerdantData&>(*data);
         auto& poses = static_cast<VerdantPoses&>(*vd.poses);
         Vec weapon_offset;
+        glow::RGBA8 weapon_tint = 0x00000000;
         uint8 weapon_layers = 1;
         Vec scale = {left ? -1 : 1, 1};
         if (anim_phase == 1 || anim_phase == 2) {
@@ -320,13 +322,13 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
         }
         else if (anim_phase == 9) {
              // Glow
-            weapon_layers = 5;
+            weapon_tint = vd.transform_magic_color;
         }
         draw_layers(
             *pose.weapon, weapon_layers,
             pos + weapon_offset * scale,
             pose.z + Z::WeaponOffset,
-            scale
+            scale, weapon_tint
         );
     }
     else {
@@ -441,6 +443,7 @@ AYU_DESCRIBE(vf::VerdantData,
         attr("dead_center_forward", &VerdantData::dead_center_forward),
         attr("transform_sequence", &VerdantData::transform_sequence),
         attr("transform_pos", &VerdantData::transform_pos),
+        attr("transform_magic_color", &VerdantData::transform_magic_color),
         attr("transform_sounds", &VerdantData::transform_sounds),
         attr("unhit_sound", &VerdantData::unhit_sound)
     )

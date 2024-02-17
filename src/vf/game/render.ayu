@@ -27,7 +27,7 @@ out vec4 color;
 
 void main () {
     color = texture(u_tex, v_tex_coords);
-    color = u_tint * u_tint.a + color * (1 - u_tint.a);
+    color.rgb = u_tint.rgb * u_tint.a + color.rgb * (1 - u_tint.a);
 }"
 
 [ayu::Document {

@@ -302,8 +302,10 @@
             8 8 30 --10 11 12 clothes settling
             30 --13 receiving spear
         ]
-         -- Try to do transformation at this position
+         -- Try to do transformation at this position.  Y coordinate currently
+         -- ignored.
         transform_pos: [100 60]
+        transform_magic_color: 0xc5d9abff
         transform_sounds: [
              -- When to play the sounds.  [sound anim_phase anim_timer]
             [assets.ayu#pwsh 4 0]
