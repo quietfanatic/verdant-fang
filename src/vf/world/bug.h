@@ -63,8 +63,8 @@ struct BugMind : Mind {
     Rect roam_territory;
      // Min and max time to pick a new roam location
     IRange roam_interval;
-     // How strict the bug adheres to its current roam position
-    float roam_tolerance = 0;
+     // How strict the bug adheres to its desired roam position.
+    float roam_tolerance = 8;
      // Min and max time to spit.
     IRange spit_interval;
      // Don't spit unless speed is less than this

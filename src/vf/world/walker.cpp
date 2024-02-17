@@ -232,7 +232,11 @@ void Walker::Walker_move (const Controls& controls) {
                 goto restart_move;
             }
              // Crouch or don't
-            if (controls[Control::Down]) {
+            if (no_crouch_timer) {
+                crouch = false;
+                no_crouch_timer -= 1;
+            }
+            else if (controls[Control::Down]) {
                 if (!crouch) {
                     crouch = true;
                     if (business == WB::Interruptible) {
@@ -286,11 +290,20 @@ void Walker::Walker_move (const Controls& controls) {
 
              // Jump or don't
             if (controls[Control::Jump]) {
-                if (floor && !controls[Control::Down] &&
-                    controls[Control::Jump] <= data->hold_buffer
-                ) {
-                    vel.y += data->jump_vel;
-                    floor = null;
+                if (floor && controls[Control::Jump] <= data->hold_buffer) {
+                    if (controls[Control::Down]) {
+                         // Drop through semisolid
+                        if (floor->types & Types::Semisolid) {
+                            pos.y -= min(data->jump_crouch_lift, 4);
+                            floor = null;
+                            crouch = false;
+                            no_crouch_timer = 30;
+                        }
+                    }
+                    else {
+                        vel.y += data->jump_vel;
+                        floor = null;
+                    }
                     if (business == WB::Interruptible) set_state(WS::Neutral);
                 }
                 drop_timer = 0;
@@ -431,6 +444,7 @@ void Walker::set_floor (Resident& o) {
                 data->land_sound->play();
             }
         }
+        no_crouch_timer = 0;
         walk_start_x = pos.x;
     }
     new_floor = &o;
@@ -801,6 +815,8 @@ AYU_DESCRIBE(vf::Walker,
         attr("mind", &Walker::mind),
         attr("vel", &Walker::vel, optional),
         attr("left", &Walker::left, optional),
+        attr("crouch", &Walker::crouch, optional),
+        attr("fly", &Walker::fly, optional),
         attr("state", &Walker::state, optional),
         attr("anim_phase", &Walker::anim_phase, optional),
         attr("anim_timer", &Walker::anim_timer, optional),
@@ -812,8 +828,12 @@ AYU_DESCRIBE(vf::Walker,
         attr("decal_index", &Walker::decal_index, optional),
         attr("poison_level", &Walker::poison_level, optional),
         attr("poison_timer", &Walker::poison_timer, optional),
+        attr("paralyze_symbol_timer", &Walker::paralyze_symbol_timer, optional),
         attr("body_layers", &Walker::body_layers, optional),
         attr("head_layers", &Walker::head_layers, optional),
-        attr("weapon_layers", &Walker::weapon_layers, optional)
+        attr("weapon_layers", &Walker::weapon_layers, optional),
+        attr("mutual_kill", &Walker::mutual_kill, optional),
+        attr("stun_duration", &Walker::stun_duration, optional),
+        attr("no_crouch_timer", &Walker::no_crouch_timer, optional)
     )
 )

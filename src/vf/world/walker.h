@@ -210,6 +210,9 @@ struct Walker : Resident {
     bool mutual_kill = false;
      // Used if state == WS::Stun
     uint8 stun_duration = 0;
+     // When dropping through platforms, don't allow crouch animation for this
+     // many frames
+    uint8 no_crouch_timer = 0;
 
      // Everything below here is only used within one frame, so don't serialize
      // any of it.
