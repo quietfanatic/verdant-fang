@@ -11,7 +11,6 @@ namespace vf {
 namespace VS {
     constexpr WalkerState PreTransform = WS::Custom + 0;
     constexpr WalkerState Transform = WS::Custom + 1;
-    constexpr WalkerState Revive = WS::Custom + 2;
      // Update world.ayu if this changes
     static_assert(PreTransform == 6);
 };
@@ -71,8 +70,63 @@ Vec Verdant::visual_center () {
     }
 }
 
+void Verdant::go_to_limbo () {
+    auto& state = current_game->state();
+    if (limbo && room != limbo && !state.transition) {
+         // Horrible hard-coded values, too busy to do this properly
+        Vec target = pos;
+        Vec focus = target + visual_center();
+        if (focus.x < 36) {
+            target.x += 36 - focus.x;
+            focus.x = 36;
+        }
+        if (focus.x > 284) {
+            target.x += 284 - focus.x;
+            focus.x = 284;
+        }
+        if (focus.y < 17) {
+            target.y += 17 - focus.y;
+            focus.y = 17;
+        }
+        if (focus.y > 155) {
+            target.y += 155 - focus.y;
+            focus.y = 155;
+        }
+        state.transition = Transition{
+            .target_room = limbo,
+            .migrant = this,
+            .target_pos = target,
+            .type = TransitionType::ApertureClose,
+            .exit_at = 0,
+            .enter_at = 0
+        };
+        set_transition_center(focus);
+    }
+}
+
 WalkerBusiness Verdant::Walker_business () {
     auto& vd = static_cast<VerdantData&>(*data);
+     // Treat revive animation separately from other stuff
+    if (revive_phase) {
+        auto& gs = current_game->state();
+        if (!gs.transition) {
+            expect(revive_phase < 7);
+            if (revive_phase == 6) {
+                gs.load_checkpoint();
+                 // Don't worry about resetting stuff.  After loading the
+                 // checkpoint, this earthly body will be no more.
+            }
+            else if (revive_timer >= vd.revive_sequence[revive_phase-1]) {
+                revive_phase += 1;
+                revive_timer = 0;
+                return Walker_business();
+            }
+            else revive_timer += 1;
+            body_tint = vd.revive_tint[revive_phase-1];
+            weapon_tint = vd.revive_tint[revive_phase-1];
+        }
+        return WB::Frozen;
+    }
     if (state != WS::Stun && state != WS::Dead) damage_forward = false;
     switch (state) {
         case VS::PreTransform: {
@@ -126,60 +180,8 @@ WalkerBusiness Verdant::Walker_business () {
             if (poison_level == 3 && anim_phase == 0 && anim_timer == 0) {
                 damage_forward = true;
             }
-            if (anim_phase == 10 || revive) {
-                auto& state = current_game->state();
-                if (limbo && room != limbo) {
-                     // Horrible hard-coded values, too busy to do this properly
-                    Vec target = pos;
-                    Vec focus = target + visual_center();
-                    if (focus.x < 36) {
-                        target.x += 36 - focus.x;
-                        focus.x = 36;
-                    }
-                    if (focus.x > 284) {
-                        target.x += 284 - focus.x;
-                        focus.x = 284;
-                    }
-                    if (focus.y < 17) {
-                        target.y += 17 - focus.y;
-                        focus.y = 17;
-                    }
-                    if (focus.y > 155) {
-                        target.y += 155 - focus.y;
-                        focus.y = 155;
-                    }
-                    state.transition = Transition{
-                        .target_room = limbo,
-                        .migrant = this,
-                        .target_pos = target,
-                        .type = TransitionType::ApertureClose,
-                        .exit_at = 0,
-                        .enter_at = 0
-                    };
-                    set_transition_center(focus);
-                }
-                else if (revive && !state.transition) {
-                    set_state(VS::Revive);
-                    return Walker_business();
-                }
-            }
+            if (anim_phase == 10) go_to_limbo();
             break;
-        }
-        case VS::Revive: {
-            expect(anim_phase < 6);
-            if (anim_phase == 5) {
-                auto& state = current_game->state();
-                if (!state.transition) state.load_checkpoint();
-            }
-            else if (anim_timer >= vd.revive_sequence[anim_phase]) {
-                anim_phase += 1;
-                anim_timer = 0;
-                return Walker_business();
-            }
-            else anim_timer += 1;
-            body_tint = vd.revive_tint[anim_phase];
-            weapon_tint = vd.revive_tint[anim_phase];
-            return WB::Occupied;
         }
         default: break;
     }
@@ -299,9 +301,6 @@ Pose Verdant::Walker_pose () {
             }
             else break;
         }
-        case VS::Revive: {
-            return damage_forward ? poses.deadf[10] : poses.dead[1];
-        }
         default: break;
     }
     return Walker::Walker_pose();
@@ -312,7 +311,7 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
         auto& vd = static_cast<VerdantData&>(*data);
         auto& poses = static_cast<VerdantPoses&>(*vd.poses);
         Vec weapon_offset;
-        glow::RGBA8 weapon_tint = 0x00000000;
+        glow::RGBA8 tint = weapon_tint;
         uint8 weapon_layers = 1;
         Vec scale = {left ? -1 : 1, 1};
         if (anim_phase == 1 || anim_phase == 2) {
@@ -350,13 +349,13 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
         }
         else if (anim_phase == 9) {
              // Glow
-            weapon_tint = vd.transform_magic_color;
+            tint = vd.transform_magic_color;
         }
         draw_layers(
             *pose.weapon, weapon_layers,
             pos + weapon_offset * scale,
             pose.z + Z::WeaponOffset,
-            scale, weapon_tint
+            scale, tint
         );
     }
     else Walker::Walker_draw_weapon(pose);
@@ -400,7 +399,9 @@ Verdant* find_verdant () {
 void restart_if_dead_ () {
     if (auto v = find_verdant()) {
         if (v->state == WS::Dead) {
-            v->revive = true;
+            v->go_to_limbo();
+            v->revive_phase = 1;
+            v->revive_timer = 0;
         }
     }
 }
@@ -408,9 +409,9 @@ control::Command restart_if_dead (restart_if_dead_, "restart_if_dead", "Restart 
 
 void force_restart_ () {
     if (auto v = find_verdant()) {
-        v->set_state(WS::Dead);
-        v->anim_phase = 10;
-        v->revive = true;
+        v->go_to_limbo();
+        v->revive_phase = 1;
+        v->revive_timer = 0;
     }
 }
 control::Command force_restart (force_restart_, "force_restart", "Restart from checkpoint even if player is alive.");
@@ -443,7 +444,8 @@ AYU_DESCRIBE(vf::Verdant,
         attr("vf::Walker", base<Walker>(), include),
         attr("damage_forward", &Verdant::damage_forward, optional),
         attr("transform_timer", &Verdant::transform_timer, optional),
-        attr("limbo", &Verdant::limbo, optional)
+        attr("limbo", &Verdant::limbo, optional),
+        attr("revive_phase", &Verdant::revive_phase, optional)
     )
 )
 

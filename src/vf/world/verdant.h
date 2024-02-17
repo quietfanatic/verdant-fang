@@ -11,12 +11,17 @@ struct Verdant : Walker {
      // Total transformation time, for hair animation
     uint32 transform_timer = 0;
     Room* limbo = null;
-    bool revive = false;
+     // Keep revive counters separate from anim counters because with force
+     // restart and limbo animations, you can revive in any state.
+    uint8 revive_phase = 0;
+    uint8 revive_timer = 0;
 
     Verdant ();
 
      // Relative to self.pos
     Vec visual_center ();
+
+    void go_to_limbo ();
 
      // For handling custom hit animations
     WalkerBusiness Walker_business () override;
