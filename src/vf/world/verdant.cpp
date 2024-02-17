@@ -173,7 +173,7 @@ void Verdant::Resident_on_collide (
         expect(proper(overlap));
          // Allow a bit of grace.  TODO: Make horizontal situation better.
         if (height(overlap) < 12) return;
-        else if (width(overlap) - 1 < height(overlap) - 12) {
+        else if (width(overlap) <= 3) {
             goto not_handled;
         }
         else if (overlap.t == here.t) {
@@ -181,6 +181,7 @@ void Verdant::Resident_on_collide (
                 set_state(WS::Dead);
                 anim_phase = 3;
                 damage_forward = true;
+                pos.y += data->dead_floor_lift;
                 vel.x = 0;
                 door.crush = true;
             }
