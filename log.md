@@ -164,7 +164,17 @@
   even to save checkpoints while not in a transition).
 - Implemented aperture open transition when loading a checkpoint.
 - Implemented snake animation for game over screen, and revised and vastly
-  imptroved the dead/force-restart-\>limbo-\>restart sequence.
+  improved the dead/force-restart-\>limbo-\>restart sequence.
 - Haven't implemented anything yet, but drew some art for the captured-by-final-
   boss scene.
 - Planned work for tomorrow: More boss cutscene work.  And maybe music.
+#####2024-02-17 S
+- Today was cutscene day.  I implemented probably 50% of the endgame cutscenes.
+  And that's about it.
+- I guess I started programming stuff for Indigo (Witch) too.
+- Also added a few sounds, mostly for the captured cutscene, but also a hissing
+  sound when Fang revives you.  I tried adding a hiss to the transformation
+  cutscene too, but there was nowhere it fit.
+- Planned work for Monday: I really should start in on the music, and maybe the
+  menus.  There's still a lot of cutscene work to do.  I might not have time to
+  implement an actual fight for the boss.
