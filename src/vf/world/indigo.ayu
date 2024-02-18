@@ -106,7 +106,7 @@
             [#body_fly #head_fly]
         ]
     }]
-    data: [vf::WalkerData {
+    data: [vf::IndigoData {
         body_box: [-6 0 6 30]
         crouch_body_box: [-6 0 6 20]
         dead_body_box: [-12 0 8 5]
@@ -156,5 +156,12 @@
         poses: #poses
         decals: decals.ayu#
         flavor: strawberry
+
+        stolen_limb_offsets: [
+            [-21 20] --left arm
+            [-16 13] --right arm
+            [-25 7] --left leg
+            [-28 17] --right leg
+        ]
     }]
 }]

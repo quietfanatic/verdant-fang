@@ -36,6 +36,7 @@ namespace Types {
     constexpr uint32 Door = 1 << 5;
     constexpr uint32 Scenery = 1 << 6;
     constexpr uint32 Bug = 1 << 7;
+    constexpr uint32 Indigo = 1 << 8;
 }
 
 namespace Layers {

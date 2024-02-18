@@ -22,11 +22,11 @@
     verdant: [vf::Verdant {
         data: verdant.ayu#data
         mind: #verdant_mind
-        room: #start
-        pos: [-32 32]
-        state: 6 --VS::PreTransform
-        --room: #atelier
-        --pos: [16 64]
+        --room: #start
+        --pos: [-32 32]
+        --state: 6 --VS::PreTransform
+        room: #atelier
+        pos: [16 32]
         floor: #start_blocks
         limbo: #limbo
     }]
@@ -293,10 +293,16 @@
             [-16 0] [16 0] [48 0] [80 0] [112 0] [144 0] [176 0] [208 0] [240 0] [272 0] [304 0]
         ]
     }]
+
+    indigomind: [vf::IndigoMind {
+        target: #verdant
+        sight_range: 180
+        activate_on_sight: #atelier_to_hive_door
+    }]
     indigo: [vf::Indigo {
         room: #atelier
         data: indigo.ayu#data
-        mind: null
+        mind: #indigomind
         pos: [256 64]
         left: true
         fly: true
@@ -307,6 +313,12 @@
         head_layers: 0x7 --glasses and hat
     }]
 
+    atelier_to_hive_door: [vf::Door {
+        room: #atelier
+        data: assets.ayu#door
+        open: true
+        pos: [37 96] --48 - 11
+    }]
     atelier_to_hive: [vf::LoadingZone {
         room: #atelier
         bounds: [-8 0 -8 180]

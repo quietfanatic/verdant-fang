@@ -9,123 +9,6 @@
 
 namespace vf {
 
-namespace VS {
-    constexpr WalkerState PreTransform = WS::Custom + 0;
-    constexpr WalkerState Transform = WS::Custom + 1;
-    constexpr WalkerState FangHelp = WS::Custom + 2;
-    constexpr WalkerState Captured = WS::Custom + 3;
-    constexpr WalkerState Inch = WS::Custom + 4;
-     // Update world.ayu if this changes
-    static_assert(PreTransform == 6);
-};
-
-namespace TransformPhase {
-    constexpr uint8 Holding = 0;
-    constexpr uint8 Lifting = 1;
-    constexpr uint8 Waiting = 2;
-    constexpr uint8 Dissolving0 = 3;
-    constexpr uint8 Dissolving1 = 4;
-    constexpr uint8 Dissolving2 = 5;
-    constexpr uint8 Naked = 6;
-    constexpr uint8 Assembling0 = 7;
-    constexpr uint8 Assembling1 = 8;
-    constexpr uint8 Assembling2 = 9;
-    constexpr uint8 Settling0 = 10;
-    constexpr uint8 Settling1 = 11;
-    constexpr uint8 Settling2 = 12;
-    constexpr uint8 Receiving = 13;
-    constexpr uint8 N_Phases = 14;
-};
-namespace TP = TransformPhase;
-
-namespace CapturedPhase {
-    constexpr uint8 Moving = 0;
-    constexpr uint8 Waiting = 1;
-    constexpr uint8 SpearTaken = 2;
-    constexpr uint8 SpearRotate0 = 3;
-    constexpr uint8 SpearRotate1 = 4;
-    constexpr uint8 SpearWaiting = 5;
-    constexpr uint8 SpearBroken = 6;
-    constexpr uint8 SpearBrokenGlow = 7;
-    constexpr uint8 SnakeBroken = 8;
-    constexpr uint8 SnakeFall = 9;
-    constexpr uint8 SnakeFloor0 = 10;
-    constexpr uint8 SnakeFloor1 = 11;
-    constexpr uint8 SnakeFloor2 = 12;
-    constexpr uint8 SnakeFloor3 = 13;
-    constexpr uint8 LimbDetach0 = 14;
-    constexpr uint8 LimbDetach1 = 15;
-    constexpr uint8 LimbDetach2 = 16;
-    constexpr uint8 LimbDetach3 = 17;
-    constexpr uint8 GoodbyeLimbs = 18;
-    constexpr uint8 Falling = 19;  // No timer, ends on hitting floor
-    constexpr uint8 Floor = 20;
-    constexpr uint8 N_Phases = 21;
-};
-namespace CP = CapturedPhase;
-
-struct LimbFrame : Frame {
-     // Relative to body pos
-    Vec attached;
-    Vec detached;
-    float z_offset;
-};
-
-struct VerdantPoses : WalkerPoses {
-    Pose walk_hold [6];
-    Pose transform [TP::N_Phases];
-    Pose damagef;
-    Pose damagefallf;
-    Pose downf;
-    Pose deadf [7];
-    Frame* fang_help [6];
-    Pose captured [CP::N_Phases];
-    LimbFrame* captured_limbs [4];
-    Pose inch [3];
-};
-
-struct CutsceneSound {
-    uint8 phase;
-    uint8 timer;
-    Sound* sound;
-};
-
-struct VerdantData : WalkerData {
-    Vec center;
-    Vec dead_center;
-    Vec dead_center_forward;
-    uint8 transform_sequence [TP::N_Phases];
-    Vec transform_pos;
-    glow::RGBA8 transform_magic_color;
-    CutsceneSound transform_sounds [4];
-     // Phases are:
-     // 0 = spear form
-     // 1 = spear form glow
-     // 2 = snake form long
-     // 3 = snake form uncurling
-     // 4 = snake form normal (still rising)
-     // 5 = snake_form_normal (timer stops)
-    uint8 fang_help_sequence [5];
-    uint8 revive_sequence [5];
-    glow::RGBA8 revive_tint [6];
-    uint8 captured_sequence [CP::N_Phases];
-    uint8 captured_limb_phases [4];
-    Vec captured_pos;
-    Vec captured_fang_pos_high;
-    Vec captured_fang_pos_low;
-    Sound* unhit_sound;
-    Sound* revive_sound;
-    Sound* spear_break_sound;
-    Sound* snake_death_sound;
-    Sound* limb_detach_sound;
-};
-
- // Overrides movement during pre-transformation cutscene
-struct VerdantMind : Mind {
-    Mind* next;
-    Controls Mind_think (Resident&) override;
-};
-
 Verdant::Verdant () {
     types |= Types::Verdant;
     body_hb.layers_2 |= Layers::LoadingZone_Verdant;
@@ -288,7 +171,7 @@ WalkerBusiness Verdant::Walker_business () {
         }
         case VS::Captured: {
             if (anim_phase == CP::Moving && anim_timer == 0) {
-                captured_start_pos = pos;
+                captured_initial_pos = pos;
                 left = false;
             }
             if (anim_phase == CP::Falling) {
@@ -351,7 +234,7 @@ void Verdant::Walker_move (const Controls& controls) {
     if (state == VS::Captured) {
         if (anim_phase == 0) {
             float t = float(anim_timer) / vd.captured_sequence[0];
-            pos = lerp(captured_start_pos, vd.captured_pos, ease_in_out_sin(t));
+            pos = lerp(captured_initial_pos, vd.captured_pos, ease_in_out_sin(t));
         }
         else if (anim_phase == 1) {
             pos = vd.captured_pos;
@@ -739,19 +622,6 @@ control::Command print_pos (print_pos_, "print_pos");
 
 } using namespace vf;
 
-AYU_DESCRIBE(vf::Verdant,
-    attrs(
-        attr("vf::Walker", base<Walker>(), include),
-        attr("damage_forward", &Verdant::damage_forward, optional),
-        attr("transform_timer", &Verdant::transform_timer, optional),
-        attr("limbo", &Verdant::limbo, optional),
-        attr("revive_phase", &Verdant::revive_phase, optional),
-        attr("revive_timer", &Verdant::revive_timer, optional),
-        attr("captured_start_pos", &Verdant::captured_start_pos, optional),
-        attr("limb_pos", &Verdant::limb_pos, optional)
-    )
-)
-
 AYU_DESCRIBE(vf::LimbFrame,
     elems(
         elem(&LimbFrame::target),
@@ -813,6 +683,19 @@ AYU_DESCRIBE(vf::VerdantData,
         attr("spear_break_sound", &VerdantData::spear_break_sound),
         attr("snake_death_sound", &VerdantData::snake_death_sound),
         attr("limb_detach_sound", &VerdantData::limb_detach_sound)
+    )
+)
+
+AYU_DESCRIBE(vf::Verdant,
+    attrs(
+        attr("vf::Walker", base<Walker>(), include),
+        attr("damage_forward", &Verdant::damage_forward, optional),
+        attr("transform_timer", &Verdant::transform_timer, optional),
+        attr("limbo", &Verdant::limbo, optional),
+        attr("revive_phase", &Verdant::revive_phase, optional),
+        attr("revive_timer", &Verdant::revive_timer, optional),
+        attr("captured_initial_pos", &Verdant::captured_initial_pos, optional),
+        attr("limb_pos", &Verdant::limb_pos, optional)
     )
 )
 
