@@ -22,8 +22,9 @@ struct BugData : WalkerData {
     uint8 projectile_anim_cycle;
     uint8 projectile_hit_sequence [2];
     uint8 projectile_stun;
-    Sound* spit_sound;
-    Sound* projectile_hit_sound;
+    Sound* unstab_sound = null;
+    Sound* spit_sound = null;
+    Sound* projectile_hit_sound = null;
 };
 
 Bug::Bug () {
@@ -55,7 +56,13 @@ WalkerBusiness Bug::Walker_business () {
         }
         else projectile_timer += 1;
     }
-    if (state == BS::Spit) {
+    if (state == WS::Hit) {
+        if (anim_phase == 1 && anim_timer == data->hit_sequence[1]) {
+            if (bd.unstab_sound) bd.unstab_sound->play();
+        }
+        return Walker::Walker_business();
+    }
+    else if (state == BS::Spit) {
         expect(anim_phase < 3);
         if (anim_timer >= bd.spit_sequence[anim_phase]) {
             if (anim_phase == 2) {
@@ -469,7 +476,8 @@ AYU_DESCRIBE(vf::BugData,
         attr("projectile_anim_cycle", &BugData::projectile_anim_cycle),
         attr("projectile_hit_sequence", &BugData::projectile_hit_sequence),
         attr("projectile_stun", &BugData::projectile_stun),
-        attr("spit_sound", &BugData::spit_sound),
-        attr("projectile_hit_sound", &BugData::projectile_hit_sound)
+        attr("unstab_sound", &BugData::unstab_sound, optional),
+        attr("spit_sound", &BugData::spit_sound, optional),
+        attr("projectile_hit_sound", &BugData::projectile_hit_sound, optional)
     )
 )

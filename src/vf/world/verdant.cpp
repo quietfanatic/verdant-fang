@@ -130,7 +130,7 @@ WalkerBusiness Verdant::Walker_business () {
         }
         case WS::Hit: {
             if (anim_phase == 1 && anim_timer == data->hit_sequence[1]) {
-                static_cast<VerdantData*>(data)->unhit_sound->play();
+                if (vd.unstab_sound) vd.unstab_sound->play();
             }
             break;
         }
@@ -678,11 +678,11 @@ AYU_DESCRIBE(vf::VerdantData,
         attr("captured_limb_phases", &VerdantData::captured_limb_phases),
         attr("captured_fang_pos_high", &VerdantData::captured_fang_pos_high),
         attr("captured_fang_pos_low", &VerdantData::captured_fang_pos_low),
-        attr("unhit_sound", &VerdantData::unhit_sound),
-        attr("revive_sound", &VerdantData::revive_sound),
-        attr("spear_break_sound", &VerdantData::spear_break_sound),
-        attr("snake_death_sound", &VerdantData::snake_death_sound),
-        attr("limb_detach_sound", &VerdantData::limb_detach_sound)
+        attr("unstab_sound", &VerdantData::unstab_sound, optional),
+        attr("revive_sound", &VerdantData::revive_sound, optional),
+        attr("spear_break_sound", &VerdantData::spear_break_sound, optional),
+        attr("snake_death_sound", &VerdantData::snake_death_sound, optional),
+        attr("limb_detach_sound", &VerdantData::limb_detach_sound, optional)
     )
 )
 

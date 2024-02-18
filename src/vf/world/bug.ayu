@@ -186,11 +186,13 @@
         attack_sound: assets.ayu#shok
         crouch_attack_sound: assets.ayu#shok
         hit_solid_sound: assets.ayu#tkk
-        hit_soft_sound: assets.ayu#kkkww
+        damage_sound: assets.ayu#doof
+        paralyzed_sound: assets.ayu#piwiwi
 
         poses: #poses
         decals: decals.ayu#
         flavor: lemon
+
         projectile_box: [-2 -2 2 2]
         spit_sequence: [10 20 30]
         spit_mouth_offset: [10 9]
@@ -199,6 +201,7 @@
         projectile_anim_cycle: 8
         projectile_hit_sequence: [8 8]
         projectile_stun: 30
+        unstab_sound: assets.ayu#shluk
         spit_sound: assets.ayu#spit
         projectile_hit_sound: assets.ayu#splat
     }]

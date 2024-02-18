@@ -359,7 +359,7 @@ void Walker::Walker_move (const Controls& controls) {
             if (walk_frame_before % 3 == 1 && walk_frame_after % 3 == 2) {
                 auto i = std::uniform_int_distribution(0, 4)(current_game->state().rng);
                 expect(i >= 0 && i <= 4);
-                data->step_sound[i]->play();
+                if (data->step_sound[i]) data->step_sound[i]->play();
             }
         }
     }
@@ -410,12 +410,13 @@ void Walker::Resident_before_step () {
         if (crouch) {
             weapon_hb.box = data->poses->crouch_attack[anim_phase].body->weapon
                           + data->poses->crouch_attack[anim_phase].weapon->hitbox;
-            data->crouch_attack_sound->play();
+            if (data->crouch_attack_sound) data->crouch_attack_sound->play();
+            else if (data->attack_sound) data->attack_sound->play();
         }
         else {
             weapon_hb.box = data->poses->attack[anim_phase].body->weapon
                           + data->poses->attack[anim_phase].weapon->hitbox;
-            data->attack_sound->play();
+            if (data->attack_sound) data->attack_sound->play();
         }
         if (left) weapon_hb.fliph();
         add_hitbox(weapon_hb);
@@ -442,7 +443,7 @@ void Walker::set_floor (Resident& o) {
                 ))
             ) set_state(WS::Land);
             if (state != WS::Dead) {
-                data->land_sound->play();
+                if (data->land_sound) data->land_sound->play();
             }
         }
         no_crouch_timer = 0;
@@ -530,8 +531,8 @@ void Walker::Walker_on_hit (const Hitbox&, Walker& victim, const Hitbox&) {
     }
     else set_state(WS::Hit);
     victim.set_state(WS::Dead);
-    victim.data->attack_sound->stop();
-    data->hit_soft_sound->play();
+    if (victim.data->attack_sound) victim.data->attack_sound->stop();
+    if (victim.data->damage_sound) victim.data->damage_sound->play();
 }
 
 void Walker::Resident_after_step () {
@@ -799,12 +800,12 @@ AYU_DESCRIBE(vf::WalkerData,
         attr("fall_cycle_dist", &WalkerData::fall_cycle_dist),
         attr("jump_end_vel", &WalkerData::jump_end_vel),
         attr("fall_start_vel", &WalkerData::fall_start_vel),
-        attr("step_sound", &WalkerData::step_sound),
-        attr("land_sound", &WalkerData::land_sound),
-        attr("attack_sound", &WalkerData::attack_sound),
-        attr("crouch_attack_sound", &WalkerData::crouch_attack_sound),
-        attr("hit_solid_sound", &WalkerData::hit_solid_sound),
-        attr("hit_soft_sound", &WalkerData::hit_soft_sound),
+        attr("step_sound", &WalkerData::step_sound, optional),
+        attr("land_sound", &WalkerData::land_sound, optional),
+        attr("attack_sound", &WalkerData::attack_sound, optional),
+        attr("crouch_attack_sound", &WalkerData::crouch_attack_sound, optional),
+        attr("hit_solid_sound", &WalkerData::hit_solid_sound, optional),
+        attr("damage_sound", &WalkerData::damage_sound, optional),
         attr("paralyzed_sound", &WalkerData::paralyzed_sound, optional),
         attr("poses", &WalkerData::poses),
         attr("decals", &WalkerData::decals),

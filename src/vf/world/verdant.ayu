@@ -341,7 +341,7 @@
         attack_sound: assets.ayu#fwssh
         crouch_attack_sound: assets.ayu#fsh
         hit_solid_sound: assets.ayu#tkk
-        hit_soft_sound: assets.ayu#doof
+        damage_sound: assets.ayu#kkkww
         paralyzed_sound: assets.ayu#piwiwi
 
         poses: #poses
@@ -369,7 +369,6 @@
         transform_magic_color: 0xccddaaff
         transform_sounds: [
              -- When to play the sounds.  [sound anim_phase anim_timer]
-            [1 0 assets.ayu#hiss]
             [4 0 assets.ayu#pwsh]
             [6 24 assets.ayu#shwp] -- 30+8+8 - 22
             [10 0 assets.ayu#poiy]
@@ -390,7 +389,7 @@
         captured_fang_pos_high: [200 80]
          -- Fang's center in floor pose is 1 above floor
         captured_fang_pos_low: [200 33]
-        unhit_sound: assets.ayu#shluk
+        unstab_sound: assets.ayu#shluk
         revive_sound: assets.ayu#hiss
         spear_break_sound: assets.ayu#break
         snake_death_sound: assets.ayu#kwaakh

@@ -94,7 +94,7 @@ struct VerdantData : WalkerData {
     uint8 transform_sequence [TP::N_Phases];
     Vec transform_pos;
     glow::RGBA8 transform_magic_color;
-    CutsceneSound transform_sounds [4];
+    CutsceneSound transform_sounds [3];
      // Phases are:
      // 0 = spear form
      // 1 = spear form glow
@@ -110,11 +110,11 @@ struct VerdantData : WalkerData {
     Vec captured_pos;
     Vec captured_fang_pos_high;
     Vec captured_fang_pos_low;
-    Sound* unhit_sound;
-    Sound* revive_sound;
-    Sound* spear_break_sound;
-    Sound* snake_death_sound;
-    Sound* limb_detach_sound;
+    Sound* unstab_sound = null;
+    Sound* revive_sound = null;
+    Sound* spear_break_sound = null;
+    Sound* snake_death_sound = null;
+    Sound* limb_detach_sound = null;
 };
 
 struct Verdant : Walker {
