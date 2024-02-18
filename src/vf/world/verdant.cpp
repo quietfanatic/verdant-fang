@@ -19,31 +19,50 @@ namespace VS {
     static_assert(PreTransform == 6);
 };
 
-enum CapturedPhase : uint8 {
-    Moving = 0,
-    Waiting = 1,
-    SpearTaken = 2,
-    SpearRotate0 = 3,
-    SpearRotate1 = 4,
-    SpearWaiting = 5,
-    SpearBroken = 6,
-    SpearBrokenGlow = 7,
-    SnakeBroken = 8,
-    SnakeFall = 9,
-    SnakeFloor0 = 10,
-    SnakeFloor1 = 11,
-    SnakeFloor2 = 12,
-    SnakeFloor3 = 13,
-    LimbDetach0 = 14,
-    LimbDetach1 = 15,
-    LimbDetach2 = 16,
-    LimbDetach3 = 17,
-    GoodbyeLimbs = 18,
-    Falling = 19,  // No timer, ends on hitting floor
-    Floor = 20,
-    N_Phases = 21
+namespace TransformPhase {
+    constexpr uint8 Holding = 0;
+    constexpr uint8 Lifting = 1;
+    constexpr uint8 Waiting = 2;
+    constexpr uint8 Dissolving0 = 3;
+    constexpr uint8 Dissolving1 = 4;
+    constexpr uint8 Dissolving2 = 5;
+    constexpr uint8 Naked = 6;
+    constexpr uint8 Assembling0 = 7;
+    constexpr uint8 Assembling1 = 8;
+    constexpr uint8 Assembling2 = 9;
+    constexpr uint8 Settling0 = 10;
+    constexpr uint8 Settling1 = 11;
+    constexpr uint8 Settling2 = 12;
+    constexpr uint8 Receiving = 13;
+    constexpr uint8 N_Phases = 14;
 };
-using CP = CapturedPhase;
+namespace TP = TransformPhase;
+
+namespace CapturedPhase {
+    constexpr uint8 Moving = 0;
+    constexpr uint8 Waiting = 1;
+    constexpr uint8 SpearTaken = 2;
+    constexpr uint8 SpearRotate0 = 3;
+    constexpr uint8 SpearRotate1 = 4;
+    constexpr uint8 SpearWaiting = 5;
+    constexpr uint8 SpearBroken = 6;
+    constexpr uint8 SpearBrokenGlow = 7;
+    constexpr uint8 SnakeBroken = 8;
+    constexpr uint8 SnakeFall = 9;
+    constexpr uint8 SnakeFloor0 = 10;
+    constexpr uint8 SnakeFloor1 = 11;
+    constexpr uint8 SnakeFloor2 = 12;
+    constexpr uint8 SnakeFloor3 = 13;
+    constexpr uint8 LimbDetach0 = 14;
+    constexpr uint8 LimbDetach1 = 15;
+    constexpr uint8 LimbDetach2 = 16;
+    constexpr uint8 LimbDetach3 = 17;
+    constexpr uint8 GoodbyeLimbs = 18;
+    constexpr uint8 Falling = 19;  // No timer, ends on hitting floor
+    constexpr uint8 Floor = 20;
+    constexpr uint8 N_Phases = 21;
+};
+namespace CP = CapturedPhase;
 
 struct LimbFrame : Frame {
      // Relative to body pos
@@ -54,7 +73,7 @@ struct LimbFrame : Frame {
 
 struct VerdantPoses : WalkerPoses {
     Pose walk_hold [6];
-    Pose transform [14];
+    Pose transform [TP::N_Phases];
     Pose damagef;
     Pose damagefallf;
     Pose downf;
@@ -65,20 +84,20 @@ struct VerdantPoses : WalkerPoses {
     Pose inch [3];
 };
 
-struct TransformSound {
-    Sound* sound;
+struct CutsceneSound {
     uint8 phase;
     uint8 timer;
+    Sound* sound;
 };
 
 struct VerdantData : WalkerData {
     Vec center;
     Vec dead_center;
     Vec dead_center_forward;
-    uint8 transform_sequence [14];
+    uint8 transform_sequence [TP::N_Phases];
     Vec transform_pos;
     glow::RGBA8 transform_magic_color;
-    TransformSound transform_sounds [3];
+    CutsceneSound transform_sounds [4];
      // Phases are:
      // 0 = spear form
      // 1 = spear form glow
@@ -95,8 +114,9 @@ struct VerdantData : WalkerData {
     Vec captured_fang_pos_high;
     Vec captured_fang_pos_low;
     Sound* unhit_sound;
+    Sound* revive_sound;
     Sound* spear_break_sound;
-    Sound* fang_death_sound;
+    Sound* snake_death_sound;
     Sound* limb_detach_sound;
 };
 
@@ -168,6 +188,9 @@ WalkerBusiness Verdant::Walker_business () {
         auto& gs = current_game->state();
         if (!gs.transition) {
             expect(revive_phase < 7);
+            if (revive_phase == 1 && revive_timer == 0) {
+                if (vd.revive_sound) vd.revive_sound->play();
+            }
             if (revive_phase == 6) {
                 gs.load_checkpoint();
                  // Don't worry about resetting stuff.  After loading the
@@ -199,14 +222,14 @@ WalkerBusiness Verdant::Walker_business () {
         }
         case VS::Transform: {
             transform_timer += 1;
-            expect(anim_phase < 14);
+            expect(anim_phase < TP::N_Phases);
             for (auto& ts : vd.transform_sounds) {
                 if (anim_phase == ts.phase && anim_timer == ts.timer) {
                     ts.sound->play();
                 }
             }
             if (anim_timer >= vd.transform_sequence[anim_phase]) {
-                if (anim_phase == 13) {
+                if (anim_phase == TP::Receiving) {
                     transform_timer = 0;
                     set_state(WS::Neutral);
                     current_game->state().save_checkpoint(pos + visual_center());
@@ -282,7 +305,7 @@ WalkerBusiness Verdant::Walker_business () {
                     if (vd.spear_break_sound) vd.spear_break_sound->play();
                 }
                 else if (anim_phase == CP::SnakeBroken) {
-                    if (vd.fang_death_sound) vd.fang_death_sound->play();
+                    if (vd.snake_death_sound) vd.snake_death_sound->play();
                 }
                 else if (anim_phase == CP::Falling) {
                     pos.y += vd.dead_floor_lift;
@@ -470,31 +493,41 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
         Vec weapon_offset;
         glow::RGBA8 tint = weapon_tint;
         uint8 weapon_layers = 1;
-        if (anim_phase == 1 || anim_phase == 2) {
-            float end = vd.transform_sequence[1] + vd.transform_sequence[2];
+        if (anim_phase == TP::Lifting || anim_phase == TP::Waiting) {
+            float end = vd.transform_sequence[TP::Lifting] +
+                        vd.transform_sequence[TP::Waiting];
              // anim_timer ranges from 1 to n here
             float t = anim_timer - 1;
-            if (anim_phase == 2) t += vd.transform_sequence[1];
+            if (anim_phase == TP::Waiting) {
+                t += vd.transform_sequence[TP::Lifting];
+            }
             weapon_offset = lerp(
-                Vec(poses.transform[1].body->weapon),
-                Vec(poses.transform[2].body->weapon),
+                Vec(poses.transform[TP::Lifting].body->weapon),
+                Vec(poses.transform[TP::Waiting].body->weapon),
                 ease_in_out_sin(t / end)
             );
         }
-        else if (anim_phase == 12 || anim_phase == 13) {
-            float end = vd.transform_sequence[12] + vd.transform_sequence[13];
+        else if (anim_phase == TP::Settling2 || anim_phase == TP::Receiving) {
+            float end = vd.transform_sequence[TP::Settling2] +
+                        vd.transform_sequence[TP::Receiving];
             float t = anim_timer - 1;
-            if (anim_phase == 13) t += vd.transform_sequence[12];
+            if (anim_phase == TP::Receiving) {
+                t += vd.transform_sequence[TP::Settling2];
+            }
             weapon_offset = lerp(
-                Vec(poses.transform[13].body->weapon),
-                Vec(poses.transform[12].body->weapon),
+                 // These are backwards on purpose
+                Vec(poses.transform[TP::Receiving].body->weapon),
+                Vec(poses.transform[TP::Settling2].body->weapon),
                 ease_in_out_sin(1 - (t / end))
             );
         }
         else {
             weapon_offset = pose.body->weapon;
         }
-        if (anim_phase == 0 || anim_phase == 2 || anim_phase == 6) {
+        if (anim_phase == TP::Holding ||
+            anim_phase == TP::Waiting ||
+            anim_phase == TP::Naked
+        ) {
              // Stick tongue out
             if (anim_timer >= 10 && anim_timer < 22) {
                 if (anim_timer >= 14 && anim_timer < 18) {
@@ -503,7 +536,7 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
                 else weapon_layers = 0x3;
             }
         }
-        else if (anim_phase == 9) {
+        else if (anim_phase == TP::Assembling2) {
              // Glow
             tint = vd.transform_magic_color;
         }
@@ -749,11 +782,11 @@ AYU_DESCRIBE(vf::VerdantPoses,
     )
 )
 
-AYU_DESCRIBE(vf::TransformSound,
+AYU_DESCRIBE(vf::CutsceneSound,
     elems(
-        elem(&TransformSound::sound),
-        elem(&TransformSound::phase),
-        elem(&TransformSound::timer)
+        elem(&CutsceneSound::phase),
+        elem(&CutsceneSound::timer),
+        elem(&CutsceneSound::sound)
     )
 )
 
@@ -776,8 +809,9 @@ AYU_DESCRIBE(vf::VerdantData,
         attr("captured_fang_pos_high", &VerdantData::captured_fang_pos_high),
         attr("captured_fang_pos_low", &VerdantData::captured_fang_pos_low),
         attr("unhit_sound", &VerdantData::unhit_sound),
+        attr("revive_sound", &VerdantData::revive_sound),
         attr("spear_break_sound", &VerdantData::spear_break_sound),
-        attr("fang_death_sound", &VerdantData::fang_death_sound),
+        attr("snake_death_sound", &VerdantData::snake_death_sound),
         attr("limb_detach_sound", &VerdantData::limb_detach_sound)
     )
 )

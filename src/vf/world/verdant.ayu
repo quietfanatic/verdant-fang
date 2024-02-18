@@ -97,7 +97,7 @@
     left_arm:  [vf::LimbFrame [#body [235 39] [2 22] [11 25] *z_left_limb_offset]]
     right_arm: [vf::LimbFrame [#body [214 36] [-5 21] [-14 21] *z_right_limb_offset]]
     left_leg:  [vf::LimbFrame [#body [235 23] [3 11] [11 10] *z_left_limb_offset]]
-    right_leg: [vf::LimbFrame [#body [222 19] [-1 9] [-5 3] *z_right_limb_offset]]
+    right_leg: [vf::LimbFrame [#body [222 19] [-1 9] [-3 2] *z_right_limb_offset]]
     body_limbless_fall: [vf::BodyFrame [#body [189 5] [3 10]]]
     body_limbless: [vf::BodyFrame [#body [161 7] [8 3]]]
     body_inch_down: [vf::BodyFrame [#body [135 7] [8 3]]]
@@ -369,9 +369,10 @@
         transform_magic_color: 0xccddaaff
         transform_sounds: [
              -- When to play the sounds.  [sound anim_phase anim_timer]
-            [assets.ayu#pwsh 4 0]
-            [assets.ayu#shwp 6 24] -- 30+8+8 - 22
-            [assets.ayu#poiy 10 0]
+            [1 0 assets.ayu#hiss]
+            [4 0 assets.ayu#pwsh]
+            [6 24 assets.ayu#shwp] -- 30+8+8 - 22
+            [10 0 assets.ayu#poiy]
         ]
         fang_help_sequence: [8 8 8 20 30]
         revive_sequence: [8 8 16 8 8]
@@ -390,8 +391,9 @@
          -- Fang's center in floor pose is 1 above floor
         captured_fang_pos_low: [200 33]
         unhit_sound: assets.ayu#shluk
+        revive_sound: assets.ayu#hiss
         spear_break_sound: assets.ayu#break
-        fang_death_sound: assets.ayu#kwaakh
+        snake_death_sound: assets.ayu#kwaakh
         limb_detach_sound: assets.ayu#pwschk
     }]
 }]
