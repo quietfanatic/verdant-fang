@@ -14,9 +14,36 @@ namespace VS {
     constexpr WalkerState Transform = WS::Custom + 1;
     constexpr WalkerState FangHelp = WS::Custom + 2;
     constexpr WalkerState Captured = WS::Custom + 3;
+    constexpr WalkerState Inch = WS::Custom + 4;
      // Update world.ayu if this changes
     static_assert(PreTransform == 6);
 };
+
+enum CapturedPhase : uint8 {
+    Moving = 0,
+    Waiting = 1,
+    SpearTaken = 2,
+    SpearRotate0 = 3,
+    SpearRotate1 = 4,
+    SpearWaiting = 5,
+    SpearBroken = 6,
+    SpearBrokenGlow = 7,
+    SnakeBroken = 8,
+    SnakeFall = 9,
+    SnakeFloor0 = 10,
+    SnakeFloor1 = 11,
+    SnakeFloor2 = 12,
+    SnakeFloor3 = 13,
+    LimbDetach0 = 14,
+    LimbDetach1 = 15,
+    LimbDetach2 = 16,
+    LimbDetach3 = 17,
+    GoodbyeLimbs = 18,
+    Falling = 19,  // No timer, ends on hitting floor
+    Floor = 20,
+    N_Phases = 21
+};
+using CP = CapturedPhase;
 
 struct LimbFrame : Frame {
      // Relative to body pos
@@ -33,7 +60,7 @@ struct VerdantPoses : WalkerPoses {
     Pose downf;
     Pose deadf [7];
     Frame* fang_help [6];
-    Pose captured [19];
+    Pose captured [CP::N_Phases];
     LimbFrame* captured_limbs [4];
     Pose inch [3];
 };
@@ -62,28 +89,15 @@ struct VerdantData : WalkerData {
     uint8 fang_help_sequence [5];
     uint8 revive_sequence [5];
     glow::RGBA8 revive_tint [6];
-     // 0 = moving
-     // 1 = spear taken
-     // 2 = spear rotates 1
-     // 3 = spear rotates 2
-     // 4 = spear broken
-     // 5 = spear broken (glow)
-     // 6 = snake broken
-     // 7 = snake falls
-     // 8 9 10 11 = snake on floor
-     // 12 = right arm taken
-     // 13 = left leg taken
-     // 14 = left arm taken
-     // 15 = right leg taken
-     // 16 = limbs leaving
-     // 17 = falling (no index in this array
-     // 18 = landed (no index in this array)
-    uint8 captured_sequence [17];
+    uint8 captured_sequence [CP::N_Phases];
     uint8 captured_limb_phases [4];
     Vec captured_pos;
     Vec captured_fang_pos_high;
     Vec captured_fang_pos_low;
     Sound* unhit_sound;
+    Sound* spear_break_sound;
+    Sound* fang_death_sound;
+    Sound* limb_detach_sound;
 };
 
  // Overrides movement during pre-transformation cutscene
@@ -250,24 +264,32 @@ WalkerBusiness Verdant::Walker_business () {
             return WB::Frozen;
         }
         case VS::Captured: {
-            left = false;
-            expect(anim_phase < 19);
-            if (anim_phase == 17) {
-                if (floor) anim_phase = 18;
+            if (anim_phase == CP::Moving && anim_timer == 0) {
+                captured_start_pos = pos;
+                left = false;
+            }
+            if (anim_phase == CP::Falling) {
+                if (floor) anim_phase = CP::Floor;
                 return WB::Occupied;
             }
-            else if (anim_phase == 18) {
+            else if (anim_phase == CP::Floor) {
                 return WB::Occupied;
             }
             else if (anim_timer >= vd.captured_sequence[anim_phase]) {
                 anim_phase += 1;
                 anim_timer = 0;
+                if (anim_phase == CP::SpearBroken) {
+                    if (vd.spear_break_sound) vd.spear_break_sound->play();
+                }
+                else if (anim_phase == CP::SnakeBroken) {
+                    if (vd.fang_death_sound) vd.fang_death_sound->play();
+                }
+                else if (anim_phase == CP::Falling) {
+                    pos.y += vd.dead_floor_lift;
+                }
                 return Walker_business();
             }
             else {
-                if (anim_phase == 0 && anim_timer == 0) {
-                    captured_start_pos = pos;
-                }
                 anim_timer += 1;
                  // Move limbs
                 auto& poses = static_cast<VerdantPoses&>(*vd.poses);
@@ -276,6 +298,9 @@ WalkerBusiness Verdant::Walker_business () {
                         limb_pos[i] = pos + poses.captured_limbs[i]->attached;
                     }
                     else if (anim_phase == vd.captured_limb_phases[i]) {
+                        if (anim_timer == 1 && vd.limb_detach_sound) {
+                            vd.limb_detach_sound->play();
+                        }
                          // Note that anim_timer goes from 1..n here instead of
                          // 0..n-1, so the phase will end with limb_pos[i] ==
                          // poses.captured_limbs[i].detached.
@@ -284,11 +309,12 @@ WalkerBusiness Verdant::Walker_business () {
                         limb_pos[i] = pos + lerp(
                             poses.captured_limbs[i]->attached,
                             poses.captured_limbs[i]->detached,
-                            ease_out_sin(t)
+                            ease_out_cubic(t)
                         );
                     }
                      // else leave it where it is.  Indigo will take it away.
                 }
+                floor = null;
                 return WB::Frozen;
             }
         }
@@ -428,7 +454,7 @@ Pose Verdant::Walker_pose () {
             return damage_forward ? poses.deadf[6] : poses.dead[6];
         }
         case VS::Captured: {
-            expect(anim_phase < 19);
+            expect(anim_phase < CP::N_Phases);
             return poses.captured[anim_phase];
         }
         default: break;
@@ -509,21 +535,21 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
         );
     }
     else if (state == VS::Captured) {
-        if (anim_phase >= 2) scale.x = -scale.x;
-        if (anim_phase == 0) {
+        if (anim_phase >= CP::SpearRotate0) scale.x = -scale.x;
+        if (anim_phase < CP::SpearTaken) {
             Walker::Walker_draw_weapon(pose);
         }
-        else if (anim_phase == 1 || anim_phase == 2 || anim_phase == 3) {
+        else if (anim_phase >= CP::SpearTaken && anim_phase <= CP::SpearRotate1) {
             uint32 t = anim_timer;
             uint32 total = 0;
-            for (usize i = 1; i <= 3; i++) {
+            for (uint32 i = CP::SpearTaken; i <= CP::SpearRotate1; i++) {
                 if (anim_phase > i) t += vd.captured_sequence[i];
                 total += vd.captured_sequence[i];
             }
             draw_layers(
                 *poses.captured[anim_phase].weapon, 0b1001,
                 lerp(
-                    pos + poses.captured[1].body->weapon,
+                    pos + poses.captured[CP::SpearTaken].body->weapon,
                     vd.captured_fang_pos_high,
                     ease_out_sin(float(t) / total)
                 ),
@@ -531,23 +557,25 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
                 weapon_tint
             );
         }
-        else if (anim_phase == 4) {
+        else if (anim_phase == CP::SpearWaiting ||
+                 anim_phase == CP::SpearBroken
+        ) {
             draw_layers(
-                *poses.captured[anim_phase].weapon, 0b1011,
+                *poses.captured[anim_phase].weapon, 0b1001,
                 vd.captured_fang_pos_high,
                 pose.z + Z::WeaponOffset, scale,
                 weapon_tint
             );
         }
-        else if (anim_phase == 5) {
+        else if (anim_phase == CP::SpearBrokenGlow) {
             draw_layers(
-                *poses.captured[anim_phase].weapon, 0b11,
+                *poses.captured[anim_phase].weapon, 0b1,
                 vd.captured_fang_pos_high,
                 pose.z + Z::WeaponOffset, scale,
                 vd.transform_magic_color
             );
         }
-        else if (anim_phase == 6) {
+        else if (anim_phase == CP::SnakeBroken) {
             draw_layers(
                 *poses.captured[anim_phase].weapon, 0b11,
                 vd.captured_fang_pos_high,
@@ -555,7 +583,7 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
                 weapon_tint
             );
         }
-        else if (anim_phase == 7) {
+        else if (anim_phase == CP::SnakeFall) {
              // I thought we would need a bunch of fancy math to reverse
              // calculate the gravity needed to make Fang fall the given
              // distance in the given time, but we can just think of it as an
@@ -747,7 +775,10 @@ AYU_DESCRIBE(vf::VerdantData,
         attr("captured_limb_phases", &VerdantData::captured_limb_phases),
         attr("captured_fang_pos_high", &VerdantData::captured_fang_pos_high),
         attr("captured_fang_pos_low", &VerdantData::captured_fang_pos_low),
-        attr("unhit_sound", &VerdantData::unhit_sound)
+        attr("unhit_sound", &VerdantData::unhit_sound),
+        attr("spear_break_sound", &VerdantData::spear_break_sound),
+        attr("fang_death_sound", &VerdantData::fang_death_sound),
+        attr("limb_detach_sound", &VerdantData::limb_detach_sound)
     )
 )
 

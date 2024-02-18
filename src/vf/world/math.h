@@ -9,11 +9,20 @@ inline float ease_out_sin (float t) {
 inline float ease_in_sin (float t) {
     return 1 - std::sin((1 - t) * float(M_PI / 2));
 }
+inline float ease_in_out_sin (float t) {
+    return (1 + std::sin((-1 + t*2) * float(M_PI / 2))) / 2;
+}
 inline float ease_in_quadratic (float t) {
     return t*t; // This one's easy
 }
-inline float ease_in_out_sin (float t) {
-    return (1 + std::sin((-1 + t*2) * float(M_PI / 2))) / 2;
+inline float ease_out_quadratic (float t) {
+    return 1-(1-t)*(1-t);
+}
+inline float ease_in_cubic (float t) {
+    return t*t*t;
+}
+inline float ease_out_cubic (float t) {
+    return 1-(1-t)*(1-t)*(1-t);
 }
 
 inline float quadratic (float p, float v, float a, float t) {
