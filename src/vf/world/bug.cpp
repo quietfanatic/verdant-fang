@@ -3,7 +3,7 @@
 #include "../../dirt/ayu/reflection/describe.h"
 #include "../game/game.h"
 #include "../game/state.h"
-#include "quadratics.h"
+#include "math.h"
 
 namespace vf {
 

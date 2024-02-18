@@ -49,6 +49,7 @@
         [[ctrl 3] [set_body_layers 0x5]]
         [[ctrl 4] [set_body_layers 0x7]]
         [[ctrl t] [do_transform_sequence]]
+        [[ctrl c] [do_captured_sequence]]
         [[f3] [print_pos]]
     ]
 }]

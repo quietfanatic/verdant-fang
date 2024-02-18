@@ -1,7 +1,7 @@
 #include "monster.h"
 
 #include "../../dirt/ayu/reflection/describe.h"
-#include "quadratics.h"
+#include "math.h"
 #include "verdant.h"
 
 namespace vf {

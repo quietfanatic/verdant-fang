@@ -2,10 +2,13 @@
 &z_deadplayer: -200
 &z_damage: 200
 &z_actor: 300
+&z_head_offset: -10
+&z_left_limb_offset: -20
 &z_body_offset0: 0
 &z_body_offset1: 1
-&z_body_offset2: 2
-&z_head_offset: -10
+&z_right_limb_offset: 2
+&z_body_offset3: 9 -- Indigo's magic effects
+&z_body_offset2: 10 -- must be larger than z_body_offset1 + z_right_limb_offset
 &z_weapon_offset0: 30
 &z_weapon_offset1: 31
 &z_weapon_offset2: 32
@@ -18,18 +21,18 @@
              -- y down
             bounds: [110 84 356 214]
             z_offset: *z_body_offset0
-        }
-        {
+        } {
             image: assets.ayu#layer1
-             -- y down
             bounds: [110 84 356 214]
             z_offset: *z_body_offset1
-        }
-        {
+        } {
             image: assets.ayu#layer2
-             -- y down
             bounds: [110 84 356 214]
             z_offset: *z_body_offset2
+        } {
+            image: assets.ayu#layer3
+            bounds: [110 84 356 214]
+            z_offset: *z_body_offset3
         }
     ]]
      -- y up
@@ -66,16 +69,17 @@
         [2 2 2 2]
     ]]
     body_damagefallf: [vf::BodyFrame [#body [152 86] [4 13] [-1 2]]]
-    body_downf: [vf::BodyFrame [#body [211 86] [7 6] [-6 0]]]
-    body_deadf: [vf::BodyFrame [#body [182 78] [9 3] [-6 0]]]
+    body_downf:       [vf::BodyFrame [#body [211 86] [7 6] [-6 0]]]
+    body_deadf:       [vf::BodyFrame [#body [182 78] [9 3] [-6 0]]]
     body_walkhold0: [vf::BodyFrame [#body [14 24] [0 23] [4 20]]]
     body_walkhold1: [vf::BodyFrame [#body [37 24] [0 23] [4 20]]]
     body_walkhold2: [vf::BodyFrame [#body [60 24] [0 22] [4 19]]]
     body_walkhold3: [vf::BodyFrame [#body [83 24] [0 23] [4 20]]]
     body_walkhold4: [vf::BodyFrame [#body [106 24] [0 23] [4 20]]]
     body_walkhold5: [vf::BodyFrame [#body [129 24] [0 22] [4 19]]]
-    body_hold: [vf::BodyFrame [#body [154 22] [0 23] [4 20]]]
-    body_lift0: [vf::BodyFrame [#body [172 22] [-1 23] [4 25]]]
+    body_hold:      [vf::BodyFrame [#body [154 22] [0 23] [4 20]]]
+    body_lift0:     [vf::BodyFrame [#body [172 22] [-1 23] [4 25]]]
+    body_lift1:     [vf::BodyFrame [#body [192 22] [-1 23] [4 23]]]
      -- These do not directly correspond to pose indexes
     body_transform0: [vf::BodyFrame [#body [14 105] [-1 23] [4 48]]]
     body_transform1: [vf::BodyFrame [#body [37 105] [-1 23] [4 48]]]
@@ -87,9 +91,18 @@
     body_transform7: [vf::BodyFrame [#body [175 105] [-1 23] [4 48]]]
     body_transform8: [vf::BodyFrame [#body [198 105] [-1 23] [4 48]]]
     body_transform9: [vf::BodyFrame [#body [221 105] [-1 23] [4 48]]]
-    body_lift1: [vf::BodyFrame [#body [192 22] [-1 23] [4 23]]]
     body_crouch_preattack: [vf::BodyFrame [#body [14 3] [0 16] [-1 10]]]
-    body_crouch_attack: [vf::BodyFrame [#body [33 3] [2 15] [14 10]]]
+    body_crouch_attack:    [vf::BodyFrame [#body [33 3] [2 15] [14 10]]]
+    body_captured: [vf::BodyFrame [#body [226 15] [-2 23] [6 22]]]
+    left_arm:  [vf::LimbFrame [#body [235 39] [2 22] [9 24] *z_left_limb_offset]]
+    right_arm: [vf::LimbFrame [#body [214 36] [-5 21] [-13 21] *z_right_limb_offset]]
+    left_leg:  [vf::LimbFrame [#body [235 23] [3 11] [9 8] *z_left_limb_offset]]
+    right_leg: [vf::LimbFrame [#body [222 19] [-1 9] [-4 4] *z_right_limb_offset]]
+    body_limbless_fall: [vf::BodyFrame [#body [189 5] [3 10]]]
+    body_limbless: [vf::BodyFrame [#body [161 7] [8 3]]]
+    body_inch_down: [vf::BodyFrame [#body [135 7] [8 3]]]
+    body_inch_up: [vf::BodyFrame [#body [110 7] [7 3]]]
+
     head: [vf::LayeredTexture [{
         image: assets.ayu#layer0
         bounds: [167 40 333 80]
@@ -106,6 +119,7 @@
     head_dead:    [vf::Frame [#head [121 8]]]
     head_damagef: [vf::Frame [#head [132 8]]]
     head_deadf:   [vf::Frame [#head [148 9]]]
+
     fang: [vf::LayeredTexture {
         layers: [{
             image: assets.ayu#layer0
@@ -135,18 +149,33 @@
      -- The origin of spear frames is generally 1 behind the center end to end.
      -- Incidentally, this is also where the hitbox starts.  For the neutral
      -- body frame, this is [7 4] plus the center of the back hand.
-    spear_neutral:    [vf::WeaponFrame [#fang [87 104]]]
-    spear_preattack:  [vf::WeaponFrame [#fang [87 92]]]
-    spear_attack:     [vf::WeaponFrame [#fang [87 87] [-8 -1 18 1]]]
-    spear_damage:     [vf::WeaponFrame [#fang [87 78]]]
-    spear_damagefall: [vf::WeaponFrame [#fang [87 65]]]
+    spear_neutral:     [vf::WeaponFrame [#fang [87 104]]]
+    spear_preattack:   [vf::WeaponFrame [#fang [87 92]]]
+    spear_attack:      [vf::WeaponFrame [#fang [87 87] [-8 -1 18 1]]]
+    spear_damage:      [vf::WeaponFrame [#fang [87 78]]]
+    spear_damagefall:  [vf::WeaponFrame [#fang [87 65]]]
     spear_damagefallf: [vf::WeaponFrame [#fang [87 51]]]
-    spear_dead:       [vf::WeaponFrame [#fang [87 43]]]
+    spear_dead:        [vf::WeaponFrame [#fang [87 43]]]
     spear_crouch_preattack: [vf::WeaponFrame [#fang [87 37]]]
-    spear_crouch_attack: [vf::WeaponFrame [#fang [87 32] [0 -1 18 1]]]
-    spear_h: [vf::Frame [#fang [52 113]]]
-    snake_h_longg: [vf::Frame [#fang [52 119]]]
-    snake_h: [vf::Frame [#fang [55 131]]]
+    spear_crouch_attack:    [vf::WeaponFrame [#fang [87 32] [0 -1 18 1]]]
+    spear_h:          [vf::Frame [#fang [52 113]]]
+    snake_h_longg:    [vf::Frame [#fang [52 119]]]
+    snake_h:          [vf::Frame [#fang [55 131]]]
+    spear_captured0:  [vf::WeaponFrame [#fang [7 124]]]
+    spear_captured1:  [vf::WeaponFrame [#fang [24 124]]]
+    spear_captured2:  [vf::WeaponFrame [#fang [47 95]]]
+    spear_broken:     [vf::WeaponFrame [#fang [47 73]]]
+     -- These frames are in two halves.  Instead of specifying the bounds
+     -- explicitly, I put some connecting pixels on layer 3 to make the auto-
+     -- bounds-determiner put the halves together.  So make sure NOT to enable
+     -- layer 3 for these sprites.
+    snake_broken:     [vf::WeaponFrame [#fang [48 52]]]
+    snake_brokenfall: [vf::WeaponFrame [#fang [49 37]]]
+    snake_dead0: [vf::WeaponFrame [#fang [49 27]]]
+    snake_dead1: [vf::WeaponFrame [#fang [49 21]]]
+    snake_dead2: [vf::WeaponFrame [#fang [49 15]]]
+    snake_dead3: [vf::WeaponFrame [#fang [49 9]]]
+    snake_dead4: [vf::WeaponFrame [#fang [49 3]]]
     poses: [vf::VerdantPoses {
         stand: [#body_stand #head_neutral #spear_neutral]
         crouch: [#body_crouch #head_neutral #spear_neutral]
@@ -188,29 +217,6 @@
             [#body_attack #head_wave2 #spear_attack]
             [#body_attack #head_neutral #spear_attack]
         ]
-        damage: [#body_damage #head_damage #spear_damage *z_deadplayer true]
-        damagefall: [#body_damagefall #head_damage #spear_damagefall *z_deadplayer]
-        dead: [
-            [#body_dead #head_dead #spear_dead *z_deadplayer]
-            [#body_dead #head_dead #spear_dead *z_deadplayer]
-            [#body_dead #head_dead #spear_dead *z_deadplayer]
-            [#body_dead #head_dead #spear_dead *z_deadplayer]
-            [#body_dead #head_dead #spear_dead *z_deadplayer]
-            [#body_dead #head_dead #spear_dead *z_deadplayer]
-            [#body_dead #head_dead #spear_dead *z_deadplayer]
-        ]
-        damagef: [#body_damage #head_damage #spear_damage *z_deadplayer true]
-        damagefallf: [#body_damagefallf #head_damagef #spear_damagefallf *z_deadplayer]
-        downf: [#body_downf #head_damagef #spear_dead *z_deadplayer]
-        deadf: [
-            [#body_deadf #head_deadf #spear_dead *z_deadplayer]
-            [#body_deadf #head_deadf #spear_dead *z_deadplayer]
-            [#body_deadf #head_deadf #spear_dead *z_deadplayer]
-            [#body_deadf #head_deadf #spear_dead *z_deadplayer]
-            [#body_deadf #head_deadf #spear_dead *z_deadplayer]
-            [#body_deadf #head_deadf #spear_dead *z_deadplayer]
-            [#body_deadf #head_deadf #spear_dead *z_deadplayer]
-        ]
         walk_hold: [
             [#body_walkhold0 #head_wave0 #snake_held *z_actor false 0x5]
             [#body_walkhold1 #head_wave1 #snake_held *z_actor false 0x5]
@@ -236,7 +242,57 @@
             [#body_transform9 #head_neutral #spear_diag]
             [#body_lift1 #head_neutral #spear_diag]
         ]
+        damage: [#body_damage #head_damage #spear_damage *z_deadplayer true]
+        damagefall: [#body_damagefall #head_damage #spear_damagefall *z_deadplayer]
+        dead: [
+            [#body_dead #head_dead #spear_dead *z_deadplayer]
+            [#body_dead #head_dead #spear_dead *z_deadplayer]
+            [#body_dead #head_dead #spear_dead *z_deadplayer]
+            [#body_dead #head_dead #spear_dead *z_deadplayer]
+            [#body_dead #head_dead #spear_dead *z_deadplayer]
+            [#body_dead #head_dead #spear_dead *z_deadplayer]
+            [#body_dead #head_dead #spear_dead *z_deadplayer]
+        ]
+        damagef: [#body_damage #head_damage #spear_damage *z_deadplayer true]
+        damagefallf: [#body_damagefallf #head_damagef #spear_damagefallf *z_deadplayer]
+        downf: [#body_downf #head_damagef #spear_dead *z_deadplayer]
+        deadf: [
+            [#body_deadf #head_deadf #spear_dead *z_deadplayer]
+            [#body_deadf #head_deadf #spear_dead *z_deadplayer]
+            [#body_deadf #head_deadf #spear_dead *z_deadplayer]
+            [#body_deadf #head_deadf #spear_dead *z_deadplayer]
+            [#body_deadf #head_deadf #spear_dead *z_deadplayer]
+            [#body_deadf #head_deadf #spear_dead *z_deadplayer]
+            [#body_deadf #head_deadf #spear_dead *z_deadplayer]
+        ]
         fang_help: [#spear_h #spear_h #snake_h_longg #snake_h #snake_air #snake_air]
+        captured: [
+            [#body_captured #head_damage #spear_captured0]
+            [#body_captured #head_neutral #spear_captured1]
+            [#body_captured #head_neutral #spear_captured1]  -- scale.x=-1 for weapon from now on
+            [#body_captured #head_neutral #spear_captured2]
+            [#body_captured #head_neutral #spear_broken]
+            [#body_captured #head_neutral #spear_broken] --glow
+            [#body_captured #head_neutral #snake_broken]
+            [#body_captured #head_neutral #snake_brokenfall]
+            [#body_captured #head_neutral #snake_dead0]
+            [#body_captured #head_neutral #snake_dead1]
+            [#body_captured #head_neutral #snake_dead2]
+            [#body_captured #head_neutral #snake_dead3]
+            [#body_captured #head_damage #snake_dead4]
+            [#body_captured #head_damage #snake_dead4]
+            [#body_captured #head_damage #snake_dead4]
+            [#body_captured #head_damage #snake_dead4]
+            [#body_captured #head_neutral #snake_dead4]
+            [#body_limbless_fall #head_damage #snake_dead4]
+            [#body_limbless #head_damagef #snake_dead4]
+        ]
+        captured_limbs: [#left_arm #right_arm #left_leg #right_leg]
+        inch: [
+            [#body_limbless #head_damagef #snake_dead4]
+            [#body_inch_up #head_damagef #snake_dead4]
+            [#body_inch_down #head_damagef #snake_dead4]
+        ]
     }]
     data: [vf::VerdantData {
         body_box: [-6 0 6 30]
@@ -316,9 +372,21 @@
             [assets.ayu#shwp 6 24] -- 30+8+8 - 22
             [assets.ayu#poiy 10 0]
         ]
+        fang_help_sequence: [8 8 8 20 30]
         revive_sequence: [8 8 16 8 8]
         revive_tint: [0xccddaa60 0xccddaaa0 0xccddaaff 0xa3af8dff 0x7c8271ff 0x555555ff]
-        fang_help_sequence: [8 8 8 20 30]
+        captured_sequence: [
+            30 8 8 30 30 8 60 60
+            10 10 10 30
+            60 60 60 60
+            120
+        ]
+        captured_limb_phases: [14 12 13 15]
+         -- Based on world.ayu#atelier
+        captured_pos: [128 64]
+        captured_fang_pos_high: [200 80]
+         -- Fang's center in floor pose is 1 above floor
+        captured_fang_pos_low: [200 33]
         unhit_sound: assets.ayu#shluk
     }]
 }]

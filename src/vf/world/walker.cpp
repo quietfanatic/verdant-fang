@@ -388,7 +388,7 @@ void Walker::Resident_before_step () {
     business = Walker_business();
 
      // Read controls.
-    Controls controls;
+    Controls controls {};
     if (mind) controls = mind->Mind_think(*this);
 
      // Move
@@ -703,6 +703,7 @@ AYU_DESCRIBE(vf::BodyFrame,
         elem(&BodyFrame::decals, optional),
         elem(&BodyFrame::decal_dirs, optional)
     ),
+     // Just for castability.  We need a better solution.
     attrs(
         attr("vf::Frame", base<Frame>(), include)
     ),

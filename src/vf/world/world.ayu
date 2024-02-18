@@ -22,11 +22,11 @@
     verdant: [vf::Verdant {
         data: verdant.ayu#data
         mind: #verdant_mind
-        room: #start
-        pos: [-32 32]
-        state: 6 --VS::PreTransform
-        --room: #hive
-        --pos: [16 64]
+        --room: #start
+        --pos: [-32 32]
+        --state: 6 --VS::PreTransform
+        room: #atelier
+        pos: [16 64]
         floor: #start_blocks
         limbo: #limbo
     }]
@@ -282,8 +282,8 @@
         scale: [-1 1]
     }]
     atelier_blocks: [vf::Blocks {
-        data: assets.ayu#block
         room: #atelier
+        data: assets.ayu#block
         blocks: [
             [-16 160] [16 160] [48 160] [80 160] [112 160] [144 160] [176 160] [208 160] [240 160] [272 160] [304 160]
             [-16 128] [16 128] [272 128] [304 128]
@@ -292,6 +292,19 @@
             [272 32] [304 32]
             [-16 0] [16 0] [48 0] [80 0] [112 0] [144 0] [176 0] [208 0] [240 0] [272 0] [304 0]
         ]
+    }]
+    indigo: [vf::Indigo {
+        room: #atelier
+        data: indigo.ayu#data
+        mind: null
+        pos: [256 64]
+        left: true
+        fly: true
+        body_layers: 0x5 --no pants
+        --body_layers: 0x7 --fully clothed
+        --body_layers: 0x3 --leotard
+        --body_layers: 0x1 --naked
+        head_layers: 0x7 --glasses and hat
     }]
 
     atelier_to_hive: [vf::LoadingZone {
