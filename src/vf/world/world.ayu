@@ -22,11 +22,11 @@
     verdant: [vf::Verdant {
         data: verdant.ayu#data
         mind: #verdant_mind
-        room: #start
-        pos: [-32 32]
-        state: 6 --VS::PreTransform
-        --room: #atelier
-        --pos: [16 32]
+        --room: #start
+        --pos: [-32 32]
+        --state: 6 --VS::PreTransform
+        room: #atelier
+        pos: [16 32]
         floor: #start_blocks
         limbo: #limbo
     }]
@@ -285,11 +285,10 @@
         room: #atelier
         data: assets.ayu#block
         blocks: [
-            [-16 160] [16 160] [48 160] [80 160] [112 160] [144 160] [176 160] [208 160] [240 160] [272 160] [304 160]
-            [-16 128] [16 128] [272 128] [304 128]
-            [-16 96] [16 96] [272 96] [304 96]
-            [272 64] [304 64]
-            [272 32] [304 32]
+            [-16 160] [16 160] [48 160] [80 160] [112 160] [144 160] [176 160] [208 160] [240 160] [272 176] [304 176]
+            [-16 128] [16 128] [272 144] [304 144]
+            [-16 96] [16 96]
+            [272 48] [304 48]
             [-16 0] [16 0] [48 0] [80 0] [112 0] [144 0] [176 0] [208 0] [240 0] [272 0] [304 0]
         ]
     }]
@@ -325,5 +324,10 @@
         target_room: #hive
         target_pos: [304 64]
         transition: wipe_right
+    }]
+    atelier_to_somewhere_door: [vf::Door {
+        room: #atelier
+        data: assets.ayu#door
+        pos: [284 80] --272 + 12
     }]
 }]
