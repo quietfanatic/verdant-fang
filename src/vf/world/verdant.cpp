@@ -231,7 +231,42 @@ WalkerBusiness Verdant::Walker_business () {
         }
     }
     else if (state == VS::Inch) {
-         // This is all handled in Walker_move().
+        if (pos.x >= vd.captured_fang_pos_low.x - 12) {
+            set_state(VS::Snakify);
+            return Walker_business();
+        }
+        else return WB::Free;
+    }
+    else if (state == VS::Snakify) {
+        expect(anim_phase < 8);
+        if (anim_timer >= vd.snakify_sequence[anim_phase]) {
+            if (anim_phase == 7) {
+                set_state(VS::Snake);
+            }
+            else {
+                if (anim_phase == 3) {
+                    if (vd.revive_sound) vd.revive_sound->play();
+                }
+                anim_phase += 1;
+                anim_timer = 0;
+            }
+            return Walker_business();
+        }
+        else {
+            anim_timer += 1;
+            body_tint = vd.transform_magic_color;
+            switch (anim_phase) {
+                case 0: body_tint.a = 0x60; break;
+                case 1: body_tint.a = 0xa0; break;
+                case 2: case 3: case 4: break;
+                case 5: case 6: case 7: body_tint = 0; break;
+                default: never();
+            }
+            weapon_tint = body_tint;
+            return WB::Frozen;
+        }
+    }
+    else if (state == VS::Snake) {
         return WB::Free;
     }
     return Walker::Walker_business();
@@ -270,6 +305,9 @@ void Verdant::Walker_move (const Controls& controls) {
             anim_timer = 0;
         }
         return;
+    }
+    else if (state == VS::Snake) {
+         // TODO
     }
     return Walker::Walker_move(controls);
 }
@@ -397,6 +435,16 @@ Pose Verdant::Walker_pose () {
             return poses.inch[pos.x == walk_start_x ? 0 : 2];
         }
         else return poses.inch[anim_phase];
+    }
+    else if (state == VS::Snakify) {
+        expect(anim_phase < 8);
+        if (anim_phase < 6) {
+            return poses.inch[2];
+        }
+        else return poses.snake_stand;
+    }
+    else if (state == VS::Snake) {
+        return poses.snake_stand;
     }
     return Walker::Walker_pose();
 }
@@ -569,11 +617,34 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
     }
     else if (state == VS::Inch) {
         draw_layers(
-            *poses.inch[anim_phase].weapon, 0b11,
+            *pose.weapon, 0b11,
             vd.captured_fang_pos_low,
             pose.z + Z::WeaponOffset, scale,
             weapon_tint
         );
+    }
+    else if (state == VS::Snakify) {
+        if (anim_phase < 6) {
+            draw_layers(
+                *pose.weapon, 0b11,
+                vd.captured_fang_pos_low,
+                pose.z + Z::WeaponOffset, scale,
+                weapon_tint
+            );
+        }
+        if (anim_phase >= 3) {
+            glow::RGBA8 screen = vd.transform_magic_color;
+            if (anim_phase == 3 || anim_phase == 7) {
+                screen.a *= float(0x60) / 0xff;
+            }
+            else if (anim_phase == 4 || anim_phase == 6) {
+                screen.a *= float(0xa0) / 0xff;
+            }
+            draw_rectangle(
+                Rect(Vec(0, 0), camera_size),
+                screen, Z::ScreenEffect
+            );
+        }
     }
     else Walker::Walker_draw_weapon(pose);
 }
@@ -689,7 +760,9 @@ AYU_DESCRIBE(vf::VerdantPoses,
         attr("fang_help", &VerdantPoses::fang_help),
         attr("captured", &VerdantPoses::captured),
         attr("captured_limbs", &VerdantPoses::captured_limbs),
-        attr("inch", &VerdantPoses::inch)
+        attr("inch", &VerdantPoses::inch),
+        attr("snake_stand", &VerdantPoses::snake_stand),
+        attr("snake_walk", &VerdantPoses::snake_walk)
     )
 )
 
@@ -720,6 +793,7 @@ AYU_DESCRIBE(vf::VerdantData,
         attr("captured_fang_pos_high", &VerdantData::captured_fang_pos_high),
         attr("captured_fang_pos_low", &VerdantData::captured_fang_pos_low),
         attr("inch_sequence", &VerdantData::inch_sequence),
+        attr("snakify_sequence", &VerdantData::snakify_sequence),
         attr("unstab_sound", &VerdantData::unstab_sound, optional),
         attr("revive_sound", &VerdantData::revive_sound, optional),
         attr("spear_break_sound", &VerdantData::spear_break_sound, optional),

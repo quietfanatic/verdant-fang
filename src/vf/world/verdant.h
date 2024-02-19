@@ -12,6 +12,8 @@ namespace VS {
     constexpr WalkerState FangHelp = WS::Custom + 2;
     constexpr WalkerState Captured = WS::Custom + 3;
     constexpr WalkerState Inch = WS::Custom + 4;
+    constexpr WalkerState Snakify = WS::Custom + 5;
+    constexpr WalkerState Snake = WS::Custom + 6;
      // Update world.ayu if this changes
     static_assert(PreTransform == 6);
 };
@@ -79,6 +81,8 @@ struct VerdantPoses : WalkerPoses {
     Pose captured [CP::N_Phases];
     LimbFrame* captured_limbs [4];
     Pose inch [3];
+    Pose snake_stand;
+    Pose snake_walk [2];
 };
 
 struct CutsceneSound {
@@ -112,6 +116,10 @@ struct VerdantData : WalkerData {
     Vec captured_fang_pos_low;
      // Indexed by anim_phase-1
     uint8 inch_sequence [2];
+     // 0 1 2 = self and fang glow
+     // 3 4 5 = screen glow
+     // 6 7 = screen glow fades
+    uint8 snakify_sequence [8];
     Sound* unstab_sound = null;
     Sound* revive_sound = null;
     Sound* spear_break_sound = null;

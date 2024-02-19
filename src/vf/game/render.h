@@ -31,7 +31,8 @@ void draw_frame (
     Vec pos,
     float z = 0,
     Vec scale = {1, 1},
-    glow::RGBA8 tint = {}
+    glow::RGBA8 tint = {},
+    float fade = 1
 );
 
 inline void draw_layers (
@@ -66,7 +67,8 @@ void draw_texture (
     const Rect& world_rect,
     const Rect& tex_rect,
     float z = 0,
-    glow::RGBA8 tint = {}
+    glow::RGBA8 tint = {},
+    float fade = 1
 );
 
 void draw_rectangle (

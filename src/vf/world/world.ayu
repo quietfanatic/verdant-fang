@@ -26,9 +26,9 @@
         --pos: [-32 32]
         --state: 6 --VS::PreTransform
         state: 10 --VS::Inch
-        walk_start_x: 16
+        walk_start_x: 180
         room: #atelier
-        pos: [16 32]
+        pos: [180 32]
         floor: #start_blocks
         limbo: #limbo
     }]

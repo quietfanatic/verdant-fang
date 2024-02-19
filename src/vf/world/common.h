@@ -20,6 +20,7 @@ namespace Z {
     constexpr float Projectile = 500;
     constexpr float Light = 600;
     constexpr float Symbol = 700;
+    constexpr float ScreenEffect = 800;
     constexpr float Debug = 1000000;
     constexpr float HeadOffset = -10;
     constexpr float WingsOffset = 10;

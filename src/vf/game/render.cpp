@@ -16,16 +16,19 @@ struct FrameProgram : glow::Program {
     int u_screen_rect = -1;
     int u_tex_rect = -1;
     int u_tint = -1;
+    int u_fade = -1;
 
     void Program_after_link () override {
         u_screen_rect = glGetUniformLocation(id, "u_screen_rect");
         u_tex_rect = glGetUniformLocation(id, "u_tex_rect");
         u_tint = glGetUniformLocation(id, "u_tint");
+        u_fade = glGetUniformLocation(id, "u_fade");
         int u_tex = glGetUniformLocation(id, "u_tex");
         glUniform1i(u_tex, 0);
         require(u_screen_rect != -1);
         require(u_tex_rect != -1);
         require(u_tint != -1);
+        require(u_fade != -1);
         require(u_tex != -1);
     }
 
@@ -35,6 +38,7 @@ struct FrameProgram : glow::Program {
         uint32 tex;
         float z;
         glow::RGBA8 tint;
+        float fade;
     };
     static constexpr usize max_commands = 256;
     usize n_commands = 0;
@@ -145,7 +149,8 @@ void draw_frame (
     Vec pos,
     float z,
     Vec scale,
-    glow::RGBA8 tint
+    glow::RGBA8 tint,
+    float fade
 ) {
     expect(frame.bounds);
     Rect world_rect = pos + Rect(frame.bounds) * scale;
@@ -158,7 +163,7 @@ void draw_frame (
 #endif
     }
     auto& l = frame.target->layers[layer];
-    draw_texture(l, world_rect, tex_rect, z + l.z_offset, tint);
+    draw_texture(l, world_rect, tex_rect, z + l.z_offset, tint, fade);
 }
 
 void draw_texture (
@@ -166,7 +171,8 @@ void draw_texture (
     const Rect& world_rect,
     const Rect& tex_rect,
     float z,
-    glow::RGBA8 tint
+    glow::RGBA8 tint,
+    float fade
 ) {
     require(!!tex);
     require(tex.target == GL_TEXTURE_RECTANGLE);
@@ -179,7 +185,7 @@ void draw_texture (
     require(frame_program->n_commands < FrameProgram::max_commands);
     Rect screen_rect = world_to_screen(world_rect);
     frame_program->commands[frame_program->n_commands++] = FrameProgram::Command(
-        screen_rect, tex_rect, tex, z, tint
+        screen_rect, tex_rect, tex, z, tint, fade
     );
 }
 
@@ -195,7 +201,8 @@ void draw_rectangle (
             iri::constant("res:/vf/game/render.ayu")
         )["empty_tex"][1];
     }
-    draw_texture(*empty_tex, world_rect, Rect(0, 0, 1, 1), z, color);
+    glow::RGBA8 tint = color; tint.a = 0xff;
+    draw_texture(*empty_tex, world_rect, Rect(0, 0, 1, 1), z, tint, color.a / 255.f);
 }
 
 void draw_frames () {
@@ -218,6 +225,7 @@ void draw_frames () {
             cmd.tint.r / 255.f, cmd.tint.g / 255.f,
             cmd.tint.b / 255.f, cmd.tint.a / 255.f
         );
+        glUniform1f(program.u_fade, cmd.fade);
         glBindTexture(GL_TEXTURE_RECTANGLE, cmd.tex);
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     }

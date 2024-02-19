@@ -22,12 +22,14 @@ void main () {
 
 uniform sampler2DRect u_tex;
 uniform vec4 u_tint;
+uniform float u_fade;
 in vec2 v_tex_coords;
 out vec4 color;
 
 void main () {
     color = texture(u_tex, v_tex_coords);
     color.rgb = u_tint.rgb * u_tint.a + color.rgb * (1 - u_tint.a);
+    color.a *= u_fade;
 }"
 
 [ayu::Document {
@@ -44,7 +46,7 @@ void main () {
     }]
     empty_img: [glow::UniqueImage {
         size: [1 1]
-        pixels: [0x00000000]
+        pixels: [0x000000ff]
     }]
     empty_tex: [glow::PixelTexture {
         image: #empty_img
