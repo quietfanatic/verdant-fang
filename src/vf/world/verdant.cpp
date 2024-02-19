@@ -90,98 +90,98 @@ WalkerBusiness Verdant::Walker_business () {
         }
         return WB::Frozen;
     }
+     // Clear this when no longer relevant
     if (state != WS::Stun && state != WS::Dead && state != VS::FangHelp) {
         damage_forward = false;
     }
-    switch (state) {
-        case VS::PreTransform: {
-            expect(anim_phase == 0);
-            if (pos.x >= vd.transform_pos.x) {
-                set_state(VS::Transform);
-                transform_timer = 0;
-                return Walker_business();
-            }
-            else return WB::Free;
+
+    if (state == VS::PreTransform) {
+        expect(anim_phase == 0);
+        if (pos.x >= vd.transform_pos.x) {
+            set_state(VS::Transform);
+            transform_timer = 0;
+            return Walker_business();
         }
-        case VS::Transform: {
-            transform_timer += 1;
-            expect(anim_phase < TP::N_Phases);
-            for (auto& ts : vd.transform_sounds) {
-                if (anim_phase == ts.phase && anim_timer == ts.timer) {
-                    ts.sound->play();
-                }
+        else return WB::Free;
+    }
+    else if (state == VS::Transform) {
+        transform_timer += 1;
+        expect(anim_phase < TP::N_Phases);
+        for (auto& ts : vd.transform_sounds) {
+            if (anim_phase == ts.phase && anim_timer == ts.timer) {
+                ts.sound->play();
             }
-            if (anim_timer >= vd.transform_sequence[anim_phase]) {
-                if (anim_phase == TP::Receiving) {
-                    transform_timer = 0;
-                    set_state(WS::Neutral);
-                    current_game->state().save_checkpoint(pos + visual_center());
-                }
-                else {
-                    anim_phase += 1;
-                    anim_timer = 0;
-                }
-                return Walker_business();
+        }
+        if (anim_timer >= vd.transform_sequence[anim_phase]) {
+            if (anim_phase == TP::Receiving) {
+                transform_timer = 0;
+                set_state(WS::Neutral);
+                current_game->state().save_checkpoint(pos + visual_center());
             }
             else {
-                anim_timer += 1;
-                return anim_phase == 0 ? WB::Occupied : WB::Frozen;
-            }
-        }
-        case WS::Hit: {
-            if (anim_phase == 1 && anim_timer == data->hit_sequence[1]) {
-                if (vd.unstab_sound) vd.unstab_sound->play();
-            }
-            break;
-        }
-        case WS::Stun: {
-            if (poison_level == 2 && anim_timer == 0 && paralyze_symbol_timer && floor) {
-                damage_forward = true;
-                if (floor) pos.y += data->dead_floor_lift;
-            }
-            break;
-        }
-        case WS::Dead: {
-            if (poison_level == 3 && anim_phase == 0 && anim_timer == 0) {
-                damage_forward = true;
-            }
-            if (anim_phase == 10) {
-                if (room != limbo) {
-                    go_to_limbo();
-                }
-                else {
-                    set_state(VS::FangHelp);
-                    return Walker_business();
-                }
-            }
-            break;
-        }
-        case VS::FangHelp: {
-            expect(anim_phase < 6);
-            if (anim_phase == 5 || current_game->state().transition) {
-                 // Do nothing
-            }
-            else if (anim_timer >= vd.fang_help_sequence[anim_phase]) {
                 anim_phase += 1;
                 anim_timer = 0;
+            }
+            return Walker_business();
+        }
+        else {
+            anim_timer += 1;
+            return anim_phase == 0 ? WB::Occupied : WB::Frozen;
+        }
+    }
+    else if (state == WS::Hit) {
+        if (anim_phase == 1 && anim_timer == data->hit_sequence[1]) {
+            if (vd.unstab_sound) vd.unstab_sound->play();
+        }
+    }
+    else if (state == WS::Stun) {
+        if (poison_level == 2 && anim_timer == 0 && paralyze_symbol_timer && floor) {
+            damage_forward = true;
+            if (floor) pos.y += data->dead_floor_lift;
+        }
+    }
+    else if (state == WS::Dead) {
+        if (poison_level == 3 && anim_phase == 0 && anim_timer == 0) {
+            damage_forward = true;
+        }
+        if (anim_phase == 10) {
+            if (room != limbo) {
+                go_to_limbo();
+            }
+            else {
+                set_state(VS::FangHelp);
                 return Walker_business();
             }
-            else anim_timer += 1;
-            return WB::Frozen;
         }
-        case VS::Captured: {
-            if (anim_phase == CP::Moving && anim_timer == 0) {
-                captured_initial_pos = pos;
-                left = false;
+    }
+    else if (state == VS::FangHelp) {
+        expect(anim_phase < 6);
+        if (anim_phase == 5 || current_game->state().transition) {
+             // Do nothing
+        }
+        else if (anim_timer >= vd.fang_help_sequence[anim_phase]) {
+            anim_phase += 1;
+            anim_timer = 0;
+            return Walker_business();
+        }
+        else anim_timer += 1;
+        return WB::Frozen;
+    }
+    else if (state == VS::Captured) {
+        if (anim_phase == CP::Moving && anim_timer == 0) {
+            captured_initial_pos = pos;
+            left = false;
+        }
+        if (anim_phase == CP::Falling) {
+            if (floor) anim_phase = CP::Floor;
+            return WB::Occupied;
+        }
+        else if (anim_timer >= vd.captured_sequence[anim_phase]) {
+            if (anim_phase == CP::Floor) {
+                walk_start_x = pos.x;
+                set_state(VS::Inch);
             }
-            if (anim_phase == CP::Falling) {
-                if (floor) anim_phase = CP::Floor;
-                return WB::Occupied;
-            }
-            else if (anim_phase == CP::Floor) {
-                return WB::Occupied;
-            }
-            else if (anim_timer >= vd.captured_sequence[anim_phase]) {
+            else {
                 anim_phase += 1;
                 anim_timer = 0;
                 if (anim_phase == CP::SpearBroken) {
@@ -193,38 +193,46 @@ WalkerBusiness Verdant::Walker_business () {
                 else if (anim_phase == CP::Falling) {
                     pos.y += vd.dead_floor_lift;
                 }
-                return Walker_business();
+            }
+            return Walker_business();
+        }
+        else {
+            anim_timer += 1;
+             // Move limbs
+            auto& poses = static_cast<VerdantPoses&>(*vd.poses);
+            for (uint i = 0; i < 4; i++) {
+                if (anim_phase < vd.captured_limb_phases[i]) {
+                    limb_pos[i] = pos + poses.captured_limbs[i]->attached;
+                }
+                else if (anim_phase == vd.captured_limb_phases[i]) {
+                    if (anim_timer == 1 && vd.limb_detach_sound) {
+                        vd.limb_detach_sound->play();
+                    }
+                     // Note that anim_timer goes from 1..n here instead of
+                     // 0..n-1, so the phase will end with limb_pos[i] ==
+                     // poses.captured_limbs[i].detached.
+                    float t = float(anim_timer) /
+                        vd.captured_sequence[anim_phase];
+                    limb_pos[i] = pos + lerp(
+                        poses.captured_limbs[i]->attached,
+                        poses.captured_limbs[i]->detached,
+                        ease_out_cubic(t)
+                    );
+                }
+                 // else leave it where it is.  Indigo will take it away.
+            }
+            if (anim_phase == CP::Floor) {
+                return WB::Occupied;
             }
             else {
-                anim_timer += 1;
-                 // Move limbs
-                auto& poses = static_cast<VerdantPoses&>(*vd.poses);
-                for (uint i = 0; i < 4; i++) {
-                    if (anim_phase < vd.captured_limb_phases[i]) {
-                        limb_pos[i] = pos + poses.captured_limbs[i]->attached;
-                    }
-                    else if (anim_phase == vd.captured_limb_phases[i]) {
-                        if (anim_timer == 1 && vd.limb_detach_sound) {
-                            vd.limb_detach_sound->play();
-                        }
-                         // Note that anim_timer goes from 1..n here instead of
-                         // 0..n-1, so the phase will end with limb_pos[i] ==
-                         // poses.captured_limbs[i].detached.
-                        float t = float(anim_timer) /
-                            vd.captured_sequence[anim_phase];
-                        limb_pos[i] = pos + lerp(
-                            poses.captured_limbs[i]->attached,
-                            poses.captured_limbs[i]->detached,
-                            ease_out_cubic(t)
-                        );
-                    }
-                     // else leave it where it is.  Indigo will take it away.
-                }
                 floor = null;
                 return WB::Frozen;
             }
         }
-        default: break;
+    }
+    else if (state == VS::Inch) {
+         // This is all handled in Walker_move().
+        return WB::Free;
     }
     return Walker::Walker_business();
 }
@@ -239,6 +247,29 @@ void Verdant::Walker_move (const Controls& controls) {
         else if (anim_phase == 1) {
             pos = vd.captured_pos;
         }
+    }
+    else if (state == VS::Inch) {
+        expect(business == WB::Free);
+        if (controls[Control::Right]) {
+            left = false;
+            if (anim_phase == 0) {
+                anim_phase = 1;
+                anim_timer = 1;
+                pos.x += 1;
+            }
+            else if (anim_timer >= vd.inch_sequence[anim_phase-1]) {
+                pos.x += 1;
+                anim_phase = anim_phase == 2 ? 1 : 2;
+                anim_timer = 0;
+            }
+            else anim_timer += 1;
+        }
+        else {
+            if (anim_phase == 1) pos.x -= 1;
+            anim_phase = 0;
+            anim_timer = 0;
+        }
+        return;
     }
     return Walker::Walker_move(controls);
 }
@@ -321,49 +352,51 @@ void Verdant::Walker_on_hit (
 
 Pose Verdant::Walker_pose () {
     auto poses = static_cast<VerdantPoses&>(*data->poses);
-    switch (state) {
-        case VS::PreTransform: {
-            return poses.walk_hold[walk_frame()];
+    if (state == VS::PreTransform) {
+        return poses.walk_hold[walk_frame()];
+    }
+    else if (state == VS::Transform) {
+        Pose r;
+        expect(anim_phase < 14);
+        r = poses.transform[anim_phase];
+         // Wave hair magically
+        if (anim_phase >= 3 && anim_phase <= 10) {
+            r.head = poses.walk[(transform_timer / 8) % 6].head;
         }
-        case VS::Transform: {
+        if (anim_phase == 9) weapon_layers = 0x5;
+        else if (anim_phase == 10) weapon_layers = 0x1;
+        return r;
+    }
+    else if (state == WS::Stun) {
+        if (poison_level == 2 && paralyze_symbol_timer) {
+            return floor ? poses.downf : poses.damagefallf;
+        }
+    }
+    else if (state == WS::Dead) {
+        if (damage_forward) {
             Pose r;
-            expect(anim_phase < 14);
-            r = poses.transform[anim_phase];
-             // Wave hair magically
-            if (anim_phase >= 3 && anim_phase <= 10) {
-                r.head = poses.walk[(transform_timer / 8) % 6].head;
+             // Mirror the WS::Dead case in Walker::Walker_pos
+            switch (anim_phase) {
+                case 0: case 1: case 2: r = poses.damagef; break;
+                case 3: r = poses.damagefallf; break;
+                default: r = poses.deadf[anim_phase - 4]; break;
             }
-            if (anim_phase == 9) weapon_layers = 0x5;
-            else if (anim_phase == 10) weapon_layers = 0x1;
             return r;
         }
-        case WS::Stun: {
-            if (poison_level == 2 && paralyze_symbol_timer) {
-                return floor ? poses.downf : poses.damagefallf;
-            }
-            else break;
+    }
+    else if (state == VS::FangHelp) {
+        return damage_forward ? poses.deadf[6] : poses.dead[6];
+    }
+    else if (state == VS::Captured) {
+        expect(anim_phase < CP::N_Phases);
+        return poses.captured[anim_phase];
+    }
+    else if (state == VS::Inch) {
+        expect(anim_phase < 3);
+        if (anim_phase == 0) {
+            return poses.inch[pos.x == walk_start_x ? 0 : 2];
         }
-        case WS::Dead: {
-            if (damage_forward) {
-                Pose r;
-                 // Mirror the WS::Dead case in Walker::Walker_pos
-                switch (anim_phase) {
-                    case 0: case 1: case 2: r = poses.damagef; break;
-                    case 3: r = poses.damagefallf; break;
-                    default: r = poses.deadf[anim_phase - 4]; break;
-                }
-                return r;
-            }
-            else break;
-        }
-        case VS::FangHelp: {
-            return damage_forward ? poses.deadf[6] : poses.dead[6];
-        }
-        case VS::Captured: {
-            expect(anim_phase < CP::N_Phases);
-            return poses.captured[anim_phase];
-        }
-        default: break;
+        else return poses.inch[anim_phase];
     }
     return Walker::Walker_pose();
 }
@@ -534,6 +567,14 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
             );
         }
     }
+    else if (state == VS::Inch) {
+        draw_layers(
+            *poses.inch[anim_phase].weapon, 0b11,
+            vd.captured_fang_pos_low,
+            pose.z + Z::WeaponOffset, scale,
+            weapon_tint
+        );
+    }
     else Walker::Walker_draw_weapon(pose);
 }
 
@@ -678,6 +719,7 @@ AYU_DESCRIBE(vf::VerdantData,
         attr("captured_limb_phases", &VerdantData::captured_limb_phases),
         attr("captured_fang_pos_high", &VerdantData::captured_fang_pos_high),
         attr("captured_fang_pos_low", &VerdantData::captured_fang_pos_low),
+        attr("inch_sequence", &VerdantData::inch_sequence),
         attr("unstab_sound", &VerdantData::unstab_sound, optional),
         attr("revive_sound", &VerdantData::revive_sound, optional),
         attr("spear_break_sound", &VerdantData::spear_break_sound, optional),

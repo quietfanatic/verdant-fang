@@ -118,6 +118,7 @@
     head_dead:    [vf::Frame [#head [121 8]]]
     head_damagef: [vf::Frame [#head [132 8]]]
     head_deadf:   [vf::Frame [#head [148 9]]]
+    head_inch:    [vf::Frame [#head [126 27]]]
 
     fang: [vf::LayeredTexture {
         layers: [{
@@ -290,9 +291,9 @@
         ]
         captured_limbs: [#left_arm #right_arm #left_leg #right_leg]
         inch: [
-            [#body_limbless #head_damagef #snake_dead4]
-            [#body_inch_up #head_damagef #snake_dead4]
-            [#body_inch_down #head_damagef #snake_dead4]
+            [#body_limbless #head_inch #snake_dead4]
+            [#body_inch_up #head_inch #snake_dead4]
+            [#body_inch_down #head_inch #snake_dead4]
         ]
     }]
     data: [vf::VerdantData {
@@ -389,6 +390,7 @@
         captured_fang_pos_high: [200 80]
          -- Fang's center in floor pose is 1 above floor
         captured_fang_pos_low: [200 33]
+        inch_sequence: [15 15]
         unstab_sound: assets.ayu#shluk
         revive_sound: assets.ayu#hiss
         spear_break_sound: assets.ayu#break

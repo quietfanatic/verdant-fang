@@ -25,6 +25,8 @@
         --room: #start
         --pos: [-32 32]
         --state: 6 --VS::PreTransform
+        state: 10 --VS::Inch
+        walk_start_x: 16
         room: #atelier
         pos: [16 32]
         floor: #start_blocks

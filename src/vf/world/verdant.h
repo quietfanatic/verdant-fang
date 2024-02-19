@@ -110,6 +110,8 @@ struct VerdantData : WalkerData {
     Vec captured_pos;
     Vec captured_fang_pos_high;
     Vec captured_fang_pos_low;
+     // Indexed by anim_phase-1
+    uint8 inch_sequence [2];
     Sound* unstab_sound = null;
     Sound* revive_sound = null;
     Sound* spear_break_sound = null;
