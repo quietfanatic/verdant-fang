@@ -178,11 +178,13 @@
     fang_dead4: [vf::WeaponFrame [#fang [49 3]]]
     snake: [vf::LayeredTexture [{
         image: assets.ayu#layer0
-        bounds: [171 1 213 34]
+        bounds: [171 1 257 34]
     }]]
     snake_neutral: [vf::BodyFrame [#snake [22 26]]]
     snake_walk0: [vf::BodyFrame [#snake [22 15]]]
-    snake_walk1: [vf::BodyFrame [#snake [22 3]]]
+    snake_walk1: [vf::BodyFrame [#snake [64 15]]]
+    snake_walk2: [vf::BodyFrame [#snake [22 3]]]
+    snake_walk3: [vf::BodyFrame [#snake [64 3]]]
     poses: [vf::VerdantPoses {
         stand: [#body_stand #head_neutral #spear_neutral]
         crouch: [#body_crouch #head_neutral #spear_neutral]
@@ -303,7 +305,7 @@
             [#body_inch_down #head_inch #fang_dead4]
         ]
         snake_stand: [#snake_neutral]
-        snake_walk: [[#snake_walk0] [#snake_walk1]]
+        snake_walk: [[#snake_walk0] [#snake_walk1] [#snake_walk2] [#snake_walk3]]
     }]
     data: [vf::VerdantData {
         body_box: [-6 0 6 30]

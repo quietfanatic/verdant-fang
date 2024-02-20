@@ -529,7 +529,7 @@ Pose Verdant::Walker_pose () {
             if (!defined(walk_start_x)) walk_start_x = pos.x;
             float dist = distance(walk_start_x, pos.x);
             if (dist >= 1) {
-                uint32 i = geo::floor(dist / vd.snake_walk_cycle_dist) % 2;
+                uint32 i = geo::floor(dist / vd.snake_walk_cycle_dist) % 4;
                 return poses.snake_walk[i];
             }
             return poses.snake_stand;

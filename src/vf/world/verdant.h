@@ -82,7 +82,7 @@ struct VerdantPoses : WalkerPoses {
     LimbFrame* captured_limbs [4];
     Pose inch [3];
     Pose snake_stand;
-    Pose snake_walk [2];
+    Pose snake_walk [4];
 };
 
 struct CutsceneSound {
