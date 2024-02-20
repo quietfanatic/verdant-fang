@@ -318,9 +318,78 @@ void Verdant::Walker_move (const Controls& controls) {
         return;
     }
     else if (state == VS::Snake) {
-         // TODO
+        if (controls[Control::Left] && !controls[Control::Right]) {
+            left = true;
+            if (vel.x > -vd.snake_max) {
+                vel.x -= vd.snake_acc;
+                if (vel.x < -vd.snake_max) vel.x = -vd.snake_max;
+            }
+        }
+        else if (controls[Control::Right]) {
+            left = false;
+            if (vel.x < vd.snake_max) {
+                vel.x += vd.snake_acc;
+                if (vel.x > vd.snake_max) vel.x = vd.snake_max;
+            }
+        }
+        else if (floor) {
+            if (vel.x > 0) {
+                vel.x -= vd.snake_dec;
+                if (vel.x < 0) vel.x = 0;
+            }
+            else {
+                vel.x += vd.snake_dec;
+                if (vel.x > 0) vel.x = 0;
+            }
+            walk_start_x = pos.x;
+        }
+         // Jump code copied from Walker::Walker_move()
+        if (controls[Control::Jump]) {
+            if (floor && controls[Control::Jump] < vd.hold_buffer) {
+                if (controls[Control::Down]) {
+                     // Drop through semisolid
+                    if (floor->types & Types::Semisolid) {
+                        pos.y -= min(data->jump_crouch_lift, 4);
+                        floor = null;
+                        crouch = false;
+                        no_crouch_timer = 30;
+                    }
+                }
+                else {
+                    vel.y += vd.snake_jump_vel;
+                    floor = null;
+                }
+                if (business == WB::Interruptible) set_state(WS::Neutral);
+            }
+            drop_timer = 0;
+        }
+        else if (drop_timer < data->drop_duration) {
+            drop_timer += 1;
+        }
+        vel.y -= gravity();
+        pos += vel;
+        return;
     }
     return Walker::Walker_move(controls);
+}
+
+void Verdant::Walker_set_hitboxes () {
+    auto& vd = static_cast<VerdantData&>(*data);
+    if (state == VS::Snake) {
+        clear_hitboxes();
+        body_hb.box = left_flip(vd.snake_box);
+        add_hitbox(body_hb);
+        if (business != WB::Frozen) {
+            damage_hb.box = left_flip(vd.snake_box);
+            add_hitbox(damage_hb);
+        }
+        if (business == WB::DoAttack) {
+            weapon_hb.box = left_flip(vd.snake_box);
+            add_hitbox(weapon_hb);
+        }
+        return;
+    }
+    Walker::Walker_set_hitboxes();
 }
 
 void Verdant::Resident_on_collide (
@@ -400,7 +469,8 @@ void Verdant::Walker_on_hit (
 }
 
 Pose Verdant::Walker_pose () {
-    auto poses = static_cast<VerdantPoses&>(*data->poses);
+    auto& vd = static_cast<VerdantData&>(*data);
+    auto poses = static_cast<VerdantPoses&>(*vd.poses);
     if (state == VS::PreTransform) {
         return poses.walk_hold[walk_frame()];
     }
@@ -455,7 +525,16 @@ Pose Verdant::Walker_pose () {
         else return poses.snake_stand;
     }
     else if (state == VS::Snake) {
-        return poses.snake_stand;
+        if (floor) {
+            if (!defined(walk_start_x)) walk_start_x = pos.x;
+            float dist = distance(walk_start_x, pos.x);
+            if (dist >= 1) {
+                uint32 i = geo::floor(dist / vd.snake_walk_cycle_dist) % 2;
+                return poses.snake_walk[i];
+            }
+            return poses.snake_stand;
+        }
+        else return poses.snake_walk[0];
     }
     return Walker::Walker_pose();
 }
@@ -805,6 +884,12 @@ AYU_DESCRIBE(vf::VerdantData,
         attr("captured_fang_pos_low", &VerdantData::captured_fang_pos_low),
         attr("inch_sequence", &VerdantData::inch_sequence),
         attr("snakify_sequence", &VerdantData::snakify_sequence),
+        attr("snake_box", &VerdantData::snake_box),
+        attr("snake_acc", &VerdantData::snake_acc),
+        attr("snake_max", &VerdantData::snake_max),
+        attr("snake_dec", &VerdantData::snake_dec),
+        attr("snake_jump_vel", &VerdantData::snake_jump_vel),
+        attr("snake_walk_cycle_dist", &VerdantData::snake_walk_cycle_dist),
         attr("music_after_transform", &VerdantData::music_after_transform, optional),
         attr("unstab_sound", &VerdantData::unstab_sound, optional),
         attr("revive_sound", &VerdantData::revive_sound, optional),

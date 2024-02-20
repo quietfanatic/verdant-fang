@@ -47,6 +47,15 @@ uint8 Walker::jump_frame () {
     }
 }
 
+float Walker::gravity () {
+    return state == WS::Stun ? data->gravity_fall
+         : state == WS::Dead ? data->gravity_dead
+         : fly ? data->gravity_fly
+         : drop_timer == 0 ? data->gravity_jump
+         : drop_timer <= data->drop_duration ? data->gravity_drop
+         : data->gravity_fall;
+}
+
 void Walker::Resident_set_pos (Vec p) {
     Resident::Resident_set_pos(p);
     walk_start_x = p.x;
@@ -343,13 +352,7 @@ void Walker::Walker_move (const Controls& controls) {
         if (vel.y > data->fall_start_vel || !defined(fall_start_y)) {
             fall_start_y = pos.y;
         }
-         // TODO: Differentiate between dead anim phases?
-        vel.y -= state == WS::Stun ? data->gravity_fall
-               : state == WS::Dead ? data->gravity_dead
-               : fly ? data->gravity_fly
-               : drop_timer == 0 ? data->gravity_jump
-               : drop_timer <= data->drop_duration ? data->gravity_drop
-               : data->gravity_fall;
+        vel.y -= gravity();
 
          // Apply velocity and see if we need to play footstep sound
         auto walk_frame_before = walk_frame();
@@ -362,6 +365,35 @@ void Walker::Walker_move (const Controls& controls) {
                 if (data->step_sound[i]) data->step_sound[i]->play();
             }
         }
+    }
+}
+
+void Walker::Walker_set_hitboxes () {
+    clear_hitboxes();
+    body_hb.box = state == WS::Dead ? data->dead_body_box
+                : crouch ? data->crouch_body_box
+                : data->body_box;
+    if (left) body_hb.fliph();
+    add_hitbox(body_hb);
+    if (state != WS::Dead && business != WB::Frozen) {
+        damage_hb.box = crouch ? data->crouch_damage_box : data->damage_box;
+        if (left) damage_hb.fliph();
+        add_hitbox(damage_hb);
+    }
+    if (business == WB::DoAttack) {
+        if (crouch) {
+            weapon_hb.box = data->poses->crouch_attack[anim_phase].body->weapon
+                          + data->poses->crouch_attack[anim_phase].weapon->hitbox;
+            if (data->crouch_attack_sound) data->crouch_attack_sound->play();
+            else if (data->attack_sound) data->attack_sound->play();
+        }
+        else {
+            weapon_hb.box = data->poses->attack[anim_phase].body->weapon
+                          + data->poses->attack[anim_phase].weapon->hitbox;
+            if (data->attack_sound) data->attack_sound->play();
+        }
+        if (left) weapon_hb.fliph();
+        add_hitbox(weapon_hb);
     }
 }
 
@@ -395,32 +427,7 @@ void Walker::Resident_before_step () {
     Walker_move(controls);
 
      // Set up hitboxes
-    clear_hitboxes();
-    body_hb.box = state == WS::Dead ? data->dead_body_box
-                : crouch ? data->crouch_body_box
-                : data->body_box;
-    if (left) body_hb.fliph();
-    add_hitbox(body_hb);
-    if (state != WS::Dead && business != WB::Frozen) {
-        damage_hb.box = crouch ? data->crouch_damage_box : data->damage_box;
-        if (left) damage_hb.fliph();
-        add_hitbox(damage_hb);
-    }
-    if (business == WB::DoAttack) {
-        if (crouch) {
-            weapon_hb.box = data->poses->crouch_attack[anim_phase].body->weapon
-                          + data->poses->crouch_attack[anim_phase].weapon->hitbox;
-            if (data->crouch_attack_sound) data->crouch_attack_sound->play();
-            else if (data->attack_sound) data->attack_sound->play();
-        }
-        else {
-            weapon_hb.box = data->poses->attack[anim_phase].body->weapon
-                          + data->poses->attack[anim_phase].weapon->hitbox;
-            if (data->attack_sound) data->attack_sound->play();
-        }
-        if (left) weapon_hb.fliph();
-        add_hitbox(weapon_hb);
-    }
+    Walker_set_hitboxes();
 
      // Prepare for collision detection
     new_floor = null;

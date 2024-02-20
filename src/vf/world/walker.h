@@ -237,6 +237,7 @@ struct Walker : Resident {
     void set_state (WalkerState);
     uint8 walk_frame ();
     uint8 jump_frame ();
+    float gravity ();
 
      // Land on solid object
     void set_floor (Resident& o);
@@ -251,6 +252,9 @@ struct Walker : Resident {
     virtual WalkerBusiness Walker_business ();
      // Handle movement during custom states here, and supercall otherwise
     virtual void Walker_move (const Controls&);
+     // If your hitboxes are different from normal, override this.  This is also
+     // where the attack sound is played.
+    virtual void Walker_set_hitboxes ();
      // You can supercall this or not.
     virtual void Walker_on_hit (const Hitbox&, Walker&, const Hitbox&);
      // Handle posing for custom states here, otherwise supercall.

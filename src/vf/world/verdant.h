@@ -120,6 +120,12 @@ struct VerdantData : WalkerData {
      // 3 4 5 = screen glow
      // 6 7 = screen glow fades
     uint8 snakify_sequence [8];
+    Rect snake_box;
+    float snake_acc;
+    float snake_max;
+    float snake_dec;
+    float snake_walk_cycle_dist;
+    float snake_jump_vel;
     Music* music_after_transform = null;
     Sound* unstab_sound = null;
     Sound* revive_sound = null;
@@ -152,6 +158,8 @@ struct Verdant : Walker {
     WalkerBusiness Walker_business () override;
      // For moving during captured cutscene
     void Walker_move (const Controls&) override;
+     // For VS::Snake hitbox
+    void Walker_set_hitboxes () override;
      // Allow getting crushed by door
     void Resident_on_collide (const Hitbox&, Resident&, const Hitbox&) override;
      // Set decals on victim
