@@ -15,6 +15,17 @@ namespace vf {
 
  // If this returns false, don't step the room.
 bool Transition::step (State& state) {
+    if (state.current_music &&
+        defined(start_music_volume) &&
+        defined(end_music_volume)
+    ) {
+        Mix_VolumeMusic(
+            round(lerp(start_music_volume,
+                 end_music_volume,
+                 float(timer) / end_at
+            ) * 128)
+        );
+    }
     if (timer == 0) {
         set_transition_type(type);
         set_transition_side(true);
@@ -149,7 +160,9 @@ void State::load_checkpoint () {
         .load_checkpoint = true,
         .exit_at = 0,
         .enter_at = 20,
-        .end_at = 30
+        .end_at = 30,
+        .start_music_volume = current_music ? current_music->volume / 2 : GNAN,
+        .end_music_volume = current_music ? current_music->volume : GNAN,
     };
 }
 

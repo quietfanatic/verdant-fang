@@ -58,7 +58,13 @@ void Verdant::go_to_limbo () {
             .target_pos = target,
             .type = TransitionType::ApertureClose,
             .exit_at = 0,
-            .enter_at = 0
+            .enter_at = 0,
+            .start_music_volume = state.current_music
+                ? state.current_music->volume
+                : GNAN,
+            .end_music_volume = state.current_music
+                ? state.current_music->volume / 2
+                : GNAN,
         };
         set_transition_center(focus);
     }
@@ -116,9 +122,11 @@ WalkerBusiness Verdant::Walker_business () {
             if (anim_phase == TP::Receiving) {
                 transform_timer = 0;
                 set_state(WS::Neutral);
-                current_game->state().save_checkpoint(pos + visual_center());
+                auto& state = current_game->state();
+                state.save_checkpoint(pos + visual_center());
                 if (vd.music_after_transform) {
-                    vd.music_after_transform->play();
+                    state.current_music = vd.music_after_transform;
+                    state.current_music->play();
                 }
             }
             else {

@@ -22,6 +22,8 @@ struct Transition {
     uint32 enter_at = 20;
     uint32 end_at = 30;
     uint32 timer = 0;
+    float start_music_volume = GNAN;
+    float end_music_volume = GNAN;
 
     bool step (State&);
 };
