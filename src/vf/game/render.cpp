@@ -156,7 +156,7 @@ void draw_frame (
     Rect world_rect = pos + Rect(frame.bounds) * scale;
     Rect tex_rect = Rect(frame.bounds + frame.offset);
     if (layer >= frame.target->layers.size()) {
-#ifdef NDEBUG
+#ifndef NDEBUG
         never();
 #else
         return;
