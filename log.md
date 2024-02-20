@@ -178,3 +178,10 @@
 - Planned work for Monday: I really should start in on the music, and maybe the
   menus.  There's still a lot of cutscene work to do.  I might not have time to
   implement an actual fight for the boss.
+#####2024-02-19 M
+- Music!!!  I made a main music track and it's really good.  Day well spent.
+- Also made a title screen track, which is a little plain, but it might be
+  better that way.
+- Also did more cutscene work.  Implemented the cutscene of turning into a
+  snake, and did some snake movement.
+- Planned work for tomorrow: Menus, more work on Indigo.
