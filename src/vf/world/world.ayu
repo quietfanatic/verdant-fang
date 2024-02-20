@@ -22,13 +22,12 @@
     verdant: [vf::Verdant {
         data: verdant.ayu#data
         mind: #verdant_mind
-        --room: #start
-        --pos: [-32 32]
-        --state: 6 --VS::PreTransform
-        state: 10 --VS::Inch
-        walk_start_x: 180
-        room: #atelier
-        pos: [180 32]
+        room: #start
+        pos: [-32 32]
+        state: 6 --VS::PreTransform
+        --state: 10 --VS::Inch
+        --room: #atelier
+        --pos: [180 32]
         floor: #start_blocks
         limbo: #limbo
     }]

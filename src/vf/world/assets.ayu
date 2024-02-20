@@ -84,6 +84,15 @@
     }]]
     limbo_platform: [vf::Frame [#limbo_tex [33 12] [-33 -12 34 34]]]
 
+    limestone: [vf::Music {
+        source:assets/limestone.mp3 volume:0.8
+         -- 68 measures * 4 beats/measure * 0.588235 s/beat
+         -- Weird that it's almost 160 but not quite
+         -- Mix_GetMusicPosition isn't supported in the version of SDL2_mixer in
+         -- my OS's repos, so no fancy loops, we're just gonna loop the whole
+         -- dang song.
+        --loop_end: 159.999920
+    }]
      -- For some reason, having these as mp3s breaks SDL2_mixer.  Perhaps it
      -- can't play mp3 files that are too short?
     step0: [vf::Sound { source:assets/step0.wav channel:0 volume:0.5 }]

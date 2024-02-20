@@ -4,6 +4,7 @@
 #include "../../dirt/ayu/resources/global.h"
 #include "camera.h"
 #include "common.h"
+#include "sound.h"
 
 namespace control { struct Statement; }
 
@@ -29,6 +30,7 @@ struct Transition {
  // if you die the rng will be different.
 struct Checkpoint {
     ayu::SharedLocation current_room;
+    Music* current_music;
     Vec transition_center;
     ayu::Tree world;
 };
@@ -40,6 +42,8 @@ struct State {
     };
     uint64 current_frame = 0;
     Room* current_room = null;
+    Music* current_music = null;
+    double current_music_position;
     std::optional<Transition> transition;
 
     ayu::Document world;
@@ -47,6 +51,9 @@ struct State {
     std::optional<Checkpoint> checkpoint;
 
     State ();
+     // Starts playing music when loading a saved State.  You don't need to
+     // bother with this if you're manually constructing a State.
+    void init ();
     void load_initial ();
     void step ();
 

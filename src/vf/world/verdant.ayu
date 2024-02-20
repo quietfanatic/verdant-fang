@@ -401,6 +401,7 @@
         captured_fang_pos_low: [200 33]
         inch_sequence: [15 15]
         snakify_sequence: [12 12 60 12 12 90 12 12]
+        music_after_transform: assets.ayu#limestone
         unstab_sound: assets.ayu#shluk
         revive_sound: assets.ayu#hiss
         spear_break_sound: assets.ayu#break

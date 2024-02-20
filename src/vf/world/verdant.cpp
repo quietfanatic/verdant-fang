@@ -117,6 +117,9 @@ WalkerBusiness Verdant::Walker_business () {
                 transform_timer = 0;
                 set_state(WS::Neutral);
                 current_game->state().save_checkpoint(pos + visual_center());
+                if (vd.music_after_transform) {
+                    vd.music_after_transform->play();
+                }
             }
             else {
                 anim_phase += 1;
@@ -560,7 +563,7 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
             draw_layers(
                 *poses.captured[anim_phase].weapon, 0b1001,
                 vd.captured_fang_pos_high,
-                pose.z + Z::WeaponOffset, scale,
+                pose.z + Z::WeaponOffset, {-1, 1},
                 weapon_tint
             );
         }
@@ -568,7 +571,7 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
             draw_layers(
                 *poses.captured[anim_phase].weapon, 0b1,
                 vd.captured_fang_pos_high,
-                pose.z + Z::WeaponOffset, scale,
+                pose.z + Z::WeaponOffset, {-1, 1},
                 vd.transform_magic_color
             );
         }
@@ -576,7 +579,7 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
             draw_layers(
                 *poses.captured[anim_phase].weapon, 0b11,
                 vd.captured_fang_pos_high,
-                pose.z + Z::WeaponOffset, scale,
+                pose.z + Z::WeaponOffset, {-1, 1},
                 weapon_tint
             );
         }
@@ -593,7 +596,7 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
                     vd.captured_fang_pos_low,
                     ease_in_quadratic(t)
                 ),
-                pose.z + Z::WeaponOffset, scale,
+                pose.z + Z::WeaponOffset, {-1, 1},
                 weapon_tint
             );
         }
@@ -601,7 +604,7 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
             draw_layers(
                 *poses.captured[anim_phase].weapon, 0b11,
                 vd.captured_fang_pos_low,
-                pose.z + Z::WeaponOffset, scale,
+                pose.z + Z::WeaponOffset, {-1, 1},
                 weapon_tint
             );
         }
@@ -619,7 +622,7 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
         draw_layers(
             *pose.weapon, 0b11,
             vd.captured_fang_pos_low,
-            pose.z + Z::WeaponOffset, scale,
+            pose.z + Z::WeaponOffset, {-1, 1},
             weapon_tint
         );
     }
@@ -628,7 +631,7 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
             draw_layers(
                 *pose.weapon, 0b11,
                 vd.captured_fang_pos_low,
-                pose.z + Z::WeaponOffset, scale,
+                pose.z + Z::WeaponOffset, {-1, 1},
                 weapon_tint
             );
         }
@@ -794,6 +797,7 @@ AYU_DESCRIBE(vf::VerdantData,
         attr("captured_fang_pos_low", &VerdantData::captured_fang_pos_low),
         attr("inch_sequence", &VerdantData::inch_sequence),
         attr("snakify_sequence", &VerdantData::snakify_sequence),
+        attr("music_after_transform", &VerdantData::music_after_transform, optional),
         attr("unstab_sound", &VerdantData::unstab_sound, optional),
         attr("revive_sound", &VerdantData::revive_sound, optional),
         attr("spear_break_sound", &VerdantData::spear_break_sound, optional),

@@ -120,6 +120,7 @@ struct VerdantData : WalkerData {
      // 3 4 5 = screen glow
      // 6 7 = screen glow fades
     uint8 snakify_sequence [8];
+    Music* music_after_transform = null;
     Sound* unstab_sound = null;
     Sound* revive_sound = null;
     Sound* spear_break_sound = null;

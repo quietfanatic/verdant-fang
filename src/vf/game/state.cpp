@@ -1,5 +1,6 @@
 #include "state.h"
 
+#include <SDL2/SDL_mixer.h>
 #include "../../dirt/ayu/reflection/describe.h"
 #include "../../dirt/ayu/resources/resource.h"
 #include "../../dirt/ayu/traversal/scan.h"
@@ -46,6 +47,7 @@ bool Transition::step (State& state) {
             ayu::KeepLocationCache klc;
             state.checkpoint = Checkpoint{
                 .current_room = ayu::reference_to_location(state.current_room),
+                .current_music = state.current_music,
                 .transition_center = checkpoint_transition_center,
                 .world = ayu::item_to_tree(&state.world),
             };
@@ -58,6 +60,10 @@ bool Transition::step (State& state) {
                 state.current_room = ayu::reference_from_location(
                     state.checkpoint->current_room
                 );
+                if (state.current_music != state.checkpoint->current_music) {
+                    state.current_music = state.checkpoint->current_music;
+                    state.current_music->play();
+                }
             }
             else {
                  // No checkpoint?  Uh...reload from initial world?
@@ -86,6 +92,15 @@ bool Transition::step (State& state) {
 
 State::State () : rng(0) { }
 
+void State::init () {
+    if (current_music) {
+         // SDL2_mixer doesn't provide any way of acquiring a lock, so
+         // manipulating the music position is full of race conditions, yay!
+        current_music->play();
+        glow::require_sdl(Mix_SetMusicPosition(current_music_position));
+    }
+}
+
 void State::load_initial () {
     ayu::SharedResource initial (iri::constant("res:/vf/world/world.ayu"));
     Resident* v = initial["verdant"][1];
@@ -98,6 +113,16 @@ void State::load_initial () {
 }
 
 void State::step () {
+    if (current_music && defined(current_music->loop_end)) {
+         // Race condition with audio thread because SDL_Mixer provides no way
+         // to sync with it.  Also Mix_GetMusicPosition takes a Mix_Music* but
+         // Mix_SetMusicPosition doesn't, go figure.
+//        double pos = Mix_GetMusicPosition(current_music);
+//        if (pos > current_music->loop_end) {
+//            glow::require_sdl(Mix_SetMusicPosition(pos) >= 0);
+//        }
+//        current_music_position = pos;
+    }
     bool should_step = true;
     if (transition) should_step = transition->step(*this);
     if (should_step) {
@@ -157,8 +182,12 @@ AYU_DESCRIBE(vf::State,
         attr("rng", member(&State::rng_uint32, prefer_hex), optional),
         attr("current_frame", &State::current_frame, optional),
         attr("current_room", &State::current_room),
+        attr("current_music", &State::current_music),
+        attr("current_music_position", &State::current_music_position),
         attr("transition", &State::transition, collapse_optional),
         attr("world", &State::world),
         attr("checkpoint", &State::checkpoint, collapse_optional)
-    )
+    ),
+     // This needs to be after the music loads itself.
+    init<&State::init>(10)
 );
