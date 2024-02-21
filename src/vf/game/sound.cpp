@@ -10,7 +10,6 @@ namespace vf {
 bool sound_initted = false;
 static void init_sound () {
     if (sound_initted) return;
-    ayu::dump("init_sound");
      // OGG doesn't seem to work on mingw
     auto flags = MIX_INIT_MP3;
     glow::require_sdl(Mix_Init(flags) & flags);

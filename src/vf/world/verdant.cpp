@@ -123,11 +123,11 @@ WalkerBusiness Verdant::Walker_business () {
                 transform_timer = 0;
                 set_state(WS::Neutral);
                 auto& state = current_game->state();
-                state.save_checkpoint(pos + visual_center());
                 if (vd.music_after_transform) {
                     state.current_music = vd.music_after_transform;
                     state.current_music->play();
                 }
+                state.save_checkpoint(pos + visual_center());
             }
             else {
                 anim_phase += 1;

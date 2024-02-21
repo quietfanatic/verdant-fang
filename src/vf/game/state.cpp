@@ -72,8 +72,13 @@ bool Transition::step (State& state) {
                     state.checkpoint->current_room
                 );
                 if (state.current_music != state.checkpoint->current_music) {
+                    if (state.current_music &&
+                        !state.checkpoint->current_music
+                    ) {
+                        state.current_music->stop();
+                    }
                     state.current_music = state.checkpoint->current_music;
-                    state.current_music->play();
+                    if (state.current_music) state.current_music->play();
                 }
             }
             else {

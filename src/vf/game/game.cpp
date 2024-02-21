@@ -47,6 +47,7 @@ static void on_draw (Game& game) {
     auto room = game.state().current_room;
     if (room) room->draw();
     end_camera();
+    if (game.menus) game.menus.back()->draw();
     finish_frame();
     SDL_GL_SwapWindow(game.window);
 }
