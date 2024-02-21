@@ -145,9 +145,9 @@ Controls MonsterMind::Mind_think (Resident& s) {
     else if (self.alert_phase == 2) {
         if (self.alert_timer == 0) {
              // Alert other monsters
-            for (auto& r : self.room->residents) {
-                if (!(r.types & Types::Monster)) continue;
-                auto& fren = static_cast<Monster&>(r);
+            for (auto r : self.room->residents) {
+                if (!(r->types & Types::Monster)) continue;
+                auto& fren = static_cast<Monster&>(*r);
                 if (fren.state == WS::Dead) continue;
                 if (fren.alert_phase == 0) fren.alert_phase = 1;
             }
@@ -194,9 +194,9 @@ Controls MonsterMind::Mind_think (Resident& s) {
                 else if (dist > 48) {
                      // Don't come out until you're the only one left
                     bool others = false;
-                    for (auto& r : self.room->residents) {
-                        if (!(r.types & Types::Monster)) continue;
-                        auto& m = static_cast<Monster&>(r);
+                    for (auto r : self.room->residents) {
+                        if (!(r->types & Types::Monster)) continue;
+                        auto& m = static_cast<Monster&>(*r);
                         if (&m == &self || m.state == WS::Dead) continue;
                         others = true; break;
                     }
@@ -234,9 +234,9 @@ Controls MonsterMind::Mind_think (Resident& s) {
         }
         else r[forward] = 1;
          // Wait for or jump over other monsters
-        for (auto& other : self.room->residents) {
-            if (&other == &s || !(other.types & Types::Monster)) continue;
-            auto& fren = static_cast<Monster&>(other);
+        for (auto other : self.room->residents) {
+            if (other == &s || !(other->types & Types::Monster)) continue;
+            auto& fren = static_cast<Monster&>(*other);
             if (fren.state == WS::Dead) continue; // :(
             if (fren.hide_phase == 1 || fren.hide_phase == 2) continue;
             auto dist = self.left_flip(fren.pos.x - self.pos.x);

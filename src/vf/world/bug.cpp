@@ -262,9 +262,9 @@ Controls BugMind::Mind_think (Resident& s) {
                             + height(roam_territory) * (1 - length2(1 - h));
              // Rechoose roam position if it overlaps with another bug's roam
              // position.
-            for (auto& r : self.room->residents) {
-                if (!(r.types & Types::Bug)) continue;
-                auto& fren = static_cast<Bug&>(r);
+            for (auto r : self.room->residents) {
+                if (!(r->types & Types::Bug)) continue;
+                auto& fren = static_cast<Bug&>(*r);
                 if (fren.state == WS::Dead) continue; // :(
                 if (distance2(self.roam_pos, fren.roam_pos) < length2(32)) {
                     goto rechoose;
@@ -339,9 +339,9 @@ Controls BugMind::Mind_think (Resident& s) {
     else if (self.alert_phase == 1) {
         if (self.alert_timer >= alert_sequence) {
              // Alert other bugs
-            for (auto& r : self.room->residents) {
-                if (!(r.types & Types::Bug)) continue;
-                auto& fren = static_cast<Bug&>(r);
+            for (auto r : self.room->residents) {
+                if (!(r->types & Types::Bug)) continue;
+                auto& fren = static_cast<Bug&>(*r);
                 if (fren.state == WS::Dead) continue;
                 if (fren.alert_phase == 0) fren.alert_phase = 1;
             }

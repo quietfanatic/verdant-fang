@@ -6,7 +6,10 @@
 namespace vf {
 
 struct Room {
-    LinkedList<Resident> residents;
+     // Copy this AnyArray whenever you iterate it, in case a resident changed
+     // its room while you're iterating.  The AnyArray is copy-on-write, so it
+     // won't actually copy the buffer unless the array actually gets modified.
+    AnyArray<Resident*> residents;
     glow::RGBA8 background_color;
     void enter ();
     void exit ();
@@ -43,16 +46,25 @@ struct Hitbox {
     }
 };
 
-struct Resident : Linked<Resident> {
+struct Resident {
     Room* room = null;
     Vec pos = GNAN;
     Hitbox* first_hitbox = null;
     uint32 types = 0;
     Room* get_room () const { return room; }
     void set_room (Room* r) {
-        if (room) unlink();
+        if (room) {
+            for (auto& p : room->residents) {
+                if (p == this) {
+                    room->residents.erase(&p);
+                    goto found;
+                }
+            }
+            never();
+            found:;
+        }
         room = r;
-        if (room) link(&room->residents);
+        if (room) room->residents.push_back(this);
     }
 
     void set_pos (Vec p) { Resident_set_pos(p); }

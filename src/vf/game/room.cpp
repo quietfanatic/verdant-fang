@@ -6,42 +6,50 @@
 namespace vf {
 
 void Room::enter () {
-    for (Resident& a : residents) {
-        a.Resident_on_enter();
+    auto tmp = residents;
+    for (Resident* a : tmp) {
+        a->Resident_on_enter();
     }
 }
 
 void Room::exit () {
-    for (Resident& a : residents) {
-        a.Resident_on_exit();
+    auto tmp = residents;
+    for (Resident* a : tmp) {
+        a->Resident_on_exit();
+    }
+}
+
+static void check_collision (Resident& a, Resident& b) {
+    for (auto a_hb = a.first_hitbox; a_hb; a_hb = a_hb->next)
+    for (auto b_hb = b.first_hitbox; b_hb; b_hb = b_hb->next) {
+        if (a_hb->layers_1 & b_hb->layers_2) {
+            if (overlaps(a_hb->box + a.pos, b_hb->box + b.pos)) {
+                a.Resident_on_collide(*a_hb, b, *b_hb);
+            }
+        }
+        else if (b_hb->layers_1 & a_hb->layers_2) {
+            if (overlaps(b_hb->box + b.pos, a_hb->box + a.pos)) {
+                b.Resident_on_collide(*b_hb, a, *a_hb);
+            }
+        }
     }
 }
 
 void Room::step () {
-    for (Resident& a : residents) {
-        a.Resident_before_step();
+    auto tmp = residents;
+    for (Resident* a : tmp) {
+        a->Resident_before_step();
     }
-     // Just some straightforward O(n^2) collision detection.
-    for (auto a = residents.begin(); a != residents.end(); ++a) {
-        auto b = a;
-        for (++b; b != residents.end(); ++b) {
-            for (auto a_hb = a->first_hitbox; a_hb; a_hb = a_hb->next)
-            for (auto b_hb = b->first_hitbox; b_hb; b_hb = b_hb->next) {
-                if (a_hb->layers_1 & b_hb->layers_2) {
-                    if (overlaps(a_hb->box + a->pos, b_hb->box + b->pos)) {
-                        a->Resident_on_collide(*a_hb, *b, *b_hb);
-                    }
-                }
-                else if (b_hb->layers_1 & a_hb->layers_2) {
-                    if (overlaps(b_hb->box + b->pos, a_hb->box + a->pos)) {
-                        b->Resident_on_collide(*b_hb, *a, *a_hb);
-                    }
-                }
-            }
+         // Just some straightforward O(n^2) collision detection.
+    tmp = residents;
+    for (auto& a : tmp) {
+        for (Resident* b : Slice<Resident*>(&a+1, tmp.end())) {
+            check_collision(*a, *b);
         }
     }
-    for (Resident& a : residents) {
-        a.Resident_after_step();
+    tmp = residents;
+    for (Resident* a : tmp) {
+        a->Resident_after_step();
     }
 }
 
@@ -53,14 +61,21 @@ void Room::draw () {
         background_color.a / 255.0
     );
     glClear(GL_COLOR_BUFFER_BIT);
-    for (Resident& a : residents) {
-        a.Resident_draw();
+#ifndef NDEBUG
+     // Draw commands should not modify the residents array.
+    auto end = residents.end();
+#endif
+    for (Resident* a : residents) {
+        a->Resident_draw();
     }
+#ifndef NDEBUG
+    expect(residents.end() == end);
+#endif
 }
 
 Resident* Room::find_with_types (uint32 types) {
-    for (Resident& a : residents) {
-        if (a.types & types) return &a;
+    for (Resident* a : residents) {
+        if (a->types & types) return a;
     }
     return null;
 }
