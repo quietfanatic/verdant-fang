@@ -688,11 +688,11 @@ void Walker::Resident_draw () {
 }
 
 void Walker::Walker_draw_weapon (const Pose& pose) {
-    Vec w_scale = defined(override_weapon_scale)
-        ? override_weapon_scale : Vec(left ? -1 : 1, 1);
-    Vec w_pos = defined(override_weapon_pos)
-        ? override_weapon_pos : pos + pose.body->weapon * w_scale;
     if (pose.weapon && pose.weapon->target) {
+        Vec w_scale = defined(override_weapon_scale)
+            ? override_weapon_scale : Vec(left ? -1 : 1, 1);
+        Vec w_pos = defined(override_weapon_pos)
+            ? override_weapon_pos : pos + pose.body->weapon * w_scale;
         float z = pose.z;
         if (pose.damage_overlap && !mutual_kill) z = Z::Overlap;
         draw_layers(

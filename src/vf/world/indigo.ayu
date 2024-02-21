@@ -11,25 +11,27 @@
         {
             image: assets.ayu#layer0
              -- y down
-            bounds: [418 173 514 205]
+            bounds: [418 173 514 235]
             z_offset: *z_body_offset0
         }
         {
             image: assets.ayu#layer1
-            bounds: [418 173 514 205]
+            bounds: [418 173 514 235]
             z_offset: *z_body_offset1
         }
         {
             image: assets.ayu#layer2
-            bounds: [418 173 514 205]
+            bounds: [418 173 514 235]
             z_offset: *z_body_offset2
         }
     ]]
      -- y up
-    body_fly:  [vf::BodyFrame [#body [13 5] [0 23]]]
-    body_flyf: [vf::BodyFrame [#body [37 5] [0 23]]]
-    body_flyb: [vf::BodyFrame [#body [61 5] [0 23]]]
-    body_stand: [vf::BodyFrame [#body [85 5] [0 23]]]
+    body_fly:  [vf::BodyFrame [#body [13 35] [0 23]]]
+    body_flyf: [vf::BodyFrame [#body [37 35] [0 23]]]
+    body_flyb: [vf::BodyFrame [#body [61 35] [0 23]]]
+    body_stand: [vf::BodyFrame [#body [85 35] [0 23]]]
+    body_preattack: [vf::BodyFrame [#body [13 3] [0 23]]]
+    body_attack: [vf::BodyFrame [#body [36 3] [0 23]]]
     head: [vf::LayeredTexture [
         {
             image: assets.ayu#layer0
@@ -106,20 +108,20 @@
             [#body_fly #head_fly]
         ]
         capturing: [
+            [#body_preattack #head_fly]
+            [#body_attack #head_fly]
+            [#body_attack #head_fly]
             [#body_fly #head_fly]
             [#body_fly #head_fly]
             [#body_fly #head_fly]
+            [#body_preattack #head_fly]
+            [#body_attack #head_fly]
+            [#body_attack #head_fly]
             [#body_fly #head_fly]
-            [#body_fly #head_fly]
-            [#body_fly #head_fly]
-            [#body_fly #head_fly]
-            [#body_fly #head_fly]
-            [#body_fly #head_fly]
-            [#body_fly #head_fly]
-            [#body_fly #head_fly]
-            [#body_fly #head_fly]
-            [#body_fly #head_fly]
-            [#body_fly #head_fly]
+            [#body_attack #head_fly]
+            [#body_attack #head_fly]
+            [#body_attack #head_fly]
+            [#body_attack #head_fly]
             [#body_fly #head_fly]
             [#body_fly #head_fly]
         ]
@@ -189,7 +191,7 @@
             12 30 12 18
             30 30
             12 12 12 120
-            30 30 30 30
+            60 60 60 60
             60 60
         ]
     }]

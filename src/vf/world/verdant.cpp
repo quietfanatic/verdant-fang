@@ -187,8 +187,8 @@ WalkerBusiness Verdant::Walker_business () {
         return WB::Frozen;
     }
     else if (state == VS::CapturedWeaponTaken) {
-        weapon_layers &= 0b1010;
-        if (anim_phase >= 3) {
+        weapon_layers = 0b1001;
+        if (anim_phase >= 2) {
              // animation ends
         }
         else if (anim_timer >= vd.weapon_taken_sequence[anim_phase]) {
@@ -202,13 +202,22 @@ WalkerBusiness Verdant::Walker_business () {
     }
     else if (state == VS::CapturedWeaponBroken) {
         weapon_tint = anim_phase == 1 ? vd.transform_magic_color : 0;
+        weapon_layers = anim_phase == 0 ? 0b1001 : 0b11;
+        if (anim_timer == 0) {
+            if (anim_phase == 0) {
+                if (vd.spear_break_sound) vd.spear_break_sound->play();
+            }
+            else if (anim_phase == 2) {
+                if (vd.snake_death_sound) vd.snake_death_sound->play();
+            }
+        }
         if (anim_phase == 8) {
             // Stop timer
         }
         else if (anim_phase == 3) {
              // Fang falls down
             fang_vel_y -= vd.fang_gravity;
-            override_weapon_pos.y -= fang_vel_y;
+            override_weapon_pos.y += fang_vel_y;
             if (override_weapon_pos.y < vd.fang_dead_y) {
                 override_weapon_pos.y = vd.fang_dead_y;
                 anim_phase += 1;
@@ -220,7 +229,6 @@ WalkerBusiness Verdant::Walker_business () {
             anim_phase += 1;
             anim_timer = 0;
             if (anim_phase == 3) {
-                ayu::dump(0);
                 fang_vel_y = 0;
             }
             return Walker_business();
@@ -247,7 +255,7 @@ WalkerBusiness Verdant::Walker_business () {
         return WB::Occupied;
     }
     else if (state == VS::Inch) {
-        if (pos.x >= override_weapon_pos.x - 12) {
+        if (pos.x >= override_weapon_pos.x - 24) {
             set_state(VS::Snakify);
             return Walker_business();
         }
@@ -509,9 +517,11 @@ Pose Verdant::Walker_pose () {
         else return poses.captured;
     }
     else if (state == VS::CapturedWeaponTaken) {
+        expect(anim_phase < 3);
         return poses.weapon_taken[anim_phase];
     }
     else if (state == VS::CapturedWeaponBroken) {
+        expect(anim_phase < 9);
         return poses.weapon_broken[anim_phase];
     }
     else if (state == VS::CapturedLimbsTaken) {
@@ -625,6 +635,7 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
             pose.z + Z::WeaponOffset,
             scale, tint
         );
+        return;
     }
     else if (state == VS::FangHelp) {
         Vec initial_pos = left_flip(pose.body->weapon);
@@ -645,6 +656,7 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
             pose.z + Z::WeaponOffset, scale,
             anim_phase == 1 ? vd.transform_magic_color : weapon_tint
         );
+        return;
     }
     else if (state == VS::Snakify) {
         if (anim_phase >= 3) {
@@ -661,7 +673,7 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
             );
         }
     }
-    else Walker::Walker_draw_weapon(pose);
+    Walker::Walker_draw_weapon(pose);
 }
 
 void Verdant::Resident_on_exit () {

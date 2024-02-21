@@ -18,7 +18,7 @@ WalkerBusiness Indigo::Walker_business () {
         auto v = find_verdant();
         if (anim_timer == 0) {
             if (anim_phase == CP::MoveTarget) {
-                v->state = VS::Captured;
+                v->set_state(VS::Captured);
                 v->capturer = this;
                 capture_initial_pos = v->pos;
                 v->left = false;
@@ -27,14 +27,17 @@ WalkerBusiness Indigo::Walker_business () {
                 v->pos = id.capture_target_pos;
             }
             else if (anim_phase == CP::MoveWeapon) {
-                v->state = VS::CapturedWeaponTaken;
+                v->set_state(VS::CapturedWeaponTaken);
                 capture_initial_pos = v->pos + v->Walker_pose().body->weapon;
             }
             else if (anim_phase == CP::HaveWeapon) {
                 v->override_weapon_pos = id.capture_weapon_pos;
             }
             else if (anim_phase == CP::BreakWeapon) {
-                v->state = VS::CapturedWeaponBroken;
+                v->set_state(VS::CapturedWeaponBroken);
+            }
+            else if (anim_phase == CP::TakeLimbs) {
+                v->set_state(VS::CapturedLimbsTaken);
             }
         }
         if (anim_timer >= id.capturing_sequence[anim_phase]) {
@@ -68,7 +71,11 @@ WalkerBusiness Indigo::Walker_business () {
             else if (anim_phase >= CP::DetachLimb0 &&
                      anim_phase <= CP::DetachLimb3
             ) {
-                uint8 i = id.capture_limb_order[anim_phase = CP::DetachLimb0];
+                if (anim_timer == 0) {
+                    auto& vd = static_cast<VerdantData&>(*v->data);
+                    if (vd.limb_detach_sound) vd.limb_detach_sound->play();
+                }
+                uint8 i = id.capture_limb_order[anim_phase - CP::DetachLimb0];
                 auto& vp = static_cast<VerdantPoses&>(*v->data->poses);
                 float t = float(anim_timer) /
                           id.capturing_sequence[anim_phase];
