@@ -5,6 +5,7 @@
 &z_head_offset0: -10
 &z_head_offset1: -9
 &z_head_offset2: -8
+&z_magic_offset: 10
 
 [ayu::Document {
     body: [vf::LayeredTexture [
@@ -30,8 +31,8 @@
     body_flyf: [vf::BodyFrame [#body [37 35] [0 23]]]
     body_flyb: [vf::BodyFrame [#body [61 35] [0 23]]]
     body_stand: [vf::BodyFrame [#body [85 35] [0 23]]]
-    body_preattack: [vf::BodyFrame [#body [13 3] [0 23]]]
-    body_attack: [vf::BodyFrame [#body [36 3] [0 23]]]
+    body_preattack: [vf::BodyFrame [#body [13 3] [0 23] [7 27]]]
+    body_attack: [vf::BodyFrame [#body [36 3] [0 23] [12 21]]]
     head: [vf::LayeredTexture [
         {
             image: assets.ayu#layer0
@@ -50,6 +51,26 @@
     head_fly:  [vf::Frame [#head [14 7]]]
     head_flyf: [vf::Frame [#head [34 7]]]
     head_flyb: [vf::Frame [#head [54 7]]]
+    magic: [vf::LayeredTexture [{
+        image: assets.ayu#layer0
+        bounds: [398 125 414 172]
+        z_offset: *z_magic_offset
+    }]]
+    magic_sparkle0: [vf::WeaponFrame {
+        target: #magic
+        offset: [8 41]
+        bounds: [-2 -2 3 3]
+    }]
+    magic_sparkle1: [vf::WeaponFrame {
+        target: #magic
+        offset: [8 34]
+        bounds: [-2 -2 3 3]
+    }]
+    magic_sparkle2: [vf::WeaponFrame {
+        target: #magic
+        offset: [8 26]
+        bounds: [-3 -3 4 4]
+    }]
     poses: [vf::IndigoPoses {
         stand: [#body_stand #head_fly]
         crouch: [#body_stand #head_fly]
@@ -108,20 +129,22 @@
             [#body_fly #head_fly]
         ]
         capturing: [
-            [#body_preattack #head_fly]
-            [#body_attack #head_fly]
-            [#body_attack #head_fly]
+            [#body_preattack #head_fly #magic_sparkle0]
+            [#body_attack #head_fly #magic_sparkle1]
+            [#body_attack #head_fly #magic_sparkle2]
             [#body_fly #head_fly]
             [#body_fly #head_fly]
             [#body_fly #head_fly]
-            [#body_preattack #head_fly]
-            [#body_attack #head_fly]
-            [#body_attack #head_fly]
+            [#body_preattack #head_fly #magic_sparkle0]
+            [#body_attack #head_fly #magic_sparkle1]
+            [#body_attack #head_fly #magic_sparkle2]
             [#body_fly #head_fly]
-            [#body_attack #head_fly]
-            [#body_attack #head_fly]
-            [#body_attack #head_fly]
-            [#body_attack #head_fly]
+            [#body_preattack #head_fly #magic_sparkle0]
+            [#body_attack #head_fly #magic_sparkle1]
+            [#body_attack #head_fly #magic_sparkle1]
+            [#body_attack #head_fly #magic_sparkle1]
+            [#body_attack #head_fly #magic_sparkle1]
+            [#body_fly #head_fly]
             [#body_fly #head_fly]
             [#body_fly #head_fly]
         ]
@@ -136,8 +159,8 @@
         ground_max: 2.5
         ground_dec: 0.3
         coast_dec: 0.2
-        air_acc: 0.2
-        air_max: 2
+        air_acc: 0.08
+        air_max: 1.4
         air_dec: 0
         jump_vel: 3.4
         gravity_jump: 0.11
@@ -190,9 +213,9 @@
         capturing_sequence: [
             12 30 12 18
             30 30
-            12 12 12 120
-            60 60 60 60
-            60 60
+            12 12 12 240
+            12 60 60 60 60
+            60 120 30
         ]
     }]
 }]

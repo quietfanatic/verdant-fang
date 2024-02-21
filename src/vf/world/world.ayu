@@ -22,11 +22,11 @@
     verdant: [vf::Verdant {
         data: verdant.ayu#data
         mind: #verdant_mind
-        room: #start
-        pos: [-32 32]
-        state: 6 --VS::PreTransform
-        --room: #atelier
-        --pos: [180 32]
+        --room: #start
+        --pos: [-32 32]
+        --state: 6 --VS::PreTransform
+        room: #atelier
+        pos: [180 32]
         limbo: #limbo
     }]
 
@@ -295,13 +295,12 @@
     indigomind: [vf::IndigoMind {
         target: #verdant
         sight_range: 180
-        activate_on_sight: #atelier_to_hive_door
     }]
     indigo: [vf::Indigo {
         room: #atelier
         data: indigo.ayu#data
         mind: #indigomind
-        pos: [256 64]
+        pos: [230 72]
         left: true
         fly: true
         body_layers: 0x5 --no pants
@@ -309,6 +308,9 @@
         --body_layers: 0x3 --leotard
         --body_layers: 0x1 --naked
         head_layers: 0x7 --glasses and hat
+        front_door: #atelier_to_hive_door
+        back_door: #atelier_to_bedroom_door
+        bedroom: #bedroom
     }]
 
     atelier_to_hive_door: [vf::Door {
@@ -324,9 +326,28 @@
         target_pos: [304 64]
         transition: wipe_right
     }]
-    atelier_to_somewhere_door: [vf::Door {
+    atelier_to_bedroom_door: [vf::Door {
         room: #atelier
         data: assets.ayu#door
         pos: [284 80] --272 + 12
+    }]
+    atelier_to_bedroom: [vf::LoadingZone {
+        room: #atelier
+        bounds: [328 0 328 180]
+        target_room: #bedroom
+        target_pos: [16 32]
+    }]
+
+    bedroom: [vf::Room { }]
+    bedroom_blocks: [vf::Blocks {
+        room: #bedroom
+        data: assets.ayu#block
+        blocks: [
+            [-16 176] [16 176] [48 160] [80 160] [112 160] [144 160] [176 160] [208 160] [240 160] [272 160] [304 160]
+            [-16 144] [16 144] [272 128] [304 128]
+            [-16 96] [16 96]
+            [-16 48] [16 48]
+            [-16 0] [16 0] [48 0] [80 0] [112 0] [144 0] [176 0] [208 0] [240 0] [272 0] [304 0]
+        ]
     }]
 }]

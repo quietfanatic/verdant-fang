@@ -3,6 +3,7 @@
 #include "../../dirt/control/command.h"
 #include "../game/game.h"
 #include "../game/state.h"
+#include "door.h"
 #include "math.h"
 #include "verdant.h"
 
@@ -10,6 +11,10 @@ namespace vf {
 
 Indigo::Indigo () {
     types |= Types::Indigo;
+}
+
+void Indigo::init () {
+    if (!defined(home_pos)) home_pos = pos;
 }
 
 WalkerBusiness Indigo::Walker_business () {
@@ -39,11 +44,21 @@ WalkerBusiness Indigo::Walker_business () {
             else if (anim_phase == CP::TakeLimbs) {
                 v->set_state(VS::CapturedLimbsTaken);
             }
+            else if (anim_phase == CP::Leave) {
+                if (back_door && !back_door->open) {
+                    back_door->Activatable_activate();
+                }
+            }
+            else if (anim_phase == CP::CloseDoor) {
+                if (back_door && back_door->open) {
+                    back_door->Activatable_activate();
+                }
+            }
         }
         if (anim_timer >= id.capturing_sequence[anim_phase]) {
-            if (anim_phase == CP::Leave) {
+            if (anim_phase == CP::CloseDoor) {
                 set_state(WS::Neutral);
-                 // TODO: change rooms
+                set_room(bedroom);
                 return Walker_business();
             }
             anim_phase += 1;
@@ -97,9 +112,14 @@ WalkerBusiness Indigo::Walker_business () {
                     );
                 }
             }
+            else if (anim_phase > CP::TakeLimbs) {
+                for (usize i = 0; i < 4; i++) {
+                    v->limb_pos[i] = pos + id.capture_limb_offsets[i];
+                }
+            }
             anim_timer += 1;
         }
-        return WB::Occupied;
+        return WB::Free;
     }
     return Walker::Walker_business();
 }
@@ -122,11 +142,33 @@ Controls IndigoMind::Mind_think (Resident& s) {
         if (distance2(target->pos.x, me.pos.x) < length2(sight_range)) {
             me.alert_phase = 1;
             me.alert_timer = 0;
-            if (activate_on_sight) activate_on_sight->Activatable_activate();
+            if (me.front_door && me.front_door->open) {
+                me.front_door->Activatable_activate();
+            }
             goto next_alert_phase;
         }
     }
     else if (me.alert_phase == 1) {
+        Vec goal = me.home_pos;
+        if (me.state == IS::Capturing && me.back_door &&
+            (me.anim_phase >= CP::Leave && me.anim_phase <= CP::CloseDoor)
+        ) {
+            me.left = false;
+            goal = me.back_door->closed_pos + Vec(120, 8);
+        }
+        if (me.pos.x < goal.x - goal_tolerance.x) {
+            r[Control::Right] = 1;
+        }
+        else if (me.pos.x > goal.x + goal_tolerance.x) {
+            r[Control::Left] = 1;
+        }
+        if (me.pos.y < goal.y - goal_tolerance.y) {
+            r[Control::Up] = 1;
+        }
+        if (me.pos.y > goal.y + goal_tolerance.y) {
+            r[Control::Down] = 1;
+        }
+         // else just float down
     }
     return r;
 }
@@ -172,8 +214,13 @@ AYU_DESCRIBE(vf::Indigo,
         attr("vf::Walker", base<Walker>(), include),
         attr("alert_phase", &Indigo::alert_phase, optional),
         attr("alert_timer", &Indigo::alert_timer, optional),
-        attr("capture_initial_pos", &Indigo::capture_initial_pos, optional)
-    )
+        attr("home_pos", &Indigo::home_pos, optional),
+        attr("capture_initial_pos", &Indigo::capture_initial_pos, optional),
+        attr("front_door", &Indigo::front_door),
+        attr("back_door", &Indigo::back_door),
+        attr("bedroom", &Indigo::bedroom)
+    ),
+    init<&Indigo::init>()
 )
 
 AYU_DESCRIBE(vf::IndigoMind,
@@ -181,6 +228,6 @@ AYU_DESCRIBE(vf::IndigoMind,
         attr("vf::Mind", base<Mind>(), include),
         attr("target", &IndigoMind::target),
         attr("sight_range", &IndigoMind::sight_range),
-        attr("activate_on_sight", &IndigoMind::activate_on_sight, optional)
+        attr("goal_tolerance", &IndigoMind::goal_tolerance, optional)
     )
 )

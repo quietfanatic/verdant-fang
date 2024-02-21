@@ -715,7 +715,11 @@ AYU_DESCRIBE(vf::BodyFrame,
     ),
      // Just for castability.  We need a better solution.
     attrs(
-        attr("vf::Frame", base<Frame>(), include)
+        attr("vf::Frame", base<Frame>(), include),
+        attr("head", &BodyFrame::head, optional),
+        attr("weapon", &BodyFrame::weapon, optional),
+        attr("decals", &BodyFrame::decals, optional),
+        attr("decal_dirs", &BodyFrame::decal_dirs, optional)
     ),
     init([](BodyFrame& v){ v.init(); })
 )
@@ -727,7 +731,8 @@ AYU_DESCRIBE(vf::WeaponFrame,
         elem(&WeaponFrame::hitbox, optional)
     ),
     attrs(
-        attr("vf::Frame", base<Frame>(), include)
+        attr("vf::Frame", base<Frame>(), include),
+        attr("hitbox", &WeaponFrame::hitbox, optional)
     ),
     init([](WeaponFrame& v){ v.init(); })
 )
