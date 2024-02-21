@@ -108,7 +108,7 @@ void State::init () {
          // SDL2_mixer doesn't provide any way of acquiring a lock, so
          // manipulating the music position is full of race conditions, yay!
         current_music->play();
-        glow::require_sdl(Mix_SetMusicPosition(current_music_position));
+        glow::require_sdl(Mix_SetMusicPosition(current_music_position) == 0);
     }
 }
 
@@ -201,6 +201,6 @@ AYU_DESCRIBE(vf::State,
         attr("world", &State::world),
         attr("checkpoint", &State::checkpoint, collapse_optional)
     ),
-     // This needs to be after the music loads itself.
-    init<&State::init>(10)
+     // This needs to happen after the music loads itself.
+    init<&State::init>(-10)
 );

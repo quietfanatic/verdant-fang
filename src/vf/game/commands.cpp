@@ -47,4 +47,33 @@ void load_state_ () {
 }
 Command load_state (load_state_, "load_state", "Load game state");
 
+void pause_or_unpause_ () {
+    if (!current_game) return;
+    if (current_game->menus) {
+        for (auto& menu : current_game->menus) {
+            if (menu == current_game->pause_menu) {
+                current_game->menus = {};
+                return;
+            }
+        }
+         // In a menu but none of them are the pause menu, so do nothing
+    }
+    else {
+        current_game->menus = {current_game->pause_menu};
+    }
+}
+
+void delete_state_ () {
+    if (!current_game) return;
+    ayu::remove_source(current_game->state_res->name());
+}
+Command delete_state (delete_state_, "delete_state", "Delete the saved game state");
+
+void exit_program_ () {
+    exit(0);
+}
+Command exit_program (exit_program_, "exit_program", "Exit the program immediately regardless of whether a state is saved.");
+
+Command pause_or_unpause (pause_or_unpause_, "pause_or_unpause", "Pause game if playing game; Unpause game if paused");
+
 } // vf

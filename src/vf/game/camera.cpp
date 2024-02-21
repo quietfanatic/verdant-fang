@@ -97,7 +97,7 @@ void begin_camera () {
 }
 
 void end_camera () {
-    draw_frames();
+    commit_draws();
     if (defined(transition_t)) {
         transition_program->use();
          // Ease in and out a bit
@@ -106,6 +106,10 @@ void end_camera () {
         glBindTexture(GL_TEXTURE_2D, old_tex);
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     }
+}
+
+void finish_frame () {
+    commit_draws();
     zoom_program->use();
     glDisable(GL_BLEND);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

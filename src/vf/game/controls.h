@@ -10,7 +10,6 @@ namespace _ {
 enum Control : uint8 {
     Confirm,
     Back,
-    Pause,
     Left,
     Right,
     Up,

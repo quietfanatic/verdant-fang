@@ -77,6 +77,6 @@ void draw_rectangle (
     float z = 0
 );
 
-void draw_frames ();
+void commit_draws ();
 
 } // vf

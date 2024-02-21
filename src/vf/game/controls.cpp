@@ -26,7 +26,6 @@ AYU_DESCRIBE(vf::Control,
     values(
         value("confirm", Control::Confirm),
         value("back", Control::Back),
-        value("pause", Control::Pause),
         value("left", Control::Left),
         value("right", Control::Right),
         value("up", Control::Up),

@@ -121,7 +121,7 @@ my @sources = (qw(
     vf/game/controls.cpp
     vf/game/game.cpp
     vf/game/main.cpp
-    vf/game/menus.cpp
+    vf/game/menu.cpp
     vf/game/options.cpp
     vf/game/render.cpp
     vf/game/room.cpp

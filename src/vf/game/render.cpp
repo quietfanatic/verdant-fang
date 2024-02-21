@@ -205,8 +205,9 @@ void draw_rectangle (
     draw_texture(*empty_tex, world_rect, Rect(0, 0, 1, 1), z, tint, color.a / 255.f);
 }
 
-void draw_frames () {
+void commit_draws () {
     auto& program = *frame_program;
+    if (!program.n_commands) return;
     program.use();
     uint8 indexes [FrameProgram::max_commands];
     for (usize i = 0; i < program.n_commands; i++) {

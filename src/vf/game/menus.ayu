@@ -1,10 +1,10 @@
 [ayu::Document {
     paused_tex: [vf::LayeredTexture [{
-        image: assets.ayu#layer1
+        image: ../world/assets.ayu#layer1
         bounds: [512 22 553 36]
     }]]
     paused: [vf::Frame [#paused_tex [41 14] [-41 -14 0 0]]]
     pause_menu: [vf::Menu {
         decorations: [[#paused [300 160]]]
-    }[
+    }]
 }]

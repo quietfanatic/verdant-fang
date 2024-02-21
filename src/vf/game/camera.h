@@ -14,6 +14,7 @@ T world_to_screen (const T& world) {
 
 void begin_camera ();
 void end_camera ();
+void finish_frame ();
 
 enum class TransitionType {
     WipeLeft = 0,

@@ -1,11 +1,15 @@
 #pragma once
+#include "render.h"
 
 namespace vf {
 
-struct MenuButton {
-    Texture* tex;
-    Statement on_press;
-    IRect margin;
+struct MenuDecoration {
+    Frame* frame;
+    Vec pos;
+};
+
+struct Menu {
+    UniqueArray<MenuDecoration> decorations;
 };
 
 } // vf

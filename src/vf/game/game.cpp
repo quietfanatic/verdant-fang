@@ -5,6 +5,7 @@
 #include "../../dirt/iri/iri.h"
 #include "../../dirt/control/input.h"
 #include "camera.h"
+#include "menu.h"
 #include "room.h"
 #include "settings.h"
 #include "state.h"
@@ -46,6 +47,7 @@ static void on_draw (Game& game) {
     auto room = game.state().current_room;
     if (room) room->draw();
     end_camera();
+    finish_frame();
     SDL_GL_SwapWindow(game.window);
 }
 
@@ -100,6 +102,11 @@ Game::Game () :
         state.load_initial();
          // Don't save state yet
     }
+
+    ayu::global(&pause_menu);
+    pause_menu = ayu::ResourceRef(
+        iri::constant("res:/vf/game/menus.ayu")
+    )["pause_menu"][1];
 }
 
 Game::~Game () { current_game = null; }
