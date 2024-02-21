@@ -5,7 +5,7 @@
 
 namespace vf {
 
-Controls Settings::read_controls () const {
+Controls Settings::read_controls () {
     Controls r = {};
     auto keyboard = SDL_GetKeyboardState(null);
     for (auto& binding : controls) {
@@ -13,6 +13,13 @@ Controls Settings::read_controls () const {
             expect(binding.control < r.size());
             r[binding.control] = true;
         }
+    }
+     // Kind of a weird hacky way to do this but the obvious solution (doing in
+     // the above loop) doesn't work if there's more than one binding for the
+     // same control.
+    for (usize i = 0; i < Control::N_Controls; i++) {
+        if (!r[i]) disable_while_held[i] = false;
+        if (disable_while_held[i]) r[i] = false;
     }
     return r;
 }

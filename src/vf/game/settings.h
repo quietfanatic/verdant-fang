@@ -22,8 +22,12 @@ struct Settings {
     bool true_fullscreen = false;
     UniqueArray<ControlBinding> controls;
      // Only returns 0 and 1, do counting in Mind
-    Controls read_controls () const;
+    Controls read_controls ();
     UniqueArray<CommandBinding> commands;
+
+     // Kind of a hack to make it so that pressing a button to close a menu
+     // doesn't cause the game to take actions on the same button press.
+    Controls disable_while_held = {};
 };
 
 } // vf

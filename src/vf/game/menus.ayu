@@ -26,30 +26,35 @@
     quit: [vf::Frame [#quit_tex [17 7] [-17 -7 0 0]]]
     pause_menu: [vf::Menu {
         decorations: [[#paused [300 160]]]
-        selected_tint: 0xebf4e0ff
-        unselected_tint: 0xccccccff
         items: [{
             frame: #resume
             pos: [300 130]
-            on_press: [pause_or_unpause]
+            on_press: [seq [
+                [ignore_held_controls]
+                 -- This command will delete the current menu, so you can't seq
+                 -- any more commands after it.
+                [pause_or_unpause]
+            ]]
         } {
             frame: #options
-            pos: [300 110]
+            pos: [300 120]
             on_press: []
         } {
             frame: #suspend
-            pos: [300 90]
+            pos: [300 110]
             on_press: [seq [
                 [save_state]
                 [exit_program]
             ]]
         } {
             frame: #quit
-            pos: [300 70]
+            pos: [300 100]
             on_press: [seq [
                 [delete_state]
                 [exit_program]
             ]]
         }]
+        selected_tint: 0xebf4e0ff
+        unselected_tint: 0xaaaaaaff
     }]
 }]

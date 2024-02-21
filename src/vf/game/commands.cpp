@@ -63,6 +63,7 @@ void pause_or_unpause_ () {
         current_game->menus = {OpenMenu(current_game->pause_menu)};
     }
 }
+Command pause_or_unpause (pause_or_unpause_, "pause_or_unpause", "Pause game if playing game; Unpause game if paused");
 
 void delete_state_ () {
     if (!current_game) return;
@@ -75,6 +76,11 @@ void exit_program_ () {
 }
 Command exit_program (exit_program_, "exit_program", "Exit the program immediately regardless of whether a state is saved.");
 
-Command pause_or_unpause (pause_or_unpause_, "pause_or_unpause", "Pause game if playing game; Unpause game if paused");
+void ignore_held_controls_ () {
+    if (!current_game) return;
+    auto& settings = current_game->settings();
+    settings.disable_while_held = settings.read_controls();
+}
+Command ignore_held_controls (ignore_held_controls_, "ignore_held_controls", "If any controls are currently being held, ignore them until they are released.");
 
 } // vf
