@@ -42,11 +42,19 @@ static bool on_event (Game& game, SDL_Event* event) {
     }
 }
 
+static void on_step (Game& game) {
+    if (game.menus) game.menus.back()->step();
+    else game.state().step();
+}
+
 static void on_draw (Game& game) {
     begin_camera();
     auto room = game.state().current_room;
     if (room) room->draw();
     end_camera();
+    if (room && game.menus) {
+        draw_rectangle(Rect(Vec(0, 0), camera_size), 0x00000080);
+    }
     if (game.menus) game.menus.back()->draw();
     finish_frame();
     SDL_GL_SwapWindow(game.window);
@@ -56,7 +64,7 @@ Game::Game () :
     window("Verdant Fang (testing)", size(window_viewport)),
     loop{
         .on_event = [this](SDL_Event* e){ return on_event(*this, e); },
-        .on_step = [this]{ state().step(); },
+        .on_step = [this]{ on_step(*this); },
         .on_draw = [this]{ on_draw(*this); },
     },
     settings_res(iri::constant("data:/settings.ayu")),

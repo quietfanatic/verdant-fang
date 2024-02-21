@@ -3,6 +3,9 @@
 
 namespace vf {
 
+void Menu::step () {
+}
+
 void Menu::draw () {
     for (auto& deco : decorations) {
         draw_frame(*deco.frame, 0, deco.pos);

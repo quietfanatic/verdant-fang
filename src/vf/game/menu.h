@@ -10,6 +10,7 @@ struct MenuDecoration {
 
 struct Menu {
     UniqueArray<MenuDecoration> decorations;
+    void step ();
     void draw ();
 };
 
