@@ -45,7 +45,7 @@ struct State {
     uint64 current_frame = 0;
     Room* current_room = null;
     Music* current_music = null;
-    double current_music_position;
+    double current_music_position = 0;
     std::optional<Transition> transition;
 
     ayu::Document world;

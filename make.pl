@@ -77,7 +77,7 @@ push @compile_opts, qw(
 push @link_opts, qw();
 
  # Dead code elimination actually makes compilation slightly faster.
-push @O0_opts, qw(-fdce);
+push @O0_opts, qw(-Og -fdce);
 
  # MFW I discovered parallel LTO
 push @O3_opts, qw(-O3 -flto=7);

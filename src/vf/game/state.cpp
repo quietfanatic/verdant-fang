@@ -190,6 +190,7 @@ AYU_DESCRIBE(vf::Transition,
 AYU_DESCRIBE(vf::Checkpoint,
     attrs(
         attr("current_room", &Checkpoint::current_room),
+        attr("current_music", &Checkpoint::current_music),
         attr("transition_center", &Checkpoint::transition_center),
         attr("world", &Checkpoint::world)
     )

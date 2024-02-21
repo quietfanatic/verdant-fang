@@ -5,6 +5,7 @@
 #include "../game/game.h"
 #include "../game/state.h"
 #include "door.h"
+#include "indigo.h"
 #include "math.h"
 
 namespace vf {

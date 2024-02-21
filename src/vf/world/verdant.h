@@ -2,6 +2,7 @@
 #include "../game/controls.h"
 #include "../game/room.h"
 #include "common.h"
+#include "indigo.h"
 #include "walker.h"
 
 namespace vf {
@@ -36,32 +37,6 @@ namespace TransformPhase {
     constexpr uint8 N_Phases = 14;
 };
 namespace TP = TransformPhase;
-
-namespace CapturedPhase {
-    constexpr uint8 Moving = 0;
-    constexpr uint8 Waiting = 1;
-    constexpr uint8 SpearTaken = 2;
-    constexpr uint8 SpearRotate0 = 3;
-    constexpr uint8 SpearRotate1 = 4;
-    constexpr uint8 SpearWaiting = 5;
-    constexpr uint8 SpearBroken = 6;
-    constexpr uint8 SpearBrokenGlow = 7;
-    constexpr uint8 SnakeBroken = 8;
-    constexpr uint8 SnakeFall = 9;
-    constexpr uint8 SnakeFloor0 = 10;
-    constexpr uint8 SnakeFloor1 = 11;
-    constexpr uint8 SnakeFloor2 = 12;
-    constexpr uint8 SnakeFloor3 = 13;
-    constexpr uint8 LimbDetach0 = 14;
-    constexpr uint8 LimbDetach1 = 15;
-    constexpr uint8 LimbDetach2 = 16;
-    constexpr uint8 LimbDetach3 = 17;
-    constexpr uint8 GoodbyeLimbs = 18;
-    constexpr uint8 Falling = 19;  // No timer, ends on hitting floor
-    constexpr uint8 Floor = 20;
-    constexpr uint8 N_Phases = 21;
-};
-namespace CP = CapturedPhase;
 
 struct LimbFrame : Frame {
      // Relative to body pos
