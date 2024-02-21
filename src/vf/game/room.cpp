@@ -5,6 +5,21 @@
 
 namespace vf {
 
+void Resident::set_room (Room* r) {
+    if (room) {
+        for (auto& p : room->residents) {
+            if (p == this) {
+                room->residents.erase(&p);
+                goto found;
+            }
+        }
+        never();
+        found:;
+    }
+    room = r;
+    if (room) room->residents.push_back(this);
+}
+
 void Room::enter () {
     auto tmp = residents;
     for (Resident* a : tmp) {

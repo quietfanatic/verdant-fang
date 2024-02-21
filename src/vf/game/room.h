@@ -5,22 +5,6 @@
 
 namespace vf {
 
-struct Room {
-     // Copy this AnyArray whenever you iterate it, in case a resident changed
-     // its room while you're iterating.  The AnyArray is copy-on-write, so it
-     // won't actually copy the buffer unless the array actually gets modified.
-    AnyArray<Resident*> residents;
-    glow::RGBA8 background_color;
-    void enter ();
-    void exit ();
-    void step ();
-    void draw ();
-
-     // Get first resident whose types includes these ones (bitwise and).
-     // Returns null if there is none.
-    Resident* find_with_types (uint32 types);
-};
-
  // Hitboxes determine when Resident_on_collide is called.  The algorithm looks
  // like this.
  //     Resident a, b;
@@ -52,20 +36,7 @@ struct Resident {
     Hitbox* first_hitbox = null;
     uint32 types = 0;
     Room* get_room () const { return room; }
-    void set_room (Room* r) {
-        if (room) {
-            for (auto& p : room->residents) {
-                if (p == this) {
-                    room->residents.erase(&p);
-                    goto found;
-                }
-            }
-            never();
-            found:;
-        }
-        room = r;
-        if (room) room->residents.push_back(this);
-    }
+    void set_room (Room* r);
 
     void set_pos (Vec p) { Resident_set_pos(p); }
 
@@ -90,6 +61,22 @@ struct Resident {
 
     Resident () = default;
     Resident (const Resident&) = delete;
+};
+
+struct Room {
+     // Copy this AnyArray whenever you iterate it, in case a resident changed
+     // its room while you're iterating.  The AnyArray is copy-on-write, so it
+     // won't actually copy the buffer unless the array actually gets modified.
+    AnyArray<Resident*> residents;
+    glow::RGBA8 background_color;
+    void enter ();
+    void exit ();
+    void step ();
+    void draw ();
+
+     // Get first resident whose types includes these ones (bitwise and).
+     // Returns null if there is none.
+    Resident* find_with_types (uint32 types);
 };
 
 } // vf
