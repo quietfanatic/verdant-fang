@@ -3,8 +3,53 @@
         image: ../world/assets.ayu#layer1
         bounds: [512 22 553 36]
     }]]
+    resume_tex: [vf::LayeredTexture [{
+        image: ../world/assets.ayu#layer1
+        bounds: [568 105 598 112]
+    }]]
+    options_tex: [vf::LayeredTexture [{
+        image: ../world/assets.ayu#layer1
+        bounds: [565 115 598 122]
+    }]]
+    suspend_tex: [vf::LayeredTexture [{
+        image: ../world/assets.ayu#layer1
+        bounds: [563 125 598 132]
+    }]]
+    quit_tex: [vf::LayeredTexture [{
+        image: ../world/assets.ayu#layer1
+        bounds: [581 135 598 142]
+    }]]
     paused: [vf::Frame [#paused_tex [41 14] [-41 -14 0 0]]]
+    resume: [vf::Frame [#resume_tex [30 7] [-30 -7 0 0]]]
+    options: [vf::Frame [#options_tex [33 7] [-33 -7 0 0]]]
+    suspend: [vf::Frame [#suspend_tex [35 7] [-35 -7 0 0]]]
+    quit: [vf::Frame [#quit_tex [17 7] [-17 -7 0 0]]]
     pause_menu: [vf::Menu {
         decorations: [[#paused [300 160]]]
+        selected_tint: 0xebf4e0ff
+        unselected_tint: 0xccccccff
+        items: [{
+            frame: #resume
+            pos: [300 130]
+            on_press: [pause_or_unpause]
+        } {
+            frame: #options
+            pos: [300 110]
+            on_press: []
+        } {
+            frame: #suspend
+            pos: [300 90]
+            on_press: [seq [
+                [save_state]
+                [exit_program]
+            ]]
+        } {
+            frame: #quit
+            pos: [300 70]
+            on_press: [seq [
+                [delete_state]
+                [exit_program]
+            ]]
+        }]
     }]
 }]

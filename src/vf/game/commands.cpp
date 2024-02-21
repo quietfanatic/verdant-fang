@@ -2,6 +2,7 @@
 #include "../../dirt/control/command.h"
 #include "../../dirt/glow/common.h"
 #include "game.h"
+#include "menu.h"
 #include "settings.h"
 #include "state.h"
 
@@ -51,7 +52,7 @@ void pause_or_unpause_ () {
     if (!current_game) return;
     if (current_game->menus) {
         for (auto& menu : current_game->menus) {
-            if (menu == current_game->pause_menu) {
+            if (menu.data == current_game->pause_menu) {
                 current_game->menus = {};
                 return;
             }
@@ -59,7 +60,7 @@ void pause_or_unpause_ () {
          // In a menu but none of them are the pause menu, so do nothing
     }
     else {
-        current_game->menus = {current_game->pause_menu};
+        current_game->menus = {OpenMenu(current_game->pause_menu)};
     }
 }
 

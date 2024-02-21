@@ -72,7 +72,21 @@ void Frame::init () {
          // transform the coordinate system.
         auto flipv = [&](IVec p){ return IVec(p.x, layers_size.y - p.y - 1); };
         IRect region;
-        if (bounds) region = bounds + offset;
+        if (bounds) {
+            if (!proper(bounds)) {
+                 // Without this check, a later assertion will still fail, but
+                 // not after running 4 billion iterations of a loop.
+                raise(e_General,
+                    "Specified frame bounds are not proper"
+                );
+            }
+            if (!contains(IRect(IVec(0, 0), layers_size), bounds + offset)) {
+                raise(e_General,
+                    "Specified frame bounds are outside of target texture"
+                );
+            }
+            region = bounds + offset;
+        }
         else {
              // Find a non-transparent pixel
             IVec start = offset;

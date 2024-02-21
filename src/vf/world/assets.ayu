@@ -13,7 +13,7 @@
 
     cave_img: [glow::FileImage { source:assets/cave.png }]
     cave_tex: [vf::LayeredTexture [{ image: #cave_img }]]
-    cave: [vf::Frame [#cave_tex [0 0] [0 0 360 180]]]
+    cave: [vf::Frame [#cave_tex [0 0] [0 0 320 180]]]
 
     light_tex: [vf::LayeredTexture [{
         image: #layer0

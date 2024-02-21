@@ -7,16 +7,21 @@
 
 namespace vf {
 
+void accumulate_controls (Controls& acc, const Controls& in) {
+    for (usize i = 0; i < Control::N_Controls; i++) {
+        if (in[i]) {
+            if (acc[i] < 255) acc[i] += 1;
+        }
+        else acc[i] = 0;
+    }
+}
+
 Controls Player::Mind_think (Resident&) {
     auto inputs = current_game->settings().read_controls();
+     // Burn rng values when buttons are pressed in a non-sophisticated way.
     auto& rng = current_game->state().rng;
-    for (usize i = 0; i < Control::N_Controls; i++) {
-        if (inputs[i]) {
-            rng();
-            if (controls[i] < 255) controls[i] += 1;
-        }
-        else controls[i] = 0;
-    }
+    for (auto& in : inputs) if (in) rng();
+    accumulate_controls(controls, inputs);
     return controls;
 }
 

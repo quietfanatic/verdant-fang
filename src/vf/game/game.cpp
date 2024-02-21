@@ -43,7 +43,14 @@ static bool on_event (Game& game, SDL_Event* event) {
 }
 
 static void on_step (Game& game) {
-    if (game.menus) game.menus.back()->step();
+     // Read menu controls even if there isn't a menu active, so that if we open
+     // a menu while holding a button, the menu doesn't think that button was
+     // just pressed.  Also this does want to be separate from player controls,
+     // otherwise the player could take different actions by pausing the game
+     // (they'd be able to make an input 1 on consecutive frames, which should
+     // be impossible).
+    accumulate_controls(game.menu_controls, game.settings().read_controls());
+    if (game.menus) game.menus.back().step(game.menu_controls);
     else game.state().step();
 }
 
@@ -53,9 +60,10 @@ static void on_draw (Game& game) {
     if (room) room->draw();
     end_camera();
     if (room && game.menus) {
+         // Fade out game if both game and menu are shown
         draw_rectangle(Rect(Vec(0, 0), camera_size), 0x00000080);
     }
-    if (game.menus) game.menus.back()->draw();
+    if (game.menus) game.menus.back().draw();
     finish_frame();
     SDL_GL_SwapWindow(game.window);
 }

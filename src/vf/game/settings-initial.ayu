@@ -51,10 +51,12 @@
         [[ctrl r] [force_restart]]
          -- Various forms of quitting
         [[escape] [seq [
-            [save_state] [exit_program]
+            [save_state]
+            [exit_program]
         ]]]
         [[ctrl q] [seq [
-            [delete_state] [exit_program]
+            [delete_state]
+            [exit_program]
         ]]]
          -- For testing and stuff
         [[ctrl s] [save_state]]
