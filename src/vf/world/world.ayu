@@ -24,8 +24,8 @@
         mind: #verdant_mind
         room: #start
         pos: [-32 32]
-        --state: 6 --VS::PreTransform
-        state: 12 --VS::Snake
+        state: 6 --VS::PreTransform
+        --state: 12 --VS::Snake
         --state: 10 --VS::Inch
         --room: #atelier
         --pos: [180 32]
