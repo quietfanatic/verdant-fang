@@ -185,3 +185,8 @@
 - Also did more cutscene work.  Implemented the cutscene of turning into a
   snake, and did some snake movement.
 - Planned work for tomorrow: Menus, more work on Indigo.
+#####2024-02-20 T
+- Didn't get a whole lot done today due to personal circumstances, but I did
+  implement a pause menu, and drew text for all the menus.
+- Also tweaked music a little.
+- Planned work for tomorrow: Finish up menus, get back to Indigo.
