@@ -84,6 +84,11 @@
     }]]
     limbo_platform: [vf::Frame [#limbo_tex [33 12] [-33 -12 34 34]]]
 
+     -- The music for this game was composed with Sekaiju, converted to WAV with
+     -- timidity, then converted to mono MP3 with ffmpeg.  For some reason
+     -- telling timidity to output mono changes how it sounds, perhaps due to
+     -- how it implements its echo filter, which is why we're converting to mono
+     -- later in the pipeline.
     limestone: [vf::Music {
         source:assets/limestone.mp3 volume:0.8
          -- 68 measures * 4 beats/measure * 0.588235 s/beat
