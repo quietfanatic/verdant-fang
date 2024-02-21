@@ -14,7 +14,7 @@ namespace VS {
     constexpr WalkerState Captured = WS::Custom + 3;
     constexpr WalkerState CapturedWeaponTaken = WS::Custom + 4;
     constexpr WalkerState CapturedWeaponBroken = WS::Custom + 5;
-    constexpr WalkerState CapturedLimbsTaken = WS::Custom + 6;
+    constexpr WalkerState CapturedLimbsDetached = WS::Custom + 6;
     constexpr WalkerState Limbless = WS::Custom + 7;
     constexpr WalkerState Inch = WS::Custom + 8;
     constexpr WalkerState Snakify = WS::Custom + 9;
@@ -61,6 +61,8 @@ struct VerdantPoses : WalkerPoses {
     Pose captured_damage;
     Pose weapon_taken [3];
     Pose weapon_broken [9];
+    Pose limbs_detached;
+    Pose limbs_taken;
     Pose limbless_fall;
     Pose limbless;
     LimbFrame* captured_limbs [4];

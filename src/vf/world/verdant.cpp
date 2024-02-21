@@ -236,7 +236,7 @@ WalkerBusiness Verdant::Walker_business () {
         else anim_timer += 1;
         return WB::Frozen;
     }
-    else if (state == VS::CapturedLimbsTaken) {
+    else if (state == VS::CapturedLimbsDetached) {
         override_weapon_pos.y = vd.fang_dead_y;
         if (capturer->state != IS::Capturing) {
             set_state(VS::Limbless);
@@ -524,11 +524,11 @@ Pose Verdant::Walker_pose () {
         expect(anim_phase < 9);
         return poses.weapon_broken[anim_phase];
     }
-    else if (state == VS::CapturedLimbsTaken) {
+    else if (state == VS::CapturedLimbsDetached) {
         if (capturer->anim_phase < CP::TakeLimbs) {
-            return poses.captured_damage;
+            return poses.limbs_detached;
         }
-        else return poses.captured;
+        else return poses.limbs_taken;
     }
     else if (state == VS::Limbless) {
         if (floor) return poses.limbless;
@@ -782,6 +782,8 @@ AYU_DESCRIBE(vf::VerdantPoses,
         attr("captured_damage", &VerdantPoses::captured_damage),
         attr("weapon_taken", &VerdantPoses::weapon_taken),
         attr("weapon_broken", &VerdantPoses::weapon_broken),
+        attr("limbs_detached", &VerdantPoses::limbs_detached),
+        attr("limbs_taken", &VerdantPoses::limbs_taken),
         attr("limbless_fall", &VerdantPoses::limbless_fall),
         attr("limbless", &VerdantPoses::limbless),
         attr("captured_limbs", &VerdantPoses::captured_limbs),

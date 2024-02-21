@@ -41,8 +41,8 @@ WalkerBusiness Indigo::Walker_business () {
             else if (anim_phase == CP::BreakWeapon) {
                 v->set_state(VS::CapturedWeaponBroken);
             }
-            else if (anim_phase == CP::TakeLimbs) {
-                v->set_state(VS::CapturedLimbsTaken);
+            else if (anim_phase == CP::DetachLimb0) {
+                v->set_state(VS::CapturedLimbsDetached);
             }
             else if (anim_phase == CP::Leave) {
                 if (back_door && !back_door->open) {
