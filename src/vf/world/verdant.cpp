@@ -180,70 +180,74 @@ WalkerBusiness Verdant::Walker_business () {
         return WB::Frozen;
     }
     else if (state == VS::Captured) {
-        if (anim_phase == CP::Moving && anim_timer == 0) {
-            captured_initial_pos = pos;
-            left = false;
+        for (uint i = 0; i < 4; i++) {
+            auto& poses = static_cast<VerdantPoses&>(*data->poses);
+            limb_pos[i] = pos + poses.captured_limbs[i]->attached;
         }
-        if (anim_phase == CP::Falling) {
-            if (floor) anim_phase = CP::Floor;
-            return WB::Occupied;
+        return WB::Frozen;
+    }
+    else if (state == VS::CapturedWeaponTaken) {
+        weapon_layers &= 0b1010;
+        if (anim_phase >= 3) {
+             // animation ends
         }
-        else if (anim_timer >= vd.captured_sequence[anim_phase]) {
-            if (anim_phase == CP::Floor) {
-                walk_start_x = pos.x;
-                set_state(VS::Inch);
-            }
-            else {
+        else if (anim_timer >= vd.weapon_taken_sequence[anim_phase]) {
+            anim_phase += 1;
+            anim_timer = 0;
+            if (anim_phase == 1) override_weapon_scale = {-1, 1};
+            return Walker_business();
+        }
+        else anim_timer += 1;
+        return WB::Frozen;
+    }
+    else if (state == VS::CapturedWeaponBroken) {
+        weapon_tint = anim_phase == 1 ? vd.transform_magic_color : 0;
+        if (anim_phase == 8) {
+            // Stop timer
+        }
+        else if (anim_phase == 3) {
+             // Fang falls down
+            fang_vel_y -= vd.fang_gravity;
+            override_weapon_pos.y -= fang_vel_y;
+            if (override_weapon_pos.y < vd.fang_dead_y) {
+                override_weapon_pos.y = vd.fang_dead_y;
                 anim_phase += 1;
                 anim_timer = 0;
-                if (anim_phase == CP::SpearBroken) {
-                    if (vd.spear_break_sound) vd.spear_break_sound->play();
-                }
-                else if (anim_phase == CP::SnakeBroken) {
-                    if (vd.snake_death_sound) vd.snake_death_sound->play();
-                }
-                else if (anim_phase == CP::Falling) {
-                    pos.y += vd.dead_floor_lift;
-                }
+                return Walker_business();
+            }
+        }
+        else if (anim_timer >= vd.weapon_broken_sequence[anim_phase]) {
+            anim_phase += 1;
+            anim_timer = 0;
+            if (anim_phase == 3) {
+                ayu::dump(0);
+                fang_vel_y = 0;
             }
             return Walker_business();
         }
-        else {
-            anim_timer += 1;
-             // Move limbs
-            auto& poses = static_cast<VerdantPoses&>(*vd.poses);
-            for (uint i = 0; i < 4; i++) {
-                if (anim_phase < vd.captured_limb_phases[i]) {
-                    limb_pos[i] = pos + poses.captured_limbs[i]->attached;
-                }
-                else if (anim_phase == vd.captured_limb_phases[i]) {
-                    if (anim_timer == 1 && vd.limb_detach_sound) {
-                        vd.limb_detach_sound->play();
-                    }
-                     // Note that anim_timer goes from 1..n here instead of
-                     // 0..n-1, so the phase will end with limb_pos[i] ==
-                     // poses.captured_limbs[i].detached.
-                    float t = float(anim_timer) /
-                        vd.captured_sequence[anim_phase];
-                    limb_pos[i] = pos + lerp(
-                        poses.captured_limbs[i]->attached,
-                        poses.captured_limbs[i]->detached,
-                        ease_out_cubic(t)
-                    );
-                }
-                 // else leave it where it is.  Indigo will take it away.
-            }
-            if (anim_phase == CP::Floor) {
-                return WB::Occupied;
-            }
-            else {
-                floor = null;
-                return WB::Frozen;
-            }
+        else anim_timer += 1;
+        return WB::Frozen;
+    }
+    else if (state == VS::CapturedLimbsTaken) {
+        override_weapon_pos.y = vd.fang_dead_y;
+        if (capturer->state != IS::Capturing) {
+            set_state(VS::Limbless);
+            return Walker_business();
         }
+        return WB::Frozen;
+    }
+    else if (state == VS::Limbless) {
+        if (floor) {
+            if (anim_timer >= vd.limbless_sequence) {
+                set_state(VS::Inch);
+                return Walker_business();
+            }
+            else anim_timer += 1;
+        }
+        return WB::Occupied;
     }
     else if (state == VS::Inch) {
-        if (pos.x >= vd.captured_fang_pos_low.x - 12) {
+        if (pos.x >= override_weapon_pos.x - 12) {
             set_state(VS::Snakify);
             return Walker_business();
         }
@@ -286,16 +290,7 @@ WalkerBusiness Verdant::Walker_business () {
 
 void Verdant::Walker_move (const Controls& controls) {
     auto& vd = static_cast<VerdantData&>(*data);
-    if (state == VS::Captured) {
-        if (anim_phase == 0) {
-            float t = float(anim_timer) / vd.captured_sequence[0];
-            pos = lerp(captured_initial_pos, vd.captured_pos, ease_in_out_sin(t));
-        }
-        else if (anim_phase == 1) {
-            pos = vd.captured_pos;
-        }
-    }
-    else if (state == VS::Inch) {
+    if (state == VS::Inch) {
         expect(business == WB::Free);
         if (controls[Control::Right]) {
             left = false;
@@ -508,8 +503,26 @@ Pose Verdant::Walker_pose () {
         return damage_forward ? poses.deadf[6] : poses.dead[6];
     }
     else if (state == VS::Captured) {
-        expect(anim_phase < CP::N_Phases);
-        return poses.captured[anim_phase];
+        if (capturer->anim_phase == CP::MoveTarget) {
+            return poses.captured_damage;
+        }
+        else return poses.captured;
+    }
+    else if (state == VS::CapturedWeaponTaken) {
+        return poses.weapon_taken[anim_phase];
+    }
+    else if (state == VS::CapturedWeaponBroken) {
+        return poses.weapon_broken[anim_phase];
+    }
+    else if (state == VS::CapturedLimbsTaken) {
+        if (capturer->anim_phase < CP::TakeLimbs) {
+            return poses.captured_damage;
+        }
+        else return poses.captured;
+    }
+    else if (state == VS::Limbless) {
+        if (floor) return poses.limbless;
+        else return poses.limbless_fall;
     }
     else if (state == VS::Inch) {
         expect(anim_phase < 3);
@@ -544,6 +557,17 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
     auto& vd = static_cast<VerdantData&>(*data);
     auto& poses = static_cast<VerdantPoses&>(*vd.poses);
     Vec scale = {left ? -1 : 1, 1};
+     // Draw limbs if they have a position
+    for (usize i = 0; i < 4; i++) {
+        if (defined(limb_pos[i])) {
+            draw_layers(
+                *poses.captured_limbs[i], body_layers | 0b1000,
+                limb_pos[i],
+                pose.z + poses.captured_limbs[i]->z_offset, {1, 1},
+                body_tint
+            );
+        }
+    }
     if (state == VS::Transform) {
         Vec weapon_offset;
         glow::RGBA8 tint = weapon_tint;
@@ -622,107 +646,7 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
             anim_phase == 1 ? vd.transform_magic_color : weapon_tint
         );
     }
-    else if (state == VS::Captured) {
-        if (anim_phase >= CP::SpearRotate0) scale.x = -scale.x;
-        if (anim_phase < CP::SpearTaken) {
-            Walker::Walker_draw_weapon(pose);
-        }
-        else if (anim_phase >= CP::SpearTaken && anim_phase <= CP::SpearRotate1) {
-            uint32 t = anim_timer;
-            uint32 total = 0;
-            for (uint32 i = CP::SpearTaken; i <= CP::SpearRotate1; i++) {
-                if (anim_phase > i) t += vd.captured_sequence[i];
-                total += vd.captured_sequence[i];
-            }
-            draw_layers(
-                *poses.captured[anim_phase].weapon, 0b1001,
-                lerp(
-                    pos + poses.captured[CP::SpearTaken].body->weapon,
-                    vd.captured_fang_pos_high,
-                    ease_out_sin(float(t) / total)
-                ),
-                pose.z + Z::WeaponOffset, scale,
-                weapon_tint
-            );
-        }
-        else if (anim_phase == CP::SpearWaiting ||
-                 anim_phase == CP::SpearBroken
-        ) {
-            draw_layers(
-                *poses.captured[anim_phase].weapon, 0b1001,
-                vd.captured_fang_pos_high,
-                pose.z + Z::WeaponOffset, {-1, 1},
-                weapon_tint
-            );
-        }
-        else if (anim_phase == CP::SpearBrokenGlow) {
-            draw_layers(
-                *poses.captured[anim_phase].weapon, 0b1,
-                vd.captured_fang_pos_high,
-                pose.z + Z::WeaponOffset, {-1, 1},
-                vd.transform_magic_color
-            );
-        }
-        else if (anim_phase == CP::SnakeBroken) {
-            draw_layers(
-                *poses.captured[anim_phase].weapon, 0b11,
-                vd.captured_fang_pos_high,
-                pose.z + Z::WeaponOffset, {-1, 1},
-                weapon_tint
-            );
-        }
-        else if (anim_phase == CP::SnakeFall) {
-             // I thought we would need a bunch of fancy math to reverse
-             // calculate the gravity needed to make Fang fall the given
-             // distance in the given time, but we can just think of it as an
-             // animation (which it is) and ease_in_quadratic.
-            float t = float(anim_timer) / vd.captured_sequence[anim_phase];
-            draw_layers(
-                *poses.captured[anim_phase].weapon, 0b11,
-                lerp(
-                    vd.captured_fang_pos_high,
-                    vd.captured_fang_pos_low,
-                    ease_in_quadratic(t)
-                ),
-                pose.z + Z::WeaponOffset, {-1, 1},
-                weapon_tint
-            );
-        }
-        else {
-            draw_layers(
-                *poses.captured[anim_phase].weapon, 0b11,
-                vd.captured_fang_pos_low,
-                pose.z + Z::WeaponOffset, {-1, 1},
-                weapon_tint
-            );
-        }
-         // Draw limbs
-        for (usize i = 0; i < 4; i++) {
-            draw_layers(
-                *poses.captured_limbs[i], body_layers | 0b1000,
-                limb_pos[i],
-                pose.z + poses.captured_limbs[i]->z_offset, {1, 1},
-                body_tint
-            );
-        }
-    }
-    else if (state == VS::Inch) {
-        draw_layers(
-            *pose.weapon, 0b11,
-            vd.captured_fang_pos_low,
-            pose.z + Z::WeaponOffset, {-1, 1},
-            weapon_tint
-        );
-    }
     else if (state == VS::Snakify) {
-        if (anim_phase < 6) {
-            draw_layers(
-                *pose.weapon, 0b11,
-                vd.captured_fang_pos_low,
-                pose.z + Z::WeaponOffset, {-1, 1},
-                weapon_tint
-            );
-        }
         if (anim_phase >= 3) {
             glow::RGBA8 screen = vd.transform_magic_color;
             if (anim_phase == 3 || anim_phase == 7) {
@@ -809,13 +733,6 @@ void do_transform_sequence_ () {
 }
 control::Command do_transform_sequence (do_transform_sequence_, "do_transform_sequence");
 
-void do_captured_sequence_ () {
-    if (auto v = find_verdant()) {
-        v->set_state(VS::Captured);
-    }
-}
-control::Command do_captured_sequence (do_captured_sequence_, "do_captured_sequence");
-
 void print_pos_ () {
     if (auto v = find_verdant()) {
         ayu::dump(v->pos);
@@ -850,6 +767,11 @@ AYU_DESCRIBE(vf::VerdantPoses,
         attr("deadf", &VerdantPoses::deadf),
         attr("fang_help", &VerdantPoses::fang_help),
         attr("captured", &VerdantPoses::captured),
+        attr("captured_damage", &VerdantPoses::captured_damage),
+        attr("weapon_taken", &VerdantPoses::weapon_taken),
+        attr("weapon_broken", &VerdantPoses::weapon_broken),
+        attr("limbless_fall", &VerdantPoses::limbless_fall),
+        attr("limbless", &VerdantPoses::limbless),
         attr("captured_limbs", &VerdantPoses::captured_limbs),
         attr("inch", &VerdantPoses::inch),
         attr("snake_stand", &VerdantPoses::snake_stand),
@@ -878,11 +800,11 @@ AYU_DESCRIBE(vf::VerdantData,
         attr("revive_sequence", &VerdantData::revive_sequence),
         attr("revive_tint", &VerdantData::revive_tint),
         attr("fang_help_sequence", &VerdantData::fang_help_sequence),
-        attr("captured_sequence", &VerdantData::captured_sequence),
-        attr("captured_pos", &VerdantData::captured_pos),
-        attr("captured_limb_phases", &VerdantData::captured_limb_phases),
-        attr("captured_fang_pos_high", &VerdantData::captured_fang_pos_high),
-        attr("captured_fang_pos_low", &VerdantData::captured_fang_pos_low),
+        attr("weapon_taken_sequence", &VerdantData::weapon_taken_sequence),
+        attr("weapon_broken_sequence", &VerdantData::weapon_broken_sequence),
+        attr("fang_gravity", &VerdantData::fang_gravity),
+        attr("fang_dead_y", &VerdantData::fang_dead_y),
+        attr("limbless_sequence", &VerdantData::limbless_sequence),
         attr("inch_sequence", &VerdantData::inch_sequence),
         attr("snakify_sequence", &VerdantData::snakify_sequence),
         attr("snake_box", &VerdantData::snake_box),
@@ -908,8 +830,8 @@ AYU_DESCRIBE(vf::Verdant,
         attr("limbo", &Verdant::limbo, optional),
         attr("revive_phase", &Verdant::revive_phase, optional),
         attr("revive_timer", &Verdant::revive_timer, optional),
-        attr("captured_initial_pos", &Verdant::captured_initial_pos, optional),
-        attr("limb_pos", &Verdant::limb_pos, optional)
+        attr("limb_pos", &Verdant::limb_pos, optional),
+        attr("capturer", &Verdant::capturer, optional)
     )
 )
 

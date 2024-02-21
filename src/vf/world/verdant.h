@@ -12,9 +12,13 @@ namespace VS {
     constexpr WalkerState Transform = WS::Custom + 1;
     constexpr WalkerState FangHelp = WS::Custom + 2;
     constexpr WalkerState Captured = WS::Custom + 3;
-    constexpr WalkerState Inch = WS::Custom + 4;
-    constexpr WalkerState Snakify = WS::Custom + 5;
-    constexpr WalkerState Snake = WS::Custom + 6;
+    constexpr WalkerState CapturedWeaponTaken = WS::Custom + 4;
+    constexpr WalkerState CapturedWeaponBroken = WS::Custom + 5;
+    constexpr WalkerState CapturedLimbsTaken = WS::Custom + 6;
+    constexpr WalkerState Limbless = WS::Custom + 7;
+    constexpr WalkerState Inch = WS::Custom + 8;
+    constexpr WalkerState Snakify = WS::Custom + 9;
+    constexpr WalkerState Snake = WS::Custom + 10;
      // Update world.ayu if this changes
     static_assert(PreTransform == 6);
 };
@@ -53,7 +57,12 @@ struct VerdantPoses : WalkerPoses {
     Pose downf;
     Pose deadf [7];
     Frame* fang_help [6];
-    Pose captured [CP::N_Phases];
+    Pose captured;
+    Pose captured_damage;
+    Pose weapon_taken [3];
+    Pose weapon_broken [9];
+    Pose limbless_fall;
+    Pose limbless;
     LimbFrame* captured_limbs [4];
     Pose inch [3];
     Pose snake_stand;
@@ -84,11 +93,11 @@ struct VerdantData : WalkerData {
     uint8 fang_help_sequence [5];
     uint8 revive_sequence [5];
     glow::RGBA8 revive_tint [6];
-    uint8 captured_sequence [CP::N_Phases];
-    uint8 captured_limb_phases [4];
-    Vec captured_pos;
-    Vec captured_fang_pos_high;
-    Vec captured_fang_pos_low;
+    uint8 weapon_taken_sequence [3];
+    uint8 weapon_broken_sequence [8];
+    float fang_gravity;
+    float fang_dead_y;
+    uint8 limbless_sequence;
      // Indexed by anim_phase-1
     uint8 inch_sequence [2];
      // 0 1 2 = self and fang glow
@@ -120,7 +129,9 @@ struct Verdant : Walker {
     uint8 revive_timer = 0;
 
     Vec captured_initial_pos;
-    Vec limb_pos [4];
+    Vec limb_pos [4] = {GNAN, GNAN, GNAN, GNAN};
+    Indigo* capturer = null;
+    float fang_vel_y = GNAN;
 
     Verdant ();
 

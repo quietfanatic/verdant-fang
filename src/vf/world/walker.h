@@ -193,6 +193,8 @@ struct Walker : Resident {
      // More gravity a few frames after releasing jump
     uint32 drop_timer = 0;
     Resident* floor = null;
+    Vec override_weapon_pos = GNAN;
+    Vec override_weapon_scale = GNAN;
      // For animations
     float walk_start_x = GNAN;
     float fall_start_y = GNAN;

@@ -688,14 +688,16 @@ void Walker::Resident_draw () {
 }
 
 void Walker::Walker_draw_weapon (const Pose& pose) {
-    Vec scale = {left ? -1 : 1, 1};
+    Vec w_scale = defined(override_weapon_scale)
+        ? override_weapon_scale : Vec(left ? -1 : 1, 1);
+    Vec w_pos = defined(override_weapon_pos)
+        ? override_weapon_pos : pos + pose.body->weapon * w_scale;
     if (pose.weapon && pose.weapon->target) {
         float z = pose.z;
         if (pose.damage_overlap && !mutual_kill) z = Z::Overlap;
         draw_layers(
             *pose.weapon, weapon_layers,
-            pos + pose.body->weapon * scale,
-            z, scale, weapon_tint
+            w_pos, z, w_scale, weapon_tint
         );
     }
 }
@@ -834,6 +836,7 @@ AYU_DESCRIBE(vf::Walker,
         attr("anim_timer", &Walker::anim_timer, optional),
         attr("drop_timer", &Walker::drop_timer, optional),
         attr("floor", &Walker::floor, optional),
+        attr("override_weapon_pos", &Walker::override_weapon_pos, optional),
         attr("walk_start_x", &Walker::walk_start_x, optional),
         attr("fall_start_x", &Walker::walk_start_x, optional),
         attr("body_tint", &Walker::body_tint, optional),

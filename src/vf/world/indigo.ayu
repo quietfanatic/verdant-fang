@@ -48,7 +48,7 @@
     head_fly:  [vf::Frame [#head [14 7]]]
     head_flyf: [vf::Frame [#head [34 7]]]
     head_flyb: [vf::Frame [#head [54 7]]]
-    poses: [vf::WalkerPoses {
+    poses: [vf::IndigoPoses {
         stand: [#body_stand #head_fly]
         crouch: [#body_stand #head_fly]
         walk: [
@@ -97,6 +97,24 @@
         damage: [#body_fly #head_fly]
         damagefall: [#body_fly #head_fly]
         dead: [
+            [#body_fly #head_fly]
+            [#body_fly #head_fly]
+            [#body_fly #head_fly]
+            [#body_fly #head_fly]
+            [#body_fly #head_fly]
+            [#body_fly #head_fly]
+            [#body_fly #head_fly]
+        ]
+        capturing: [
+            [#body_fly #head_fly]
+            [#body_fly #head_fly]
+            [#body_fly #head_fly]
+            [#body_fly #head_fly]
+            [#body_fly #head_fly]
+            [#body_fly #head_fly]
+            [#body_fly #head_fly]
+            [#body_fly #head_fly]
+            [#body_fly #head_fly]
             [#body_fly #head_fly]
             [#body_fly #head_fly]
             [#body_fly #head_fly]
@@ -157,11 +175,22 @@
         decals: decals.ayu#
         flavor: strawberry
 
-        stolen_limb_offsets: [
+         -- Based on world.ayu#atelier
+        capture_target_pos: [128 64]
+        capture_weapon_pos: [200 80]
+        capture_limb_offsets: [
             [-21 20] --left arm
             [-16 13] --right arm
             [-25 7] --left leg
             [-28 17] --right leg
+        ]
+        capture_limb_order: [1 2 0 3]
+        capturing_sequence: [
+            12 30 12 18
+            30 30
+            12 12 12 120
+            30 30 30 30
+            60 60
         ]
     }]
 }]

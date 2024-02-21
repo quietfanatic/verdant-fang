@@ -6,42 +6,52 @@
 namespace vf {
 struct Verdant;
 
-namespace CapturePhase {
-    constexpr uint8 Moving = 0;
-    constexpr uint8 Waiting = 1;
-    constexpr uint8 SpearTaken = 2;
-    constexpr uint8 SpearRotate0 = 3;
-    constexpr uint8 SpearRotate1 = 4;
-    constexpr uint8 SpearWaiting = 5;
-    constexpr uint8 SpearBroken = 6;
-    constexpr uint8 SpearBrokenGlow = 7;
-    constexpr uint8 SnakeBroken = 8;
-    constexpr uint8 SnakeFall = 9;
-    constexpr uint8 SnakeFloor0 = 10;
-    constexpr uint8 SnakeFloor1 = 11;
-    constexpr uint8 SnakeFloor2 = 12;
-    constexpr uint8 SnakeFloor3 = 13;
-    constexpr uint8 LimbDetach0 = 14;
-    constexpr uint8 LimbDetach1 = 15;
-    constexpr uint8 LimbDetach2 = 16;
-    constexpr uint8 LimbDetach3 = 17;
-    constexpr uint8 GoodbyeLimbs = 18;
-    constexpr uint8 Falling = 19;  // No timer, ends on hitting floor
-    constexpr uint8 Floor = 20;
-    constexpr uint8 N_Phases = 21;
+namespace IndigoState {
+    constexpr WalkerState Capturing = WS::Custom + 0;
+    static_assert(Capturing == 6);
 };
-namespace CP = CapturePhase;
+namespace IS = IndigoState;
+
+namespace CapturingPhase {
+    constexpr uint8 MoveTargetPre = 0;
+    constexpr uint8 MoveTarget = 1;
+    constexpr uint8 MoveTargetPost = 2;
+    constexpr uint8 MoveTargetWait = 3;
+    constexpr uint8 MoveWeapon = 4;
+    constexpr uint8 HaveWeapon = 5;
+    constexpr uint8 BreakWeaponPre = 6;
+    constexpr uint8 BreakWeapon = 7;
+    constexpr uint8 BreakWeaponPost = 8;
+    constexpr uint8 BreakWeaponWait = 9;
+    constexpr uint8 DetachLimb0 = 10;
+    constexpr uint8 DetachLimb1 = 11;
+    constexpr uint8 DetachLimb2 = 12;
+    constexpr uint8 DetachLimb3 = 13;
+    constexpr uint8 TakeLimbs = 14;
+    constexpr uint8 Leave = 15;
+    constexpr uint8 N_Phases = 16;
+};
+namespace CP = CapturingPhase;
+
+struct IndigoPoses : WalkerPoses {
+    Pose capturing [CP::N_Phases];
+};
 
 struct IndigoData : WalkerData {
-    Vec stolen_limb_offsets [4];
+    Vec capture_target_pos;
+    Vec capture_weapon_pos;
+    Vec capture_limb_offsets [4];
+    uint8 capture_limb_order [4];
+    uint8 capturing_sequence [CP::N_Phases];
 };
 
 struct Indigo : Walker {
     uint8 alert_phase = 0;
     uint8 alert_timer = 0;
-    Vec stolen_limb_initial_pos [4];
+    Vec capture_initial_pos = GNAN;
     Indigo ();
     WalkerBusiness Walker_business () override;
+    Pose Walker_pose () override;
 };
 
 struct IndigoMind : Mind {
@@ -50,5 +60,7 @@ struct IndigoMind : Mind {
     Activatable* activate_on_sight = null;
     Controls Mind_think (Resident&) override;
 };
+
+Indigo* find_indigo ();
 
 } // vf
