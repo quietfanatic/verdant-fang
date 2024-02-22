@@ -190,3 +190,14 @@
   implement a pause menu, and drew text for all the menus.
 - Also tweaked music a little.
 - Planned work for tomorrow: Finish up menus, get back to Indigo.
+#####2024-02-21 W
+- Progress was slower than I would have liked, partly for health reasons and
+  partly because I spent all morning moving cutscene logic from Verdant to
+  Indigo.  This way makes more sense, but it took a long time and wasn't really
+  necessary.
+- Did a bunch more cutscene work, including some of the next room.
+- Implemented more snake behavior.
+- Discovered and fixed a few bugs that really needed to be fixed.
+- Planned work for tomorrow: Keep cracking at these cutscenes.  If all goes well
+  I might actually finish them tomorrow, and have some time left over to work on
+  menus.
