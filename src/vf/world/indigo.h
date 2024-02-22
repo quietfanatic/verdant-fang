@@ -9,6 +9,7 @@ struct Verdant;
 
 namespace IndigoState {
     constexpr WalkerState Capturing = WS::Custom + 0;
+    constexpr WalkerState Bed = WS::Custom + 1;
     static_assert(Capturing == 6);
 };
 namespace IS = IndigoState;
@@ -38,6 +39,7 @@ namespace CP = CapturingPhase;
 
 struct IndigoPoses : WalkerPoses {
     Pose capturing [CP::N_Phases];
+    Pose bed [2];
 };
 
 struct IndigoData : WalkerData {
@@ -47,6 +49,8 @@ struct IndigoData : WalkerData {
     uint8 capture_limb_order [4];
     uint8 capturing_sequence [CP::N_Phases];
     uint8 fingering_cycle [2] = {0, 0};
+    uint8 bed_cycle [2];
+    uint8 bed_use_limb;
 };
 
 struct Indigo : Walker {
@@ -60,6 +64,7 @@ struct Indigo : Walker {
     Door* back_door;
      // Go here after CP::CloseDoor.
     Room* bedroom;
+    Vec bed_pos;
     Indigo ();
     void init ();
     WalkerBusiness Walker_business () override;

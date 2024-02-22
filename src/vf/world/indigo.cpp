@@ -57,9 +57,11 @@ WalkerBusiness Indigo::Walker_business () {
         }
         if (anim_timer >= id.capturing_sequence[anim_phase]) {
             if (anim_phase == CP::CloseDoor) {
-                set_state(WS::Neutral);
+                set_state(IS::Bed);
                 set_room(bedroom);
-                return Walker_business();
+                pos = bed_pos;
+                left = false;
+                return WB::Frozen;
             }
             anim_phase += 1;
             anim_timer = 0;
@@ -121,13 +123,24 @@ WalkerBusiness Indigo::Walker_business () {
         }
         return WB::Free;
     }
+    else if (state == IS::Bed) {
+        auto v = find_verdant();
+        auto& poses = static_cast<IndigoPoses&>(*data->poses);
+        if (anim_timer >= id.bed_cycle[anim_phase]) {
+            anim_phase = !anim_phase;
+            anim_timer = 1;
+        }
+        else anim_timer += 1;
+        v->limb_pos[id.bed_use_limb] = pos + poses.bed[anim_phase].body->weapon;
+        return WB::Frozen;
+    }
     return Walker::Walker_business();
 }
 
 Pose Indigo::Walker_pose () {
+    auto& id = static_cast<IndigoData&>(*data);
+    auto& poses = static_cast<IndigoPoses&>(*id.poses);
     if (state == IS::Capturing) {
-        auto& id = static_cast<IndigoData&>(*data);
-        auto& poses = static_cast<IndigoPoses&>(*id.poses);
         if (anim_phase >= CP::DetachLimb1 && anim_phase <= CP::TakeLimbs) {
             uint32 cycle_length = id.fingering_cycle[0] + id.fingering_cycle[1];
             return poses.capturing[
@@ -137,7 +150,18 @@ Pose Indigo::Walker_pose () {
         }
         else return poses.capturing[anim_phase];
     }
+    else if (state == IS::Bed) {
+        expect(anim_phase < 2);
+        return poses.bed[anim_phase];
+    }
     else return Walker::Walker_pose();
+}
+
+void Indigo::Walker_draw_weapon (const Pose& pose) {
+    auto& poses = static_cast<IndigoPoses&>(*id.poses);
+    if (defined(glasses_pos)) {
+        draw_frame(*poses.glasses, 1, glasses_pos);
+    }
 }
 
 Controls IndigoMind::Mind_think (Resident& s) {
@@ -202,7 +226,8 @@ control::Command do_captured_sequence (do_captured_sequence_, "do_captured_seque
 AYU_DESCRIBE(vf::IndigoPoses,
     attrs(
         attr("vf::WalkerPoses", base<WalkerPoses>(), include),
-        attr("capturing", &IndigoPoses::capturing)
+        attr("capturing", &IndigoPoses::capturing),
+        attr("bed", &IndigoPoses::bed)
     )
 )
 
@@ -214,7 +239,9 @@ AYU_DESCRIBE(vf::IndigoData,
         attr("capture_limb_offsets", &IndigoData::capture_limb_offsets),
         attr("capture_limb_order", &IndigoData::capture_limb_order),
         attr("capturing_sequence", &IndigoData::capturing_sequence),
-        attr("fingering_cycle", &IndigoData::fingering_cycle, optional)
+        attr("fingering_cycle", &IndigoData::fingering_cycle, optional),
+        attr("bed_cycle", &IndigoData::bed_cycle, optional),
+        attr("bed_use_limb", &IndigoData::bed_use_limb)
     )
 );
 
@@ -227,7 +254,8 @@ AYU_DESCRIBE(vf::Indigo,
         attr("capture_initial_pos", &Indigo::capture_initial_pos, optional),
         attr("front_door", &Indigo::front_door),
         attr("back_door", &Indigo::back_door),
-        attr("bedroom", &Indigo::bedroom)
+        attr("bedroom", &Indigo::bedroom),
+        attr("bed_pos", &Indigo::bed_pos)
     ),
     init<&Indigo::init>()
 )

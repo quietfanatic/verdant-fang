@@ -6,23 +6,24 @@
 &z_head_offset1: -9
 &z_head_offset2: -8
 &z_magic_offset: 10
+&z_overlap: 400
 
 [ayu::Document {
     body: [vf::LayeredTexture [
         {
             image: assets.ayu#layer0
              -- y down
-            bounds: [418 173 514 265]
+            bounds: [418 173 520 265]
             z_offset: *z_body_offset0
         }
         {
             image: assets.ayu#layer1
-            bounds: [418 173 514 265]
+            bounds: [418 173 520 265]
             z_offset: *z_body_offset1
         }
         {
             image: assets.ayu#layer2
-            bounds: [418 173 514 265]
+            bounds: [418 173 520 265]
             z_offset: *z_body_offset2
         }
     ]]
@@ -35,24 +36,29 @@
     body_attack: [vf::BodyFrame [#body [36 33] [0 23] [12 21]]]
     body_finger0: [vf::BodyFrame [#body [13 2] [0 23] [12 21]]]
     body_finger1: [vf::BodyFrame [#body [36 2] [0 23] [12 21]]]
+     -- Reusing weapon offset for used limb offset
+    body_bed0: [vf::BodyFrame [#body [61 10] [-6 12] [5 12]]]
+    body_bed1: [vf::BodyFrame [#body [87 10] [-6 12] [4 11]]]
     head: [vf::LayeredTexture [
         {
             image: assets.ayu#layer0
-            bounds: [418 128 491 153]
+            bounds: [418 102 491 153]
             z_offset: *z_head_offset0
         } {
             image: assets.ayu#layer1
-            bounds: [418 128 491 153]
+            bounds: [418 102 491 153]
             z_offset: *z_head_offset1
         } {
             image: assets.ayu#layer2
-            bounds: [418 128 491 153]
+            bounds: [418 102 491 153]
             z_offset: *z_head_offset2
         }
     ]]
     head_fly:  [vf::Frame [#head [14 7]]]
     head_flyf: [vf::Frame [#head [34 7]]]
     head_flyb: [vf::Frame [#head [54 7]]]
+    head_bed: [vf::Frame [#head [14 33]]]
+    glasses: [vf::Frame [#head [22 25]]]
     magic: [vf::LayeredTexture [{
         image: assets.ayu#layer0
         bounds: [398 125 414 172]
@@ -143,13 +149,17 @@
             [#body_fly #head_fly]
             [#body_preattack #head_fly #magic_sparkle0]
             [#body_attack #head_fly #magic_sparkle1]
-             -- Body frame will animate
+             -- Body frame will animate according to fingering_cycle
             [#body_finger0 #head_fly #magic_sparkle1]
             [#body_finger1 #head_fly #magic_sparkle1]
             [#body_attack #head_fly #magic_sparkle1]
             [#body_fly #head_fly]
             [#body_fly #head_fly]
             [#body_fly #head_fly]
+        ]
+        bed: [
+            [#body_bed0 #head_bed null *z_overlap]
+            [#body_bed1 #head_bed null *z_overlap]
         ]
     }]
     data: [vf::IndigoData {
@@ -223,5 +233,7 @@
          -- With current implementation these will look best if combined they
          -- are a divisor of the detached limb phase lengths.
         fingering_cycle: [7 13]
+        bed_cycle: [20 20]
+        bed_use_limb: 3
     }]
 }]

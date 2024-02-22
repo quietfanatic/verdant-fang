@@ -84,6 +84,12 @@
     }]]
     limbo_platform: [vf::Frame [#limbo_tex [33 12] [-33 -12 34 34]]]
 
+    bed_tex: [vf::LayeredTexture [{
+        image: #layer0
+        bounds: [29 119 93 151]
+    }]]
+    bed: [vf::Frame [#bed_tex [32 0] [-32 0 32 32]]]
+
      -- The music for this game was composed with Sekaiju, converted to WAV with
      -- timidity, then converted to mono MP3 with ffmpeg.  For some reason
      -- telling timidity to output mono changes how it sounds, perhaps due to

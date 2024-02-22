@@ -152,6 +152,7 @@ void swap_world_tex () {
 }
 
 void window_size_changed (IVec new_size) {
+     // TODO: fill the blank areas
     if (slope(new_size) > slope(camera_size)) {
          // letterbox
         float zoom = new_size.x / camera_size.x;
