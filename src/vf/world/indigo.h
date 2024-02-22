@@ -46,6 +46,7 @@ struct IndigoData : WalkerData {
     Vec capture_limb_offsets [4];
     uint8 capture_limb_order [4];
     uint8 capturing_sequence [CP::N_Phases];
+    uint8 fingering_cycle [2] = {0, 0};
 };
 
 struct Indigo : Walker {

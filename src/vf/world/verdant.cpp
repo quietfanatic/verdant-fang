@@ -745,6 +745,13 @@ void do_transform_sequence_ () {
 }
 control::Command do_transform_sequence (do_transform_sequence_, "do_transform_sequence");
 
+void become_snake_ () {
+    if (auto v = find_verdant()) {
+        v->set_state(VS::Snake);
+    }
+}
+control::Command become_snake (become_snake_, "become_snake");
+
 void print_pos_ () {
     if (auto v = find_verdant()) {
         ayu::dump(v->pos);

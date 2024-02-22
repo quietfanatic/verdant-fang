@@ -67,6 +67,7 @@
         [[ctrl 4] [set_body_layers 0x7]] -- fully clothed (default)
         [[ctrl t] [do_transform_sequence]]
         [[ctrl c] [do_captured_sequence]]
+        [[ctrl n] [become_snake]]
         [[f3] [print_pos]]
     ]
 }]

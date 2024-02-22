@@ -126,8 +126,16 @@ WalkerBusiness Indigo::Walker_business () {
 
 Pose Indigo::Walker_pose () {
     if (state == IS::Capturing) {
-        auto& poses = static_cast<IndigoPoses&>(*data->poses);
-        return poses.capturing[anim_phase];
+        auto& id = static_cast<IndigoData&>(*data);
+        auto& poses = static_cast<IndigoPoses&>(*id.poses);
+        if (anim_phase >= CP::DetachLimb1 && anim_phase <= CP::TakeLimbs) {
+            uint32 cycle_length = id.fingering_cycle[0] + id.fingering_cycle[1];
+            return poses.capturing[
+                (anim_timer % cycle_length) < id.fingering_cycle[0]
+                    ? CP::DetachLimb1 : CP::DetachLimb2
+            ];
+        }
+        else return poses.capturing[anim_phase];
     }
     else return Walker::Walker_pose();
 }
@@ -205,7 +213,8 @@ AYU_DESCRIBE(vf::IndigoData,
         attr("capture_weapon_pos", &IndigoData::capture_weapon_pos),
         attr("capture_limb_offsets", &IndigoData::capture_limb_offsets),
         attr("capture_limb_order", &IndigoData::capture_limb_order),
-        attr("capturing_sequence", &IndigoData::capturing_sequence)
+        attr("capturing_sequence", &IndigoData::capturing_sequence),
+        attr("fingering_cycle", &IndigoData::fingering_cycle, optional)
     )
 );
 

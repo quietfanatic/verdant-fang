@@ -12,27 +12,29 @@
         {
             image: assets.ayu#layer0
              -- y down
-            bounds: [418 173 514 235]
+            bounds: [418 173 514 265]
             z_offset: *z_body_offset0
         }
         {
             image: assets.ayu#layer1
-            bounds: [418 173 514 235]
+            bounds: [418 173 514 265]
             z_offset: *z_body_offset1
         }
         {
             image: assets.ayu#layer2
-            bounds: [418 173 514 235]
+            bounds: [418 173 514 265]
             z_offset: *z_body_offset2
         }
     ]]
      -- y up
-    body_fly:  [vf::BodyFrame [#body [13 35] [0 23]]]
-    body_flyf: [vf::BodyFrame [#body [37 35] [0 23]]]
-    body_flyb: [vf::BodyFrame [#body [61 35] [0 23]]]
-    body_stand: [vf::BodyFrame [#body [85 35] [0 23]]]
-    body_preattack: [vf::BodyFrame [#body [13 3] [0 23] [7 27]]]
-    body_attack: [vf::BodyFrame [#body [36 3] [0 23] [12 21]]]
+    body_fly:  [vf::BodyFrame [#body [13 65] [0 23]]]
+    body_flyf: [vf::BodyFrame [#body [37 65] [0 23]]]
+    body_flyb: [vf::BodyFrame [#body [61 65] [0 23]]]
+    body_stand: [vf::BodyFrame [#body [85 65] [0 23]]]
+    body_preattack: [vf::BodyFrame [#body [13 33] [0 23] [7 27]]]
+    body_attack: [vf::BodyFrame [#body [36 33] [0 23] [12 21]]]
+    body_finger0: [vf::BodyFrame [#body [13 2] [0 23] [12 21]]]
+    body_finger1: [vf::BodyFrame [#body [36 2] [0 23] [12 21]]]
     head: [vf::LayeredTexture [
         {
             image: assets.ayu#layer0
@@ -141,8 +143,9 @@
             [#body_fly #head_fly]
             [#body_preattack #head_fly #magic_sparkle0]
             [#body_attack #head_fly #magic_sparkle1]
-            [#body_attack #head_fly #magic_sparkle1]
-            [#body_attack #head_fly #magic_sparkle1]
+             -- Body frame will animate
+            [#body_finger0 #head_fly #magic_sparkle1]
+            [#body_finger1 #head_fly #magic_sparkle1]
             [#body_attack #head_fly #magic_sparkle1]
             [#body_fly #head_fly]
             [#body_fly #head_fly]
@@ -217,5 +220,8 @@
             12 60 60 60 60
             60 120 30
         ]
+         -- With current implementation these will look best if combined they
+         -- are a divisor of the detached limb phase lengths.
+        fingering_cycle: [7 13]
     }]
 }]
