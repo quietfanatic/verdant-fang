@@ -39,6 +39,8 @@
      -- Reusing weapon offset for used limb offset
     body_bed0: [vf::BodyFrame [#body [61 10] [-6 12] [5 12]]]
     body_bed1: [vf::BodyFrame [#body [87 10] [-6 12] [4 11]]]
+    body_shake0: [vf::BodyFrame [#body [65 37] [5 17]]]
+    body_shake1: [vf::BodyFrame [#body [89 37] [4 17]]]
     head: [vf::LayeredTexture [
         {
             image: assets.ayu#layer0
@@ -58,6 +60,7 @@
     head_flyf: [vf::Frame [#head [34 7]]]
     head_flyb: [vf::Frame [#head [54 7]]]
     head_bed: [vf::Frame [#head [14 33]]]
+    head_shook: [vf::Frame [#head [34 33]]]
     glasses: [vf::Frame [#head [22 25]]]
     magic: [vf::LayeredTexture [{
         image: assets.ayu#layer0
@@ -227,9 +230,9 @@
         capturing_sequence: [
             12 30 12 18
             30 30
-            12 12 12 240
+            12 12 12 180
             12 60 60 60 60
-            60 120 30
+            60 120 60
         ]
          -- With current implementation these will look best if combined they
          -- are a divisor of the detached limb phase lengths.

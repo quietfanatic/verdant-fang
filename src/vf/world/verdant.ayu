@@ -3,11 +3,11 @@
 &z_damage: 200
 &z_actor: 300
 &z_head_offset: -10
-&z_left_limb_offset: -20
+&z_left_limb_offset: -30
 &z_body_offset0: 0
 &z_body_offset1: 1
 &z_right_limb_offset: 2
-&z_body_offset3: 9 -- Indigo's magic effects
+&z_body_offset3: 11 -- Indigo's magic effects
 &z_body_offset2: 10 -- must be larger than z_body_offset1 + z_right_limb_offset
 &z_weapon_offset0: 30
 &z_weapon_offset1: 31

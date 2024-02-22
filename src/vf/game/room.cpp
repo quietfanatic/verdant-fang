@@ -57,10 +57,14 @@ void Room::step () {
     }
          // Just some straightforward O(n^2) collision detection.
     tmp = residents;
-    for (auto& a : tmp) {
-        for (Resident* b : Slice<Resident*>(&a+1, tmp.end())) {
-            check_collision(*a, *b);
+    for (auto a = tmp.begin(); a != tmp.end(); ++a) {
+        for (auto b = a + 1; b != tmp.end(); ++b) {
+            check_collision(**a, **b);
         }
+    }
+    if (residents.data() != tmp.data()) {
+        ayu::dump(tmp);
+        ayu::dump(residents);
     }
     tmp = residents;
     for (Resident* a : tmp) {

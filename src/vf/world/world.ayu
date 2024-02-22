@@ -22,11 +22,11 @@
     verdant: [vf::Verdant {
         data: verdant.ayu#data
         mind: #verdant_mind
-        --room: #start
-        --pos: [-32 32]
-        --state: 6 --VS::PreTransform
-        room: #atelier
-        pos: [180 32]
+        room: #start
+        pos: [-32 32]
+        state: 6 --VS::PreTransform
+        --room: #atelier
+        --pos: [180 32]
         limbo: #limbo
     }]
 
@@ -271,6 +271,20 @@
         target_room: #atelier
         target_pos: [16 32]
         checkpoint_level: 1
+    }]
+
+    corridor: [vf::Room { }]
+    corridor_bg: [vf::Scenery {
+        room: #corridor
+        data: assets.ayu#cave
+        pos: [320 0]
+        scale: [-1 1]
+    }]
+    corridor_blocks: [vf::Blocks {
+        room: #corridor
+        data: assets.ayu#block
+        blocks: [
+        ]
     }]
 
     atelier: [vf::Room { }]

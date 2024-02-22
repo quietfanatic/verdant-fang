@@ -68,6 +68,6 @@
         [[ctrl t] [do_transform_sequence]]
         [[ctrl c] [do_captured_sequence]]
         [[ctrl n] [become_snake]]
-        [[f3] [print_pos]]
+        [[f3] [debug_info]]
     ]
 }]

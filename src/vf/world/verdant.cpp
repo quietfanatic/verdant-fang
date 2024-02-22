@@ -198,6 +198,7 @@ WalkerBusiness Verdant::Walker_business () {
         return WB::Frozen;
     }
     else if (state == VS::Captured) {
+        body_layers |= 0b1000;
         for (uint i = 0; i < 4; i++) {
             auto& poses = static_cast<VerdantPoses&>(*data->poses);
             limb_pos[i] = pos + poses.captured_limbs[i]->attached;
@@ -859,12 +860,15 @@ void become_snake_ () {
 }
 control::Command become_snake (become_snake_, "become_snake");
 
-void print_pos_ () {
-    if (auto v = find_verdant()) {
-        ayu::dump(v->pos);
+void debug_info_ () {
+    if (!current_game) return;
+    auto& state = current_game->state();
+    if (!state.current_room) return;
+    for (auto r : state.current_room->residents) {
+        ayu::dump(r, r->pos);
     }
 }
-control::Command print_pos (print_pos_, "print_pos");
+control::Command debug_info (debug_info_, "debug_info");
 
 } using namespace vf;
 
