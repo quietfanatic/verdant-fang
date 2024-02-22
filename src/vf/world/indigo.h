@@ -10,6 +10,7 @@ struct Verdant;
 namespace IndigoState {
     constexpr WalkerState Capturing = WS::Custom + 0;
     constexpr WalkerState Bed = WS::Custom + 1;
+    constexpr WalkerState Bit = WS::Custom + 2;
     static_assert(Capturing == 6);
 };
 namespace IS = IndigoState;
@@ -41,6 +42,7 @@ struct IndigoPoses : WalkerPoses {
     Pose capturing [CP::N_Phases];
     Pose bed [2];
     Frame* glasses;
+    Pose bit [7];
 };
 
 struct IndigoData : WalkerData {
@@ -52,6 +54,7 @@ struct IndigoData : WalkerData {
     uint8 fingering_cycle [2] = {0, 0};
     uint8 bed_cycle [2];
     uint8 bed_use_limb;
+    uint8 bit_sequence [7];
 };
 
 struct Indigo : Walker {
@@ -70,6 +73,8 @@ struct Indigo : Walker {
     Indigo ();
     void init ();
     WalkerBusiness Walker_business () override;
+     // Disable damage hitbox in most states
+    void Walker_set_hitboxes () override;
     Pose Walker_pose () override;
      // For drawing glasses separately
     void Walker_draw_weapon (const Pose&) override;

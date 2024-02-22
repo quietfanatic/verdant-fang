@@ -39,8 +39,8 @@
      -- Reusing weapon offset for used limb offset
     body_bed0: [vf::BodyFrame [#body [61 10] [-6 12] [5 12]]]
     body_bed1: [vf::BodyFrame [#body [87 10] [-6 12] [4 11]]]
-    body_shake0: [vf::BodyFrame [#body [65 37] [5 17]]]
-    body_shake1: [vf::BodyFrame [#body [89 37] [4 17]]]
+    body_bit0: [vf::BodyFrame [#body [65 37] [5 17] [12 15]]]
+    body_bit1: [vf::BodyFrame [#body [89 37] [4 17] [12 15]]]
     head: [vf::LayeredTexture [
         {
             image: assets.ayu#layer0
@@ -60,7 +60,7 @@
     head_flyf: [vf::Frame [#head [34 7]]]
     head_flyb: [vf::Frame [#head [54 7]]]
     head_bed: [vf::Frame [#head [14 33]]]
-    head_shook: [vf::Frame [#head [34 33]]]
+    head_bit: [vf::Frame [#head [34 33]]]
     glasses: [vf::Frame [#head [22 25]]]
     magic: [vf::LayeredTexture [{
         image: assets.ayu#layer0
@@ -165,6 +165,15 @@
             [#body_bed1 #head_bed null *z_overlap]
         ]
         glasses: #glasses
+        bit: [
+            [#body_bed0 #head_bed null *z_overlap]
+            [#body_bit0 #head_bit]
+            [#body_bit1 #head_bit]
+            [#body_bit0 #head_bit]
+            [#body_bit1 #head_bit]
+            [#body_bit0 #head_bit]
+            [#body_bit1 #head_bit]
+        ]
     }]
     data: [vf::IndigoData {
         body_box: [-6 0 6 30]
@@ -239,5 +248,6 @@
         fingering_cycle: [7 13]
         bed_cycle: [20 20]
         bed_use_limb: 3
+        bit_sequence: [15 30 15 15 15 15 60]
     }]
 }]

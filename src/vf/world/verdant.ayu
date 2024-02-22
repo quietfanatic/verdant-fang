@@ -179,13 +179,13 @@
     snake: [vf::LayeredTexture [
         {
             image: assets.ayu#layer0
-            bounds: [171 1 313 34]
+            bounds: [171 1 371 34]
         } {
             image: assets.ayu#layer1
-            bounds: [171 1 313 34]
+            bounds: [171 1 371 34]
         } {
             image: assets.ayu#layer2
-            bounds: [171 1 313 34]
+            bounds: [171 1 371 34]
         }
     ]]
     snake_neutral: [vf::BodyFrame [#snake [22 26]]]
@@ -195,6 +195,8 @@
     snake_walk3: [vf::BodyFrame [#snake [60 3]]]
     snake_preattack: [vf::BodyFrame [#snake [97 8]]]
     snake_attack: [vf::BodyFrame [#snake [126 8]]]
+    snake_bite0: [vf::BodyFrame [#snake [159 16]]]
+    snake_bite1: [vf::BodyFrame [#snake [188 10]]]
     poses: [vf::VerdantPoses {
         stand: [#body_stand #head_neutral #spear_neutral]
         crouch: [#body_crouch #head_neutral #spear_neutral]
@@ -323,6 +325,15 @@
             [#snake_attack]
             [#snake_attack]
         ]
+        snake_bite: [
+            [#snake_bite0]
+            [#snake_bite0]
+            [#snake_bite1]
+            [#snake_bite0]
+            [#snake_bite1]
+            [#snake_bite0]
+            [#snake_bite1]
+        ]
     }]
     data: [vf::VerdantData {
         body_box: [-6 0 6 30]
@@ -423,6 +434,16 @@
         snake_attack_sequence: [16 0 16 0 0 0]
         snake_attack_vel: [2.4 2.4]
         snake_tongue_cycle: [40 4 4 4 60]
+        bite_indigo_offsets: [
+            [-9 -3]
+            [0 2]
+            [-2 5]
+            [0 2]
+            [-2 5]
+            [0 2]
+            [-2 5]
+        ]
+        bite_release_vel: [-5 3]
         music_after_transform: assets.ayu#limestone
         unstab_sound: assets.ayu#shluk
         revive_sound: assets.ayu#hiss

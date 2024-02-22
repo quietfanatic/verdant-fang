@@ -20,6 +20,7 @@ namespace VS {
     constexpr WalkerState Snakify = WS::Custom + 9;
     constexpr WalkerState Snake = WS::Custom + 10;
     constexpr WalkerState SnakeAttack = WS::Custom + 11;
+    constexpr WalkerState SnakeBite = WS::Custom + 12;
      // Update world.ayu if this changes
     static_assert(PreTransform == 6);
 };
@@ -71,6 +72,7 @@ struct VerdantPoses : WalkerPoses {
     Pose snake_stand;
     Pose snake_walk [4];
     Pose snake_attack [6];
+    Pose snake_bite [7];
 };
 
 struct CutsceneSound {
@@ -120,6 +122,10 @@ struct VerdantData : WalkerData {
     Vec snake_attack_vel;
     uint8 snake_tongue_cycle [5];
     Music* music_after_transform = null;
+     // Indexed by Indigo's anim_phase
+     // Dunno if storing this here is right but we're doing it
+    Vec bite_indigo_offsets [7];
+    Vec bite_release_vel;
     Sound* unstab_sound = null;
     Sound* revive_sound = null;
     Sound* spear_break_sound = null;
@@ -139,7 +145,7 @@ struct Verdant : Walker {
     uint32 tongue_timer = 0;
 
     Vec limb_pos [4] = {GNAN, GNAN, GNAN, GNAN};
-    Indigo* capturer = null;
+    Indigo* indigo = null;
     float fang_vel_y = GNAN;
 
     Verdant ();

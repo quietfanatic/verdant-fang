@@ -257,7 +257,7 @@ WalkerBusiness Verdant::Walker_business () {
     }
     else if (state == VS::CapturedLimbsDetached) {
         override_weapon_pos.y = vd.fang_dead_y;
-        if (capturer->state != IS::Capturing) {
+        if (indigo->state != IS::Capturing) {
             set_state(VS::Limbless);
             return Walker_business();
         }
@@ -347,6 +347,20 @@ WalkerBusiness Verdant::Walker_business () {
                 default: never();
             }
         }
+    }
+    else if (state == VS::SnakeBite) {
+        expect(indigo);
+        expect(indigo->anim_phase < 7);
+        if (indigo->anim_phase == 6) {
+            pos = indigo->pos + vd.bite_indigo_offsets[indigo->anim_phase];
+            vel = vd.bite_release_vel;
+            set_state(WS::Neutral);
+            return Walker::Walker_business();
+        }
+        else {
+            pos = indigo->pos + vd.bite_indigo_offsets[indigo->anim_phase];
+        }
+        return WB::Frozen;
     }
     return Walker::Walker_business();
 }
@@ -534,6 +548,12 @@ void Verdant::Walker_on_hit (
     const Hitbox& hb, Walker& victim, const Hitbox& o_hb
 ) {
     if (state == VS::Snake || state == VS::SnakeAttack) {
+        if (victim.types & Types::Indigo) {
+            indigo = &static_cast<Indigo&>(victim);
+            expect(indigo->state == IS::Bed);
+            indigo->set_state(IS::Bit);
+            set_state(VS::SnakeBite);
+        }
         return;
     }
      // Find place to stab
@@ -615,7 +635,7 @@ Pose Verdant::Walker_pose () {
         return damage_forward ? poses.deadf[6] : poses.dead[6];
     }
     else if (state == VS::Captured) {
-        if (capturer->anim_phase == CP::MoveTarget) {
+        if (indigo->anim_phase == CP::MoveTarget) {
             return poses.captured_damage;
         }
         else return poses.captured;
@@ -629,7 +649,7 @@ Pose Verdant::Walker_pose () {
         return poses.weapon_broken[anim_phase];
     }
     else if (state == VS::CapturedLimbsDetached) {
-        if (capturer->anim_phase < CP::TakeLimbs) {
+        if (indigo->anim_phase < CP::TakeLimbs) {
             return poses.limbs_detached;
         }
         else return poses.limbs_taken;
@@ -667,6 +687,10 @@ Pose Verdant::Walker_pose () {
     else if (state == VS::SnakeAttack) {
         expect(anim_phase < 6);
         return poses.snake_attack[anim_phase];
+    }
+    else if (state == VS::SnakeBite) {
+        expect(indigo && indigo->anim_phase < 7);
+        return poses.snake_bite[indigo->anim_phase];
     }
     return Walker::Walker_pose();
 }
@@ -908,7 +932,8 @@ AYU_DESCRIBE(vf::VerdantPoses,
         attr("inch", &VerdantPoses::inch),
         attr("snake_stand", &VerdantPoses::snake_stand),
         attr("snake_walk", &VerdantPoses::snake_walk),
-        attr("snake_attack", &VerdantPoses::snake_attack)
+        attr("snake_attack", &VerdantPoses::snake_attack),
+        attr("snake_bite", &VerdantPoses::snake_bite)
     )
 )
 
@@ -950,6 +975,8 @@ AYU_DESCRIBE(vf::VerdantData,
         attr("snake_attack_sequence", &VerdantData::snake_attack_sequence),
         attr("snake_attack_vel", &VerdantData::snake_attack_vel),
         attr("snake_tongue_cycle", &VerdantData::snake_tongue_cycle),
+        attr("bite_indigo_offsets", &VerdantData::bite_indigo_offsets),
+        attr("bite_release_vel", &VerdantData::bite_release_vel),
         attr("music_after_transform", &VerdantData::music_after_transform, optional),
         attr("unstab_sound", &VerdantData::unstab_sound, optional),
         attr("revive_sound", &VerdantData::revive_sound, optional),
@@ -969,7 +996,7 @@ AYU_DESCRIBE(vf::Verdant,
         attr("revive_timer", &Verdant::revive_timer, optional),
         attr("tongue_timer", &Verdant::tongue_timer, optional),
         attr("limb_pos", &Verdant::limb_pos, optional),
-        attr("capturer", &Verdant::capturer, optional),
+        attr("indigo", &Verdant::indigo, optional),
         attr("fang_vel_y", &Verdant::fang_vel_y, optional)
     )
 )

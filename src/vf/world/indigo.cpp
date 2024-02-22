@@ -24,7 +24,7 @@ WalkerBusiness Indigo::Walker_business () {
         if (anim_timer == 0) {
             if (anim_phase == CP::MoveTarget) {
                 v->set_state(VS::Captured);
-                v->capturer = this;
+                v->indigo = this;
                 capture_initial_pos = v->pos;
                 v->left = false;
             }
@@ -136,7 +136,29 @@ WalkerBusiness Indigo::Walker_business () {
         v->limb_pos[id.bed_use_limb] = pos + poses.bed[anim_phase].body->weapon;
         return WB::Frozen;
     }
+    else if (state == IS::Bit) {
+        expect(anim_phase < 7);
+        if (anim_timer >= id.bit_sequence[anim_phase]) {
+            if (anim_phase == 6) {
+                set_state(WS::Neutral);
+            }
+            anim_phase += 1;
+            anim_timer = 0;
+            return Walker_business();
+        }
+        else anim_timer += 1;
+        return WB::Frozen;
+    }
     return Walker::Walker_business();
+}
+
+void Indigo::Walker_set_hitboxes () {
+    body_hb.box = data->body_box;
+    set_hitbox(body_hb);
+    if (state == IS::Bed) {
+        damage_hb.box = data->damage_box;
+        add_hitbox(damage_hb);
+    }
 }
 
 Pose Indigo::Walker_pose () {
@@ -155,6 +177,10 @@ Pose Indigo::Walker_pose () {
     else if (state == IS::Bed) {
         expect(anim_phase < 2);
         return poses.bed[anim_phase];
+    }
+    else if (state == IS::Bit) {
+        expect(anim_phase < 7);
+        return poses.bit[anim_phase];
     }
     else return Walker::Walker_pose();
 }
@@ -231,7 +257,8 @@ AYU_DESCRIBE(vf::IndigoPoses,
         attr("vf::WalkerPoses", base<WalkerPoses>(), include),
         attr("capturing", &IndigoPoses::capturing),
         attr("bed", &IndigoPoses::bed),
-        attr("glasses", &IndigoPoses::glasses)
+        attr("glasses", &IndigoPoses::glasses),
+        attr("bit", &IndigoPoses::bit)
     )
 )
 
@@ -245,7 +272,8 @@ AYU_DESCRIBE(vf::IndigoData,
         attr("capturing_sequence", &IndigoData::capturing_sequence),
         attr("fingering_cycle", &IndigoData::fingering_cycle, optional),
         attr("bed_cycle", &IndigoData::bed_cycle, optional),
-        attr("bed_use_limb", &IndigoData::bed_use_limb)
+        attr("bed_use_limb", &IndigoData::bed_use_limb),
+        attr("bit_sequence", &IndigoData::bit_sequence)
     )
 );
 
