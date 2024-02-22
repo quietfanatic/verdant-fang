@@ -142,11 +142,11 @@ struct Verdant : Walker {
      // restart and limbo animations, you can revive in any state.
     uint8 revive_phase = 0;
     uint8 revive_timer = 0;
-    uint32 tongue_timer = 0;
-
+    uint8 limb_layers = 1;
     Vec limb_pos [4] = {GNAN, GNAN, GNAN, GNAN};
     Indigo* indigo = null;
     float fang_vel_y = GNAN;
+    uint32 tongue_timer = 0;
 
     Verdant ();
 

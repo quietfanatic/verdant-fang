@@ -137,6 +137,8 @@ WalkerBusiness Indigo::Walker_business () {
         return WB::Frozen;
     }
     else if (state == IS::Bit) {
+        auto v = find_verdant();
+        auto& poses = static_cast<IndigoPoses&>(*data->poses);
         expect(anim_phase < 7);
         if (anim_timer >= id.bit_sequence[anim_phase]) {
             if (anim_phase == 6) {
@@ -147,6 +149,7 @@ WalkerBusiness Indigo::Walker_business () {
             return Walker_business();
         }
         else anim_timer += 1;
+        v->limb_pos[id.bed_use_limb] = pos + poses.bit[anim_phase].body->weapon;
         return WB::Frozen;
     }
     return Walker::Walker_business();

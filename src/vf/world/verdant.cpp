@@ -199,6 +199,7 @@ WalkerBusiness Verdant::Walker_business () {
     }
     else if (state == VS::Captured) {
         body_layers |= 0b1000;
+        limb_layers = body_layers;
         for (uint i = 0; i < 4; i++) {
             auto& poses = static_cast<VerdantPoses&>(*data->poses);
             limb_pos[i] = pos + poses.captured_limbs[i]->attached;
@@ -302,7 +303,8 @@ WalkerBusiness Verdant::Walker_business () {
                 case 0: body_tint.a = 0x60; break;
                 case 1: body_tint.a = 0xa0; break;
                 case 2: case 3: case 4: break;
-                case 5: case 6: case 7: body_tint = 0; break;
+                case 5: case 6: case 7:
+                    body_tint = 0; body_layers = 1; break;
                 default: never();
             }
             weapon_tint = body_tint;
@@ -354,8 +356,8 @@ WalkerBusiness Verdant::Walker_business () {
         if (indigo->anim_phase == 6) {
             pos = indigo->pos + vd.bite_indigo_offsets[indigo->anim_phase];
             vel = vd.bite_release_vel;
-            set_state(WS::Neutral);
-            return Walker::Walker_business();
+            set_state(VS::Snake);
+            return Walker_business();
         }
         else {
             pos = indigo->pos + vd.bite_indigo_offsets[indigo->anim_phase];
@@ -703,7 +705,7 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
     for (usize i = 0; i < 4; i++) {
         if (defined(limb_pos[i])) {
             draw_layers(
-                *poses.captured_limbs[i], body_layers | 0b1000,
+                *poses.captured_limbs[i], limb_layers,
                 limb_pos[i],
                 pose.z + poses.captured_limbs[i]->z_offset, {1, 1},
                 body_tint
@@ -994,10 +996,11 @@ AYU_DESCRIBE(vf::Verdant,
         attr("limbo", &Verdant::limbo, optional),
         attr("revive_phase", &Verdant::revive_phase, optional),
         attr("revive_timer", &Verdant::revive_timer, optional),
-        attr("tongue_timer", &Verdant::tongue_timer, optional),
+        attr("limb_layers", &Verdant::limb_layers, optional),
         attr("limb_pos", &Verdant::limb_pos, optional),
         attr("indigo", &Verdant::indigo, optional),
-        attr("fang_vel_y", &Verdant::fang_vel_y, optional)
+        attr("fang_vel_y", &Verdant::fang_vel_y, optional),
+        attr("tongue_timer", &Verdant::tongue_timer, optional)
     )
 )
 

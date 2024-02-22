@@ -436,14 +436,14 @@
         snake_tongue_cycle: [40 4 4 4 60]
         bite_indigo_offsets: [
             [-9 -3]
-            [0 2]
-            [-2 5]
-            [0 2]
-            [-2 5]
-            [0 2]
-            [-2 5]
+            [-18 2]
+            [-16 5]
+            [-18 2]
+            [-16 5]
+            [-18 2]
+            [-16 5]
         ]
-        bite_release_vel: [-5 3]
+        bite_release_vel: [-4 4]
         music_after_transform: assets.ayu#limestone
         unstab_sound: assets.ayu#shluk
         revive_sound: assets.ayu#hiss

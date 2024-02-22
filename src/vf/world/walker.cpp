@@ -168,7 +168,12 @@ WalkerBusiness Walker::Walker_business () {
                 }
             }
         }
-        default: never();
+        default: {
+#ifndef NDEBUG
+            never();
+#endif
+            return WB::Frozen;
+        }
     }
 }
 
@@ -514,6 +519,7 @@ void Walker::Resident_on_collide (
     else if (&hb == &body_hb && o_hb.layers_2 & Layers::Walker_Walker) {
         auto& other = static_cast<Walker&>(o);
         if (state == WS::Dead || other.state == WS::Dead) return;
+        if (business == WB::Frozen || other.business == WB::Frozen) return;
         if (!fly && !other.fly && !!floor != !!other.floor) return;
         if (invincible || other.invincible) return;
         float diff = pos.x < o.pos.x ? 1 : -1;
@@ -641,7 +647,12 @@ Pose Walker::Walker_pose () {
             }
             break;
         }
-        default: never();
+        default: {
+#ifndef NDEBUG
+            never();
+#endif
+            return poses.stand;
+        }
     }
     return r;
 }

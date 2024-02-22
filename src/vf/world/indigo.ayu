@@ -39,8 +39,8 @@
      -- Reusing weapon offset for used limb offset
     body_bed0: [vf::BodyFrame [#body [61 10] [-6 12] [5 12]]]
     body_bed1: [vf::BodyFrame [#body [87 10] [-6 12] [4 11]]]
-    body_bit0: [vf::BodyFrame [#body [65 37] [5 17] [12 15]]]
-    body_bit1: [vf::BodyFrame [#body [89 37] [4 17] [12 15]]]
+    body_bit0: [vf::BodyFrame [#body [65 37] [0 17] [12 15]]]
+    body_bit1: [vf::BodyFrame [#body [89 37] [0 17] [12 15]]]
     head: [vf::LayeredTexture [
         {
             image: assets.ayu#layer0
