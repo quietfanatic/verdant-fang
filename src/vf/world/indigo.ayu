@@ -161,6 +161,7 @@
             [#body_bed0 #head_bed null *z_overlap]
             [#body_bed1 #head_bed null *z_overlap]
         ]
+        glasses: #glasses
     }]
     data: [vf::IndigoData {
         body_box: [-6 0 6 30]

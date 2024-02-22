@@ -40,6 +40,7 @@ namespace CP = CapturingPhase;
 struct IndigoPoses : WalkerPoses {
     Pose capturing [CP::N_Phases];
     Pose bed [2];
+    Frame* glasses;
 };
 
 struct IndigoData : WalkerData {
@@ -65,10 +66,13 @@ struct Indigo : Walker {
      // Go here after CP::CloseDoor.
     Room* bedroom;
     Vec bed_pos;
+    Vec glasses_pos = GNAN;
     Indigo ();
     void init ();
     WalkerBusiness Walker_business () override;
     Pose Walker_pose () override;
+     // For drawing glasses separately
+    void Walker_draw_weapon (const Pose&) override;
 };
 
 struct IndigoMind : Mind {

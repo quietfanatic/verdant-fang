@@ -60,6 +60,8 @@ WalkerBusiness Indigo::Walker_business () {
                 set_state(IS::Bed);
                 set_room(bedroom);
                 pos = bed_pos;
+                glasses_pos = bed_pos + Vec(36, 0);
+                head_layers = 0b101;
                 left = false;
                 return WB::Frozen;
             }
@@ -158,10 +160,11 @@ Pose Indigo::Walker_pose () {
 }
 
 void Indigo::Walker_draw_weapon (const Pose& pose) {
-    auto& poses = static_cast<IndigoPoses&>(*id.poses);
+    auto& poses = static_cast<IndigoPoses&>(*data->poses);
     if (defined(glasses_pos)) {
         draw_frame(*poses.glasses, 1, glasses_pos);
     }
+    Walker::Walker_draw_weapon(pose);
 }
 
 Controls IndigoMind::Mind_think (Resident& s) {
@@ -227,7 +230,8 @@ AYU_DESCRIBE(vf::IndigoPoses,
     attrs(
         attr("vf::WalkerPoses", base<WalkerPoses>(), include),
         attr("capturing", &IndigoPoses::capturing),
-        attr("bed", &IndigoPoses::bed)
+        attr("bed", &IndigoPoses::bed),
+        attr("glasses", &IndigoPoses::glasses)
     )
 )
 
@@ -255,7 +259,8 @@ AYU_DESCRIBE(vf::Indigo,
         attr("front_door", &Indigo::front_door),
         attr("back_door", &Indigo::back_door),
         attr("bedroom", &Indigo::bedroom),
-        attr("bed_pos", &Indigo::bed_pos)
+        attr("bed_pos", &Indigo::bed_pos),
+        attr("glasses_pos", &Indigo::glasses_pos, optional)
     ),
     init<&Indigo::init>()
 )
