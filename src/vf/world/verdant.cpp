@@ -71,6 +71,24 @@ void Verdant::go_to_limbo () {
     }
 }
 
+void Verdant::animate_tongue () {
+    auto& vd = static_cast<VerdantData&>(*data);
+    uint32 acc = 0;
+    for (uint32 i = 0; i < 5; i++) {
+        acc += vd.snake_tongue_cycle[i];
+        if (tongue_timer < acc) {
+            switch (i) {
+                case 0: case 4: body_layers = 0b1; break;
+                case 1: case 3: body_layers = 0b11; break;
+                case 2: body_layers = 0b111; break;
+            }
+            break;
+        }
+        else if (i == 4) tongue_timer = 0;
+    }
+    tongue_timer += 1;
+}
+
 WalkerBusiness Verdant::Walker_business () {
     auto& vd = static_cast<VerdantData&>(*data);
      // Treat revive animation separately from other stuff
@@ -291,7 +309,43 @@ WalkerBusiness Verdant::Walker_business () {
         }
     }
     else if (state == VS::Snake) {
+        if (anim_timer == 0) {
+            tongue_timer = 0;
+            anim_timer += 1;
+        }
+        animate_tongue();
         return WB::Free;
+    }
+    else if (state == VS::SnakeAttack) {
+        if (anim_phase == 0 && anim_timer == 0) tongue_timer = 0;
+        else if (anim_phase >= 2) tongue_timer = 0;
+        else animate_tongue();
+        expect(anim_phase < 6);
+        if (anim_timer >= vd.snake_attack_sequence[anim_phase]) {
+            if (anim_phase == 0) return WB::HoldAttack;
+            if (anim_phase == 5) {
+                set_state(VS::Snake);
+            }
+            else {
+                anim_timer = 0;
+                anim_phase += 1;
+                if (anim_phase == 2) {
+                    vel += left_flip(vd.snake_attack_vel);
+                    if (data->attack_sound) data->attack_sound->play();
+                }
+            }
+            return Walker_business();
+        }
+        else {
+            anim_timer += 1;
+            switch (anim_phase) {
+                case 0: case 1: return WB::Occupied;
+                case 2: return WB::DoAttack;
+                case 3: case 4: return WB::Occupied;
+                case 5: return WB::Interruptible;
+                default: never();
+            }
+        }
     }
     return Walker::Walker_business();
 }
@@ -321,54 +375,100 @@ void Verdant::Walker_move (const Controls& controls) {
         }
         return;
     }
-    else if (state == VS::Snake) {
-        if (controls[Control::Left] && !controls[Control::Right]) {
-            left = true;
-            if (vel.x > -vd.snake_max) {
-                vel.x -= vd.snake_acc;
-                if (vel.x < -vd.snake_max) vel.x = -vd.snake_max;
+    else if (state == VS::Snake || state == VS::SnakeAttack) {
+        bool decelerate = false;
+        restart_move:
+        if (business == WB::Frozen) vel = {0, 0};
+        else if (business == WB::HoldAttack) {
+            if (!controls[Control::Attack]) {
+                anim_phase = 1;
+                anim_timer = 0;
+                business = Walker_business();
+                goto restart_move;
             }
+            decelerate = true;
         }
-        else if (controls[Control::Right]) {
-            left = false;
-            if (vel.x < vd.snake_max) {
-                vel.x += vd.snake_acc;
-                if (vel.x > vd.snake_max) vel.x = vd.snake_max;
-            }
+        else if (business == WB::DoAttack || business == WB::Occupied) {
+            decelerate = true;
         }
-        else if (floor) {
-            if (vel.x > 0) {
-                vel.x -= vd.snake_dec;
-                if (vel.x < 0) vel.x = 0;
+        else if (business == WB::Interruptible || business == WB::Free) {
+            if (controls[Control::Left] && !controls[Control::Right]) {
+                if (business == WB::Interruptible) set_state(VS::Snake);
+                tongue_timer = 0;
+                left = true;
+                if (vel.x > -vd.snake_max) {
+                    vel.x -= vd.snake_acc;
+                    if (vel.x < -vd.snake_max) vel.x = -vd.snake_max;
+                }
             }
-            else {
-                vel.x += vd.snake_dec;
-                if (vel.x > 0) vel.x = 0;
+            else if (controls[Control::Right]) {
+                if (business == WB::Interruptible) set_state(VS::Snake);
+                tongue_timer = 0;
+                left = false;
+                if (vel.x < vd.snake_max) {
+                    vel.x += vd.snake_acc;
+                    if (vel.x > vd.snake_max) vel.x = vd.snake_max;
+                }
             }
-            walk_start_x = pos.x;
-        }
-         // Jump code copied from Walker::Walker_move()
-        if (controls[Control::Jump]) {
-            if (floor && controls[Control::Jump] < vd.hold_buffer) {
-                if (controls[Control::Down]) {
-                     // Drop through semisolid
-                    if (floor->types & Types::Semisolid) {
-                        pos.y -= min(data->jump_crouch_lift, 4);
-                        floor = null;
-                        crouch = false;
-                        no_crouch_timer = 30;
+            else decelerate = true;
+            if (controls[Control::Jump]) {
+                if (floor && controls[Control::Jump] < vd.hold_buffer) {
+                    if (controls[Control::Down]) {
+                         // Drop through semisolid
+                        if (floor->types & Types::Semisolid) {
+                            pos.y -= min(data->jump_crouch_lift, 4);
+                            floor = null;
+                            crouch = false;
+                            no_crouch_timer = 30;
+                        }
                     }
+                    else {
+                        vel.y += vd.snake_jump_vel;
+                        floor = null;
+                    }
+                    if (business == WB::Interruptible) set_state(VS::Snake);
+                }
+                drop_timer = 0;
+            }
+            else if (drop_timer < data->drop_duration) {
+                drop_timer += 1;
+            }
+            if (controls[Control::Attack] &&
+                controls[Control::Attack] <= data->hold_buffer
+            ) {
+                set_state(VS::SnakeAttack);
+            }
+        }
+        if (decelerate) {
+            if (floor) {
+                if (vel.x > 0) {
+                    vel.x -= vd.snake_dec;
+                    if (vel.x < 0) vel.x = 0;
                 }
                 else {
-                    vel.y += vd.snake_jump_vel;
-                    floor = null;
+                    vel.x += vd.snake_dec;
+                    if (vel.x > 0) vel.x = 0;
                 }
-                if (business == WB::Interruptible) set_state(WS::Neutral);
+                walk_start_x = pos.x;
             }
-            drop_timer = 0;
         }
-        else if (drop_timer < data->drop_duration) {
-            drop_timer += 1;
+        vel.y -= gravity();
+        pos += vel;
+        return;
+    }
+    else if (state == VS::SnakeAttack) {
+        if (business == WB::HoldAttack) {
+            if (floor) {
+                if (vel.x > 0) {
+                    vel.x -= vd.snake_dec;
+                    if (vel.x < 0) vel.x = 0;
+                }
+                else {
+                    vel.x += vd.snake_dec;
+                    if (vel.x > 0) vel.x = 0;
+                }
+                walk_start_x = pos.x;
+            }
         }
         vel.y -= gravity();
         pos += vel;
@@ -379,7 +479,7 @@ void Verdant::Walker_move (const Controls& controls) {
 
 void Verdant::Walker_set_hitboxes () {
     auto& vd = static_cast<VerdantData&>(*data);
-    if (state == VS::Snake) {
+    if (state == VS::Snake || state == VS::SnakeAttack) {
         clear_hitboxes();
         body_hb.box = left_flip(vd.snake_box);
         add_hitbox(body_hb);
@@ -388,7 +488,7 @@ void Verdant::Walker_set_hitboxes () {
             add_hitbox(damage_hb);
         }
         if (business == WB::DoAttack) {
-            weapon_hb.box = left_flip(vd.snake_box);
+            weapon_hb.box = left_flip(vd.snake_attack_box);
             add_hitbox(weapon_hb);
         }
         return;
@@ -432,6 +532,9 @@ void Verdant::Resident_on_collide (
 void Verdant::Walker_on_hit (
     const Hitbox& hb, Walker& victim, const Hitbox& o_hb
 ) {
+    if (state == VS::Snake || state == VS::SnakeAttack) {
+        return;
+    }
      // Find place to stab
     Vec weapon_offset = data->poses->hit[0].body->weapon;
     auto& victim_body = *victim.data->poses->damage.body;
@@ -559,6 +662,10 @@ Pose Verdant::Walker_pose () {
             return poses.snake_stand;
         }
         else return poses.snake_walk[0];
+    }
+    else if (state == VS::SnakeAttack) {
+        expect(anim_phase < 6);
+        return poses.snake_attack[anim_phase];
     }
     return Walker::Walker_pose();
 }
@@ -796,7 +903,8 @@ AYU_DESCRIBE(vf::VerdantPoses,
         attr("captured_limbs", &VerdantPoses::captured_limbs),
         attr("inch", &VerdantPoses::inch),
         attr("snake_stand", &VerdantPoses::snake_stand),
-        attr("snake_walk", &VerdantPoses::snake_walk)
+        attr("snake_walk", &VerdantPoses::snake_walk),
+        attr("snake_attack", &VerdantPoses::snake_attack)
     )
 )
 
@@ -829,11 +937,15 @@ AYU_DESCRIBE(vf::VerdantData,
         attr("inch_sequence", &VerdantData::inch_sequence),
         attr("snakify_sequence", &VerdantData::snakify_sequence),
         attr("snake_box", &VerdantData::snake_box),
+        attr("snake_attack_box", &VerdantData::snake_attack_box),
         attr("snake_acc", &VerdantData::snake_acc),
         attr("snake_max", &VerdantData::snake_max),
         attr("snake_dec", &VerdantData::snake_dec),
         attr("snake_jump_vel", &VerdantData::snake_jump_vel),
         attr("snake_walk_cycle_dist", &VerdantData::snake_walk_cycle_dist),
+        attr("snake_attack_sequence", &VerdantData::snake_attack_sequence),
+        attr("snake_attack_vel", &VerdantData::snake_attack_vel),
+        attr("snake_tongue_cycle", &VerdantData::snake_tongue_cycle),
         attr("music_after_transform", &VerdantData::music_after_transform, optional),
         attr("unstab_sound", &VerdantData::unstab_sound, optional),
         attr("revive_sound", &VerdantData::revive_sound, optional),
@@ -851,8 +963,10 @@ AYU_DESCRIBE(vf::Verdant,
         attr("limbo", &Verdant::limbo, optional),
         attr("revive_phase", &Verdant::revive_phase, optional),
         attr("revive_timer", &Verdant::revive_timer, optional),
+        attr("tongue_timer", &Verdant::tongue_timer, optional),
         attr("limb_pos", &Verdant::limb_pos, optional),
-        attr("capturer", &Verdant::capturer, optional)
+        attr("capturer", &Verdant::capturer, optional),
+        attr("fang_vel_y", &Verdant::fang_vel_y, optional)
     )
 )
 

@@ -176,15 +176,25 @@
     fang_dead2: [vf::WeaponFrame [#fang [49 15]]]
     fang_dead3: [vf::WeaponFrame [#fang [49 9]]]
     fang_dead4: [vf::WeaponFrame [#fang [49 3]]]
-    snake: [vf::LayeredTexture [{
-        image: assets.ayu#layer0
-        bounds: [171 1 257 34]
-    }]]
+    snake: [vf::LayeredTexture [
+        {
+            image: assets.ayu#layer0
+            bounds: [171 1 313 34]
+        } {
+            image: assets.ayu#layer1
+            bounds: [171 1 313 34]
+        } {
+            image: assets.ayu#layer2
+            bounds: [171 1 313 34]
+        }
+    ]]
     snake_neutral: [vf::BodyFrame [#snake [22 26]]]
     snake_walk0: [vf::BodyFrame [#snake [22 15]]]
-    snake_walk1: [vf::BodyFrame [#snake [64 15]]]
+    snake_walk1: [vf::BodyFrame [#snake [60 15]]]
     snake_walk2: [vf::BodyFrame [#snake [22 3]]]
-    snake_walk3: [vf::BodyFrame [#snake [64 3]]]
+    snake_walk3: [vf::BodyFrame [#snake [60 3]]]
+    snake_preattack: [vf::BodyFrame [#snake [97 8]]]
+    snake_attack: [vf::BodyFrame [#snake [126 8]]]
     poses: [vf::VerdantPoses {
         stand: [#body_stand #head_neutral #spear_neutral]
         crouch: [#body_crouch #head_neutral #spear_neutral]
@@ -305,6 +315,14 @@
         ]
         snake_stand: [#snake_neutral]
         snake_walk: [[#snake_walk0] [#snake_walk1] [#snake_walk2] [#snake_walk3]]
+        snake_attack: [
+            [#snake_preattack]
+            [#snake_preattack]
+            [#snake_attack]
+            [#snake_attack]
+            [#snake_attack]
+            [#snake_attack]
+        ]
     }]
     data: [vf::VerdantData {
         body_box: [-6 0 6 30]
@@ -396,11 +414,15 @@
         inch_sequence: [15 15]
         snakify_sequence: [12 12 60 12 12 90 12 12]
         snake_box: [-12 0 12 6]
+        snake_attack_box: [6 6 14 14]
         snake_acc: 0.2
         snake_max: 1.6
         snake_dec: 0.3
         snake_walk_cycle_dist: 8
         snake_jump_vel: 2
+        snake_attack_sequence: [16 0 16 0 0 0]
+        snake_attack_vel: [2.4 2.4]
+        snake_tongue_cycle: [40 4 4 4 60]
         music_after_transform: assets.ayu#limestone
         unstab_sound: assets.ayu#shluk
         revive_sound: assets.ayu#hiss

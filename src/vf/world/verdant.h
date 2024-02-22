@@ -19,6 +19,7 @@ namespace VS {
     constexpr WalkerState Inch = WS::Custom + 8;
     constexpr WalkerState Snakify = WS::Custom + 9;
     constexpr WalkerState Snake = WS::Custom + 10;
+    constexpr WalkerState SnakeAttack = WS::Custom + 11;
      // Update world.ayu if this changes
     static_assert(PreTransform == 6);
 };
@@ -69,6 +70,7 @@ struct VerdantPoses : WalkerPoses {
     Pose inch [3];
     Pose snake_stand;
     Pose snake_walk [4];
+    Pose snake_attack [6];
 };
 
 struct CutsceneSound {
@@ -107,11 +109,16 @@ struct VerdantData : WalkerData {
      // 6 7 = screen glow fades
     uint8 snakify_sequence [8];
     Rect snake_box;
+    Rect snake_attack_box;
     float snake_acc;
     float snake_max;
     float snake_dec;
     float snake_walk_cycle_dist;
     float snake_jump_vel;
+     // Matches attack_sequence in meaning
+    uint8 snake_attack_sequence [6];
+    Vec snake_attack_vel;
+    uint8 snake_tongue_cycle [5];
     Music* music_after_transform = null;
     Sound* unstab_sound = null;
     Sound* revive_sound = null;
@@ -129,8 +136,8 @@ struct Verdant : Walker {
      // restart and limbo animations, you can revive in any state.
     uint8 revive_phase = 0;
     uint8 revive_timer = 0;
+    uint32 tongue_timer = 0;
 
-    Vec captured_initial_pos;
     Vec limb_pos [4] = {GNAN, GNAN, GNAN, GNAN};
     Indigo* capturer = null;
     float fang_vel_y = GNAN;
@@ -141,6 +148,7 @@ struct Verdant : Walker {
     Vec visual_center ();
 
     void go_to_limbo ();
+    void animate_tongue ();
 
      // For handling custom hit animations
     WalkerBusiness Walker_business () override;
