@@ -553,7 +553,9 @@ void Verdant::Resident_on_collide (
     if (o.types & Types::Door) {
         if (state == WS::Dead) return;
         auto& door = static_cast<Door&>(o);
-        if (door.open || door.pos == door.closed_pos) goto not_handled;
+        if (door.state != DoorState::Closed || door.pos == door.closed_pos) {
+            goto not_handled;
+        }
         Rect here = hb.box + pos;
         Rect there = o_hb.box + o.pos;
         Rect overlap = here & there;

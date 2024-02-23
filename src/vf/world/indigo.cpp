@@ -46,14 +46,10 @@ WalkerBusiness Indigo::Walker_business () {
                 verdant->set_state(VS::CapturedLimbsDetached);
             }
             else if (anim_phase == CP::Leave) {
-                if (back_door && !back_door->open) {
-                    back_door->Activatable_activate();
-                }
+                if (back_door) back_door->set_state(DoorState::Open);
             }
             else if (anim_phase == CP::CloseDoor) {
-                if (back_door && back_door->open) {
-                    back_door->Activatable_activate();
-                }
+                if (back_door) back_door->set_state(DoorState::Closed);
             }
         }
         if (anim_timer >= id.capturing_sequence[anim_phase]) {
@@ -230,9 +226,7 @@ Controls IndigoMind::Mind_think (Resident& s) {
         if (distance2(target->pos.x, me.pos.x) < length2(sight_range)) {
             me.alert_phase = 1;
             me.alert_timer = 0;
-            if (me.front_door && me.front_door->open) {
-                me.front_door->Activatable_activate();
-            }
+            if (me.front_door) me.front_door->set_state(DoorState::Closed);
             goto next_alert_phase;
         }
     }

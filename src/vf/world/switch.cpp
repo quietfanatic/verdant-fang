@@ -30,12 +30,12 @@ void Switch::Resident_before_step () {
             }
         }
     }
-    else if (cooldown) cooldown--;
+    else if (cooldown_timer) cooldown_timer--;
 }
 
 void Switch::Resident_on_collide (const Hitbox&, Resident& o, const Hitbox&) {
-    if (active && !timer && !cooldown) {
-        cooldown = 60;
+    if (active && !timer && !cooldown_timer) {
+        cooldown_timer = cooldown;
         if (delay) timer = delay;
         else {
             for (auto a : activate) {
@@ -51,7 +51,8 @@ void Switch::Resident_on_collide (const Hitbox&, Resident& o, const Hitbox&) {
 
 void Switch::Resident_draw () {
     draw_frame(
-        !active || timer || cooldown ? data->cooldown_frame : data->ready_frame,
+        !active || timer || cooldown_timer
+            ? data->cooldown_frame : data->ready_frame,
         0, pos, Z::Switch
     );
 }
@@ -72,6 +73,7 @@ AYU_DESCRIBE(vf::Switch,
         attr("activate", &Switch::activate, optional),
         attr("delay", &Switch::delay, optional),
         attr("timer", &Switch::timer, optional),
+        attr("cooldown_timer", &Switch::cooldown_timer, optional),
         attr("cooldown", &Switch::cooldown, optional),
         attr("active", &Switch::active, optional)
     ),

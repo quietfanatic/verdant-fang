@@ -24,7 +24,7 @@
         mind: #verdant_mind
         room: #start
         pos: [-32 32]
-        state: 6 --VS::PreTransform
+        --state: 6 --VS::PreTransform
         --room: #atelier
         --pos: [180 32]
         limbo: #limbo
@@ -285,10 +285,44 @@
         data: assets.ayu#block
         blocks: [
             [-16 160] [16 160] [48 160] [80 160] [112 160] [144 160] [176 160] [208 160] [240 160] [272 160] [304 160]
-            [-16 128] [16 128] [144 128] [176 128] [208 128] [240 128] [272 128] [304 128]
+            [-16 128] [16 128] [208 128] [240 128] [272 128] [304 128]
             [-16 32] [16 32] [144 96] [176 96] [208 96] [240 96] [272 96] [304 96]
             [-16 0] [16 0] [48 0] [80 0] [112 0] [144 0] [176 0] [208 0] [240 0] [272 0] [304 0]
         ]
+    }]
+    corridor_semis: [vf::Semisolids {
+        room: #corridor
+        data: assets.ayu#semisolid
+        blocks: [
+            [160 96] [192 96]
+            [96 16] [160 32] [192 32] [256 32] [288 32]
+        ]
+    }]
+    corridor_switch: [vf::Switch {
+        room: #corridor
+        data: assets.ayu#switch
+        pos: [196 144]
+        cooldown: 20
+        activate: [#corridor_door0 #corridor_door1]
+    }]
+    corridor_door0: [vf::Door {
+        room: #corridor
+        data: assets.ayu#door
+        closed_activate: stuck
+        open_activate: open
+        troll: true
+        pos: [224 32]
+        troll_dist: 84
+    }]
+    corridor_door1: [vf::Door {
+        room: #corridor
+        data: assets.ayu#door
+        state: open
+        open_activate: open
+        troll: true
+        pos: [288 96]
+        troll_dist: 84
+        no_troll_unless_open: #corridor_door0
     }]
 
     corridor_to_hive: [vf::LoadingZone {
@@ -350,7 +384,7 @@
     atelier_to_corridor_door: [vf::Door {
         room: #atelier
         data: assets.ayu#door
-        open: true
+        state: open
         pos: [37 96] --48 - 11
     }]
     atelier_to_corridor: [vf::LoadingZone {

@@ -15,7 +15,8 @@ struct Switch : Resident, Activatable {
     UniqueArray<Activatable*> activate;
     uint32 delay = 30;
     uint32 timer = 0;
-    uint32 cooldown = 0;
+    uint32 cooldown_timer = 0;
+    uint32 cooldown = 60;
     bool active = true;
     void init ();
     void Resident_before_step () override;
