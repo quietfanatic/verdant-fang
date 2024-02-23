@@ -187,6 +187,8 @@
             [#body_bit1 #head_bit]
             [#body_bit0 #head_bit]
             [#body_bit1 #head_bit]
+            [#body_bit0 #head_bit]
+            [#body_bit1 #head_bit]
         ]
         eaten: [
             [#body_dead #head_dead null *z_dead]
@@ -283,8 +285,8 @@
         flavor: strawberry
 
          -- Based on world.ayu#atelier
-        capture_target_pos: [128 64]
-        capture_weapon_pos: [200 92]
+        capture_target_pos: [120 68]
+        capture_weapon_pos: [196 88]
         capture_limb_offsets: [
             [-21 20] --left arm
             [-16 13] --right arm
@@ -304,6 +306,6 @@
         fingering_cycle: [7 13]
         bed_cycle: [20 20]
         bed_use_limb: 3
-        bit_sequence: [15 40 20 20 20 20 60]
+        bit_sequence: [15 30 12 12 12 12 12 12 60]
     }]
 }]

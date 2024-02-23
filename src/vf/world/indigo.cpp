@@ -139,9 +139,9 @@ WalkerBusiness Indigo::Walker_business () {
     }
     else if (state == IS::Bit) {
         auto& poses = static_cast<IndigoPoses&>(*data->poses);
-        expect(anim_phase < 7);
+        expect(anim_phase < 9);
         if (anim_timer >= id.bit_sequence[anim_phase]) {
-            if (anim_phase == 6) {
+            if (anim_phase == 8) {
                 set_state(WS::Neutral);
             }
             anim_phase += 1;
@@ -199,7 +199,7 @@ Pose Indigo::Walker_pose () {
         return poses.bed[anim_phase];
     }
     else if (state == IS::Bit) {
-        expect(anim_phase < 7);
+        expect(anim_phase < 9);
         return poses.bit[anim_phase];
     }
     else if (state == IS::Eaten) {

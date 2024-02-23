@@ -696,13 +696,13 @@ void Walker::Resident_draw () {
                 );
             }
         }
-        Walker_draw_weapon(pose);
     }
+    Walker_draw_weapon(pose);
     draw_decal(*this, pose);
 }
 
 void Walker::Walker_draw_weapon (const Pose& pose) {
-    if (pose.weapon && pose.weapon->target) {
+    if (pose.body && pose.weapon && pose.weapon->target) {
         Vec w_scale = defined(override_weapon_scale)
             ? override_weapon_scale : Vec(left ? -1 : 1, 1);
         Vec w_pos = defined(override_weapon_pos)

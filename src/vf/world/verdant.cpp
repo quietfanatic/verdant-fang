@@ -361,8 +361,8 @@ WalkerBusiness Verdant::Walker_business () {
     }
     else if (state == VS::SnakeBite) {
         expect(indigo);
-        expect(indigo->anim_phase < 7);
-        if (indigo->anim_phase == 6) {
+        expect(indigo->anim_phase < 9);
+        if (indigo->anim_phase == 8) {
             pos = indigo->pos + vd.bite_indigo_offsets[indigo->anim_phase];
             vel = vd.bite_release_vel;
             set_state(VS::Snake);
@@ -725,7 +725,7 @@ Pose Verdant::Walker_pose () {
         return poses.snake_attack[anim_phase];
     }
     else if (state == VS::SnakeBite) {
-        expect(indigo && indigo->anim_phase < 7);
+        expect(indigo && indigo->anim_phase < 9);
         return poses.snake_bite[indigo->anim_phase];
     }
     else if (state == VS::Eat) {

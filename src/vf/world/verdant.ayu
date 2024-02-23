@@ -377,6 +377,8 @@
             [#snake_bite1]
             [#snake_bite0]
             [#snake_bite1]
+            [#snake_bite0]
+            [#snake_bite1]
         ]
         eat: [
             [#eat0] [#eat1] [#eat2] [#eat3] [#eat4]
@@ -495,13 +497,15 @@
             [-16 5]
             [-17 -1]
             [-16 5]
+            [-17 -1]
+            [-16 5]
         ]
         bite_release_vel: [-4 4]
         eat_sequence: [
-            12 30 12 30 12 30 12 30 12 30
-            12 30 12 30 12 30 12 30 12 30
-            12 30 12 30 12 30 12 30 12 30
-            12 30 12 30
+            15 50 15 50 15 50 15 50 15 50
+            15 50 15 50 15 50 15 50 15 50
+            15 50 15 50 15 50 15 50 15 50
+            15 50 15 50
         ]
         music_after_transform: assets.ayu#limestone
         unstab_sound: assets.ayu#shluk

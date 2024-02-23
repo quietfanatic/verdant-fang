@@ -43,7 +43,7 @@ struct IndigoPoses : WalkerPoses {
     Pose capturing [CP::N_Phases];
     Pose bed [2];
     Frame* glasses;
-    Pose bit [7];
+    Pose bit [9];
     Pose eaten [34];
 };
 
@@ -56,7 +56,7 @@ struct IndigoData : WalkerData {
     uint8 fingering_cycle [2] = {0, 0};
     uint8 bed_cycle [2];
     uint8 bed_use_limb;
-    uint8 bit_sequence [7];
+    uint8 bit_sequence [9];
 };
 
 struct Indigo : Walker {

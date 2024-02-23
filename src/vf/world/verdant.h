@@ -73,7 +73,7 @@ struct VerdantPoses : WalkerPoses {
     Pose snake_stand;
     Pose snake_walk [4];
     Pose snake_attack [6];
-    Pose snake_bite [7];
+    Pose snake_bite [9];
     Pose eat [34];
 };
 
@@ -126,7 +126,7 @@ struct VerdantData : WalkerData {
     Music* music_after_transform = null;
      // Indexed by Indigo's anim_phase
      // Dunno if storing this here is right but we're doing it
-    Vec bite_indigo_offsets [7];
+    Vec bite_indigo_offsets [9];
     Vec bite_release_vel;
     uint8 eat_sequence [34];
     Sound* unstab_sound = null;
