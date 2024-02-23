@@ -3,9 +3,31 @@
         image: ../world/assets.ayu#layer1
         bounds: [506 2 598 142]
     }]]
+    main_title:   [vf::MenuImage [#text [56 133] [-56 -31 0 0]]]
+    options:      [vf::MenuImage [#text [92 27] [-33 -7 0 0]]]
+    start:        [vf::MenuImage [#text [92 130] [-22 -7 0 0]]]
+    exit:         [vf::MenuImage [#text [92 110] [-18 -7 0 0]]]
+    main_menu: [vf::Menu {
+        decorations: [[#main_title [300 160]]]
+        items: [{
+            draw: #options
+            pos: [300 120]
+            on_press: [open_options_menu]
+        } {
+            draw: #start
+            pos: [300 110]
+            on_press: [close_menu]
+        } {
+            draw: #exit
+            pos: [300 100]
+            on_press: [exit_program]
+        }]
+        selected_tint: 0xebf4e0ff
+        unselected_tint: 0xaaaaaaff
+        music: ../world/assets.ayu#verdant-fang
+    }]
     paused_title: [vf::MenuImage [#text [52 33] [-41 -14 0 0]]]
     resume:       [vf::MenuImage [#text [92 37] [-30 -7 0 0]]]
-    options:      [vf::MenuImage [#text [92 27] [-33 -7 0 0]]]
     suspend:      [vf::MenuImage [#text [92 17] [-35 -7 0 0]]]
     quit:         [vf::MenuImage [#text [92 7] [-17 -7 0 0]]]
     pause_menu: [vf::Menu {
@@ -38,7 +60,9 @@
             pos: [300 100]
             on_press: [seq [
                 [delete_state]
-                [exit_program]
+                [reset_state]
+                [close_all_menus]
+                [open_main_menu]
             ]]
         }]
         on_back: [seq [
@@ -99,7 +123,5 @@
         on_back: [close_menu]
         selected_tint: 0xebf4e0ff
         unselected_tint: 0xaaaaaaff
-         -- test
-        music: ../world/assets.ayu#verdant-fang
     }]
 }]

@@ -89,6 +89,7 @@ bool Transition::step (State& state) {
             else {
                  // No checkpoint?  Uh...reload from initial world?
                 state.load_initial();
+                if (state.current_music) state.current_music->stop();
             }
         }
          // fallthrough

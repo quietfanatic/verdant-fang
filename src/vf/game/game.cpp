@@ -110,21 +110,24 @@ Game::Game () :
         ayu::save(options_res);
     }
 
+    ayu::SharedResource menus_res (iri::constant("res:/vf/game/menus.ayu"));
+    ayu::global(&main_menu);
+    main_menu = menus_res["main_menu"][1];
+    ayu::global(&pause_menu);
+    pause_menu = menus_res["pause_menu"][1];
+    ayu::global(&options_menu);
+    options_menu = menus_res["options_menu"][1];
+
     if (ayu::source_exists(state_res->name())) {
         ayu::load(state_res);
+        menus.emplace_back(pause_menu);
     }
     else {
         state_res->set_value(ayu::Dynamic::make<State>());
         auto& state = state_res->get_value().as<State>();
         state.load_initial();
-         // Don't save state yet
+        menus.emplace_back(main_menu);
     }
-
-    ayu::SharedResource menus (iri::constant("res:/vf/game/menus.ayu"));
-    ayu::global(&pause_menu);
-    pause_menu = menus["pause_menu"][1];
-    ayu::global(&options_menu);
-    options_menu = menus["options_menu"][1];
 }
 
 Game::~Game () {

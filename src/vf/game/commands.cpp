@@ -48,25 +48,20 @@ void load_state_ () {
 }
 Command load_state (load_state_, "load_state", "Load game state");
 
-void pause_or_unpause_ () {
-    if (!current_game) return;
-    if (current_game->menus &&
-        current_game->menus[0].data == current_game->pause_menu
-    ) {
-        current_game->menus = {};
-    }
-    else {
-        current_game->menus = {};
-        current_game->menus.emplace_back(current_game->pause_menu);
-    }
-}
-Command pause_or_unpause (pause_or_unpause_, "pause_or_unpause", "Pause game if playing game; Unpause game if paused");
-
 void delete_state_ () {
     if (!current_game) return;
     ayu::remove_source(current_game->state_res->name());
 }
 Command delete_state (delete_state_, "delete_state", "Delete the saved game state");
+
+void reset_state_ () {
+    if (!current_game) return;
+     // Clear everything including transitions and stuff
+    current_game->state_res->set_value(ayu::Dynamic::make<State>());
+    auto& state = current_game->state_res->get_value().as<State>();
+    state.load_initial();
+}
+Command reset_state (reset_state_, "reset_state", "Reset game state to initial state wthout affecting saved state.");
 
 void exit_program_ () {
     exit(0);
@@ -82,6 +77,29 @@ Command ignore_held_controls (ignore_held_controls_, "ignore_held_controls", "If
 
  // Currently having pointers inside commands is broken, so we can't have a
  // generic open_menu command that takes a Menu* as an argument.
+void open_main_menu_ () {
+    if (!current_game) return;
+    if (current_game->menus &&
+        current_game->menus.back().data == current_game->main_menu
+    ) return;
+    current_game->menus.emplace_back(current_game->main_menu);
+}
+control::Command open_main_menu (open_main_menu_, "open_main_menu", "Open the main menu");
+
+void pause_or_unpause_ () {
+    if (!current_game) return;
+    if (current_game->menus &&
+        current_game->menus[0].data == current_game->pause_menu
+    ) {
+        current_game->menus = {};
+    }
+    else {
+        current_game->menus = {};
+        current_game->menus.emplace_back(current_game->pause_menu);
+    }
+}
+Command pause_or_unpause (pause_or_unpause_, "pause_or_unpause", "Pause game if playing game; Unpause game if paused");
+
 void open_options_menu_ () {
     if (!current_game) return;
     if (current_game->menus &&
@@ -96,5 +114,11 @@ void close_menu_ () {
     current_game->menus.pop_back();
 }
 control::Command close_menu (close_menu_, "close_menu", "Close the current menu");
+
+void close_all_menus_ () {
+    if (!current_game) return;
+    current_game->menus = {};
+}
+control::Command close_all_menus (close_all_menus_, "close_all_menus", "Close all menus");
 
 } // vf

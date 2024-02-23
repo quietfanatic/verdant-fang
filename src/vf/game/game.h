@@ -14,6 +14,7 @@ struct Game {
     wind::Window window;
     wind::ActiveLoop loop;
     UniqueArray<OpenMenu> menus;
+    Menu* main_menu;
     Menu* pause_menu;
     Menu* options_menu;
     Controls menu_controls = {};
