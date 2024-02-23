@@ -56,7 +56,8 @@ void pause_or_unpause_ () {
         current_game->menus = {};
     }
     else {
-        current_game->menus = {OpenMenu(current_game->pause_menu)};
+        current_game->menus = {};
+        current_game->menus.emplace_back(current_game->pause_menu);
     }
 }
 Command pause_or_unpause (pause_or_unpause_, "pause_or_unpause", "Pause game if playing game; Unpause game if paused");
@@ -86,7 +87,7 @@ void open_options_menu_ () {
     if (current_game->menus &&
         current_game->menus.back().data == current_game->options_menu
     ) return;
-    current_game->menus.push_back(OpenMenu(current_game->options_menu));
+    current_game->menus.emplace_back(current_game->options_menu);
 }
 control::Command open_options_menu (open_options_menu_, "open_options_menu", "Open the options menu");
 

@@ -104,6 +104,9 @@
          -- dang song.
         --loop_end: 159.999920
     }]
+    verdant-fang: [vf::Music {
+        source:assets/verdant-fang.mp3 volume:0.8
+    }]
      -- For some reason, having these as mp3s breaks SDL2_mixer.  Perhaps it
      -- can't play mp3 files that are too short?
     step0: [vf::Sound { source:assets/step0.wav channel:0 volume:0.5 }]

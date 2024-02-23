@@ -6,6 +6,7 @@
 
 namespace vf {
 struct Menu;
+struct Music;
 
 struct MenuDrawable {
     virtual void MenuDrawable_draw (
@@ -53,12 +54,18 @@ struct Menu {
     glow::RGBA8 selected_tint = {};
     glow::RGBA8 unselected_tint = {};
     uint32 default_index = 0;
+    Music* music = null;
 };
 
 struct OpenMenu {
     Menu* data;
     usize current_index;
     OpenMenu (Menu*);
+    ~OpenMenu ();
+    OpenMenu (const OpenMenu&) = delete;
+    OpenMenu (OpenMenu&& o) : data(o.data), current_index(o.current_index) {
+        o.data = null;
+    }
     void step (const Controls&);
     void draw ();
 };

@@ -1,12 +1,21 @@
 #include "menu.h"
 #include "../../dirt/ayu/reflection/describe.h"
 #include "game.h"
+#include "sound.h"
 
 namespace vf {
 
 OpenMenu::OpenMenu (Menu* d) :
     data(d), current_index(data->default_index)
-{ }
+{
+    if (data->music) {
+        data->music->play();
+    }
+}
+
+OpenMenu::~OpenMenu () {
+    if (data && data->music) data->music->stop();
+}
 
 void OpenMenu::step (const Controls& controls) {
      // Only allow one input at once to avoid misinputs
@@ -148,10 +157,11 @@ AYU_DESCRIBE(vf::Menu,
     attrs(
         attr("decorations", &Menu::decorations, optional),
         attr("items", &Menu::items),
+        attr("on_back", &Menu::on_back, optional),
         attr("decoration_tint", &Menu::decoration_tint, optional),
         attr("selected_tint", &Menu::selected_tint, optional),
         attr("unselected_tint", &Menu::unselected_tint, optional),
         attr("default_index", &Menu::default_index, optional),
-        attr("on_back", &Menu::on_back, optional)
+        attr("music", &Menu::music, optional)
     )
 )
