@@ -49,16 +49,38 @@
         unselected_tint: 0xaaaaaaff
     }]
     options_title: [vf::MenuImage [#text [52 52] [-45 -15 0 0]]]
-    frustration:   [vf::MenuImage [#text [92 95] [-52 -7 0 0]]]
-    low:           [vf::Frame [#text [36 86] [-14 -5 0 0]]]
-    medium:        [vf::Frame [#text [70 86] [-29 -5 0 0]]]
-    high:          [vf::Frame [#text [92 86] [-17 -5 0 0]]]
-    blood:         [vf::MenuImage [#text [92 78] [-23 -7 0 0]]]
-    show:          [vf::Frame [#text [70 69] [-20 -5 0 0]]]
-    hide:          [vf::Frame [#text [92 69] [-17 -5 0 0]]]
-    back:          [vf::MenuImage [#text [92 51] [-19 -7 0 0]]]
+    frustration: [vf::MenuImage [#text [92 95] [-52 -7 0 0]]]
+    low: [vf::MenuOption<uint8> [
+        #text [36 86] [-14 -5 0 0]
+        "data:/options.ayu#/frustration" 1
+    ]]
+    medium: [vf::MenuOption<uint8> [
+        #text [70 86] [-29 -5 0 0]
+        "data:/options.ayu#/frustration" 2
+    ]]
+    high: [vf::MenuOption<uint8> [
+        #text [92 86] [-17 -5 0 0]
+        "data:/options.ayu#/frustration" 3
+    ]]
+    blood: [vf::MenuImage [#text [92 78] [-23 -7 0 0]]]
+    show: [vf::MenuOption<bool> [
+        #text [70 69] [-20 -5 0 0]
+        "data:/options.ayu#/hide_blood" false
+    ]]
+    hide: [vf::MenuOption<bool> [
+        #text [92 69] [-17 -5 0 0]
+        "data:/options.ayu#/hide_blood" true
+    ]]
+    back: [vf::MenuImage [#text [92 51] [-19 -7 0 0]]]
     options_menu: [vf::Menu {
-        decorations: [[#options_title [300 160]]]
+        decorations: [
+            [#options_title [300 160]]
+            [#low [242 121]]
+            [#medium [277 121]]
+            [#high [300 121]]
+            [#show [277 101]]
+            [#hide [300 101]]
+        ]
         items: [{
             draw: #frustration
             pos: [300 130]
@@ -67,8 +89,8 @@
         } {
             draw: #blood
             pos: [300 110]
-            on_left: [blood true]
-            on_right: [blood false]
+            on_left: [hide_blood false]
+            on_right: [hide_blood true]
         } {
             draw: #back
             pos: [300 90]

@@ -17,11 +17,19 @@ struct MenuImage : MenuDrawable, Frame {
     void MenuDrawable_draw (Menu*, Vec, glow::RGBA8) override;
 };
 
+struct MenuOptionBase : Frame {
+    uint32* option;
+    uint32 value;
+    void draw (Menu*, Vec, bool);
+};
+
 template <class T>
-struct MenuOption : MenuDrawable {
-    Frame frame;
+struct MenuOption : MenuDrawable, MenuOptionBase {
     T* option;
-    void MenuDrawable_draw (Menu*, Vec, glow::RGBA8) override;
+    T value;
+    void MenuDrawable_draw (Menu* data, Vec pos, glow::RGBA8) override {
+        draw(data, pos, option && *option == value);
+    }
 };
 
 struct MenuDecoration {

@@ -8,6 +8,7 @@ struct Options {
      // 2 = medium, some checkpoints
      // 3 = high, no checkpoints
     uint8 frustration = 2;
+    bool hide_blood = false;
 };
 
 } // vf

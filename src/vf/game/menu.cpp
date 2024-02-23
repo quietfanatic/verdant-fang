@@ -58,6 +58,13 @@ void MenuImage::MenuDrawable_draw (Menu*, Vec pos, glow::RGBA8 tint) {
     draw_frame(*this, 0, pos, 10, {1, 1}, tint);
 }
 
+void MenuOptionBase::draw (Menu* data, Vec pos, bool eq) {
+    draw_frame(
+        *this, 0, pos, 10, {1, 1},
+        eq ? data->selected_tint : data->unselected_tint
+    );
+}
+
 void OpenMenu::draw () {
     for (auto& deco : data->decorations) {
         deco.draw->MenuDrawable_draw(
@@ -89,6 +96,36 @@ AYU_DESCRIBE(vf::MenuImage,
         attr("vf::Frame", base<Frame>(), include)
     )
 )
+
+AYU_DESCRIBE_TEMPLATE(
+    AYU_DESCRIBE_TEMPLATE_PARAMS(class T),
+    AYU_DESCRIBE_TEMPLATE_TYPE(vf::MenuOption<T>),
+    desc::name([]{
+        if constexpr (std::is_same_v<T, uint8>) {
+            return StaticString("vf::MenuOption<uint8>");
+        }
+        else if constexpr (std::is_same_v<T, bool>) {
+            return StaticString("vf::MenuOption<bool>");
+        }
+        else static_assert((T*)null);
+    }()),
+    desc::elems(
+        desc::elem(&MenuOption<T>::target),
+        desc::elem(&MenuOption<T>::offset),
+        desc::elem(&MenuOption<T>::bounds),
+        desc::elem(&MenuOption<T>::option),
+        desc::elem(&MenuOption<T>::value)
+    ),
+    desc::attrs(
+        desc::attr("vf::MenuDrawable", desc::template base<MenuDrawable>(), desc::include),
+        desc::attr("vf::Frame", desc::template base<Frame>(), desc::include),
+        desc::attr("option", &MenuOption<T>::option),
+        desc::attr("value", &MenuOption<T>::value)
+    )
+)
+
+AYU_DESCRIBE_INSTANTIATE(MenuOption<uint8>)
+AYU_DESCRIBE_INSTANTIATE(MenuOption<bool>)
 
 AYU_DESCRIBE(vf::MenuDecoration,
     elems(
