@@ -67,8 +67,10 @@ struct BugMind : Mind {
     float roam_tolerance = 8;
      // Min and max time to spit.
     IRange spit_interval;
-     // Don't spit unless speed is less than this
-    float spit_stability_requirement = 3;
+     // Boundaries for target pos to aim spit up or down
+    float spit_range_cutoffs [2] = {120, 60};
+     // Show some rectangles
+    bool debug = false;
     Controls Mind_think (Resident&) override;
 };
 

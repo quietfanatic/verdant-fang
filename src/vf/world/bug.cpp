@@ -17,6 +17,7 @@ struct BugData : WalkerData {
     Rect projectile_box;
     uint8 spit_sequence [3];
     Vec spit_mouth_offset;
+    Vec projectile_vel [3];
     float projectile_gravity;
     uint32 projectile_duration;
     uint8 projectile_anim_cycle;
@@ -88,12 +89,12 @@ void Bug::Walker_move (const Controls& controls) {
         projectile_state = 1;
         projectile_pos = pos + left_flip(bd.spit_mouth_offset);
         if (controls[Control::Up] && !controls[Control::Down]) {
-            projectile_vel = left_flip(Vec(2, 2));
+            projectile_vel = left_flip(bd.projectile_vel[0]);
         }
         else if (controls[Control::Down]) {
-            projectile_vel = left_flip(Vec(1, 0));
+            projectile_vel = left_flip(bd.projectile_vel[2]);
         }
-        else projectile_vel = left_flip(Vec(3, 0));
+        else projectile_vel = left_flip(bd.projectile_vel[1]);
         if (bd.spit_sound) bd.spit_sound->play();
     }
     if (business == WB::Free && controls[Control::Special] &&
@@ -121,8 +122,11 @@ void Bug::Resident_on_collide (
     const Hitbox& hb, Resident& o, const Hitbox& o_hb
 ) {
     if (&hb == &projectile_hb && o_hb.layers_2 & Layers::Projectile_Solid) {
-        projectile_state = 2;
-        projectile_timer = 0;
+         // Go through ceiling
+        if (projectile_pos.y < 120) {
+            projectile_state = 2;
+            projectile_timer = 0;
+        }
     }
     else if (&hb == &projectile_hb && o_hb.layers_2 & Layers::Projectile_Walker) {
         auto& victim = static_cast<Walker&>(o);
@@ -364,14 +368,26 @@ Controls BugMind::Mind_think (Resident& s) {
              // Aim projectile.  Reuse attack_rel even though it's probably not
              // very accurate.  All the numbers here are spitball estimates
              // anyway.
-            if (attack_rel.y > 0 || attack_rel.x > 120) {
+            if (attack_rel.y > 0 ||
+                self.left_flip(attack_rel.x) > spit_range_cutoffs[0]
+            ) {
                 r[Control::Up] = 1;
             }
-            else if (attack_rel.x > 30) {
+            else if (self.left_flip(attack_rel.x) > spit_range_cutoffs[1]) {
                  // Neutral
             }
             else {
                 r[Control::Down] = 1;
+            }
+            if (debug) {
+                draw_rectangle(
+                    Rect(self.pos - Vec(spit_range_cutoffs[0], 400), self.pos),
+                    0x00ff0080
+                );
+                draw_rectangle(
+                    Rect(self.pos - Vec(spit_range_cutoffs[1], 400), self.pos),
+                    0x0000ff80
+                );
             }
         }
         else if (self.state == WS::Attack && self.anim_phase < 3) {
@@ -397,27 +413,30 @@ Controls BugMind::Mind_think (Resident& s) {
                 set_roam_timer();
             }
             else self.roam_timer -= 1;
-            if (self.pos.x < self.roam_pos.x - roam_tolerance) {
-                r[Control::Right] = 1;
-            }
-            else if (self.pos.x > self.roam_pos.x + roam_tolerance) {
-                r[Control::Left] = 1;
-            }
-            if (self.pos.y < self.roam_pos.y - roam_tolerance) {
-                r[Control::Up] = 1;
-            }
-            else if (self.pos.y > self.roam_pos.y + roam_tolerance) {
-                r[Control::Down] = 1;
-            }
-            if (self.spit_timer == 0) {
-                if (
-                    length2(self.vel) <= length2(spit_stability_requirement)
-                ) {
+            if (self.spit_timer == 0 && self.projectile_state == 0) {
+                if (self.vel.y >= 0) {
                     r[Control::Special] = 1;
                     set_spit_timer();
                 }
+                else {
+                    r[Control::Up] = 1;
+                }
             }
-            else self.spit_timer -= 1;
+            else {
+                if (self.spit_timer) self.spit_timer -= 1;
+                if (self.pos.x < self.roam_pos.x - roam_tolerance) {
+                    r[Control::Right] = 1;
+                }
+                else if (self.pos.x > self.roam_pos.x + roam_tolerance) {
+                    r[Control::Left] = 1;
+                }
+                if (self.pos.y < self.roam_pos.y - roam_tolerance) {
+                    r[Control::Up] = 1;
+                }
+                else if (self.pos.y > self.roam_pos.y + roam_tolerance) {
+                    r[Control::Down] = 1;
+                }
+            }
         }
     }
     return r;
@@ -452,7 +471,8 @@ AYU_DESCRIBE(vf::BugMind,
         attr("roam_interval", &BugMind::roam_interval),
         attr("roam_tolerance", &BugMind::roam_tolerance, optional),
         attr("spit_interval", &BugMind::spit_interval),
-        attr("apit_stability_requirement", &BugMind::spit_stability_requirement, optional)
+        attr("spit_range_cutoffs", &BugMind::spit_range_cutoffs, optional),
+        attr("debug", &BugMind::debug, optional)
     )
 )
 
@@ -471,6 +491,7 @@ AYU_DESCRIBE(vf::BugData,
         attr("projectile_box", &BugData::projectile_box),
         attr("spit_sequence", &BugData::spit_sequence),
         attr("spit_mouth_offset", &BugData::spit_mouth_offset),
+        attr("projectile_vel", &BugData::projectile_vel),
         attr("projectile_gravity", &BugData::projectile_gravity),
         attr("projectile_duration", &BugData::projectile_duration),
         attr("projectile_anim_cycle", &BugData::projectile_anim_cycle),

@@ -190,12 +190,17 @@
         projectile_box: [-2 -2 2 2]
         spit_sequence: [10 20 30]
         spit_mouth_offset: [10 9]
+        projectile_vel: [
+            [2 2]
+            [2 0]
+            [1 0]
+        ]
         projectile_gravity: 0.1
         projectile_duration: 240
         projectile_anim_cycle: 8
         projectile_hit_sequence: [8 8]
         projectile_stun: 30
-        unstab_sound: assets.ayu#shluk
+        unstab_sound: null
         spit_sound: assets.ayu#spit
         projectile_hit_sound: assets.ayu#splat
     }]

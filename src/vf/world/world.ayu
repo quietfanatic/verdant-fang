@@ -377,13 +377,11 @@
     spitty: [vf::BugMind {
         target: #verdant
         sight_range: 200
-         -- Make attack area somewhat larger than tail
         attack_area: [6 -12 40 -5]
         roam_territory: [200 96 256 144]
         roam_interval: [60 300]
         spit_interval: [10 30]
     }]
-
     bappers: [vf::Bug {
         room: #storage
         data: bug.ayu#data
