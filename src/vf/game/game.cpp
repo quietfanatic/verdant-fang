@@ -120,13 +120,18 @@ Game::Game () :
          // Don't save state yet
     }
 
+    ayu::SharedResource menus (iri::constant("res:/vf/game/menus.ayu"));
     ayu::global(&pause_menu);
-    pause_menu = ayu::ResourceRef(
-        iri::constant("res:/vf/game/menus.ayu")
-    )["pause_menu"][1];
+    pause_menu = menus["pause_menu"][1];
+    ayu::global(&options_menu);
+    options_menu = menus["options_menu"][1];
 }
 
-Game::~Game () { current_game = null; }
+Game::~Game () {
+    ayu::unregister_global(&options_menu);
+    ayu::unregister_global(&pause_menu);
+    current_game = null;
+}
 
 Settings& Game::settings () {
     return settings_res->value().as_known<Settings>();

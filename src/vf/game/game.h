@@ -15,6 +15,7 @@ struct Game {
     wind::ActiveLoop loop;
     UniqueArray<OpenMenu> menus;
     Menu* pause_menu;
+    Menu* options_menu;
     Controls menu_controls = {};
     ayu::SharedResource settings_res;
     Settings& settings ();

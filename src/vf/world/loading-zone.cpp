@@ -28,6 +28,7 @@ void LoadingZone::Resident_on_collide (const Hitbox&, Resident& o, const Hitbox&
         .target_pos = target_pos,
         .type = transition,
         .save_checkpoint = checkpoint_level >= options.frustration,
+        .checkpoint_level = checkpoint_level,
         .checkpoint_transition_center = target_pos + v.visual_center(),
     };
 }

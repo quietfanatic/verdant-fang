@@ -1,31 +1,15 @@
 [ayu::Document {
-    paused_tex: [vf::LayeredTexture [{
+    text: [vf::LayeredTexture [{
         image: ../world/assets.ayu#layer1
-        bounds: [512 22 553 36]
+        bounds: [506 2 598 142]
     }]]
-    resume_tex: [vf::LayeredTexture [{
-        image: ../world/assets.ayu#layer1
-        bounds: [568 105 598 112]
-    }]]
-    options_tex: [vf::LayeredTexture [{
-        image: ../world/assets.ayu#layer1
-        bounds: [565 115 598 122]
-    }]]
-    suspend_tex: [vf::LayeredTexture [{
-        image: ../world/assets.ayu#layer1
-        bounds: [563 125 598 132]
-    }]]
-    quit_tex: [vf::LayeredTexture [{
-        image: ../world/assets.ayu#layer1
-        bounds: [581 135 598 142]
-    }]]
-    paused: [vf::Frame [#paused_tex [41 14] [-41 -14 0 0]]]
-    resume: [vf::Frame [#resume_tex [30 7] [-30 -7 0 0]]]
-    options: [vf::Frame [#options_tex [33 7] [-33 -7 0 0]]]
-    suspend: [vf::Frame [#suspend_tex [35 7] [-35 -7 0 0]]]
-    quit: [vf::Frame [#quit_tex [17 7] [-17 -7 0 0]]]
+    paused_title: [vf::Frame [#text [52 33] [-41 -14 0 0]]]
+    resume:       [vf::Frame [#text [92 37] [-30 -7 0 0]]]
+    options:      [vf::Frame [#text [92 27] [-33 -7 0 0]]]
+    suspend:      [vf::Frame [#text [92 17] [-35 -7 0 0]]]
+    quit:         [vf::Frame [#text [92 7] [-17 -7 0 0]]]
     pause_menu: [vf::Menu {
-        decorations: [[#paused [300 160]]]
+        decorations: [[#paused_title [300 160]]]
         items: [{
             frame: #resume
             pos: [300 130]
@@ -38,7 +22,10 @@
         } {
             frame: #options
             pos: [300 120]
-            on_press: []
+             -- Currently having pointers inside of commands is broken, so we
+             -- can't do
+             -- on_press: [open_menu #options_menu]
+            on_press: [open_options_menu]
         } {
             frame: #suspend
             pos: [300 110]
@@ -54,6 +41,40 @@
                 [exit_program]
             ]]
         }]
+        on_back: [seq [
+            [ignore_held_controls]
+            [close_menu]
+        ]]
+        selected_tint: 0xebf4e0ff
+        unselected_tint: 0xaaaaaaff
+    }]
+    options_title: [vf::Frame [#text [52 52] [-45 -15 0 0]]]
+    frustration:   [vf::Frame [#text [92 95] [-52 -7 0 0]]]
+    low:           [vf::Frame [#text [36 86] [-14 -5 0 0]]]
+    medium:        [vf::Frame [#text [70 86] [-29 -5 0 0]]]
+    high:          [vf::Frame [#text [92 86] [-17 -5 0 0]]]
+    blood:         [vf::Frame [#text [92 78] [-23 -7 0 0]]]
+    show:          [vf::Frame [#text [70 69] [-20 -5 0 0]]]
+    hide:          [vf::Frame [#text [92 69] [-17 -5 0 0]]]
+    back:          [vf::Frame [#text [92 51] [-19 -7 0 0]]]
+    options_menu: [vf::Menu {
+        decorations: [[#options_title [300 160]]]
+        items: [{
+            frame: #frustration
+            pos: [300 130]
+            on_left: [frustration -1]
+            on_right: [frustration +1]
+        } {
+            frame: #blood
+            pos: [300 110]
+            on_left: [blood true]
+            on_right: [blood false]
+        } {
+            frame: #back
+            pos: [300 90]
+            on_press: [close_menu]
+        }]
+        on_back: [close_menu]
         selected_tint: 0xebf4e0ff
         unselected_tint: 0xaaaaaaff
     }]

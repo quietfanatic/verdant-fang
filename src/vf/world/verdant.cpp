@@ -342,7 +342,7 @@ WalkerBusiness Verdant::Walker_business () {
                 anim_timer = 0;
                 anim_phase += 1;
                 if (anim_phase == 2) {
-                    vel += left_flip(vd.snake_attack_vel);
+                    vel = left_flip(vd.snake_attack_vel);
                     if (data->attack_sound) data->attack_sound->play();
                 }
             }
@@ -486,6 +486,7 @@ void Verdant::Walker_move (const Controls& controls) {
             if (controls[Control::Attack] &&
                 controls[Control::Attack] <= data->hold_buffer
             ) {
+                attack_done = false;
                 set_state(VS::SnakeAttack);
             }
         }
@@ -537,7 +538,7 @@ void Verdant::Walker_set_hitboxes () {
             damage_hb.box = left_flip(vd.snake_box);
             add_hitbox(damage_hb);
         }
-        if (business == WB::DoAttack) {
+        if (business == WB::DoAttack && !attack_done) {
             weapon_hb.box = left_flip(vd.snake_attack_box);
             add_hitbox(weapon_hb);
         }
@@ -583,15 +584,19 @@ void Verdant::Walker_on_hit (
     const Hitbox& hb, Walker& victim, const Hitbox& o_hb
 ) {
     if (state == VS::Snake || state == VS::SnakeAttack) {
+        auto& vd = static_cast<VerdantData&>(*data);
+        if (vd.snake_bite_sound) vd.snake_bite_sound->play();
+        victim.poison_level += 4;
+        victim.poison_timer = 360;
         if (victim.types & Types::Indigo) {
             indigo = &static_cast<Indigo&>(victim);
             expect(indigo->state == IS::Bed);
             indigo->set_state(IS::Bit);
             set_state(VS::SnakeBite);
-            indigo->poison_level = 4;
-            indigo->poison_timer = 360;
-            auto& vd = static_cast<VerdantData&>(*data);
-            if (vd.snake_bite_sound) vd.snake_bite_sound->play();
+        }
+        else {
+            victim.set_state(WS::Stun);
+            victim.stun_duration = 30;
         }
         return;
     }

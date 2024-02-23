@@ -2,6 +2,7 @@
 &z_deadplayer: -200
 &z_damage: 200
 &z_actor: 300
+&z_overlap: 400
 &z_head_offset: -10
 &z_left_limb_offset: -30
 &z_body_offset0: 0
@@ -370,7 +371,7 @@
             [#snake_attack]
         ]
         snake_bite: [
-            [#snake_bite0]
+            [#snake_bite0 null null *z_overlap]
             [#snake_bite0]
             [#snake_bite1]
             [#snake_bite0]

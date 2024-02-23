@@ -334,6 +334,7 @@ void Walker::Walker_move (const Controls& controls) {
         if (controls[Control::Attack] &&
             controls[Control::Attack] <= data->hold_buffer
         ) {
+            attack_done = false;
             set_state(WS::Attack);
         }
         break;
@@ -383,7 +384,7 @@ void Walker::Walker_set_hitboxes () {
         if (left) damage_hb.fliph();
         add_hitbox(damage_hb);
     }
-    if (business == WB::DoAttack) {
+    if (business == WB::DoAttack && !attack_done) {
         if (crouch) {
             weapon_hb.box = data->poses->crouch_attack[anim_phase].body->weapon
                           + data->poses->crouch_attack[anim_phase].weapon->hitbox;
@@ -534,6 +535,7 @@ void Walker::Resident_on_collide (
     else if (&hb == &weapon_hb && o_hb.layers_2 & Layers::Weapon_Walker) {
         auto& other = static_cast<Walker&>(o);
         if (!other.invincible) {
+            attack_done = true;
             Walker_on_hit(hb, other, o_hb);
         }
     }
@@ -556,6 +558,7 @@ void Walker::Resident_after_step () {
         if (floor) fly = false;
     }
     if (do_recoil) {
+        attack_done = true;
         if (left) {
             vel.x += 1;
             if (vel.x < 0.5) vel.x = 0.5;
@@ -869,6 +872,7 @@ AYU_DESCRIBE(vf::Walker,
         attr("pending_weapon_layers", &Walker::pending_weapon_layers, optional),
         attr("mutual_kill", &Walker::mutual_kill, optional),
         attr("stun_duration", &Walker::stun_duration, optional),
-        attr("no_crouch_timer", &Walker::no_crouch_timer, optional)
+        attr("no_crouch_timer", &Walker::no_crouch_timer, optional),
+        attr("attack_done", &Walker::attack_done, optional)
     )
 )

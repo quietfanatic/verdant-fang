@@ -50,14 +50,10 @@ Command load_state (load_state_, "load_state", "Load game state");
 
 void pause_or_unpause_ () {
     if (!current_game) return;
-    if (current_game->menus) {
-        for (auto& menu : current_game->menus) {
-            if (menu.data == current_game->pause_menu) {
-                current_game->menus = {};
-                return;
-            }
-        }
-         // In a menu but none of them are the pause menu, so do nothing
+    if (current_game->menus &&
+        current_game->menus[0].data == current_game->pause_menu
+    ) {
+        current_game->menus = {};
     }
     else {
         current_game->menus = {OpenMenu(current_game->pause_menu)};
@@ -82,5 +78,22 @@ void ignore_held_controls_ () {
     settings.disable_while_held = settings.read_controls();
 }
 Command ignore_held_controls (ignore_held_controls_, "ignore_held_controls", "If any controls are currently being held, ignore them until they are released.");
+
+ // Currently having pointers inside commands is broken, so we can't have a
+ // generic open_menu command that takes a Menu* as an argument.
+void open_options_menu_ () {
+    if (!current_game) return;
+    if (current_game->menus &&
+        current_game->menus.back().data == current_game->options_menu
+    ) return;
+    current_game->menus.push_back(OpenMenu(current_game->options_menu));
+}
+control::Command open_options_menu (open_options_menu_, "open_options_menu", "Open the options menu");
+
+void close_menu_ () {
+    if (!current_game || !current_game->menus) return;
+    current_game->menus.pop_back();
+}
+control::Command close_menu (close_menu_, "close_menu", "Close the current menu");
 
 } // vf

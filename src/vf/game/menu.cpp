@@ -27,16 +27,30 @@ void OpenMenu::step (const Controls& controls) {
         uint32 max = data->items ? data->items.size() - 1 : 0;
         if (current_index > max) current_index = max;
     }
+    else if (controls[Control::Left] == 1) {
+        if (current_index < data->items.size()) {
+            if (auto& stmt = data->items[current_index].on_left) {
+                stmt();
+            }
+        }
+    }
+    else if (controls[Control::Right] == 1) {
+        if (current_index < data->items.size()) {
+            if (auto& stmt = data->items[current_index].on_right) {
+                stmt();
+            }
+        }
+    }
     else if (controls[Control::Confirm] == 1) {
         if (current_index < data->items.size()) {
-            data->items[current_index].on_press();
+            if (auto& stmt = data->items[current_index].on_press) {
+                stmt();
+            }
         }
     }
     else if (controls[Control::Back] == 1) {
-        if (data->close_on_back) {
-             // This probably destroys this.
-            current_game->menus.pop_back();
-        }
+         // This may destroy this OpenMenu, so don't do anything more.
+        if (data->on_back) data->on_back();
     }
 }
 
@@ -65,7 +79,9 @@ AYU_DESCRIBE(vf::MenuButton,
     attrs(
         attr("frame", &MenuButton::frame),
         attr("pos", &MenuButton::pos),
-        attr("on_press", &MenuButton::on_press)
+        attr("on_press", &MenuButton::on_press, optional),
+        attr("on_left", &MenuButton::on_left, optional),
+        attr("on_right", &MenuButton::on_right, optional)
     )
 )
 
@@ -76,6 +92,6 @@ AYU_DESCRIBE(vf::Menu,
         attr("selected_tint", &Menu::selected_tint, optional),
         attr("unselected_tint", &Menu::unselected_tint, optional),
         attr("default_index", &Menu::default_index, optional),
-        attr("close_on_back", &Menu::close_on_back, optional)
+        attr("on_back", &Menu::on_back, optional)
     )
 )

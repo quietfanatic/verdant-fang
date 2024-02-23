@@ -17,6 +17,7 @@ struct Transition {
     TransitionType type = TransitionType::WipeLeft;
     bool save_checkpoint = false;
     bool load_checkpoint = false;
+    uint32 checkpoint_level = 2;
     Vec checkpoint_transition_center = camera_size / 2;
     uint32 exit_at = 6;
     uint32 enter_at = 20;
@@ -33,6 +34,7 @@ struct Transition {
 struct Checkpoint {
     ayu::SharedLocation current_room;
     Music* current_music;
+    uint32 checkpoint_level;
     Vec transition_center;
     ayu::Tree world;
 };

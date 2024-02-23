@@ -1,3 +1,6 @@
 [vf::Options {
+     -- 1 = low, lots of checkpoints
+     -- 2 = medium, some checkpoints
+     -- 3 = high, no checkpoints
     frustration: 2
 }]

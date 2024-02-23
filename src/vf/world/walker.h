@@ -220,6 +220,9 @@ struct Walker : Resident {
      // When dropping through platforms, don't allow crouch animation for this
      // many frames
     uint8 no_crouch_timer = 0;
+     // If the attack animation lasts for more than one frame, set this to true
+     // to disable the attack hitbox after hitting something.
+    bool attack_done = false;
 
      // Everything below here is only used within one frame, so don't serialize
      // any of it.

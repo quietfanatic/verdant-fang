@@ -36,6 +36,9 @@
         [[/] jump]
         [["."] attack]
         [[","] special]
+         -- Other
+        [[enter] confirm]
+        [[backspace] back]
     ]
      -- Hotkeys.  These take modifiers into account.
     commands: [

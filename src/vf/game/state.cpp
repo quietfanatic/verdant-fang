@@ -9,6 +9,7 @@
 #include "../../dirt/iri/iri.h"
 #include "camera.h"
 #include "game.h"
+#include "options.h"
 #include "room.h"
 
 namespace vf {
@@ -59,12 +60,16 @@ bool Transition::step (State& state) {
             state.checkpoint = Checkpoint{
                 .current_room = ayu::reference_to_location(state.current_room),
                 .current_music = state.current_music,
+                .checkpoint_level = checkpoint_level,
                 .transition_center = checkpoint_transition_center,
                 .world = ayu::item_to_tree(&state.world),
             };
         }
         if (load_checkpoint) {
-            if (state.checkpoint) {
+            auto& frustration = current_game->options().frustration;
+            if (state.checkpoint &&
+                state.checkpoint->checkpoint_level >= frustration
+            ) {
                 ayu::item_from_tree(&state.world, state.checkpoint->world);
                  // Do this AFTER item_from_tree to reference the new world and
                  // not the old world.
