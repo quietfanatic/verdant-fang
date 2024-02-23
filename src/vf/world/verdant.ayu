@@ -187,6 +187,9 @@
         } {
             image: assets.ayu#layer2
             bounds: [171 1 371 34]
+        } {
+            image: assets.ayu#layer3
+            bounds: [171 1 371 34]
         }
     ]]
     snake_neutral: [vf::BodyFrame [#snake [22 26]]]
@@ -381,6 +384,7 @@
             [#snake_bite0]
             [#snake_bite1]
         ]
+        snake_captured: [#snake_bite0]
         eat: [
             [#eat0] [#eat1] [#eat2] [#eat3] [#eat4]
             [#eat5] [#eat6] [#eat7] [#eat8] [#eat9]

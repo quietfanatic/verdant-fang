@@ -323,7 +323,7 @@ WalkerBusiness Verdant::Walker_business () {
         if (indigo && indigo->state == WS::Dead &&
             distance(pos.x, indigo->pos.x) < 20
         ) {
-            set_state(VS::Eat);
+            set_state(VS::SnakeEat);
             auto& poses = static_cast<VerdantPoses&>(*vd.poses);
             left = !indigo->left;
             pos = indigo->pos - left_flip(poses.eat[0].body->head);
@@ -373,7 +373,11 @@ WalkerBusiness Verdant::Walker_business () {
         }
         return WB::Frozen;
     }
-    else if (state == VS::Eat) {
+    else if (state == VS::SnakeCaptured) {
+        body_layers = 0b1001;
+        return WB::Frozen;
+    }
+    else if (state == VS::SnakeEat) {
         if (anim_timer == 0 && !(anim_phase % 2)) {
             if (vd.snake_eat_sound) vd.snake_eat_sound->play();
         }
@@ -738,7 +742,10 @@ Pose Verdant::Walker_pose () {
         expect(indigo && indigo->anim_phase < 9);
         return poses.snake_bite[indigo->anim_phase];
     }
-    else if (state == VS::Eat) {
+    else if (state == VS::SnakeCaptured) {
+        return poses.snake_captured;
+    }
+    else if (state == VS::SnakeEat) {
         expect(anim_phase < 34);
         return poses.eat[anim_phase];
     }
@@ -984,6 +991,7 @@ AYU_DESCRIBE(vf::VerdantPoses,
         attr("snake_walk", &VerdantPoses::snake_walk),
         attr("snake_attack", &VerdantPoses::snake_attack),
         attr("snake_bite", &VerdantPoses::snake_bite),
+        attr("snake_captured", &VerdantPoses::snake_captured),
         attr("eat", &VerdantPoses::eat)
     )
 )

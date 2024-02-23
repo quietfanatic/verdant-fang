@@ -15,6 +15,7 @@ namespace vf {
 
 static bool on_event (Game& game, SDL_Event* event) {
     switch (event->type) {
+         // TODO: handle SDL_QUIT
         case SDL_KEYDOWN: {
             SDL_ShowCursor(SDL_DISABLE);
             auto input = control::input_from_event(event);

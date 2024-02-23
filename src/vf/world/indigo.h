@@ -11,6 +11,7 @@ namespace IndigoState {
     constexpr WalkerState Capturing = WS::Custom + 0;
     constexpr WalkerState Bed = WS::Custom + 1;
     constexpr WalkerState Bit = WS::Custom + 2;
+    constexpr WalkerState CapturingSnake = WS::Custom + 4;
     constexpr WalkerState Eaten = WS::Custom + 3;
     static_assert(Capturing == 6);
 };
@@ -44,6 +45,7 @@ struct IndigoPoses : WalkerPoses {
     Pose bed [2];
     Frame* glasses;
     Pose bit [9];
+    Pose capturing_snake [5];
     Pose eaten [34];
 };
 
@@ -57,6 +59,13 @@ struct IndigoData : WalkerData {
     uint8 bed_cycle [2];
     uint8 bed_use_limb;
     uint8 bit_sequence [9];
+     // 0 = preattack
+     // 1 = move snake
+     // 2 = postattack
+     // 3 = waiting
+     // 4 = preattack (time limit ignored, but this array entry used to
+     // calculate sequence length)
+    uint8 capturing_snake_sequence [5];
 };
 
 struct Indigo : Walker {
@@ -76,6 +85,7 @@ struct Indigo : Walker {
 
     Indigo ();
     void init ();
+    void go_to_bed ();
     WalkerBusiness Walker_business () override;
      // Disable damage hitbox in most states
     void Walker_set_hitboxes () override;

@@ -337,7 +337,7 @@
         bounds: [328 0 328 180]
         target_room: #atelier
         target_pos: [16 32]
-        checkpoint_level: 1
+        checkpoint_level: 2
     }]
 
     atelier: [vf::Room { }]
@@ -404,6 +404,8 @@
         bounds: [328 0 328 180]
         target_room: #bedroom
         target_pos: [16 32]
+         -- There isn't really any way to die after this, but for consistency
+        checkpoint_level: 1
     }]
 
     bedroom: [vf::Room { }]

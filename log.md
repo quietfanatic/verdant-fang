@@ -201,3 +201,14 @@
 - Planned work for tomorrow: Keep cracking at these cutscenes.  If all goes well
   I might actually finish them tomorrow, and have some time left over to work on
   menus.
+#####2024-02-22 H
+- Aaaalmost done with the final cutscenes!  I've implemented biting, being
+  shaken off, poisoning, and eating.
+- Also tweaked some other parts of cutscenes.
+- Oh and fully implemented all menus, including the options and main menus.
+  Good day today.
+- Added another room, "corridor".
+- Planned work for tomorrow: Finish off final cutscene gauntlet with the
+  transformation back to human.  Then I want to step back from cutscenes a bit
+  and add more rooms, and come back to the cutscenes with a fresh mind to
+  freshen them up.

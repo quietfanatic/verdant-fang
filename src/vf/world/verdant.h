@@ -21,7 +21,8 @@ namespace VS {
     constexpr WalkerState Snake = WS::Custom + 10;
     constexpr WalkerState SnakeAttack = WS::Custom + 11;
     constexpr WalkerState SnakeBite = WS::Custom + 12;
-    constexpr WalkerState Eat = WS::Custom + 13;
+    constexpr WalkerState SnakeCaptured = WS::Custom + 13;
+    constexpr WalkerState SnakeEat = WS::Custom + 14;
      // Update world.ayu if this changes
     static_assert(PreTransform == 6);
 };
@@ -74,6 +75,7 @@ struct VerdantPoses : WalkerPoses {
     Pose snake_walk [4];
     Pose snake_attack [6];
     Pose snake_bite [9];
+    Pose snake_captured;
     Pose eat [34];
 };
 

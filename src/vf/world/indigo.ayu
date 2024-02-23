@@ -190,6 +190,13 @@
             [#body_bit0 #head_bit]
             [#body_bit1 #head_bit]
         ]
+        capturing_snake: [
+            [#body_preattack #head_fly #magic_sparkle0]
+            [#body_attack #head_fly #magic_sparkle1]
+            [#body_attack #head_fly #magic_sparkle2]
+            [#body_fly #head_fly]
+            [#body_preattack #head_fly #magic_sparkle0]
+        ]
         eaten: [
             [#body_dead #head_dead null *z_dead]
             [#body_dead #head_eaten0 null *z_dead]
@@ -301,5 +308,6 @@
         bed_cycle: [20 20]
         bed_use_limb: 3
         bit_sequence: [15 30 12 12 12 12 12 12 60]
+        capturing_snake_sequence: [12 30 12 60 20]
     }]
 }]

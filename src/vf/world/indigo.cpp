@@ -17,9 +17,23 @@ void Indigo::init () {
     if (!defined(home_pos)) home_pos = pos;
 }
 
+void Indigo::go_to_bed () {
+    set_state(IS::Bed);
+    set_room(bedroom);
+    pos = bed_pos;
+    glasses_pos = bed_pos + Vec(36, 0);
+    head_layers = 0b101;
+    left = false;
+}
+
 WalkerBusiness Indigo::Walker_business () {
     auto& id = static_cast<IndigoData&>(*data);
-    if (state == IS::Capturing) {
+    if (state == WS::Dead) {
+        if (anim_phase >= 8 && verdant && verdant->state == VS::SnakeCaptured) {
+            verdant->set_state(VS::Snake);
+        }
+    }
+    else if (state == IS::Capturing) {
         if (!verdant) verdant = find_verdant();
         if (anim_timer == 0) {
             if (anim_phase == CP::MoveTarget) {
@@ -54,12 +68,7 @@ WalkerBusiness Indigo::Walker_business () {
         }
         if (anim_timer >= id.capturing_sequence[anim_phase]) {
             if (anim_phase == CP::CloseDoor) {
-                set_state(IS::Bed);
-                set_room(bedroom);
-                pos = bed_pos;
-                glasses_pos = bed_pos + Vec(36, 0);
-                head_layers = 0b101;
-                left = false;
+                go_to_bed();
                 return WB::Frozen;
             }
             anim_phase += 1;
@@ -123,6 +132,8 @@ WalkerBusiness Indigo::Walker_business () {
         return WB::Free;
     }
     else if (state == IS::Bed) {
+        expect(anim_phase < 2);
+        if (!verdant) verdant = find_verdant();
         auto& poses = static_cast<IndigoPoses&>(*data->poses);
         if (anim_timer >= id.bed_cycle[anim_phase]) {
             anim_phase = !anim_phase;
@@ -148,6 +159,34 @@ WalkerBusiness Indigo::Walker_business () {
         verdant->limb_pos[id.bed_use_limb] =
             pos + poses.bit[anim_phase].body->weapon;
         return WB::Frozen;
+    }
+    else if (state == IS::CapturingSnake) {
+        expect(anim_phase < 5);
+        if (anim_phase == 4) {
+             // Stop, wait for poison
+        }
+        else if (anim_timer >= id.capturing_snake_sequence[anim_phase]) {
+            anim_phase += 1;
+            anim_timer = 0;
+            if (anim_phase == 1) capture_initial_pos = verdant->pos;
+            return Walker_business();
+        }
+        else anim_timer += 1;
+        if (anim_phase == 1) {
+            verdant->set_state(VS::SnakeCaptured);
+            verdant->pos = lerp(
+                capture_initial_pos,
+                id.capture_target_pos,
+                ease_in_out_sin(
+                    float(anim_timer) / id.capturing_snake_sequence[anim_phase]
+                )
+            );
+        }
+        else if (anim_phase == 2) {
+            verdant->set_state(VS::SnakeCaptured);
+            verdant->pos = id.capture_target_pos;
+        }
+        return WB::Free;
     }
     else if (state == IS::Eaten) {
          // Not really anything to do here, we're already hosed.
@@ -198,6 +237,10 @@ Pose Indigo::Walker_pose () {
         expect(anim_phase < 9);
         return poses.bit[anim_phase];
     }
+    else if (state == IS::CapturingSnake) {
+        expect(anim_phase < 5);
+        return poses.capturing_snake[anim_phase];
+    }
     else if (state == IS::Eaten) {
         if (anim_phase == 0) {
             expect(verdant && verdant->anim_phase < 34);
@@ -234,6 +277,14 @@ Controls IndigoMind::Mind_think (Resident& s) {
         Vec goal = me.home_pos;
         if (me.poison_level) {
             goal = Vec(160, 80);
+            auto& id = static_cast<IndigoData&>(*me.data);
+            if (me.state == WS::Neutral) {
+                uint32 anim_len = 0;
+                for (auto ph : id.capturing_snake_sequence) anim_len += ph;
+                if (me.poison_timer <= anim_len) {
+                    me.set_state(IS::CapturingSnake);
+                }
+            }
         }
         if (me.state == IS::Capturing && me.back_door &&
             (me.anim_phase >= CP::Leave && me.anim_phase <= CP::CloseDoor)
@@ -283,6 +334,13 @@ void do_captured_sequence_ () {
 }
 control::Command do_captured_sequence (do_captured_sequence_, "do_captured_sequence");
 
+void put_indigo_to_bed_ () {
+    if (auto i = find_indigo()) {
+        i->go_to_bed();
+    }
+}
+control::Command put_indigo_to_bed (put_indigo_to_bed_, "put_indigo_to_bed");
+
 } using namespace vf;
 
 AYU_DESCRIBE(vf::IndigoPoses,
@@ -292,6 +350,7 @@ AYU_DESCRIBE(vf::IndigoPoses,
         attr("bed", &IndigoPoses::bed),
         attr("glasses", &IndigoPoses::glasses),
         attr("bit", &IndigoPoses::bit),
+        attr("capturing_snake", &IndigoPoses::capturing_snake),
         attr("eaten", &IndigoPoses::eaten)
     )
 )
@@ -307,7 +366,8 @@ AYU_DESCRIBE(vf::IndigoData,
         attr("fingering_cycle", &IndigoData::fingering_cycle, optional),
         attr("bed_cycle", &IndigoData::bed_cycle, optional),
         attr("bed_use_limb", &IndigoData::bed_use_limb),
-        attr("bit_sequence", &IndigoData::bit_sequence)
+        attr("bit_sequence", &IndigoData::bit_sequence),
+        attr("capturing_snake_sequence", &IndigoData::capturing_snake_sequence, optional)
     )
 );
 
