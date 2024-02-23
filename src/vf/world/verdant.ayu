@@ -201,40 +201,46 @@
         image: assets.ayu#layer0
         bounds: [532 66 572 372]
     }]]
-    eat0: [vf::BodyFrame [#eat [21 298]]]
-    eat1: [vf::BodyFrame [#eat [21 289]]]
-    eat2: [vf::BodyFrame [#eat [21 280]]]
-    eat3: [vf::BodyFrame [#eat [21 271]]]
-    eat4: [vf::BodyFrame [#eat [21 262]]]
-    eat5: [vf::BodyFrame [#eat [21 253]]]
-    eat6: [vf::BodyFrame [#eat [21 244]]]
-    eat7: [vf::BodyFrame [#eat [21 235]]]
-    eat8: [vf::BodyFrame [#eat [21 226]]]
-    eat9: [vf::BodyFrame [#eat [21 217]]]
-    eat10: [vf::BodyFrame [#eat [21 208]]]
-    eat11: [vf::BodyFrame [#eat [21 199]]]
-    eat12: [vf::BodyFrame [#eat [21 190]]]
-    eat13: [vf::BodyFrame [#eat [21 181]]]
-    eat14: [vf::BodyFrame [#eat [21 172]]]
-    eat15: [vf::BodyFrame [#eat [21 163]]]
-    eat16: [vf::BodyFrame [#eat [21 154]]]
-    eat17: [vf::BodyFrame [#eat [21 145]]]
-    eat18: [vf::BodyFrame [#eat [21 136]]]
-    eat19: [vf::BodyFrame [#eat [21 127]]]
-    eat20: [vf::BodyFrame [#eat [21 118]]]
-    eat21: [vf::BodyFrame [#eat [21 109]]]
-    eat22: [vf::BodyFrame [#eat [21 100]]]
-    eat23: [vf::BodyFrame [#eat [21 91]]]
-    eat24: [vf::BodyFrame [#eat [21 82]]]
-    eat25: [vf::BodyFrame [#eat [21 73]]]
-    eat26: [vf::BodyFrame [#eat [21 64]]]
-    eat27: [vf::BodyFrame [#eat [21 55]]]
-    eat28: [vf::BodyFrame [#eat [21 46]]]
-    eat29: [vf::BodyFrame [#eat [21 37]]]
-    eat30: [vf::BodyFrame [#eat [21 28]]]
-    eat31: [vf::BodyFrame [#eat [21 19]]]
-    eat32: [vf::BodyFrame [#eat [21 10]]]
-    eat33: [vf::BodyFrame [#eat [21 1]]]
+     -- Instead of moving self, we're moving the frame offset.  The frame
+     -- origin starts 1 before the front of the head and ends in the middle of
+     -- the snake in the same place as snake_neutral.  Also we're reusing the
+     -- head offset to store the position of the prey.  The prey's origin is the
+     -- center of her knee.
+    eat0: [vf::BodyFrame [#eat [37 298] [14 0]]]
+    eat1: [vf::BodyFrame [#eat [37 289] [14 0]]]
+    eat2: [vf::BodyFrame [#eat [36 280] [14 0]]]
+    eat3: [vf::BodyFrame [#eat [36 271] [14 0]]]
+    eat4: [vf::BodyFrame [#eat [35 262] [14 0]]]
+    eat5: [vf::BodyFrame [#eat [35 253] [14 0]]]
+    eat6: [vf::BodyFrame [#eat [34 244] [14 0]]]
+    eat7: [vf::BodyFrame [#eat [34 235] [14 0]]]
+    eat8: [vf::BodyFrame [#eat [33 226] [14 0]]]
+    eat9: [vf::BodyFrame [#eat [33 217] [14 0]]]
+     -- Start moving prey as well
+    eat10: [vf::BodyFrame [#eat [32 208] [13 0]]]
+    eat11: [vf::BodyFrame [#eat [32 199] [13 0]]]
+    eat12: [vf::BodyFrame [#eat [31 190] [12 0]]]
+    eat13: [vf::BodyFrame [#eat [31 181] [12 0]]]
+    eat14: [vf::BodyFrame [#eat [30 172] [11 0]]]
+    eat15: [vf::BodyFrame [#eat [30 163] [11 0]]]
+    eat16: [vf::BodyFrame [#eat [29 154] [10 0]]]
+    eat17: [vf::BodyFrame [#eat [29 145] [10 0]]]
+    eat18: [vf::BodyFrame [#eat [28 136] [9 0]]]
+    eat19: [vf::BodyFrame [#eat [28 127] [9 0]]]
+    eat20: [vf::BodyFrame [#eat [27 118] [8 0]]]
+    eat21: [vf::BodyFrame [#eat [27 109] [8 0]]]
+    eat22: [vf::BodyFrame [#eat [26 100] [7 0]]]
+    eat23: [vf::BodyFrame [#eat [26 91] [7 0]]]
+    eat24: [vf::BodyFrame [#eat [25 82] [6 0]]]
+    eat25: [vf::BodyFrame [#eat [25 73] [6 0]]]
+    eat26: [vf::BodyFrame [#eat [24 64] [5 0]]]
+    eat27: [vf::BodyFrame [#eat [24 55] [5 0]]]
+    eat28: [vf::BodyFrame [#eat [23 46] [4 0]]]
+    eat29: [vf::BodyFrame [#eat [23 37] [4 0]]]
+    eat30: [vf::BodyFrame [#eat [22 28] [3 0]]]
+    eat31: [vf::BodyFrame [#eat [22 19] [3 0]]]
+    eat32: [vf::BodyFrame [#eat [21 10] [2 0]]]
+    eat33: [vf::BodyFrame [#eat [21 1] [2 0]]]
     poses: [vf::VerdantPoses {
         stand: [#body_stand #head_neutral #spear_neutral]
         crouch: [#body_crouch #head_neutral #spear_neutral]
@@ -491,6 +497,12 @@
             [-16 5]
         ]
         bite_release_vel: [-4 4]
+        eat_sequence: [
+            12 30 12 30 12 30 12 30 12 30
+            12 30 12 30 12 30 12 30 12 30
+            12 30 12 30 12 30 12 30 12 30
+            12 30 12 30
+        ]
         music_after_transform: assets.ayu#limestone
         unstab_sound: assets.ayu#shluk
         revive_sound: assets.ayu#hiss

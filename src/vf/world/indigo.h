@@ -11,6 +11,7 @@ namespace IndigoState {
     constexpr WalkerState Capturing = WS::Custom + 0;
     constexpr WalkerState Bed = WS::Custom + 1;
     constexpr WalkerState Bit = WS::Custom + 2;
+    constexpr WalkerState Eaten = WS::Custom + 3;
     static_assert(Capturing == 6);
 };
 namespace IS = IndigoState;
@@ -71,6 +72,8 @@ struct Indigo : Walker {
     Room* bedroom;
     Vec bed_pos;
     Vec glasses_pos = GNAN;
+    Verdant* verdant = null;
+
     Indigo ();
     void init ();
     WalkerBusiness Walker_business () override;

@@ -20,29 +20,30 @@ void Indigo::init () {
 WalkerBusiness Indigo::Walker_business () {
     auto& id = static_cast<IndigoData&>(*data);
     if (state == IS::Capturing) {
-        auto v = find_verdant();
+        if (!verdant) verdant = find_verdant();
         if (anim_timer == 0) {
             if (anim_phase == CP::MoveTarget) {
-                v->set_state(VS::Captured);
-                v->indigo = this;
-                capture_initial_pos = v->pos;
-                v->left = false;
+                verdant->set_state(VS::Captured);
+                verdant->indigo = this;
+                capture_initial_pos = verdant->pos;
+                verdant->left = false;
             }
             else if (anim_phase == CP::MoveTargetPost) {
-                v->pos = id.capture_target_pos;
+                verdant->pos = id.capture_target_pos;
             }
             else if (anim_phase == CP::MoveWeapon) {
-                v->set_state(VS::CapturedWeaponTaken);
-                capture_initial_pos = v->pos + v->Walker_pose().body->weapon;
+                verdant->set_state(VS::CapturedWeaponTaken);
+                capture_initial_pos = verdant->pos +
+                                      verdant->Walker_pose().body->weapon;
             }
             else if (anim_phase == CP::HaveWeapon) {
-                v->override_weapon_pos = id.capture_weapon_pos;
+                verdant->override_weapon_pos = id.capture_weapon_pos;
             }
             else if (anim_phase == CP::BreakWeapon) {
-                v->set_state(VS::CapturedWeaponBroken);
+                verdant->set_state(VS::CapturedWeaponBroken);
             }
             else if (anim_phase == CP::DetachLimb0) {
-                v->set_state(VS::CapturedLimbsDetached);
+                verdant->set_state(VS::CapturedLimbsDetached);
             }
             else if (anim_phase == CP::Leave) {
                 if (back_door && !back_door->open) {
@@ -72,7 +73,7 @@ WalkerBusiness Indigo::Walker_business () {
             if (anim_phase == CP::MoveTarget) {
                 float t = float(anim_timer) /
                           id.capturing_sequence[anim_phase];
-                v->pos = lerp(
+                verdant->pos = lerp(
                     capture_initial_pos,
                     id.capture_target_pos,
                     ease_in_out_sin(t)
@@ -81,7 +82,7 @@ WalkerBusiness Indigo::Walker_business () {
             else if (anim_phase == CP::MoveWeapon) {
                 float t = float(anim_timer) /
                           id.capturing_sequence[anim_phase];
-                v->override_weapon_pos = lerp(
+                verdant->override_weapon_pos = lerp(
                     capture_initial_pos,
                     id.capture_weapon_pos,
                     ease_out_sin(t)
@@ -91,26 +92,26 @@ WalkerBusiness Indigo::Walker_business () {
                      anim_phase <= CP::DetachLimb3
             ) {
                 if (anim_timer == 0) {
-                    auto& vd = static_cast<VerdantData&>(*v->data);
+                    auto& vd = static_cast<VerdantData&>(*verdant->data);
                     if (vd.limb_detach_sound) vd.limb_detach_sound->play();
                 }
                 uint8 i = id.capture_limb_order[anim_phase - CP::DetachLimb0];
-                auto& vp = static_cast<VerdantPoses&>(*v->data->poses);
+                auto& vp = static_cast<VerdantPoses&>(*verdant->data->poses);
                 float t = float(anim_timer) /
                           id.capturing_sequence[anim_phase];
-                v->limb_pos[i] = v->pos + lerp(
+                verdant->limb_pos[i] = verdant->pos + lerp(
                     vp.captured_limbs[i]->attached,
                     vp.captured_limbs[i]->detached,
                     ease_out_cubic(t)
                 );
             }
             else if (anim_phase == CP::TakeLimbs) {
-                auto& vp = static_cast<VerdantPoses&>(*v->data->poses);
+                auto& vp = static_cast<VerdantPoses&>(*verdant->data->poses);
                 float t = float(anim_timer) /
                           id.capturing_sequence[anim_phase];
                 for (usize i = 0; i < 4; i++) {
-                    v->limb_pos[i] = lerp(
-                        v->pos + vp.captured_limbs[i]->detached,
+                    verdant->limb_pos[i] = lerp(
+                        verdant->pos + vp.captured_limbs[i]->detached,
                         pos + id.capture_limb_offsets[i],
                         ease_in_out_sin(t)
                     );
@@ -118,7 +119,7 @@ WalkerBusiness Indigo::Walker_business () {
             }
             else if (anim_phase > CP::TakeLimbs) {
                 for (usize i = 0; i < 4; i++) {
-                    v->limb_pos[i] = pos + id.capture_limb_offsets[i];
+                    verdant->limb_pos[i] = pos + id.capture_limb_offsets[i];
                 }
             }
             anim_timer += 1;
@@ -126,18 +127,17 @@ WalkerBusiness Indigo::Walker_business () {
         return WB::Free;
     }
     else if (state == IS::Bed) {
-        auto v = find_verdant();
         auto& poses = static_cast<IndigoPoses&>(*data->poses);
         if (anim_timer >= id.bed_cycle[anim_phase]) {
             anim_phase = !anim_phase;
             anim_timer = 1;
         }
         else anim_timer += 1;
-        v->limb_pos[id.bed_use_limb] = pos + poses.bed[anim_phase].body->weapon;
+        verdant->limb_pos[id.bed_use_limb] =
+            pos + poses.bed[anim_phase].body->weapon;
         return WB::Frozen;
     }
     else if (state == IS::Bit) {
-        auto v = find_verdant();
         auto& poses = static_cast<IndigoPoses&>(*data->poses);
         expect(anim_phase < 7);
         if (anim_timer >= id.bit_sequence[anim_phase]) {
@@ -149,13 +149,19 @@ WalkerBusiness Indigo::Walker_business () {
             return Walker_business();
         }
         else anim_timer += 1;
-        v->limb_pos[id.bed_use_limb] = pos + poses.bit[anim_phase].body->weapon;
+        verdant->limb_pos[id.bed_use_limb] =
+            pos + poses.bit[anim_phase].body->weapon;
+        return WB::Frozen;
+    }
+    else if (state == IS::Eaten) {
+         // Not really anything to do here, we're already hosed.
         return WB::Frozen;
     }
     return Walker::Walker_business();
 }
 
 void Indigo::Walker_set_hitboxes () {
+    if (state == IS::Eaten) clear_hitboxes();
     body_hb.box = data->body_box;
     set_hitbox(body_hb);
     if (state == IS::Bed) {
@@ -195,6 +201,13 @@ Pose Indigo::Walker_pose () {
     else if (state == IS::Bit) {
         expect(anim_phase < 7);
         return poses.bit[anim_phase];
+    }
+    else if (state == IS::Eaten) {
+        if (anim_phase == 0) {
+            expect(verdant && verdant->anim_phase < 34);
+            return poses.eaten[verdant->anim_phase];
+        }
+        else return Pose{};
     }
     else return Walker::Walker_pose();
 }
@@ -312,7 +325,8 @@ AYU_DESCRIBE(vf::Indigo,
         attr("back_door", &Indigo::back_door),
         attr("bedroom", &Indigo::bedroom),
         attr("bed_pos", &Indigo::bed_pos),
-        attr("glasses_pos", &Indigo::glasses_pos, optional)
+        attr("glasses_pos", &Indigo::glasses_pos, optional),
+        attr("verdant", &Indigo::verdant, optional)
     ),
     init<&Indigo::init>()
 )

@@ -21,6 +21,7 @@ namespace VS {
     constexpr WalkerState Snake = WS::Custom + 10;
     constexpr WalkerState SnakeAttack = WS::Custom + 11;
     constexpr WalkerState SnakeBite = WS::Custom + 12;
+    constexpr WalkerState Eat = WS::Custom + 13;
      // Update world.ayu if this changes
     static_assert(PreTransform == 6);
 };
@@ -127,6 +128,7 @@ struct VerdantData : WalkerData {
      // Dunno if storing this here is right but we're doing it
     Vec bite_indigo_offsets [7];
     Vec bite_release_vel;
+    uint8 eat_sequence [34];
     Sound* unstab_sound = null;
     Sound* revive_sound = null;
     Sound* spear_break_sound = null;

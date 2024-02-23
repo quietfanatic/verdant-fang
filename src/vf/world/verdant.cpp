@@ -320,6 +320,15 @@ WalkerBusiness Verdant::Walker_business () {
         return WB::Free;
     }
     else if (state == VS::SnakeAttack) {
+        if (indigo && indigo->state == WS::Dead &&
+            distance(pos.x, indigo->pos.x) < 20
+        ) {
+            set_state(VS::Eat);
+            auto& poses = static_cast<VerdantPoses&>(*vd.poses);
+            pos = indigo->pos - poses.eat[0].body->head;
+            left = !indigo->left;
+            return Walker_business();
+        }
         if (anim_phase == 0 && anim_timer == 0) tongue_timer = 0;
         else if (anim_phase >= 2) tongue_timer = 0;
         else animate_tongue();
@@ -362,6 +371,27 @@ WalkerBusiness Verdant::Walker_business () {
         else {
             pos = indigo->pos + vd.bite_indigo_offsets[indigo->anim_phase];
         }
+        return WB::Frozen;
+    }
+    else if (state == VS::Eat) {
+        if (anim_timer >= vd.eat_sequence[anim_phase]) {
+            if (anim_phase == 33) {
+                indigo->verdant = null;
+                indigo->anim_phase = 1;
+                indigo = null;
+                set_state(VS::Snake);
+            }
+            else {
+                anim_phase += 1;
+                anim_timer = 0;
+            }
+            return Walker_business();
+        }
+        else anim_timer += 1;
+        expect(indigo);
+        indigo->set_state(IS::Eaten);
+        auto& poses = static_cast<VerdantPoses&>(*vd.poses);
+        indigo->pos = pos + poses.eat[anim_phase].body->head;
         return WB::Frozen;
     }
     return Walker::Walker_business();
@@ -698,6 +728,10 @@ Pose Verdant::Walker_pose () {
         expect(indigo && indigo->anim_phase < 7);
         return poses.snake_bite[indigo->anim_phase];
     }
+    else if (state == VS::Eat) {
+        expect(anim_phase < 34);
+        return poses.eat[anim_phase];
+    }
     return Walker::Walker_pose();
 }
 
@@ -984,6 +1018,7 @@ AYU_DESCRIBE(vf::VerdantData,
         attr("snake_tongue_cycle", &VerdantData::snake_tongue_cycle),
         attr("bite_indigo_offsets", &VerdantData::bite_indigo_offsets),
         attr("bite_release_vel", &VerdantData::bite_release_vel),
+        attr("eat_sequence", &VerdantData::eat_sequence),
         attr("music_after_transform", &VerdantData::music_after_transform, optional),
         attr("unstab_sound", &VerdantData::unstab_sound, optional),
         attr("revive_sound", &VerdantData::revive_sound, optional),
