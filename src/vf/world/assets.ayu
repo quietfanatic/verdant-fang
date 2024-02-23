@@ -96,7 +96,8 @@
      -- how it implements its echo filter, which is why we're converting to mono
      -- later in the pipeline.
     limestone: [vf::Music {
-        source:assets/limestone.mp3 volume:0.8
+        source:assets/limestone.mp3
+        volume:0.8
          -- 68 measures * 4 beats/measure * 0.588235 s/beat
          -- Weird that it's almost 160 but not quite
          -- Mix_GetMusicPosition isn't supported in the version of SDL2_mixer in
@@ -105,7 +106,8 @@
         --loop_end: 159.999920
     }]
     verdant-fang: [vf::Music {
-        source:assets/verdant-fang.mp3 volume:0.8
+        source:assets/verdant-fang.mp3
+        volume:0.7
     }]
      -- For some reason, having these as mp3s breaks SDL2_mixer.  Perhaps it
      -- can't play mp3 files that are too short?

@@ -332,12 +332,84 @@
         target_pos: [304 64]
         transition: wipe_right
     }]
-    corridor_to_atelier: [vf::LoadingZone {
+    corridor_to_storage: [vf::LoadingZone {
         room: #corridor
+        bounds: [328 0 328 180]
+        target_room: #storage
+        target_pos: [16 32]
+        checkpoint_level: 2
+    }]
+
+    storage: [vf::Room { }]
+    storage_bg: [vf::Scenery {
+        room: #storage
+        data: assets.ayu#cave
+        pos: [0 0]
+    }]
+    storage_blocks: [vf::Blocks {
+        room: #storage
+        data: assets.ayu#block
+        blocks: [
+            [-16 160] [16 160] [48 160] [80 160] [112 160] [144 160] [176 160] [208 160] [240 160] [272 160] [304 160]
+            [-16 128] [16 128] [272 128] [304 128]
+            [-16 96] [16 96] [48 96] [272 96] [304 96]
+            [-16 0] [16 0] [48 0] [80 0] [112 0] [144 0] [176 0] [208 0] [240 0] [272 0] [304 0]
+        ]
+    }]
+    storage_semis: [vf::Semisolids {
+        room: #storage
+        data: assets.ayu#semisolid
+        blocks: [
+            [64 128] [96 128] [128 128]
+                                        [192 96] [224 96]
+            [96 64] [128 64]
+                                        [192 32] [224 32]
+            [96 0] [128 0]
+        ]
+    }]
+    storage_switch: [vf::Switch {
+        room: #storage
+        pos: [60 144]
+        data: assets.ayu#switch
+        activate: [#storage_to_atelier_door]
+    }]
+
+    spitty: [vf::BugMind {
+        target: #verdant
+        sight_range: 200
+         -- Make attack area somewhat larger than tail
+        attack_area: [6 -12 40 -5]
+        roam_territory: [200 96 256 144]
+        roam_interval: [60 300]
+        spit_interval: [10 30]
+    }]
+
+    bappers: [vf::Bug {
+        room: #storage
+        data: bug.ayu#data
+        mind: #spitty
+        pos: [220 105]
+        floor: #storage_semis
+    }]
+
+    storage_to_corridor: [vf::LoadingZone {
+        room: #storage
+        bounds: [-8 0 -8 180]
+        target_room: #corridor
+        target_pos: [304 32]
+        transition: wipe_right
+    }]
+    storage_to_atelier_door: [vf::Door {
+        room: #storage
+        pos: [288 32]
+        data: assets.ayu#door
+    }]
+    storage_to_atelier: [vf::LoadingZone {
+        room: #storage
         bounds: [328 0 328 180]
         target_room: #atelier
         target_pos: [16 32]
-        checkpoint_level: 2
+        checkpoint_level: 1
     }]
 
     atelier: [vf::Room { }]
@@ -375,19 +447,19 @@
         --body_layers: 0x3 --leotard
         --body_layers: 0x1 --naked
         head_layers: 0x7 --glasses and hat
-        front_door: #atelier_to_corridor_door
+        front_door: #atelier_to_storage_door
         back_door: #atelier_to_bedroom_door
         bedroom: #bedroom
         bed_pos: [208 48]
     }]
 
-    atelier_to_corridor_door: [vf::Door {
+    atelier_to_storage_door: [vf::Door {
         room: #atelier
         data: assets.ayu#door
         state: open
         pos: [37 96] --48 - 11
     }]
-    atelier_to_corridor: [vf::LoadingZone {
+    atelier_to_storage: [vf::LoadingZone {
         room: #atelier
         bounds: [-8 0 -8 180]
         target_room: #corridor

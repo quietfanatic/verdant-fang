@@ -67,9 +67,10 @@
         [[ctrl 1] [trigger_loading_zone start_to_den]]
         [[ctrl 2] [trigger_loading_zone den_to_hive]]
         [[ctrl 3] [trigger_loading_zone hive_to_corridor]]
-        [[ctrl 4] [trigger_loading_zone corridor_to_atelier]]
+        [[ctrl 4] [trigger_loading_zone corridor_to_storage]]
          -- ctrl 5 seems to be busted on my machine???
-        [[ctrl 6] [seq [
+        [[ctrl 6] [trigger_loading_zone storage_to_atelier]]
+        [[ctrl 7] [seq [
             [put_indigo_to_bed]
             [trigger_loading_zone atelier_to_bedroom]
         ]]]
