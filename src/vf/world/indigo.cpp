@@ -238,6 +238,9 @@ Controls IndigoMind::Mind_think (Resident& s) {
     }
     else if (me.alert_phase == 1) {
         Vec goal = me.home_pos;
+        if (me.poison_level) {
+            goal = Vec(160, 80);
+        }
         if (me.state == IS::Capturing && me.back_door &&
             (me.anim_phase >= CP::Leave && me.anim_phase <= CP::CloseDoor)
         ) {

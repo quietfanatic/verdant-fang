@@ -45,6 +45,9 @@
     body_bit1: [vf::BodyFrame [#body [89 67] [0 17] [12 15]]]
     body_damage: [vf::BodyFrame [#body [13 4] [0 22]]]
     body_dead: [vf::BodyFrame [#body [70 55] [9 3]]]
+    body_eaten0: [vf::BodyFrame [#body [45 21] [9 3]]]
+    body_eaten1: [vf::BodyFrame [#body [45 10] [9 3]]]
+    body_eaten2: [vf::BodyFrame [#body [78 21] [9 3]]]
     head: [vf::LayeredTexture [
         {
             image: assets.ayu#layer0
@@ -191,31 +194,19 @@
             [#body_dead #head_eaten0 null *z_dead]
             [#body_dead #head_eaten1 null *z_dead]
             [#body_dead #head_eaten1 null *z_dead]
+
             [#body_dead #head_eaten2 null *z_dead]
             [#body_dead #head_eaten2 null *z_dead]
             [#body_dead #head_eaten3 null *z_dead]
-
             [#body_dead #head_eaten3 null *z_dead]
             [#body_dead #head_eaten4 null *z_dead]
+
             [#body_dead #head_eaten4 null *z_dead]
             [#body_dead null null *z_dead]
             [#body_dead null null *z_dead]
             [#body_dead null null *z_dead]
             [#body_dead null null *z_dead]
-            [#body_dead null null *z_dead]
 
-            [#body_dead null null *z_dead]
-            [#body_dead null null *z_dead]
-            [#body_dead null null *z_dead]
-            [#body_dead null null *z_dead]
-            [#body_dead null null *z_dead]
-            [#body_dead null null *z_dead]
-            [#body_dead null null *z_dead]
-            [#body_dead null null *z_dead]
-
-            [#body_dead null null *z_dead]
-            [#body_dead null null *z_dead]
-            [#body_dead null null *z_dead]
             [#body_dead null null *z_dead]
             [#body_dead null null *z_dead]
             [#body_dead null null *z_dead]
@@ -224,6 +215,20 @@
 
             [#body_dead null null *z_dead]
             [#body_dead null null *z_dead]
+            [#body_dead null null *z_dead]
+            [#body_eaten0 null null *z_dead]
+            [#body_eaten0 null null *z_dead]
+
+            [#body_eaten1 null null *z_dead]
+            [#body_eaten1 null null *z_dead]
+            [#body_eaten2 null null *z_dead]
+            [#body_eaten2 null null *z_dead]
+            [#body_eaten2 null null *z_dead]
+
+            [#body_eaten2 null null *z_dead]
+            [#body_eaten2 null null *z_dead]
+            [#body_eaten2 null null *z_dead]
+            [#body_eaten2 null null *z_dead]
         ]
     }]
     data: [vf::IndigoData {
@@ -279,7 +284,7 @@
 
          -- Based on world.ayu#atelier
         capture_target_pos: [128 64]
-        capture_weapon_pos: [200 80]
+        capture_weapon_pos: [200 92]
         capture_limb_offsets: [
             [-21 20] --left arm
             [-16 13] --right arm

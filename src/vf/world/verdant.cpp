@@ -325,8 +325,8 @@ WalkerBusiness Verdant::Walker_business () {
         ) {
             set_state(VS::Eat);
             auto& poses = static_cast<VerdantPoses&>(*vd.poses);
-            pos = indigo->pos - poses.eat[0].body->head;
             left = !indigo->left;
+            pos = indigo->pos - left_flip(poses.eat[0].body->head);
             return Walker_business();
         }
         if (anim_phase == 0 && anim_timer == 0) tongue_timer = 0;
@@ -391,7 +391,7 @@ WalkerBusiness Verdant::Walker_business () {
         expect(indigo);
         indigo->set_state(IS::Eaten);
         auto& poses = static_cast<VerdantPoses&>(*vd.poses);
-        indigo->pos = pos + poses.eat[anim_phase].body->head;
+        indigo->pos = pos + left_flip(poses.eat[anim_phase].body->head);
         return WB::Frozen;
     }
     return Walker::Walker_business();
@@ -586,7 +586,7 @@ void Verdant::Walker_on_hit (
             indigo->set_state(IS::Bit);
             set_state(VS::SnakeBite);
             indigo->poison_level = 4;
-            indigo->poison_timer = 400;
+            indigo->poison_timer = 360;
             auto& vd = static_cast<VerdantData&>(*data);
             if (vd.snake_bite_sound) vd.snake_bite_sound->play();
         }
