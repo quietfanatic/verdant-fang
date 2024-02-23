@@ -43,6 +43,7 @@ struct IndigoPoses : WalkerPoses {
     Pose bed [2];
     Frame* glasses;
     Pose bit [7];
+    Pose eaten [34];
 };
 
 struct IndigoData : WalkerData {
@@ -83,7 +84,7 @@ struct Indigo : Walker {
 struct IndigoMind : Mind {
     Verdant* target;
     float sight_range;
-    Vec goal_tolerance = {1, 4};
+    Vec goal_tolerance = {2, 4};
     Controls Mind_think (Resident&) override;
 };
 

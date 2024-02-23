@@ -175,7 +175,18 @@ Pose Indigo::Walker_pose () {
                     ? CP::DetachLimb1 : CP::DetachLimb2
             ];
         }
-        else return poses.capturing[anim_phase];
+        else {
+            Pose r = poses.capturing[anim_phase];
+            if (r.body == poses.fly[0].body) {
+                if (left_flip(vel.x) > 1) {
+                    r = poses.fly[1];
+                }
+                else if (left_flip(vel.x) < -1) {
+                    r = poses.fly[2];
+                }
+            }
+            return r;
+        }
     }
     else if (state == IS::Bed) {
         expect(anim_phase < 2);
@@ -220,10 +231,19 @@ Controls IndigoMind::Mind_think (Resident& s) {
             me.left = false;
             goal = me.back_door->closed_pos + Vec(120, 8);
         }
+        else if (me.business == WB::Free) {
+            me.left = target->pos.x < me.pos.x;
+        }
         if (me.pos.x < goal.x - goal_tolerance.x) {
             r[Control::Right] = 1;
         }
         else if (me.pos.x > goal.x + goal_tolerance.x) {
+            r[Control::Left] = 1;
+        }
+        else if (me.vel.x < 0.01) {
+            r[Control::Right] = 1;
+        }
+        else if (me.vel.x > 0.01) {
             r[Control::Left] = 1;
         }
         if (me.pos.y < goal.y - goal_tolerance.y) {
@@ -261,7 +281,8 @@ AYU_DESCRIBE(vf::IndigoPoses,
         attr("capturing", &IndigoPoses::capturing),
         attr("bed", &IndigoPoses::bed),
         attr("glasses", &IndigoPoses::glasses),
-        attr("bit", &IndigoPoses::bit)
+        attr("bit", &IndigoPoses::bit),
+        attr("eaten", &IndigoPoses::eaten)
     )
 )
 

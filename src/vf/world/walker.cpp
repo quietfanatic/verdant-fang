@@ -405,7 +405,7 @@ void Walker::Walker_set_hitboxes () {
 void Walker::Resident_before_step () {
      // Do poison
     if (poison_level && state != WS::Dead) {
-        if (poison_timer >= 180) {
+        if (poison_timer == 0) {
             if (poison_level >= 3) {
                 set_state(WS::Dead);
                 paralyze_symbol_timer = 90;
@@ -414,11 +414,11 @@ void Walker::Resident_before_step () {
                 set_state(WS::Stun);
                 stun_duration = poison_level * 30;
                 paralyze_symbol_timer = stun_duration;
-                poison_timer = 0;
+                poison_timer = 180;
             }
             if (data->paralyzed_sound) data->paralyzed_sound->play();
         }
-        else poison_timer += 1;
+        else poison_timer -= 1;
     }
      // Advance animations and do state-dependent things
     expect(anim_timer < 255);

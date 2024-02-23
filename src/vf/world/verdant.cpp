@@ -555,6 +555,10 @@ void Verdant::Walker_on_hit (
             expect(indigo->state == IS::Bed);
             indigo->set_state(IS::Bit);
             set_state(VS::SnakeBite);
+            indigo->poison_level = 4;
+            indigo->poison_timer = 400;
+            auto& vd = static_cast<VerdantData&>(*data);
+            if (vd.snake_bite_sound) vd.snake_bite_sound->play();
         }
         return;
     }
@@ -935,7 +939,8 @@ AYU_DESCRIBE(vf::VerdantPoses,
         attr("snake_stand", &VerdantPoses::snake_stand),
         attr("snake_walk", &VerdantPoses::snake_walk),
         attr("snake_attack", &VerdantPoses::snake_attack),
-        attr("snake_bite", &VerdantPoses::snake_bite)
+        attr("snake_bite", &VerdantPoses::snake_bite),
+        attr("eat", &VerdantPoses::eat)
     )
 )
 
@@ -984,7 +989,8 @@ AYU_DESCRIBE(vf::VerdantData,
         attr("revive_sound", &VerdantData::revive_sound, optional),
         attr("spear_break_sound", &VerdantData::spear_break_sound, optional),
         attr("snake_death_sound", &VerdantData::snake_death_sound, optional),
-        attr("limb_detach_sound", &VerdantData::limb_detach_sound, optional)
+        attr("limb_detach_sound", &VerdantData::limb_detach_sound, optional),
+        attr("snake_bite_sound", &VerdantData::snake_bite_sound, optional)
     )
 )
 

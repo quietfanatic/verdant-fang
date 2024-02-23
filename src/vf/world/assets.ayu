@@ -135,4 +135,5 @@
     break: [vf::Sound { source:assets/break.mp3 channel:1 }]
     kwaakh: [vf::Sound { source:assets/kwaakh.mp3 channel:1 }]
     pwschk: [vf::Sound { source:assets/pwschk.mp3 channel:1 volume:0.7 }]
+    kalp: [vf::Sound { source:assets/kalp.mp3 channel:1 }]
 }]

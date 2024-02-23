@@ -200,10 +200,11 @@ struct Walker : Resident {
     float fall_start_y = GNAN;
     glow::RGBA8 body_tint = 0;
     glow::RGBA8 weapon_tint = 0;
+     // This counts down.
+    uint32 poison_timer = 180;
     DecalType decal_type = {};
     uint8 decal_index = -1;
     uint8 poison_level = 0;
-    uint8 poison_timer = 0;
     uint8 paralyze_symbol_timer = 0;
      // Bitset, each bit corresponding to a layer in the body LayeredTexture.
     uint8 body_layers = 0x1;

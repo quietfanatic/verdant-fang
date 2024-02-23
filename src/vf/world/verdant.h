@@ -73,6 +73,7 @@ struct VerdantPoses : WalkerPoses {
     Pose snake_walk [4];
     Pose snake_attack [6];
     Pose snake_bite [7];
+    Pose eat [34];
 };
 
 struct CutsceneSound {
@@ -131,6 +132,7 @@ struct VerdantData : WalkerData {
     Sound* spear_break_sound = null;
     Sound* snake_death_sound = null;
     Sound* limb_detach_sound = null;
+    Sound* snake_bite_sound = null;
 };
 
 struct Verdant : Walker {
