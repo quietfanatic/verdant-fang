@@ -404,8 +404,11 @@ void Walker::Walker_set_hitboxes () {
 
 void Walker::Resident_before_step () {
      // Do poison
-    if (poison_level && state != WS::Dead) {
-        if (poison_timer == 0) {
+    if (poison_level) {
+        if (state == WS::Dead) {
+            poison_level = 0;
+        }
+        else if (poison_timer == 0) {
             if (poison_level >= 3) {
                 set_state(WS::Dead);
                 paralyze_symbol_timer = 90;
