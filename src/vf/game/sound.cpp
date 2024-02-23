@@ -4,6 +4,7 @@
 #include "../../dirt/glow/common.h"
 #include "game.h"
 #include "settings.h"
+#include "state.h"
 
 namespace vf {
 
@@ -50,6 +51,20 @@ void Sound::stop () {
     glow::require_sdl(Mix_HaltChannel(channel) >= 0);
 }
 
+void RandomSound::play () {
+    if (sounds && current_game) {
+        auto dist = std::uniform_int_distribution<int32>(0, sounds.size() - 1);
+        for (uint32 i = 0; i < 3; i++) {
+            auto selected = dist(current_game->state().rng);
+            if (selected != last_played || i == 2) {
+                last_played = selected;
+                if (sounds[selected]) sounds[selected]->play();
+                break;
+            }
+        }
+    }
+}
+
 Music::Music (const iri::IRI& src) : source(src) {
     load();
 }
@@ -86,6 +101,9 @@ AYU_DESCRIBE(vf::Sound,
         attr("volume", &Sound::volume, optional)
     ),
     init<&Sound::load>()
+)
+AYU_DESCRIBE(vf::RandomSound,
+    delegate(&RandomSound::sounds)
 )
 AYU_DESCRIBE(vf::Music,
     attrs(

@@ -159,7 +159,7 @@ struct WalkerData {
     float fall_cycle_dist;
     float jump_end_vel;
     float fall_start_vel;
-    Sound* step_sound [5] = {};
+    RandomSound* step_sound = null;
     Sound* land_sound = null;
     Sound* attack_sound = null;
     Sound* crouch_attack_sound = null;

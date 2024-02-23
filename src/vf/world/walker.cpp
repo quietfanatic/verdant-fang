@@ -365,9 +365,7 @@ void Walker::Walker_move (const Controls& controls) {
         if (walking) {
             auto walk_frame_after = walk_frame();
             if (walk_frame_before % 3 == 1 && walk_frame_after % 3 == 2) {
-                auto i = std::uniform_int_distribution(0, 4)(current_game->state().rng);
-                expect(i >= 0 && i <= 4);
-                if (data->step_sound[i]) data->step_sound[i]->play();
+                if (data->step_sound) data->step_sound->play();
             }
         }
     }

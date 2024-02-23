@@ -26,6 +26,12 @@ struct Sound {
     void stop ();
 };
 
+struct RandomSound {
+    UniqueArray<Sound*> sounds;
+    int32 last_played = -1;
+    void play ();
+};
+
  // SDL2_mixer has different types for music and sound effects.  You can do more
  // with music (like loop it
 struct Music {

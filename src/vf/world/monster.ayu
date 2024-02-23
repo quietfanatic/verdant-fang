@@ -161,13 +161,7 @@
         jump_end_vel: 0.6
         fall_start_vel: -0.6
 
-        step_sound: [
-            assets.ayu#step0
-            assets.ayu#step1
-            assets.ayu#step2
-            assets.ayu#step3
-            assets.ayu#step4
-        ]
+        step_sound: assets.ayu#step
         land_sound: assets.ayu#pmf
         attack_sound: assets.ayu#shok
         crouch_attack_sound: assets.ayu#shok

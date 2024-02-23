@@ -374,6 +374,9 @@ WalkerBusiness Verdant::Walker_business () {
         return WB::Frozen;
     }
     else if (state == VS::Eat) {
+        if (anim_timer == 0 && !(anim_phase % 2)) {
+            if (vd.snake_eat_sound) vd.snake_eat_sound->play();
+        }
         if (anim_timer >= vd.eat_sequence[anim_phase]) {
             if (anim_phase == 33) {
                 indigo->verdant = null;
@@ -1025,7 +1028,8 @@ AYU_DESCRIBE(vf::VerdantData,
         attr("spear_break_sound", &VerdantData::spear_break_sound, optional),
         attr("snake_death_sound", &VerdantData::snake_death_sound, optional),
         attr("limb_detach_sound", &VerdantData::limb_detach_sound, optional),
-        attr("snake_bite_sound", &VerdantData::snake_bite_sound, optional)
+        attr("snake_bite_sound", &VerdantData::snake_bite_sound, optional),
+        attr("snake_eat_sound", &VerdantData::snake_eat_sound, optional)
     )
 )
 
