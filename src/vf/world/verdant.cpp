@@ -386,7 +386,7 @@ WalkerBusiness Verdant::Walker_business () {
                 indigo->verdant = null;
                 indigo->anim_phase = 1;
                 indigo = null;
-                set_state(VS::Snake);
+                set_state(VS::Desnakify);
             }
             else {
                 anim_phase += 1;
@@ -400,6 +400,120 @@ WalkerBusiness Verdant::Walker_business () {
         auto& poses = static_cast<VerdantPoses&>(*vd.poses);
         indigo->pos = pos + left_flip(poses.eat[anim_phase].body->head);
         return WB::Frozen;
+    }
+    else if (state == VS::Desnakify) {
+        if (anim_phase == DP::WalkAway) {
+            return WB::Free;
+        }
+        else if (anim_timer >= vd.desnakify_sequence[anim_phase]) {
+            anim_phase += 1;
+            anim_timer = 0;
+            if (anim_phase == DP::FullGlow0) {
+                body_tint = vd.transform_magic_color;
+                body_tint.a = 0x60;
+                body_layers = 1;
+            }
+            else if (anim_phase == DP::FullGlow1) {
+                body_tint = vd.transform_magic_color;
+                body_tint.a = 0xa0;
+            }
+            else if (anim_phase == DP::FullScreenGlow0) {
+                if (vd.revive_sound) vd.revive_sound->play();
+            }
+            else if (anim_phase == DP::FangGlow2) {
+                weapon_tint = vd.transform_magic_color;
+            }
+            else if (anim_phase == DP::FangRevived0) {
+                body_tint = {};
+                override_weapon_pos = pos + left_flip(vd.desnakify_fang_pos[0]);
+                override_weapon_scale = {-1, 1};
+            }
+            else if (anim_phase == DP::FangGlow0) {
+                weapon_tint = vd.transform_magic_color;
+                weapon_tint.a = 0x60;
+                override_weapon_pos = pos + left_flip(vd.desnakify_fang_pos[1]);
+                for (int i = 0; i < 4; i++) {
+                    limb_initial_pos[i] = limb_pos[i];
+                }
+            }
+            else if (anim_phase == DP::FangGlow1) {
+                weapon_tint = vd.transform_magic_color;
+                weapon_tint.a = 0xa0;
+                for (int i = 0; i < 4; i++) {
+                    limb_pos[i] = pos + left_flip(vd.desnakify_fang_pos[1]) +
+                        vd.desnakify_limb_offsets[i];
+                }
+            }
+            else if (anim_phase == DP::FangGlow2) {
+                weapon_tint = vd.transform_magic_color;
+            }
+            else if (anim_phase == DP::FangScreenGlow0) {
+                if (vd.revive_sound) vd.revive_sound->play();
+            }
+            else if (anim_phase == DP::BackToHuman0) {
+                weapon_tint = {};
+            }
+            return Walker_business();
+        }
+        else {
+            anim_timer += 1;
+            if (anim_phase >= DP::FangFloats0 && anim_phase <= DP::FangFloats2) {
+                float sum = vd.desnakify_sequence[DP::FangFloats0] +
+                            vd.desnakify_sequence[DP::FangFloats1] +
+                            vd.desnakify_sequence[DP::FangFloats2];
+                float acc = anim_timer;
+                if (anim_phase > DP::FangFloats0) {
+                    acc += vd.desnakify_sequence[DP::FangFloats0];
+                }
+                if (anim_phase > DP::FangFloats1) {
+                    acc += vd.desnakify_sequence[DP::FangFloats1];
+                }
+                override_weapon_pos = pos + lerp(
+                    left_flip(vd.desnakify_fang_pos[0]),
+                    left_flip(vd.desnakify_fang_pos[1]),
+                    ease_in_out_sin(acc / sum)
+                );
+            }
+            else if (anim_phase >= DP::FangGlow0 && anim_phase <= DP::FangGlow2) {
+                float sum = vd.desnakify_sequence[DP::FangGlow0] +
+                            vd.desnakify_sequence[DP::FangGlow1] +
+                            vd.desnakify_sequence[DP::FangGlow2];
+                float acc = anim_timer;
+                if (anim_phase > DP::FangGlow0) {
+                    acc += vd.desnakify_sequence[DP::FangGlow0];
+                }
+                if (anim_phase > DP::FangGlow1) {
+                    acc += vd.desnakify_sequence[DP::FangGlow1];
+                }
+                for (int i = 0; i < 4; i++) {
+                    limb_pos[i] = lerp(
+                        limb_initial_pos[i],
+                        pos + left_flip(vd.desnakify_fang_pos[1]) +
+                            vd.desnakify_limb_offsets[i],
+                        ease_in_out_sin(acc / sum)
+                    );
+                }
+            }
+            else if (anim_phase >= DP::TakeFang0 && anim_phase <= DP::TakeFang1) {
+                auto& poses = static_cast<VerdantPoses&>(*vd.poses);
+                float sum = vd.desnakify_sequence[DP::TakeFang0] +
+                            vd.desnakify_sequence[DP::TakeFang1];
+                float acc = anim_timer;
+                if (anim_phase > DP::TakeFang0) {
+                    acc += vd.desnakify_sequence[DP::TakeFang0];
+                }
+                override_weapon_pos = pos + left_flip(lerp(
+                    vd.desnakify_fang_pos[0],
+                    poses.desnakify[DP::TakeFang1].body->weapon,
+                    ease_in_out_sin(acc / sum)
+                ));
+            }
+            else if (anim_phase >= DP::HoldFang) {
+                override_weapon_pos = GNAN;
+                override_weapon_scale = GNAN;
+            }
+            return WB::Frozen;
+        }
     }
     return Walker::Walker_business();
 }
@@ -749,6 +863,13 @@ Pose Verdant::Walker_pose () {
         expect(anim_phase < 34);
         return poses.eat[anim_phase];
     }
+    else if (state == VS::Desnakify) {
+        expect(anim_phase < DP::N_Phases);
+        if (anim_phase == DP::WalkAway) {
+            return poses.walk_hold[walk_frame()];
+        }
+        return poses.desnakify[anim_phase];
+    }
     return Walker::Walker_pose();
 }
 
@@ -862,6 +983,28 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
             );
         }
     }
+    else if (state == VS::Desnakify) {
+        uint8 a;
+        switch (anim_phase) {
+            case DP::FullScreenGlow0: case DP::FangRevived1:
+            case DP::FangScreenGlow0: case DP::BackToHuman1:
+                a = 0x60; break;
+            case DP::FullScreenGlow1: case DP::FangRevived0:
+            case DP::FangScreenGlow1: case DP::BackToHuman0:
+                a = 0xa0; break;
+            case DP::FullScreenGlow2: case DP::FangScreenGlow2:
+                a = 0xff; break;
+            default: a = 0; break;
+        }
+        if (a) {
+            auto screen = vd.transform_magic_color;
+            screen.a = a;
+            draw_rectangle(
+                Rect(Vec(0, 0), camera_size),
+                screen, Z::ScreenEffect
+            );
+        }
+    }
     Walker::Walker_draw_weapon(pose);
 }
 
@@ -885,6 +1028,11 @@ Controls VerdantMind::Mind_think (Resident& r) {
                 ? Control::Right : Control::Left;
             Controls r = {};
             r[dir] = 1;
+            return r;
+        }
+        else if (v.state == VS::Desnakify && v.anim_phase == DP::WalkAway) {
+            Controls r = {};
+            r[Control::Right] = 1;
             return r;
         }
     }
@@ -992,7 +1140,8 @@ AYU_DESCRIBE(vf::VerdantPoses,
         attr("snake_attack", &VerdantPoses::snake_attack),
         attr("snake_bite", &VerdantPoses::snake_bite),
         attr("snake_captured", &VerdantPoses::snake_captured),
-        attr("eat", &VerdantPoses::eat)
+        attr("eat", &VerdantPoses::eat),
+        attr("desnakify", &VerdantPoses::desnakify)
     )
 )
 
@@ -1037,6 +1186,9 @@ AYU_DESCRIBE(vf::VerdantData,
         attr("bite_indigo_offsets", &VerdantData::bite_indigo_offsets),
         attr("bite_release_vel", &VerdantData::bite_release_vel),
         attr("eat_sequence", &VerdantData::eat_sequence),
+        attr("desnakify_sequence", &VerdantData::desnakify_sequence),
+        attr("desnakify_fang_pos", &VerdantData::desnakify_fang_pos),
+        attr("desnakify_limb_offsets", &VerdantData::desnakify_limb_offsets),
         attr("music_after_transform", &VerdantData::music_after_transform, optional),
         attr("unstab_sound", &VerdantData::unstab_sound, optional),
         attr("revive_sound", &VerdantData::revive_sound, optional),

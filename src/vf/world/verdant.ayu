@@ -159,9 +159,9 @@
     spear_dead:        [vf::WeaponFrame [#fang [87 43]]]
     spear_crouch_preattack: [vf::WeaponFrame [#fang [87 37]]]
     spear_crouch_attack:    [vf::WeaponFrame [#fang [87 32] [0 -1 18 1]]]
-    spear_h:          [vf::Frame [#fang [52 113]]]
-    fang_h_longg:    [vf::Frame [#fang [52 119]]]
-    fang_h:          [vf::Frame [#fang [55 131]]]
+    spear_h:          [vf::WeaponFrame [#fang [52 113]]]
+    fang_h_longg:    [vf::WeaponFrame [#fang [52 119]]]
+    fang_h:          [vf::WeaponFrame [#fang [55 131]]]
     spear_captured0:  [vf::WeaponFrame [#fang [7 124]]]
     spear_captured1:  [vf::WeaponFrame [#fang [24 124]]]
     spear_captured2:  [vf::WeaponFrame [#fang [47 95]]]
@@ -394,6 +394,33 @@
             [#eat25] [#eat26] [#eat27] [#eat28] [#eat29]
             [#eat30] [#eat31] [#eat32] [#eat33]
         ]
+        desnakify: [
+            [#eat33] [#eat33] [#eat33]
+            [#eat33] [#eat33] [#eat33]
+            [#snake_neutral null #fang_h_longg]
+            [#snake_neutral null #fang_h_longg]
+            [#snake_neutral null #fang_h_longg]
+
+            [#snake_neutral null #fang_h_longg]
+            [#snake_neutral null #fang_h]
+            [#snake_neutral null #fang_air]
+
+            [#snake_neutral null #fang_air]
+            [#snake_neutral null #fang_air]
+            [#snake_neutral null #fang_air]
+
+            [#snake_neutral null #fang_air]
+            [#snake_neutral null #fang_air]
+            [#snake_neutral null #fang_air]
+
+            [#body_stand #head_neutral #fang_air]
+            [#body_stand #head_neutral #fang_air]
+            [#body_stand #head_neutral #fang_air]
+
+            [#body_lift1 #head_neutral #fang_air]
+            [#body_lift1 #head_neutral #fang_air]
+            [#body_hold #head_neutral #fang_held]
+        ]
     }]
     data: [vf::VerdantData {
         body_box: [-6 0 6 30]
@@ -504,7 +531,25 @@
             15 50 15 50 15 50 15 50 15 50
             15 50 15 50 15 50 15 50 15 50
             15 50 15 50 15 50 15 50 15 50
-            15 50 15 50
+            15 50 15 180
+        ]
+        desnakify_sequence: [
+            12 12 60 -- body glows
+            12 12 90 -- screen glows
+            12 12 30 -- Fang!
+            8 8 30 -- Fang floats
+            12 12 60 -- Fang glows
+            12 12 90 -- screen glows
+            12 12 30 -- Human!
+            20 20 30 -- hold Fang
+             -- Walk away
+        ]
+        desnakify_fang_pos: [ [40 0] [20 50] ]
+        desnakify_limb_offsets: [
+            [11 25]
+            [-14 21]
+            [11 10]
+            [-3 2]
         ]
         music_after_transform: assets.ayu#limestone
         unstab_sound: assets.ayu#shluk

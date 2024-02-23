@@ -23,6 +23,7 @@ namespace VS {
     constexpr WalkerState SnakeBite = WS::Custom + 12;
     constexpr WalkerState SnakeCaptured = WS::Custom + 13;
     constexpr WalkerState SnakeEat = WS::Custom + 14;
+    constexpr WalkerState Desnakify = WS::Custom + 15;
      // Update world.ayu if this changes
     static_assert(PreTransform == 6);
 };
@@ -45,6 +46,36 @@ namespace TransformPhase {
     constexpr uint8 N_Phases = 14;
 };
 namespace TP = TransformPhase;
+
+namespace DesnakifyPhase {
+    constexpr uint8 FullGlow0 = 0;
+    constexpr uint8 FullGlow1 = 1;
+    constexpr uint8 FullGlow2 = 2;
+    constexpr uint8 FullScreenGlow0 = 3;
+    constexpr uint8 FullScreenGlow1 = 4;
+    constexpr uint8 FullScreenGlow2 = 5;
+    constexpr uint8 FangRevived0 = 6;
+    constexpr uint8 FangRevived1 = 7;
+    constexpr uint8 FangRevived2 = 8;
+    constexpr uint8 FangFloats0 = 9;
+    constexpr uint8 FangFloats1 = 10;
+    constexpr uint8 FangFloats2 = 11;
+    constexpr uint8 FangGlow0 = 12;
+    constexpr uint8 FangGlow1 = 13;
+    constexpr uint8 FangGlow2 = 14;
+    constexpr uint8 FangScreenGlow0 = 15;
+    constexpr uint8 FangScreenGlow1 = 16;
+    constexpr uint8 FangScreenGlow2 = 17;
+    constexpr uint8 BackToHuman0 = 18;
+    constexpr uint8 BackToHuman1 = 19;
+    constexpr uint8 BackToHuman2 = 20;
+    constexpr uint8 TakeFang0 = 21;
+    constexpr uint8 TakeFang1 = 22;
+    constexpr uint8 HoldFang = 23;
+    constexpr uint8 WalkAway = 24;
+    constexpr uint8 N_Phases = 25;
+};
+namespace DP = DesnakifyPhase;
 
 struct LimbFrame : Frame {
      // Relative to body pos
@@ -77,6 +108,7 @@ struct VerdantPoses : WalkerPoses {
     Pose snake_bite [9];
     Pose snake_captured;
     Pose eat [34];
+    Pose desnakify [DP::N_Phases - 1];
 };
 
 struct CutsceneSound {
@@ -131,6 +163,9 @@ struct VerdantData : WalkerData {
     Vec bite_indigo_offsets [9];
     Vec bite_release_vel;
     uint8 eat_sequence [34];
+    uint8 desnakify_sequence [DP::N_Phases - 1];
+    Vec desnakify_fang_pos [2];
+    Vec desnakify_limb_offsets [4];
     Sound* unstab_sound = null;
     Sound* revive_sound = null;
     Sound* spear_break_sound = null;
@@ -151,6 +186,7 @@ struct Verdant : Walker {
     uint8 revive_timer = 0;
     uint8 limb_layers = 1;
     Vec limb_pos [4] = {GNAN, GNAN, GNAN, GNAN};
+    Vec limb_initial_pos [4] = {GNAN, GNAN, GNAN, GNAN};
     Indigo* indigo = null;
     float fang_vel_y = GNAN;
     uint32 tongue_timer = 0;
