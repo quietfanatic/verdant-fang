@@ -146,7 +146,7 @@ WalkerBusiness Verdant::Walker_business () {
                     state.current_music = vd.music_after_transform;
                     state.current_music->play();
                 }
-                state.save_checkpoint(pos + visual_center());
+                state.save_checkpoint(3, pos + visual_center());
             }
             else {
                 anim_phase += 1;

@@ -1,5 +1,6 @@
 #include "game.h"
 
+#include <SDL2/SDL.h>
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_video.h>
 #include "../../dirt/iri/iri.h"
@@ -19,7 +20,19 @@ static bool on_event (Game& game, SDL_Event* event) {
             auto input = control::input_from_event(event);
             for (auto& binding : game.settings().commands) {
                 if (input_matches_binding(input, binding.input)) {
-                    if (binding.command) binding.command();
+                    if (binding.command) {
+                        try {
+                            binding.command();
+                        }
+                        catch (std::exception& e) {
+                            SDL_ShowSimpleMessageBox(
+                                SDL_MESSAGEBOX_ERROR,
+                                "Exception while executing hotkey command.",
+                                cat(e.what()).c_str(),
+                                game.window
+                            );
+                        }
+                    }
                     return true;
                 }
             }

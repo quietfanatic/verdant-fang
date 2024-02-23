@@ -153,10 +153,11 @@ void State::step () {
     current_frame += 1;
 }
 
-void State::save_checkpoint (Vec transition_center) {
+void State::save_checkpoint (uint8 checkpoint_level, Vec transition_center) {
     expect(!transition);
     transition = Transition{
         .save_checkpoint = true,
+        .checkpoint_level = checkpoint_level,
         .checkpoint_transition_center = transition_center,
         .exit_at = 0,
         .enter_at = 0,

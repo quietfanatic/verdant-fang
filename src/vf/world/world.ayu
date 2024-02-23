@@ -265,11 +265,11 @@
         target_pos: [304 80]
         transition: wipe_right
     }]
-    hive_to_atelier: [vf::LoadingZone {
+    hive_to_corridor: [vf::LoadingZone {
         room: #hive
         bounds: [328 0 328 180]
-        target_room: #atelier
-        target_pos: [16 32]
+        target_room: #corridor
+        target_pos: [16 64]
         checkpoint_level: 1
     }]
 
@@ -284,7 +284,26 @@
         room: #corridor
         data: assets.ayu#block
         blocks: [
+            [-16 160] [16 160] [48 160] [80 160] [112 160] [144 160] [176 160] [208 160] [240 160] [272 160] [304 160]
+            [-16 128] [16 128] [144 128] [176 128] [208 128] [240 128] [272 128] [304 128]
+            [-16 32] [16 32] [144 96] [176 96] [208 96] [240 96] [272 96] [304 96]
+            [-16 0] [16 0] [48 0] [80 0] [112 0] [144 0] [176 0] [208 0] [240 0] [272 0] [304 0]
         ]
+    }]
+
+    corridor_to_hive: [vf::LoadingZone {
+        room: #corridor
+        bounds: [-8 0 -8 180]
+        target_room: #hive
+        target_pos: [304 64]
+        transition: wipe_right
+    }]
+    corridor_to_atelier: [vf::LoadingZone {
+        room: #corridor
+        bounds: [328 0 328 180]
+        target_room: #atelier
+        target_pos: [16 32]
+        checkpoint_level: 1
     }]
 
     atelier: [vf::Room { }]
@@ -322,23 +341,23 @@
         --body_layers: 0x3 --leotard
         --body_layers: 0x1 --naked
         head_layers: 0x7 --glasses and hat
-        front_door: #atelier_to_hive_door
+        front_door: #atelier_to_corridor_door
         back_door: #atelier_to_bedroom_door
         bedroom: #bedroom
         bed_pos: [208 48]
     }]
 
-    atelier_to_hive_door: [vf::Door {
+    atelier_to_corridor_door: [vf::Door {
         room: #atelier
         data: assets.ayu#door
         open: true
         pos: [37 96] --48 - 11
     }]
-    atelier_to_hive: [vf::LoadingZone {
+    atelier_to_corridor: [vf::LoadingZone {
         room: #atelier
         bounds: [-8 0 -8 180]
-        target_room: #hive
-        target_pos: [304 64]
+        target_room: #corridor
+        target_pos: [304 32]
         transition: wipe_right
     }]
     atelier_to_bedroom_door: [vf::Door {
