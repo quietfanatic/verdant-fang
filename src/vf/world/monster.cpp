@@ -126,7 +126,7 @@ Controls MonsterMind::Mind_think (Resident& s) {
 
     next_alert_phase:
     if (self.alert_phase == 0) {
-        if (length(dist) < sight_range) {
+        if (distance(self.pos, target->pos) < sight_range) {
             self.alert_phase = 1;
             goto next_alert_phase;
         }
@@ -216,6 +216,9 @@ Controls MonsterMind::Mind_think (Resident& s) {
         }
         if (dist < 0) {
             r[backward] = 1;
+        }
+        else if (target->pos.y - self.pos.y >= 60) {
+             // Too high, wait for her to come down
         }
         else if (attack_dist < attack_range) {
             if (

@@ -114,20 +114,20 @@
      -- Monster personalities
     chargey: [vf::MonsterMind {
         target: #verdant
-        sight_range: 128
+        sight_range: 120
         attack_range: 28
         social_distance: 40
     }]
     jumpy: [vf::MonsterMind {
         target: #verdant
-        sight_range: 128
+        sight_range: 120
         attack_range: 28
         jump_range: 64
         social_distance: 64
     }]
     hidey: [vf::MonsterMind {
         target: #verdant
-        sight_range: 128
+        sight_range: 120
         attack_range: 28
         jump_range: 64
         social_distance: 40
@@ -153,6 +153,7 @@
         data: monster.ayu#data
         mind: #hidey
         pos: [200 32]
+        left: true
         floor: #start_blocks
     }]
 
@@ -214,9 +215,8 @@
         sight_range: 180
          -- Make attack area somewhat larger than tail
         attack_area: [6 -12 40 -5]
-        roam_territory: [64 32 256 144]
         roam_interval: [60 300]
-        spit_interval: [15 120]
+        spit_interval: [60 120]
     }]
     coochers: [vf::Bug {
         room: #hive
@@ -225,6 +225,7 @@
          -- Bug's bottom is 9 below its pos
         pos: [220 89]
         floor: #hive_semis
+        roam_territory: [64 32 256 144]
     }]
     sallers: [vf::Bug {
         room: #hive
@@ -232,6 +233,7 @@
         mind: #buggy
         pos: [240 25]
         floor: #hive_blocks
+        roam_territory: [64 32 256 144]
     }]
     hive_switch: [vf::Switch {
         room: #hive
@@ -351,8 +353,10 @@
         data: assets.ayu#block
         blocks: [
             [-16 160] [16 160] [48 160] [80 160] [112 160] [144 160] [176 160] [208 160] [240 160] [272 160] [304 160]
-            [-16 128] [16 128] [272 128] [304 128]
-            [-16 96] [16 96] [48 96] [272 96] [304 96]
+            [-16 128] [16 128]
+            [-16 96] [16 96] [48 96]
+                                        [272 64] [304 64]
+                                        [272 32] [304 32]
             [-16 0] [16 0] [48 0] [80 0] [112 0] [144 0] [176 0] [208 0] [240 0] [272 0] [304 0]
         ]
     }]
@@ -371,16 +375,15 @@
         room: #storage
         pos: [60 144]
         data: assets.ayu#switch
-        activate: [#storage_to_atelier_door]
+        activate: [#storage_to_party_door]
     }]
 
     spitty: [vf::BugMind {
         target: #verdant
         sight_range: 200
         attack_area: [6 -12 40 -5]
-        roam_territory: [200 96 256 144]
         roam_interval: [60 300]
-        spit_interval: [10 30]
+        spit_interval: [30 60]
     }]
     bappers: [vf::Bug {
         room: #storage
@@ -388,6 +391,7 @@
         mind: #spitty
         pos: [220 105]
         floor: #storage_semis
+        roam_territory: [200 96 256 144]
     }]
 
     storage_to_corridor: [vf::LoadingZone {
@@ -397,13 +401,96 @@
         target_pos: [304 32]
         transition: wipe_right
     }]
-    storage_to_atelier_door: [vf::Door {
+    storage_to_party_door: [vf::Door {
         room: #storage
+        pos: [288 96]
+        data: assets.ayu#door
+    }]
+    storage_to_party: [vf::LoadingZone {
+        room: #storage
+        bounds: [328 0 328 180]
+        target_room: #party
+        target_pos: [16 96]
+        checkpoint_level: 1
+    }]
+
+    party: [vf::Room { }]
+    party_bg: [vf::Scenery {
+        room: #party
+        data: assets.ayu#cave
+        pos: [0 0]
+    }]
+    party_blocks: [vf::Blocks {
+        room: #party
+        data: assets.ayu#block
+        blocks: [
+            [-16 160] [16 160] [48 160] [80 160] [112 160] [144 160] [176 160] [208 160] [240 160] [272 160] [304 160]
+                                        [272 128] [304 128]
+                                        [272 96] [304 96]
+            [-16 64] [16 64]
+            [-16 32] [16 32]
+            [-16 0] [16 0] [48 0] [80 0] [112 0] [144 0] [176 0] [208 0] [240 0] [272 0] [304 0]
+        ]
+    }]
+    party_semis: [vf::Semisolids {
+        room: #party
+        data: assets.ayu#semisolid
+        blocks: [ [192 16] ]
+    }]
+    party_switch: [vf::Switch {
+        room: #party
+        pos: [260 144]
+        data: assets.ayu#switch
+        activate: [#party_to_atelier_door]
+    }]
+
+    sanders: [vf::Bug {
+        room: #party
+        data: bug.ayu#data
+        mind: #buggy
+        pos: [196 89]
+        left: true
+        floor: #party_semis
+         -- Keep away from the floor where all the landlubbers are
+        roam_territory: [80 64 256 144]
+    }]
+    benjamin: [vf::Monster {
+        room: #party
+        data: monster.ayu#data
+        mind: #chargey
+        pos: [120 32]
+        floor: #party_blocks
+    }]
+    lucy: [vf::Monster {
+        room: #party
+        data: monster.ayu#data
+        mind: #chargey
+        pos: [160 32]
+        floor: #party_blocks
+    }]
+    colin: [vf::Monster {
+        room: #party
+        data: monster.ayu#data
+        mind: #jumpy
+        pos: [232 32]
+        left: true
+        floor: #party_blocks
+    }]
+
+    party_to_storage: [vf::LoadingZone {
+        room: #party
+        bounds: [-8 0 -8 180]
+        target_room: #storage
+        target_pos: [304 96]
+        transition: wipe_right
+    }]
+    party_to_atelier_door: [vf::Door {
+        room: #party
         pos: [288 32]
         data: assets.ayu#door
     }]
-    storage_to_atelier: [vf::LoadingZone {
-        room: #storage
+    party_to_atelier: [vf::LoadingZone {
+        room: #party
         bounds: [328 0 328 180]
         target_room: #atelier
         target_pos: [16 32]
@@ -445,22 +532,22 @@
         --body_layers: 0x3 --leotard
         --body_layers: 0x1 --naked
         head_layers: 0x7 --glasses and hat
-        front_door: #atelier_to_storage_door
+        front_door: #atelier_to_party_door
         back_door: #atelier_to_bedroom_door
         bedroom: #bedroom
         bed_pos: [208 48]
     }]
 
-    atelier_to_storage_door: [vf::Door {
+    atelier_to_party_door: [vf::Door {
         room: #atelier
         data: assets.ayu#door
         state: open
         pos: [37 96] --48 - 11
     }]
-    atelier_to_storage: [vf::LoadingZone {
+    atelier_to_party: [vf::LoadingZone {
         room: #atelier
         bounds: [-8 0 -8 180]
-        target_room: #corridor
+        target_room: #party
         target_pos: [304 32]
         transition: wipe_right
     }]

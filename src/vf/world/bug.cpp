@@ -258,12 +258,12 @@ Controls BugMind::Mind_think (Resident& s) {
          // Limit number of roam_pos choices
         for (usize i = 0; i < 8; i++) {
             self.roam_pos.x = std::uniform_real_distribution<float>(
-                roam_territory.l, roam_territory.r
+                self.roam_territory.l, self.roam_territory.r
             )(rng);
              // Bias toward top of the room
             float h = std::uniform_real_distribution<float>(0, 1)(rng);
-            self.roam_pos.y = roam_territory.b
-                            + height(roam_territory) * (1 - length2(1 - h));
+            self.roam_pos.y = self.roam_territory.b +
+                height(self.roam_territory) * (1 - length2(1 - h));
              // Rechoose roam position if it overlaps with another bug's roam
              // position.
             for (auto r : self.room->residents) {
@@ -453,6 +453,7 @@ AYU_DESCRIBE(vf::Bug,
         attr("alert_phase", &Bug::alert_phase, optional),
         attr("alert_timer", &Bug::alert_timer, optional),
         attr("roam_pos", &Bug::roam_pos, optional),
+        attr("roam_territory", &Bug::roam_territory),
         attr("roam_timer", &Bug::roam_timer, optional),
         attr("spit_timer", &Bug::spit_timer, optional)
     ),
@@ -467,7 +468,6 @@ AYU_DESCRIBE(vf::BugMind,
         attr("alert_sequence", &BugMind::alert_sequence, optional),
         attr("personal_space", &BugMind::personal_space, optional),
         attr("attack_area", &BugMind::attack_area),
-        attr("roam_territory", &BugMind::roam_territory),
         attr("roam_interval", &BugMind::roam_interval),
         attr("roam_tolerance", &BugMind::roam_tolerance, optional),
         attr("spit_interval", &BugMind::spit_interval),

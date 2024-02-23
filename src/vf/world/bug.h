@@ -19,6 +19,8 @@ struct Bug : Walker {
     uint8 alert_phase = 0;
     uint8 alert_timer = 0;
     Vec roam_pos;
+     // Where the bug can roam, in absolute room coordinates
+    Rect roam_territory;
      // These count down
     uint32 roam_timer = 0;
     uint32 spit_timer = 0;
@@ -59,8 +61,6 @@ struct BugMind : Mind {
      // Area the bug thinks its tail hitbox covers.  Does not include target's
      // hitbox (that's added in calculations later).
     Rect attack_area;
-     // Where the bug can roam, in absolute room coordinates
-    Rect roam_territory;
      // Min and max time to pick a new roam location
     IRange roam_interval;
      // How strict the bug adheres to its desired roam position.
