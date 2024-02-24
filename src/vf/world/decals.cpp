@@ -8,7 +8,6 @@
 namespace vf {
 
 void draw_decal (Walker& w, const Pose& pose) {
-    if (current_game->options().hide_blood) return;
     auto& data = *w.data->decals;
     if (w.paralyze_symbol_timer) {
         draw_frame(
@@ -19,6 +18,7 @@ void draw_decal (Walker& w, const Pose& pose) {
         );
         w.paralyze_symbol_timer -= 1;
     }
+    if (current_game->options().hide_blood) return;
     if (w.decal_type == DecalType::None || w.decal_index >= max_decals) return;
     auto& decal = w.decal_type == DecalType::Stab ? data.stab
                 : w.decal_type == DecalType::SlashLow ? data.slash_low
@@ -28,7 +28,7 @@ void draw_decal (Walker& w, const Pose& pose) {
     uint8 dir = pose.body->decal_dirs[w.decal_index];
     if (!defined(off) || dir > 2) {
 #ifndef NDEBUG
-//        never();
+        never();
 #endif
         return;
     }

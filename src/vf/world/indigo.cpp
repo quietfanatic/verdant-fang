@@ -2,6 +2,7 @@
 #include "../../dirt/ayu/reflection/describe.h"
 #include "../../dirt/control/command.h"
 #include "../game/game.h"
+#include "../game/options.h"
 #include "../game/state.h"
 #include "door.h"
 #include "math.h"
@@ -142,6 +143,10 @@ WalkerBusiness Indigo::Walker_business () {
         else anim_timer += 1;
         verdant->limb_pos[id.bed_use_limb] =
             pos + poses.bed[anim_phase].body->weapon;
+        if (current_game->options().hide_nudity) {
+            verdant->limb_pos[id.bed_use_limb] =
+                pos + poses.bed[0].body->weapon;
+        }
         return WB::Frozen;
     }
     else if (state == IS::Bit) {
@@ -210,6 +215,9 @@ Pose Indigo::Walker_pose () {
     auto& poses = static_cast<IndigoPoses&>(*id.poses);
     if (state == IS::Capturing) {
         if (anim_phase >= CP::DetachLimb1 && anim_phase <= CP::TakeLimbs) {
+            if (current_game->options().hide_nudity) {
+                return poses.capturing[CP::DetachLimb0];
+            }
             uint32 cycle_length = id.fingering_cycle[0] + id.fingering_cycle[1];
             return poses.capturing[
                 (anim_timer % cycle_length) < id.fingering_cycle[0]
@@ -231,6 +239,9 @@ Pose Indigo::Walker_pose () {
     }
     else if (state == IS::Bed) {
         expect(anim_phase < 2);
+        if (current_game->options().hide_nudity) {
+            return poses.bed[0];
+        }
         return poses.bed[anim_phase];
     }
     else if (state == IS::Bit) {
