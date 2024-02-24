@@ -148,7 +148,7 @@ Controls MonsterMind::Mind_think (Resident& s) {
             for (auto r : self.room->residents) {
                 if (!(r->types & Types::Monster)) continue;
                 auto& fren = static_cast<Monster&>(*r);
-                if (fren.state == WS::Dead) continue;
+                if (fren.state == WS::Dead) continue; // :(
                 if (fren.alert_phase == 0) fren.alert_phase = 1;
             }
         }
@@ -240,7 +240,7 @@ Controls MonsterMind::Mind_think (Resident& s) {
         for (auto other : self.room->residents) {
             if (other == &s || !(other->types & Types::Monster)) continue;
             auto& fren = static_cast<Monster&>(*other);
-            if (fren.state == WS::Dead) continue; // :(
+            if (fren.state == WS::Dead && fren.anim_phase >= 2) continue;
             if (fren.hide_phase == 1 || fren.hide_phase == 2) continue;
             auto dist = self.left_flip(fren.pos.x - self.pos.x);
             if (dist > 0 && dist < social_distance) {

@@ -99,10 +99,15 @@
             [304 -16]
         ]
     }]
-    den_bonebox: [vf::Scenery {
+    den_box: [vf::Scenery {
         room: #den
-        data: assets.ayu#bonebox
+        data: assets.ayu#box
         pos: [112 32]
+    }]
+    den_bones: [vf::Scenery {
+        room: #den
+        data: assets.ayu#bones
+        pos: [112 47]
     }]
     den_screen0: [vf::Scenery {
         room: #den
@@ -365,17 +370,6 @@
             [-16 0] [16 0] [48 0] [80 0] [112 0] [144 0] [176 0] [208 0] [240 0] [272 0] [304 0]
         ]
     }]
-    storage_bonebox0: [vf::Scenery {
-        room: #storage
-        data: assets.ayu#bonebox
-        pos: [256 32]
-        scale: [-1 1]
-    }]
-    storage_bonebox1: [vf::Scenery {
-        room: #storage
-        data: assets.ayu#bonebox
-        pos: [112 64]
-    }]
     storage_semis: [vf::Semisolids {
         room: #storage
         data: assets.ayu#semisolid
@@ -392,6 +386,38 @@
         pos: [60 144]
         data: assets.ayu#switch
         activate: [#storage_to_party_door]
+    }]
+
+    storage_box0: [vf::Scenery {
+        room: #storage
+        data: assets.ayu#box
+        pos: [256 32]
+    }]
+    storage_box1: [vf::Scenery {
+        room: #storage
+        data: assets.ayu#box
+        pos: [256 48]
+    }]
+    storage_box2: [vf::Scenery {
+        room: #storage
+        data: assets.ayu#box
+        pos: [112 64]
+    }]
+    storage_box3: [vf::Scenery {
+        room: #storage
+        data: assets.ayu#box
+        pos: [160 32]
+    }]
+    storage_bones0: [vf::Scenery {
+        room: #storage
+        data: assets.ayu#bones
+        pos: [256 63]
+        scale: [-1 1]
+    }]
+    storage_bones1: [vf::Scenery {
+        room: #storage
+        data: assets.ayu#bones
+        pos: [112 79]
     }]
 
     spitty: [vf::BugMind {

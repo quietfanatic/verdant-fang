@@ -27,11 +27,17 @@
     }]]
     screen: [vf::Frame [#screen_tex [16 0] [-16 0 16 64]]]
 
-    bonebox_tex: [vf::LayeredTexture [{
+    box_tex: [vf::LayeredTexture [{
         image: #layer0
-        bounds: [62 97 94 115]
+        bounds: [62 80 94 96]
     }]]
-    bonebox: [vf::Frame [#bonebox_tex [16 0] [-16 0 16 18]]]
+    box: [vf::Frame [#box_tex [16 0] [-16 0 16 16]]]
+
+    bones_tex: [vf::LayeredTexture [{
+        image: #layer0
+        bounds: [67 73 91 77]
+    }]]
+    bones: [vf::Frame [#bones_tex [11 0] [-11 0 13 4]]]
 
     block_tex: [vf::LayeredTexture [{
         image: #layer0
