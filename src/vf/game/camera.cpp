@@ -104,18 +104,21 @@ void end_camera () {
         transition_program->use();
          // Ease in and out a bit
         float t = (1.f - std::cos(transition_t * float(M_PI))) / 2.f;
-        if (transition_program->type == TransitionType::ApertureClose) {
-            t = 1 - t;
-        }
         if (transition_program->type == TransitionType::ApertureClose ||
             transition_program->type == TransitionType::ApertureOpen
         ) {
+            if (transition_program->type == TransitionType::ApertureClose) {
+                t = 1 - t;
+            }
              // Find farthest screen corner and start from there
             float lb2 = distance2(transition_program->center, Vec(0, 0));
             float rb2 = distance2(transition_program->center, Vec(320, 0));
             float rt2 = distance2(transition_program->center, Vec(320, 180));
             float lt2 = distance2(transition_program->center, Vec(0, 180));
             t *= sqrt(max(lb2, rb2, rt2, lt2));
+        }
+        else {
+            t = lerp(-0.1, 1.1, t);
         }
         glUniform1f(transition_program->u_t, t);
         glBindTexture(GL_TEXTURE_2D, old_tex);
