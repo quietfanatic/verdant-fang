@@ -6,6 +6,7 @@
 #include "walker.h"
 
 namespace vf {
+struct Door;
 
 namespace VS {
     constexpr WalkerState PreTransform = WS::Custom + 0;
@@ -191,6 +192,7 @@ struct Verdant : Walker {
     Indigo* indigo = null;
     float fang_vel_y = GNAN;
     uint32 tongue_timer = 0;
+    Door* desnakify_leaving_door = null;
 
     Verdant ();
 

@@ -28,6 +28,7 @@
         --room: #atelier
         --pos: [180 32]
         limbo: #limbo
+        desnakify_leaving_door: #bedroom_to_end_door
     }]
 
     start: [vf::Room { }]
@@ -612,7 +613,7 @@
         blocks: [
             [-16 176] [16 176] [48 160] [80 160] [112 160] [144 160] [176 160] [208 160] [240 160] [272 160] [304 160]
             [-16 144] [16 144] [272 128] [304 128]
-            [-16 48] [16 48] [272 32] [304 32]
+            [-16 48] [16 48] [272 96] [304 96]
             [-16 0] [16 0] [48 0] [80 0] [112 0] [144 0] [176 0] [208 0] [240 0] [272 0] [304 0]
         ]
     }]
@@ -626,9 +627,9 @@
         data: assets.ayu#door
         pos: [37 80]
     }]
-    atelier_to_end_door: [vf::Door {
+    bedroom_to_end_door: [vf::Door {
         room: #bedroom
         data: assets.ayu#door
-        pos: [284 64]
+        pos: [284 32]
     }]
 }]

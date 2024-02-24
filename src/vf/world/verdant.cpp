@@ -457,6 +457,15 @@ WalkerBusiness Verdant::Walker_business () {
             else if (anim_phase == DP::BackToHuman0) {
                 weapon_tint = {};
                 limb_tint = {};
+                for (usize i = 0; i < 4; i++) {
+                    limb_pos[i] = GNAN;
+                }
+                if (desnakify_leaving_door) {
+                     // Skip opening animation and sound
+                    desnakify_leaving_door->state = DoorState::Open;
+                    desnakify_leaving_door->pos =
+                        desnakify_leaving_door->open_pos;
+                }
             }
         }
         if (anim_timer >= vd.desnakify_sequence[anim_phase]) {
@@ -1236,7 +1245,8 @@ AYU_DESCRIBE(vf::Verdant,
         attr("limb_tint", &Verdant::limb_tint, optional),
         attr("indigo", &Verdant::indigo, optional),
         attr("fang_vel_y", &Verdant::fang_vel_y, optional),
-        attr("tongue_timer", &Verdant::tongue_timer, optional)
+        attr("tongue_timer", &Verdant::tongue_timer, optional),
+        attr("desnakify_leaving_door", &Verdant::desnakify_leaving_door, optional)
     )
 )
 

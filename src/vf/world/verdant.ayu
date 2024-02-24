@@ -528,7 +528,7 @@
             [-17 -1]
             [-16 5]
         ]
-        bite_release_vel: [-4 4]
+        bite_release_vel: [-3 3]
         eat_sequence: [
             15 50 15 50 15 50 15 50 15 50
             15 50 15 50 15 50 15 50 15 50
@@ -538,11 +538,11 @@
         desnakify_sequence: [
             12 12 60 -- body glows
             12 12 90 -- screen glows
-            12 12 30 -- Fang!
+            12 12 60 -- Fang!
             8 8 30 -- Fang floats
             12 12 60 -- Fang glows
             12 12 90 -- screen glows
-            12 12 30 -- Human!
+            12 12 60 -- Human!
             20 20 30 -- hold Fang
              -- Walk away
         ]
