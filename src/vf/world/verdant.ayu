@@ -413,11 +413,11 @@
             [#snake_neutral null #fang_air]
             [#snake_neutral null #fang_air]
 
-            [#body_stand #head_neutral #fang_air]
-            [#body_stand #head_neutral #fang_air]
-            [#body_stand #head_neutral #fang_air]
+            [#body_transform4 #head_neutral #fang_air]
+            [#body_transform4 #head_neutral #fang_air]
+            [#body_transform4 #head_neutral #fang_air]
 
-            [#body_lift1 #head_neutral #fang_air]
+            [#body_transform4 #head_neutral #fang_air]
             [#body_lift1 #head_neutral #fang_air]
             [#body_hold #head_neutral #fang_held]
         ]
@@ -546,10 +546,10 @@
         ]
         desnakify_fang_pos: [ [40 0] [20 50] ]
         desnakify_limb_offsets: [
-            [11 25]
-            [-14 21]
-            [11 10]
-            [-3 2]
+            [11 5]
+            [-14 1]
+            [11 -10]
+            [-3 -18]
         ]
         music_after_transform: assets.ayu#limestone
         unstab_sound: assets.ayu#shluk

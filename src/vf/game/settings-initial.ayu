@@ -83,6 +83,7 @@
         [[ctrl t] [do_transform_sequence]]
         [[ctrl c] [do_captured_sequence]]
         [[ctrl n] [become_snake]]
+        [[ctrl shift n] [unbecome_snake]]
         [[f3] [debug_info]]
     ]
 }]
