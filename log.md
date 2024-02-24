@@ -212,3 +212,19 @@
   transformation back to human.  Then I want to step back from cutscenes a bit
   and add more rooms, and come back to the cutscenes with a fresh mind to
   freshen them up.
+#####2024-02-23 F
+- Basically done with every major thing in the game.  All that's left is
+  polishing, adding a couple more rooms (which are already planned), and maybe a
+  little more music and sound effects.
+- Did more work for the final cutscenes.
+- Added several more rooms.
+- Added a bit more decoration.
+- Finally fixed bug accuracy.  It's still not the best but it'll do, and it's
+  weird enough that the player can't assume the projectile will always fly right
+  toward them.
+- Some other AI improvements for monsters and bugs.
+- Implemented hide\_blood, hide\_nudity, and enemy\_difficulty options.  None of
+  these were as hard as I thought they would be.
+- Some improvements to aperture transitions and other miscellaneous things.
+- Planned work for tomorrow: Add the final two rooms.  Place loose limbs in
+  bedroom.  Work on music a little more, add a couple more animation frames...
