@@ -5,6 +5,7 @@
 &z_weapon_offset0: 30
 &z_weapon_offset1: 31
 &z_weapon_offset2: 32
+&z_weapon_offset3: 33
 
 [ayu::Document {
     body: [vf::LayeredTexture [
@@ -71,6 +72,11 @@
             image: assets.ayu#layer2
             bounds: [120 238 168 313]
             z_offset: *z_weapon_offset2
+        } {
+             -- Extremely rare layer that only occurs when a Monster kills a Bug
+            image: assets.ayu#layer3
+            bounds: [120 238 168 313]
+            z_offset: *z_weapon_offset3
         }
     ]]
     axe_neutral:    [vf::WeaponFrame [#axe [34 63]]]

@@ -217,8 +217,9 @@ Controls MonsterMind::Mind_think (Resident& s) {
         if (dist < 0) {
             r[backward] = 1;
         }
-        else if (target->pos.y - self.pos.y >= 60) {
+        else if (target->pos.y - self.pos.y >= 45) {
              // Too high, wait for her to come down
+            return r;
         }
         else if (attack_dist < attack_range) {
             if (
@@ -246,6 +247,7 @@ Controls MonsterMind::Mind_think (Resident& s) {
             if (dist > 0 && dist < social_distance) {
                 if (jump_dist && fren.left != self.left) {
                     r[Control::Jump] = 1;
+                    r[forward] = 1;
                 }
                 else {
                     r[Control::Jump] = 0;

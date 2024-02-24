@@ -32,6 +32,9 @@
         tex: [{
             image: assets.ayu#layer0
             bounds: [335 132 395 222]
+        } {
+            image: assets.ayu#layer1
+            bounds: [335 132 395 222]
         }]
         dir_0: [
             [#/slash_low/tex [6 76] [-1 -2 1 7]]
@@ -55,6 +58,9 @@
     slash_high: {
         tex: [{
             image: assets.ayu#layer0
+            bounds: [336 30 401 129]
+        } {
+            image: assets.ayu#layer1
             bounds: [336 30 401 129]
         }]
         dir_0: [

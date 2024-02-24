@@ -5,6 +5,7 @@
 &z_tail_offset0: -10
 &z_tail_offset1: -9
 &z_tail_offset2: -8
+&z_tail_offset3: -7
 
 [ayu::Document {
     body: [vf::LayeredTexture [{
@@ -65,6 +66,10 @@
             image: assets.ayu#layer2
             bounds: [46 334 102 387]
             z_offset: *z_tail_offset2
+        } {
+            image: assets.ayu#layer3
+            bounds: [46 334 102 387]
+            z_offset: *z_tail_offset3
         }
     ]]
     tail_h: [vf::WeaponFrame [#tail [37 38]]]
