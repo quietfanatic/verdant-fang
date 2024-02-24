@@ -99,6 +99,11 @@
             [304 -16]
         ]
     }]
+    den_bonebox: [vf::Scenery {
+        room: #den
+        data: assets.ayu#bonebox
+        pos: [112 32]
+    }]
     den_screen0: [vf::Scenery {
         room: #den
         data: assets.ayu#screen
@@ -359,6 +364,17 @@
                                         [272 32] [304 32]
             [-16 0] [16 0] [48 0] [80 0] [112 0] [144 0] [176 0] [208 0] [240 0] [272 0] [304 0]
         ]
+    }]
+    storage_bonebox0: [vf::Scenery {
+        room: #storage
+        data: assets.ayu#bonebox
+        pos: [256 32]
+        scale: [-1 1]
+    }]
+    storage_bonebox1: [vf::Scenery {
+        room: #storage
+        data: assets.ayu#bonebox
+        pos: [112 64]
     }]
     storage_semis: [vf::Semisolids {
         room: #storage

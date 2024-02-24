@@ -27,6 +27,12 @@
     }]]
     screen: [vf::Frame [#screen_tex [16 0] [-16 0 16 64]]]
 
+    bonebox_tex: [vf::LayeredTexture [{
+        image: #layer0
+        bounds: [62 97 94 115]
+    }]]
+    bonebox: [vf::Frame [#bonebox_tex [16 0] [-16 0 16 18]]]
+
     block_tex: [vf::LayeredTexture [{
         image: #layer0
         bounds: [3 3 35 35]
