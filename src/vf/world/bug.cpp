@@ -2,6 +2,7 @@
 #include <random>
 #include "../../dirt/ayu/reflection/describe.h"
 #include "../game/game.h"
+#include "../game/options.h"
 #include "../game/state.h"
 #include "math.h"
 

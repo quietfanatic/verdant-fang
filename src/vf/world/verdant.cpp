@@ -2,6 +2,7 @@
 
 #include "../../dirt/control/command.h"
 #include "../game/camera.h"
+#include "../game/options.h"
 #include "../game/game.h"
 #include "../game/state.h"
 #include "door.h"
@@ -223,6 +224,9 @@ WalkerBusiness Verdant::Walker_business () {
     else if (state == VS::CapturedWeaponBroken) {
         weapon_tint = anim_phase == 1 ? vd.transform_magic_color : 0;
         weapon_layers = anim_phase == 0 ? 0b1001 : 0b11;
+        if (current_game->options().hide_blood) {
+            weapon_layers &= ~0b10;
+        }
         if (anim_timer == 0) {
             if (anim_phase == 0) {
                 if (vd.spear_break_sound) vd.spear_break_sound->play();
