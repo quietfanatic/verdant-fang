@@ -26,11 +26,21 @@ struct Paralyze {
     Frame symbol [2];
 };
 
+struct Limbless {
+    vf::LayeredTexture tex;
+    Frame detach [4][4];
+    Frame fall;
+    Frame land [2];
+    Frame floor;
+    Frame inch [2];
+};
+
 struct DecalData {
     Decal stab;
     Decal slash_low;
     Decal slash_high;
     Paralyze paralyze;
+    Limbless limbless;
 };
 
 struct Walker;

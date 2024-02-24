@@ -149,7 +149,7 @@ void Frame::init () {
                 }
             }
         }
-        expect(area(region));
+        expect(bounds || area(region));
          // Finally we're done, and we should have the smallest rectangle around
          // the start that's fully surrounded by transparent pixels.
         bounds = region - offset;

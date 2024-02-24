@@ -86,11 +86,23 @@ AYU_DESCRIBE(vf::Paralyze,
     )
 )
 
+AYU_DESCRIBE(vf::Limbless,
+    attrs(
+        attr("tex", &Limbless::tex),
+        attr("detach", &Limbless::detach),
+        attr("fall", &Limbless::fall),
+        attr("land", &Limbless::land),
+        attr("inch", &Limbless::inch),
+        attr("floor", &Limbless::floor)
+    )
+)
+
 AYU_DESCRIBE(vf::DecalData,
     attrs(
         attr("stab", &DecalData::stab),
         attr("slash_low", &DecalData::slash_low),
         attr("slash_high", &DecalData::slash_high),
-        attr("paralyze", &DecalData::paralyze)
+        attr("paralyze", &DecalData::paralyze),
+        attr("limbless", &DecalData::limbless)
     )
 )
