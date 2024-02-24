@@ -9,6 +9,8 @@
 #include "../../dirt/glow/texture.h"
 #include "../../dirt/iri/iri.h"
 #include "camera.h"
+#include "game.h"
+#include "options.h"
 
 namespace vf {
 
@@ -180,6 +182,26 @@ void draw_frame (
     draw_texture(l, world_rect, tex_rect, z + l.z_offset, tint, fade);
 }
 
+void draw_layers (
+    const Frame& frame,
+    uint32 layers,
+    Vec pos,
+    float z,
+    Vec scale,
+    glow::RGBA8 tint
+) {
+    for (usize i = 0; i < 32 && i < frame.target->layers.size(); i++) {
+        bool draw = !!(layers & (1 << i));
+        if (i < frame.target->layers.size() &&
+            frame.target->layers[i].hides_nudity &&
+            current_game->options().hide_nudity
+        ) draw = true;
+        if (draw) {
+            draw_frame(frame, i, pos, z, scale, tint);
+        }
+    }
+}
+
 void draw_texture (
     const glow::Texture& tex,
     const Rect& world_rect,
@@ -252,7 +274,8 @@ void commit_draws () {
 AYU_DESCRIBE(vf::TextureLayer,
     attrs(
         attr("glow::PixelTexture", base<glow::PixelTexture>(), include),
-        attr("z_offset", &TextureLayer::z_offset, optional)
+        attr("z_offset", &TextureLayer::z_offset, optional),
+        attr("hides_nudity", &TextureLayer::hides_nudity, optional)
     )
 )
 

@@ -6,6 +6,7 @@ namespace vf {
 
 struct TextureLayer : glow::PixelTexture {
     float z_offset = 0;
+    bool hides_nudity = false;
 };
 
 struct LayeredTexture {
@@ -35,20 +36,14 @@ void draw_frame (
     float fade = 1
 );
 
-inline void draw_layers (
+void draw_layers (
     const Frame& frame,
     uint32 layers,
     Vec pos,
     float z = 0,
     Vec scale = {1, 1},
     glow::RGBA8 tint = {}
-) {
-    for (usize i = 0; i < 32 && i < frame.target->layers.size(); i++) {
-        if (layers & (1 << i)) {
-            draw_frame(frame, i, pos, z, scale, tint);
-        }
-    }
-}
+);
 
 inline void draw_all_layers (
     const Frame& frame,

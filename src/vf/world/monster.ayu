@@ -7,11 +7,17 @@
 &z_weapon_offset2: 32
 
 [ayu::Document {
-    body: [vf::LayeredTexture [{
-        image: assets.ayu#layer0
-         -- y down
-        bounds: [171 217 311 304]
-    }]]
+    body: [vf::LayeredTexture [
+        {
+            image: assets.ayu#layer0
+             -- y down
+            bounds: [171 217 311 304]
+        } {
+            image: assets.ayu#layer1
+            bounds: [171 217 311 304]
+            hides_nudity: true
+        }
+    ]]
      -- y up
     body_stand:      [vf::BodyFrame [#body [13 59] [2 25] [-3 15]]]
     body_walk0:      [vf::BodyFrame [#body [13 31] [3 25] [0 21]]]

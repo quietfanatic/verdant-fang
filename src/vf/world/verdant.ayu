@@ -26,6 +26,7 @@
             image: assets.ayu#layer1
             bounds: [110 84 356 214]
             z_offset: *z_body_offset1
+            hides_nudity: true
         } {
             image: assets.ayu#layer2
             bounds: [110 84 356 214]
@@ -287,25 +288,25 @@
             [#body_attack #head_neutral #spear_attack]
         ]
         walk_hold: [
-            [#body_walkhold0 #head_wave0 #fang_held *z_actor false 0x5]
-            [#body_walkhold1 #head_wave1 #fang_held *z_actor false 0x5]
-            [#body_walkhold2 #head_wave2 #fang_held *z_actor false 0x5]
-            [#body_walkhold3 #head_wave0 #fang_held *z_actor false 0x5]
-            [#body_walkhold4 #head_wave1 #fang_held *z_actor false 0x5]
-            [#body_walkhold5 #head_wave2 #fang_held *z_actor false 0x5]
+            [#body_walkhold0 #head_wave0 #fang_held]
+            [#body_walkhold1 #head_wave1 #fang_held]
+            [#body_walkhold2 #head_wave2 #fang_held]
+            [#body_walkhold3 #head_wave0 #fang_held]
+            [#body_walkhold4 #head_wave1 #fang_held]
+            [#body_walkhold5 #head_wave2 #fang_held]
         ]
         transform: [
-            [#body_hold #head_neutral #fang_held *z_actor false 0x5]
-            [#body_lift0 #head_neutral #fang_air *z_actor false 0x5]
-            [#body_transform0 #head_neutral #fang_air *z_actor false 0x5]
+            [#body_hold #head_neutral #fang_held]
+            [#body_lift0 #head_neutral #fang_air]
+            [#body_transform0 #head_neutral #fang_air]
              -- Hair will wave based on a timer
-            [#body_transform1 #head_wave0 #fang_air *z_actor false 0x5]
+            [#body_transform1 #head_wave0 #fang_air]
             [#body_transform2 #head_wave0 #fang_air *z_actor false 0x5]
             [#body_transform3 #head_wave0 #fang_air *z_actor false 0x5]
             [#body_transform4 #head_wave0 #fang_air *z_actor false 0x1]
-            [#body_transform4 #head_wave0 #fang_diag]
-            [#body_transform5 #head_wave0 #fang_diag_longg]
-            [#body_transform6 #head_wave0 #fang_diag_longg] -- tint
+            [#body_transform4 #head_wave0 #fang_diag *z_actor false 0x5]
+            [#body_transform5 #head_wave0 #fang_diag_longg *z_actor false 0x5]
+            [#body_transform6 #head_wave0 #fang_diag_longg] -- tint fang
             [#body_transform7 #head_wave0 #spear_diag]
             [#body_transform8 #head_wave1 #spear_diag]
             [#body_transform9 #head_neutral #spear_diag]

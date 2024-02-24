@@ -7,4 +7,5 @@
      -- 2 = normal
     enemy_difficult: 2
     hide_blood: false
+    hide_nudity: false
 }]

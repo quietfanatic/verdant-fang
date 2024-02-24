@@ -104,7 +104,16 @@
         #text [92 55] [-17 -5 0 0]
         "data:/options.ayu#/hide_blood" true
     ]]
-    back: [vf::MenuImage [#text [92 39] [-19 -7 0 0]]]
+    nudity: [vf::MenuImage [#text [92 47] [-28 -7 0 0]]]
+    show_n: [vf::MenuOption<bool> [
+        #text [69 55] [-20 -5 0 0]
+        "data:/options.ayu#/hide_nudity" false
+    ]]
+    hide_n: [vf::MenuOption<bool> [
+        #text [92 55] [-17 -5 0 0]
+        "data:/options.ayu#/hide_nudity" true
+    ]]
+    back: [vf::MenuImage [#text [92 37] [-19 -7 0 0]]]
     options_menu: [vf::Menu {
         decorations: [
             [#options_title [300 160]]
@@ -115,6 +124,8 @@
             [#normal [300 101]]
             [#show [277 81]]
             [#hide [300 81]]
+            [#show_n [277 61]]
+            [#hide_n [300 61]]
         ]
         items: [{
             draw: #checkpoints
@@ -132,8 +143,13 @@
             on_left: [hide_blood false]
             on_right: [hide_blood true]
         } {
-            draw: #back
+            draw: #nudity
             pos: [300 70]
+            on_left: [hide_nudity false]
+            on_right: [hide_nudity true]
+        } {
+            draw: #back
+            pos: [300 50]
             on_press: [close_menu]
         }]
         on_back: [close_menu]

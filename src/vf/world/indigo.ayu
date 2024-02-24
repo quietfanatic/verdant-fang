@@ -17,13 +17,12 @@
              -- y down
             bounds: [418 173 520 295]
             z_offset: *z_body_offset0
-        }
-        {
+        } {
             image: assets.ayu#layer1
             bounds: [418 173 520 295]
             z_offset: *z_body_offset1
-        }
-        {
+            hides_nudity: true
+        } {
             image: assets.ayu#layer2
             bounds: [418 173 520 295]
             z_offset: *z_body_offset2

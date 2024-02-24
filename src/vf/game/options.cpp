@@ -30,12 +30,21 @@ void hide_blood_ (bool hide) {
 }
 control::Command hide_blood (hide_blood_, "hide_blood", "Set whether to show or hide blood");
 
+void hide_nudity_ (bool hide) {
+    if (!current_game) return;
+    auto& options = current_game->options();
+    options.hide_nudity = hide;
+    ayu::save(current_game->options_res);
+}
+control::Command hide_nudity (hide_nudity_, "hide_nudity", "Set whether to show or hide nudity");
+
 } using namespace vf;
 
 AYU_DESCRIBE(vf::Options,
     attrs(
         attr("frustration", &Options::frustration, optional),
         attr("enemy_difficulty", &Options::enemy_difficulty, optional),
-        attr("hide_blood", &Options::hide_blood, optional)
+        attr("hide_blood", &Options::hide_blood, optional),
+        attr("hide_nudity", &Options::hide_nudity, optional)
     )
 )

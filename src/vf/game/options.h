@@ -7,6 +7,7 @@ struct Options {
     uint8 frustration = 2;
     uint8 enemy_difficulty = 2;
     bool hide_blood = false;
+    bool hide_nudity = false;
 };
 
 } // vf

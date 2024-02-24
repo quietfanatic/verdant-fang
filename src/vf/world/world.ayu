@@ -562,8 +562,8 @@
         pos: [230 72]
         left: true
         fly: true
-        --body_layers: 0x5 --no pants
-        body_layers: 0x7 --fully clothed
+        body_layers: 0x5 --no pants
+        --body_layers: 0x7 --fully clothed
         --body_layers: 0x3 --leotard
         --body_layers: 0x1 --naked
         head_layers: 0x7 --glasses and hat
