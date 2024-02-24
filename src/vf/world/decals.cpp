@@ -1,11 +1,14 @@
 #include "decals.h"
 
 #include "../../dirt/ayu/reflection/describe.h"
+#include "../game/game.h"
+#include "../game/options.h"
 #include "walker.h"
 
 namespace vf {
 
 void draw_decal (Walker& w, const Pose& pose) {
+    if (current_game->options().hide_blood) return;
     auto& data = *w.data->decals;
     if (w.paralyze_symbol_timer) {
         draw_frame(

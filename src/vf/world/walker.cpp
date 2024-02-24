@@ -2,6 +2,7 @@
 
 #include "../../dirt/ayu/reflection/describe.h"
 #include "../game/game.h"
+#include "../game/options.h"
 #include "../game/state.h"
 
 namespace vf {
@@ -708,10 +709,18 @@ void Walker::Walker_draw_weapon (const Pose& pose) {
             ? override_weapon_scale : Vec(left ? -1 : 1, 1);
         Vec w_pos = defined(override_weapon_pos)
             ? override_weapon_pos : pos + pose.body->weapon * w_scale;
+        uint8 w_layers = weapon_layers;
+         // Kind of a hacky condition to prevent disabling non-blood layers
+         // during cutscenes
+        if (current_game->options().hide_blood &&
+            !defined(override_weapon_pos)
+        ) {
+            w_layers &= ~0b1110;
+        }
         float z = pose.z;
         if (pose.damage_overlap && !mutual_kill) z = Z::Overlap;
         draw_layers(
-            *pose.weapon, weapon_layers,
+            *pose.weapon, w_layers,
             w_pos, z, w_scale, weapon_tint
         );
     }
