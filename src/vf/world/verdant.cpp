@@ -1058,6 +1058,7 @@ Verdant* find_verdant () {
 }
 
 void restart_if_dead_ () {
+    if (!current_game || current_game->menus) return;
     if (auto v = find_verdant()) {
         if (v->state == WS::Dead || v->state == VS::FangHelp) {
             v->go_to_limbo();
@@ -1069,6 +1070,7 @@ void restart_if_dead_ () {
 control::Command restart_if_dead (restart_if_dead_, "restart_if_dead", "Restart from checkpoint if player is dead");
 
 void force_restart_ () {
+    if (!current_game || current_game->menus) return;
     if (auto v = find_verdant()) {
         v->go_to_limbo();
         v->revive_phase = 1;
