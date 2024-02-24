@@ -25,6 +25,8 @@ struct ZoomProgram : glow::Program {
 static ZoomProgram* zoom_program = null;
 
 struct TransitionProgram : glow::Program {
+    TransitionType type = TransitionType::WipeLeft;
+    Vec center = Vec(0, 0);
     int u_type;
     int u_t;
     int u_center;
@@ -102,6 +104,19 @@ void end_camera () {
         transition_program->use();
          // Ease in and out a bit
         float t = (1.f - std::cos(transition_t * float(M_PI))) / 2.f;
+        if (transition_program->type == TransitionType::ApertureClose) {
+            t = 1 - t;
+        }
+        if (transition_program->type == TransitionType::ApertureClose ||
+            transition_program->type == TransitionType::ApertureOpen
+        ) {
+             // Find farthest screen corner and start from there
+            float lb2 = distance2(transition_program->center, Vec(0, 0));
+            float rb2 = distance2(transition_program->center, Vec(320, 0));
+            float rt2 = distance2(transition_program->center, Vec(320, 180));
+            float lt2 = distance2(transition_program->center, Vec(0, 180));
+            t *= sqrt(max(lb2, rb2, rt2, lt2));
+        }
         glUniform1f(transition_program->u_t, t);
         glBindTexture(GL_TEXTURE_2D, old_tex);
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
@@ -124,11 +139,13 @@ void finish_frame () {
 void set_transition_center (Vec center) {
     transition_program->use();
     glUniform2f(transition_program->u_center, center.x, center.y);
+    transition_program->center = center;
 }
 
 void set_transition_type (TransitionType type) {
     transition_program->use();
     glUniform1i(transition_program->u_type, int(type));
+    transition_program->type = type;
 }
 
 void set_transition_t (float t) {
