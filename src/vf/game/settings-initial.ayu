@@ -84,6 +84,7 @@
         [[ctrl c] [do_captured_sequence]]
         [[ctrl n] [become_snake]]
         [[ctrl shift n] [unbecome_snake]]
+        [[ctrl shift r] [reset_state]]
         [[f3] [debug_info]]
     ]
 }]

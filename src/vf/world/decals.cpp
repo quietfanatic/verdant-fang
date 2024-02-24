@@ -55,7 +55,7 @@ void draw_decal (Walker& w, const Pose& pose) {
     float z = w.anim_phase < 3 ? Z::Overlap + Z::DecalOffset
             : pose.z + Z::DecalOffset;
     uint32 layer = w.data->flavor == WF::Lemon ? 1 : 0;
-    if (layer >= frame->target->layers.size()) return; // Monster killed Bug?
+    if (layer >= frame->target->layers.size()) return; // Invalid decal layer?
     draw_frame(*frame, layer, w.pos + off, z, {w.left ? -1 : 1, 1});
 }
 
