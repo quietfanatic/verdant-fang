@@ -422,7 +422,7 @@ WalkerBusiness Verdant::Walker_business () {
             else if (anim_phase == DP::FullGlow2) {
                 body_tint = vd.transform_magic_color;
             }
-            else if (anim_phase == DP::FullScreenGlow0) {
+            else if (anim_phase == DP::FullScreenGlow2) {
                 if (vd.revive_sound) vd.revive_sound->play();
             }
             else if (anim_phase == DP::FangRevived0) {
