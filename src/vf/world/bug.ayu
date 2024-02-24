@@ -161,6 +161,7 @@
         gravity_drop: 0.01
         gravity_dead: 0.1
         gravity_fly: 0.01
+        can_be_easy: true
         can_fly: true
         drop_duration: 6
         land_sequence: [8 4]

@@ -89,7 +89,13 @@ WalkerBusiness Walker::Walker_business () {
         }
         case WS::Attack: {
             expect(anim_phase < 6);
-            if (anim_timer >= data->attack_sequence[anim_phase]) {
+            uint32 limit = data->attack_sequence[anim_phase];
+            if (data->can_be_easy && (anim_phase == 0 || anim_phase == 4) &&
+                current_game->options().enemy_difficulty <= 1
+            ) {
+                limit *= 2;
+            }
+            if (anim_timer >= limit) {
                 if (anim_phase == 0) return WB::HoldAttack;
                 if (anim_phase == 5) {
                     set_state(WS::Neutral);
@@ -824,6 +830,7 @@ AYU_DESCRIBE(vf::WalkerData,
         attr("gravity_drop", &WalkerData::gravity_drop),
         attr("gravity_dead", &WalkerData::gravity_dead),
         attr("gravity_fly", &WalkerData::gravity_fly),
+        attr("can_be_easy", &WalkerData::can_be_easy),
         attr("can_fly", &WalkerData::can_fly),
         attr("drop_duration", &WalkerData::drop_duration),
         attr("land_sequence", &WalkerData::land_sequence),

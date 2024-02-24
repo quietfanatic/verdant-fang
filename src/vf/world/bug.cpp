@@ -65,7 +65,11 @@ WalkerBusiness Bug::Walker_business () {
     }
     else if (state == BS::Spit) {
         expect(anim_phase < 3);
-        if (anim_timer >= bd.spit_sequence[anim_phase]) {
+        uint32 limit = bd.spit_sequence[anim_phase];
+        if (data->can_be_easy &&
+            current_game->options().enemy_difficulty <= 1
+        ) limit *= 2;
+        if (anim_timer >= limit) {
             if (anim_phase == 2) {
                 set_state(WS::Neutral);
             }

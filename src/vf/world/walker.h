@@ -123,6 +123,7 @@ struct WalkerData {
     float gravity_drop;
     float gravity_dead;
     float gravity_fly;
+    bool can_be_easy;
     bool can_fly;
     uint8 drop_duration;
      // [0] is occupied.
