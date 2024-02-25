@@ -572,6 +572,7 @@
         back_door: #atelier_to_bedroom_door
         bedroom: #bedroom
         bed_pos: [208 48]
+        bedroom_limb_pos: [[92 47] [100 33] [100 50] [220 50]]
     }]
 
     atelier_to_party_door: [vf::Door {
@@ -616,6 +617,26 @@
             [-16 48] [16 48] [272 96] [304 96]
             [-16 0] [16 0] [48 0] [80 0] [112 0] [144 0] [176 0] [208 0] [240 0] [272 0] [304 0]
         ]
+    }]
+    bedroom_box: [vf::Scenery {
+        room: #bedroom
+        data: assets.ayu#box
+        pos: [100 32]
+    }]
+    bedroom_bones: [vf::Scenery {
+        room: #bedroom
+        data: assets.ayu#bones
+        pos: [100 47]
+    }]
+    bedroom_screen0: [vf::Scenery {
+        room: #bedroom
+        data: assets.ayu#screen
+        pos: [140 32]
+    }]
+    bedroom_screen1: [vf::Scenery {
+        room: #bedroom
+        data: assets.ayu#screen
+        pos: [172 32]
     }]
     bed: [vf::Scenery {
         room: #bedroom

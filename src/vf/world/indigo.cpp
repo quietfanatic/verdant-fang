@@ -32,6 +32,7 @@ WalkerBusiness Indigo::Walker_business () {
     if (state == WS::Dead) {
         if (anim_phase >= 8 && verdant && verdant->state == VS::SnakeCaptured) {
             verdant->set_state(VS::Snake);
+            verdant->limb_layers &= ~0b1000;
         }
     }
     else if (state == IS::Capturing) {
@@ -141,8 +142,13 @@ WalkerBusiness Indigo::Walker_business () {
             anim_timer = 1;
         }
         else anim_timer += 1;
-        verdant->limb_pos[id.bed_use_limb] =
-            pos + poses.bed[anim_phase].body->weapon;
+        for (int i = 0; i < 4; i++) {
+            if (i == id.bed_use_limb) {
+                verdant->limb_pos[i] =
+                    pos + poses.bed[anim_phase].body->weapon;
+            }
+            else verdant->limb_pos[i] = bedroom_limb_pos[i];
+        }
         if (current_game->options().hide_nudity) {
             verdant->limb_pos[id.bed_use_limb] =
                 pos + poses.bed[0].body->weapon;
@@ -155,6 +161,8 @@ WalkerBusiness Indigo::Walker_business () {
         if (anim_timer >= id.bit_sequence[anim_phase]) {
             if (anim_phase == 8) {
                 set_state(WS::Neutral);
+                verdant->limb_pos[id.bed_use_limb] =
+                    bedroom_limb_pos[id.bed_use_limb];
             }
             anim_phase += 1;
             anim_timer = 0;
@@ -394,6 +402,7 @@ AYU_DESCRIBE(vf::Indigo,
         attr("bedroom", &Indigo::bedroom),
         attr("bed_pos", &Indigo::bed_pos),
         attr("glasses_pos", &Indigo::glasses_pos, optional),
+        attr("bedroom_limb_pos", &Indigo::bedroom_limb_pos, optional),
         attr("verdant", &Indigo::verdant, optional)
     ),
     init<&Indigo::init>()

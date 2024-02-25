@@ -8,10 +8,11 @@ Further info coming soon?
 #####TODO
 [ ] Kick off spear animation
 [ ] Actually trigger capture sequence
-[ ] Decals during capture sequence
-[ ] Place limbs in bedroom
+[x] Decals during capture sequence
+[x] Place limbs in bedroom
 [ ] End screen
 [ ] Improve title screen music
+[ ] Set music during final cutscenes
 [ ] Hallway
 [ ] Tunnel
 [ ] Package for Windows

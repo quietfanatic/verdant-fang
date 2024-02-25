@@ -81,6 +81,7 @@ struct Indigo : Walker {
     Room* bedroom;
     Vec bed_pos;
     Vec glasses_pos = GNAN;
+    Vec bedroom_limb_pos [4] = {GNAN, GNAN, GNAN, GNAN};
     Verdant* verdant = null;
 
     Indigo ();
