@@ -65,7 +65,10 @@ static void on_step (Game& game) {
      // be impossible).
     accumulate_controls(game.menu_controls, game.settings().read_controls());
     if (game.menus) game.menus.back().step(game.menu_controls);
-    else game.state().step();
+    else {
+        game.state().step();
+        if (game.turbo) game.state().step();
+    }
 }
 
 static void on_draw (Game& game) {
@@ -131,6 +134,8 @@ Game::Game () :
     pause_menu = menus_res["pause_menu"][1];
     ayu::global(&options_menu);
     options_menu = menus_res["options_menu"][1];
+    ayu::global(&end_menu);
+    end_menu = menus_res["end_menu"][1];
 
     if (ayu::source_exists(state_res->name())) {
         ayu::load(state_res);

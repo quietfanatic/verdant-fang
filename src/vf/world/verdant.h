@@ -74,7 +74,8 @@ namespace DesnakifyPhase {
     constexpr uint8 TakeFang1 = 22;
     constexpr uint8 HoldFang = 23;
     constexpr uint8 WalkAway = 24;
-    constexpr uint8 N_Phases = 25;
+    constexpr uint8 End = 25;
+    constexpr uint8 N_Phases = 26;
 };
 namespace DP = DesnakifyPhase;
 
@@ -109,7 +110,7 @@ struct VerdantPoses : WalkerPoses {
     Pose snake_bite [9];
     Pose snake_captured;
     Pose eat [34];
-    Pose desnakify [DP::N_Phases - 1];
+    Pose desnakify [DP::N_Phases];
 };
 
 struct CutsceneSound {
@@ -161,6 +162,8 @@ struct VerdantData : WalkerData {
     Vec snake_attack_vel;
     uint8 snake_tongue_cycle [5];
     Music* music_after_transform = null;
+    Music* music_after_snakify = null;
+    Music* music_after_desnakify = null;
      // Indexed by Indigo's anim_phase
      // Dunno if storing this here is right but we're doing it
     Vec bite_indigo_offsets [9];

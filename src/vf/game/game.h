@@ -17,7 +17,9 @@ struct Game {
     Menu* main_menu;
     Menu* pause_menu;
     Menu* options_menu;
+    Menu* end_menu;
     Controls menu_controls = {};
+    bool turbo = false;
     ayu::SharedResource settings_res;
     Settings& settings ();
     ayu::SharedResource options_res;

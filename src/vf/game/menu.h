@@ -62,6 +62,7 @@ struct Menu {
     glow::RGBA8 unselected_tint = {};
     uint32 default_index = 0;
     Music* music = null;
+    bool allow_pause = false;
 };
 
 struct OpenMenu {

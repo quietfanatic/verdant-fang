@@ -189,6 +189,7 @@ AYU_DESCRIBE(vf::Menu,
         attr("selected_tint", &Menu::selected_tint, optional),
         attr("unselected_tint", &Menu::unselected_tint, optional),
         attr("default_index", &Menu::default_index, optional),
-        attr("music", &Menu::music, optional)
+        attr("music", &Menu::music, optional),
+        attr("allow_pause", &Menu::allow_pause, optional)
     )
 )

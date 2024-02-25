@@ -7,12 +7,13 @@ Further info coming soon?
 
 #####TODO
 [ ] Kick off spear animation
-[ ] Actually trigger capture sequence
+[x] Actually trigger capture sequence
 [x] Decals during capture sequence
 [x] Place limbs in bedroom
-[ ] End screen
-[ ] Improve title screen music
-[ ] Set music during final cutscenes
+[x] End screen
+[x] Put snake on title screen
+[x] Improve title screen music
+[x] Set music during final cutscenes
 [x] Hallway
 [ ] Tunnel
 [ ] Package for Windows

@@ -178,4 +178,14 @@
         selected_tint: 0xebf4e0ff
         unselected_tint: 0xaaaaaaff
     }]
+    thanks_tex: [vf::LayeredTexture [{
+        image: ../world/assets.ayu#layer1
+        bounds: [415 3 502 33]
+    }]]
+    thanks: [vf::MenuImage [#thanks_tex [44 15] [-44 -15 43 15]]]
+    end_menu: [vf::Menu {
+        decorations: [[#thanks [160 100]]]
+        items: []
+        allow_pause: true
+    }]
 }]

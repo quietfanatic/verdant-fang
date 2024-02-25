@@ -2,8 +2,9 @@
 
 #include "../../dirt/control/command.h"
 #include "../game/camera.h"
-#include "../game/options.h"
 #include "../game/game.h"
+#include "../game/menu.h"
+#include "../game/options.h"
 #include "../game/state.h"
 #include "door.h"
 #include "indigo.h"
@@ -288,6 +289,10 @@ WalkerBusiness Verdant::Walker_business () {
         if (anim_timer >= vd.snakify_sequence[anim_phase]) {
             if (anim_phase == 7) {
                 set_state(VS::Snake);
+                if (vd.music_after_snakify) {
+                    current_game->state().current_music = vd.music_after_snakify;
+                    vd.music_after_snakify->play();
+                }
             }
             else {
                 if (anim_phase == 3) {
@@ -404,9 +409,7 @@ WalkerBusiness Verdant::Walker_business () {
         return WB::Frozen;
     }
     else if (state == VS::Desnakify) {
-        if (anim_phase == DP::WalkAway) {
-            return WB::Free;
-        }
+        expect(anim_phase < DP::N_Phases);
         if (anim_timer == 0) {
             if (anim_phase == DP::FullGlow0) {
                 body_tint = vd.transform_magic_color;
@@ -465,10 +468,24 @@ WalkerBusiness Verdant::Walker_business () {
                         desnakify_leaving_door->open_pos;
                 }
             }
+            else if (anim_phase == DP::BackToHuman2) {
+                if (vd.music_after_desnakify) {
+                    current_game->state().current_music = vd.music_after_desnakify;
+                    vd.music_after_desnakify->play();
+                }
+            }
         }
-        if (anim_timer >= vd.desnakify_sequence[anim_phase]) {
+        if (anim_phase == DP::End) {
+            return WB::Frozen;
+        }
+        else if (anim_timer >= vd.desnakify_sequence[anim_phase]) {
             anim_phase += 1;
             anim_timer = 0;
+            if (anim_phase == DP::End) {
+                current_game->menus.emplace_back(
+                    OpenMenu(current_game->end_menu)
+                );
+            }
             return Walker_business();
         }
         else {
@@ -528,7 +545,8 @@ WalkerBusiness Verdant::Walker_business () {
                 override_weapon_pos = GNAN;
                 override_weapon_scale = GNAN;
             }
-            return WB::Frozen;
+            if (anim_phase == DP::WalkAway) return WB::Free;
+            else return WB::Frozen;
         }
     }
     return Walker::Walker_business();
@@ -729,6 +747,7 @@ void Verdant::Walker_on_hit (
             expect(indigo->state == IS::Bed);
             indigo->set_state(IS::Bit);
             set_state(VS::SnakeBite);
+            Mix_FadeOutMusic(120*1000/60);
         }
         else {
             victim.set_state(WS::Stun);
@@ -1300,6 +1319,8 @@ AYU_DESCRIBE(vf::VerdantData,
         attr("desnakify_fang_pos", &VerdantData::desnakify_fang_pos),
         attr("desnakify_limb_offsets", &VerdantData::desnakify_limb_offsets),
         attr("music_after_transform", &VerdantData::music_after_transform, optional),
+        attr("music_after_snakify", &VerdantData::music_after_snakify, optional),
+        attr("music_after_desnakify", &VerdantData::music_after_desnakify, optional),
         attr("unstab_sound", &VerdantData::unstab_sound, optional),
         attr("revive_sound", &VerdantData::revive_sound, optional),
         attr("spear_break_sound", &VerdantData::spear_break_sound, optional),

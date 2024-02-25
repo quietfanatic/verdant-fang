@@ -86,6 +86,7 @@
         [[ctrl n] [become_snake]]
         [[ctrl shift n] [unbecome_snake]]
         [[ctrl shift r] [reset_state]]
+        [[ctrl "`"] [toggle_turbo]]
         [[f3] [debug_info]]
     ]
 }]

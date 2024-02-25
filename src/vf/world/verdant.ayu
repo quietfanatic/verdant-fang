@@ -439,6 +439,8 @@
             [#body_transform4 #head_neutral #fang_air]
             [#body_lift1 #head_neutral #fang_air]
             [#body_hold #head_neutral #fang_held]
+            [#body_hold #head_neutral #fang_held]
+            [#body_hold #head_neutral #fang_held]
         ]
     }]
     data: [vf::VerdantData {
@@ -563,7 +565,7 @@
             12 12 90 -- screen glows
             12 12 60 -- Human!
             20 20 30 -- hold Fang
-             -- Walk away
+            180 -- Walk away, then end screen
         ]
         desnakify_fang_pos: [ [40 1] [20 50] ]
         desnakify_limb_offsets: [
@@ -573,6 +575,8 @@
             [-3 -18]
         ]
         music_after_transform: assets.ayu#limestone
+        music_after_snakify: assets.ayu#verdant-fang
+        music_after_desnakify: assets.ayu#limestone
         unstab_sound: assets.ayu#shluk
         revive_sound: assets.ayu#hiss
         spear_break_sound: assets.ayu#break

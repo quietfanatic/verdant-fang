@@ -284,16 +284,25 @@ Controls IndigoMind::Mind_think (Resident& s) {
     auto& me = static_cast<Indigo&>(s);
     if (!target) return r;
     next_alert_phase:
+    Vec goal = me.home_pos;
     if (me.alert_phase == 0) {
         if (distance2(target->pos.x, me.pos.x) < length2(sight_range)) {
             me.alert_phase = 1;
             me.alert_timer = 0;
             if (me.front_door) me.front_door->set_state(DoorState::Closed);
+            glow::require_sdl(Mix_FadeOutMusic(120*1000/60));
             goto next_alert_phase;
         }
     }
     else if (me.alert_phase == 1) {
-        Vec goal = me.home_pos;
+        if (me.alert_timer >= 120) {
+            me.alert_phase = 2;
+            me.alert_timer = 0;
+            me.set_state(IS::Capturing);
+        }
+        else me.alert_timer += 1;
+    }
+    else if (me.alert_phase == 2) {
         if (me.poison_level) {
             goal = Vec(160, 80);
             auto& id = static_cast<IndigoData&>(*me.data);
@@ -314,26 +323,26 @@ Controls IndigoMind::Mind_think (Resident& s) {
         else if (me.business == WB::Free) {
             me.left = target->pos.x < me.pos.x;
         }
-        if (me.pos.x < goal.x - goal_tolerance.x) {
-            r[Control::Right] = 1;
-        }
-        else if (me.pos.x > goal.x + goal_tolerance.x) {
-            r[Control::Left] = 1;
-        }
-        else if (me.vel.x < 0.01) {
-            r[Control::Right] = 1;
-        }
-        else if (me.vel.x > 0.01) {
-            r[Control::Left] = 1;
-        }
-        if (me.pos.y < goal.y - goal_tolerance.y) {
-            r[Control::Up] = 1;
-        }
-        if (me.pos.y > goal.y + goal_tolerance.y) {
-            r[Control::Down] = 1;
-        }
-         // else just float down
     }
+    if (me.pos.x < goal.x - goal_tolerance.x) {
+        r[Control::Right] = 1;
+    }
+    else if (me.pos.x > goal.x + goal_tolerance.x) {
+        r[Control::Left] = 1;
+    }
+    else if (me.vel.x < 0.01) {
+        r[Control::Right] = 1;
+    }
+    else if (me.vel.x > 0.01) {
+        r[Control::Left] = 1;
+    }
+    if (me.pos.y < goal.y - goal_tolerance.y) {
+        r[Control::Up] = 1;
+    }
+    else if (me.pos.y > goal.y + goal_tolerance.y) {
+        r[Control::Down] = 1;
+    }
+     // else just float down
     return r;
 }
 

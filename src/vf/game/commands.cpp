@@ -88,14 +88,21 @@ control::Command open_main_menu (open_main_menu_, "open_main_menu", "Open the ma
 
 void pause_or_unpause_ () {
     if (!current_game) return;
-    if (current_game->menus &&
-        current_game->menus[0].data == current_game->pause_menu
-    ) {
-        current_game->menus = {};
-    }
-    else {
-        current_game->menus = {};
+    if (!current_game->menus) {
         current_game->menus.emplace_back(current_game->pause_menu);
+    }
+    else for (auto om = current_game->menus.rbegin();
+        om != current_game->menus.rend();
+        om++
+    ) {
+        if (om->data->allow_pause) {
+            current_game->menus.emplace_back(current_game->pause_menu);
+            break;
+        }
+        if (om->data == current_game->pause_menu) {
+            current_game->menus.shrink(&*om - current_game->menus.begin());
+            break;
+        }
     }
 }
 Command pause_or_unpause (pause_or_unpause_, "pause_or_unpause", "Pause game if playing game; Unpause game if paused");
@@ -120,5 +127,11 @@ void close_all_menus_ () {
     current_game->menus = {};
 }
 control::Command close_all_menus (close_all_menus_, "close_all_menus", "Close all menus");
+
+void toggle_turbo_ () {
+    if (!current_game) return;
+    current_game->turbo = !current_game->turbo;
+}
+control::Command toggle_turbo (toggle_turbo_, "toggle_turbo", "Make game run at double speed");
 
 } // vf
