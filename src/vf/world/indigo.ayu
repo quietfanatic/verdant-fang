@@ -77,7 +77,7 @@
     head_eaten4: [vf::Frame [#head [77 7]]]
     magic: [vf::LayeredTexture [{
         image: assets.ayu#layer0
-        bounds: [398 125 414 172]
+        bounds: [509 112 525 159]
         z_offset: *z_magic_offset
     }]]
     magic_sparkle0: [vf::WeaponFrame {

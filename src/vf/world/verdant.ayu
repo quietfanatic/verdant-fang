@@ -125,59 +125,77 @@
     fang: [vf::LayeredTexture {
         layers: [{
             image: assets.ayu#layer0
-            bounds: [3 191 109 331]
+            bounds: [29 192 109 331]
             z_offset: *z_weapon_offset0
         } {
             image: assets.ayu#layer1
-            bounds: [3 191 109 331]
+            bounds: [29 192 109 331]
             z_offset: *z_weapon_offset1
+            has_blood: true
         } {
             image: assets.ayu#layer2
-            bounds: [3 191 109 331]
+            bounds: [29 192 109 331]
             z_offset: *z_weapon_offset2
+            has_blood: true
         } {
             image: assets.ayu#layer3
-            bounds: [3 191 109 331]
+            bounds: [29 192 109 331]
             z_offset: *z_weapon_offset3
+            has_blood: true
         }]
          -- One of the frames has the origin above the snake
         search_direction: [0 -1]
     }]
-    fang_held: [vf::WeaponFrame [#fang [14 99]]]
-    fang_air: [vf::WeaponFrame [#fang [14 82]]]
-    fang_diag: [vf::WeaponFrame [#fang [14 63]]]
-    fang_diag_longg: [vf::WeaponFrame [#fang [14 38]]]
+     -- Fang is in separate textures to allow differences in the has_blood flag.
+     -- This texture uses layers 1 and 2 for tongue animation.
+    fang2: [vf::LayeredTexture {
+        layers: [{
+            image: assets.ayu#layer0
+            bounds: [3 226 30 331]
+        } {
+            image: assets.ayu#layer1
+            bounds: [3 226 30 331]
+        } {
+            image: assets.ayu#layer2
+            bounds: [3 226 30 331]
+        }]
+        search_direction: [0 -1]
+    }]
+    fang_held: [vf::WeaponFrame [#fang2 [14 99]]]
+    fang_air: [vf::WeaponFrame [#fang2 [14 82]]]
+    fang_diag: [vf::WeaponFrame [#fang2 [14 63]]]
+    fang_diag_longg: [vf::WeaponFrame [#fang2 [14 38]]]
     spear_diag: [vf::WeaponFrame [#fang [14 14]]]
      -- The origin of spear frames is generally 1 behind the center end to end.
      -- Incidentally, this is also where the hitbox starts.  For the neutral
      -- body frame, this is [7 4] plus the center of the back hand.
-    spear_neutral:     [vf::WeaponFrame [#fang [87 104]]]
-    spear_preattack:   [vf::WeaponFrame [#fang [87 92]]]
-    spear_attack:      [vf::WeaponFrame [#fang [87 87] [-8 -1 18 1]]]
-    spear_damage:      [vf::WeaponFrame [#fang [87 78]]]
-    spear_damagefall:  [vf::WeaponFrame [#fang [87 65]]]
-    spear_damagefallf: [vf::WeaponFrame [#fang [87 51]]]
-    spear_dead:        [vf::WeaponFrame [#fang [87 43]]]
-    spear_crouch_preattack: [vf::WeaponFrame [#fang [87 37]]]
-    spear_crouch_attack:    [vf::WeaponFrame [#fang [87 32] [0 -1 18 1]]]
-    spear_h:          [vf::WeaponFrame [#fang [52 113]]]
-    fang_h_longg:    [vf::WeaponFrame [#fang [52 119]]]
-    fang_h:          [vf::WeaponFrame [#fang [55 131]]]
-    spear_captured0:  [vf::WeaponFrame [#fang [7 124]]]
-    spear_captured1:  [vf::WeaponFrame [#fang [24 124]]]
-    spear_captured2:  [vf::WeaponFrame [#fang [47 95]]]
-    spear_broken:     [vf::WeaponFrame [#fang [47 73]]]
+    spear_neutral:     [vf::WeaponFrame [#fang [61 104]]]
+    spear_preattack:   [vf::WeaponFrame [#fang [61 92]]]
+    spear_attack:      [vf::WeaponFrame [#fang [61 87] [-8 -1 18 1]]]
+    spear_damage:      [vf::WeaponFrame [#fang [61 78]]]
+    spear_damagefall:  [vf::WeaponFrame [#fang [61 65]]]
+    spear_damagefallf: [vf::WeaponFrame [#fang [61 51]]]
+    spear_dead:        [vf::WeaponFrame [#fang [61 43]]]
+    spear_crouch_preattack: [vf::WeaponFrame [#fang [61 37]]]
+    spear_crouch_attack:    [vf::WeaponFrame [#fang [61 32] [0 -1 18 1]]]
+    spear_h:          [vf::WeaponFrame [#fang [61 116]]]
+    fang_h_longg:    [vf::WeaponFrame [#fang [61 122]]]
+    fang_h:          [vf::WeaponFrame [#fang [64 134]]]
+    spear_captured0:  [vf::WeaponFrame [#fang [16 123]]]
+    spear_captured1:  [vf::WeaponFrame [#fang [33 123]]]
+    spear_captured2:  [vf::WeaponFrame [#fang [21 95]]]
+    spear_broken:     [vf::WeaponFrame [#fang [21 73]]]
      -- These frames are in two halves.  Instead of specifying the bounds
      -- explicitly, I put some connecting pixels on layer 3 to make the auto-
      -- bounds-determiner put the halves together.  So make sure NOT to enable
      -- layer 3 for these sprites.
-    fang_broken:     [vf::WeaponFrame [#fang [48 52]]]
-    fang_brokenfall: [vf::WeaponFrame [#fang [49 37]]]
-    fang_dead0: [vf::WeaponFrame [#fang [49 27]]]
-    fang_dead1: [vf::WeaponFrame [#fang [49 21]]]
-    fang_dead2: [vf::WeaponFrame [#fang [49 15]]]
-    fang_dead3: [vf::WeaponFrame [#fang [49 9]]]
-    fang_dead4: [vf::WeaponFrame [#fang [49 3]]]
+    fang_broken:     [vf::WeaponFrame [#fang [22 52]]]
+    fang_brokenfall: [vf::WeaponFrame [#fang [23 37]]]
+    fang_dead0: [vf::WeaponFrame [#fang [23 27]]]
+    fang_dead1: [vf::WeaponFrame [#fang [23 21]]]
+    fang_dead2: [vf::WeaponFrame [#fang [23 15]]]
+    fang_dead3: [vf::WeaponFrame [#fang [23 9]]]
+    fang_dead4: [vf::WeaponFrame [#fang [23 3]]]
     snake: [vf::LayeredTexture [
         {
             image: assets.ayu#layer0
@@ -504,6 +522,7 @@
         weapon_broken_sequence: [30 8 60 0 16 16 16 20]
         fang_gravity: 0.05
         fang_dead_y: 33
+        limb_detach_sequence: [12 12 12]
         limbless_sequence: 60
         inch_sequence: [15 15]
         snakify_sequence: [12 12 60 12 12 90 12 12]

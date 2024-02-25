@@ -192,10 +192,13 @@ void draw_layers (
 ) {
     for (usize i = 0; i < 32 && i < frame.target->layers.size(); i++) {
         bool draw = !!(layers & (1 << i));
-        if (i < frame.target->layers.size() &&
-            frame.target->layers[i].hides_nudity &&
-            current_game->options().hide_nudity
-        ) draw = true;
+        auto& options = current_game->options();
+        if (frame.target->layers[i].hides_nudity && options.hide_nudity) {
+            draw = true;
+        }
+        if (frame.target->layers[i].has_blood && options.hide_blood) {
+            draw = false;
+        }
         if (draw) {
             draw_frame(frame, i, pos, z, scale, tint);
         }
@@ -275,7 +278,8 @@ AYU_DESCRIBE(vf::TextureLayer,
     attrs(
         attr("glow::PixelTexture", base<glow::PixelTexture>(), include),
         attr("z_offset", &TextureLayer::z_offset, optional),
-        attr("hides_nudity", &TextureLayer::hides_nudity, optional)
+        attr("hides_nudity", &TextureLayer::hides_nudity, optional),
+        attr("has_blood", &TextureLayer::has_blood, optional)
     )
 )
 

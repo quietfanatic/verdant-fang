@@ -7,6 +7,7 @@ namespace vf {
 struct TextureLayer : glow::PixelTexture {
     float z_offset = 0;
     bool hides_nudity = false;
+    bool has_blood = false;
 };
 
 struct LayeredTexture {

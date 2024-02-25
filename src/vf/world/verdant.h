@@ -140,6 +140,8 @@ struct VerdantData : WalkerData {
     uint8 weapon_broken_sequence [8];
     float fang_gravity;
     float fang_dead_y;
+     // For drawing decals, repeated for each limb
+    uint8 limb_detach_sequence [3];
     uint8 limbless_sequence;
      // Indexed by anim_phase-1
     uint8 inch_sequence [2];

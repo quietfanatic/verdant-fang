@@ -68,15 +68,18 @@
             image: assets.ayu#layer1
             bounds: [120 238 168 313]
             z_offset: *z_weapon_offset1
+            has_blood: true
         } {
             image: assets.ayu#layer2
             bounds: [120 238 168 313]
             z_offset: *z_weapon_offset2
+            has_blood: true
         } {
              -- Extremely rare layer that only occurs when a Monster kills a Bug
             image: assets.ayu#layer3
             bounds: [120 238 168 313]
             z_offset: *z_weapon_offset3
+            has_blood: true
         }
     ]]
     axe_neutral:    [vf::WeaponFrame [#axe [34 63]]]

@@ -62,14 +62,17 @@
             image: assets.ayu#layer1
             bounds: [46 334 102 387]
             z_offset: *z_tail_offset1
+            has_blood: true
         } {
             image: assets.ayu#layer2
             bounds: [46 334 102 387]
             z_offset: *z_tail_offset2
+            has_blood: true
         } {
             image: assets.ayu#layer3
             bounds: [46 334 102 387]
             z_offset: *z_tail_offset3
+            has_blood: true
         }
     ]]
     tail_h: [vf::WeaponFrame [#tail [37 38]]]

@@ -224,9 +224,6 @@ WalkerBusiness Verdant::Walker_business () {
     else if (state == VS::CapturedWeaponBroken) {
         weapon_tint = anim_phase == 1 ? vd.transform_magic_color : 0;
         weapon_layers = anim_phase == 0 ? 0b1001 : 0b11;
-        if (current_game->options().hide_blood) {
-            weapon_layers &= ~0b10;
-        }
         if (anim_timer == 0) {
             if (anim_phase == 0) {
                 if (vd.spear_break_sound) vd.spear_break_sound->play();
@@ -1202,6 +1199,7 @@ AYU_DESCRIBE(vf::VerdantData,
         attr("weapon_broken_sequence", &VerdantData::weapon_broken_sequence),
         attr("fang_gravity", &VerdantData::fang_gravity),
         attr("fang_dead_y", &VerdantData::fang_dead_y),
+        attr("limb_detach_sequence", &VerdantData::limb_detach_sequence),
         attr("limbless_sequence", &VerdantData::limbless_sequence),
         attr("inch_sequence", &VerdantData::inch_sequence),
         attr("snakify_sequence", &VerdantData::snakify_sequence),
