@@ -13,7 +13,7 @@ Further info coming soon?
 [ ] End screen
 [ ] Improve title screen music
 [ ] Set music during final cutscenes
-[ ] Hallway
+[x] Hallway
 [ ] Tunnel
 [ ] Package for Windows
 [ ] Package for Linux

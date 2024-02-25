@@ -20,8 +20,11 @@ struct Monster : Walker {
      // 3: Jump out of hiding spot (z_override = Z::Hiding)
      // 4: No longer hiding
     uint8 hide_phase = 0;
+    std::optional<uint8> home_hide_phase;
     Monster ();
     void init ();
+     // Just to link invincible to hide_phase
+    void Walker_move (const Controls&) override;
      // Draw decals
     void Walker_on_hit (const Hitbox&, Walker&, const Hitbox&) override;
      // Override z when hiding

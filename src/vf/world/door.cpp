@@ -124,6 +124,11 @@ void Door::Resident_before_step () {
         }
         else pos = lerp(open_pos, closed_pos, next);
     }
+    else if (state == DoorState::Closed) {
+        if (open_after && !--open_after) {
+            set_state(DoorState::Open);
+        }
+    }
 }
 
 void Door::Resident_draw () {
@@ -165,6 +170,7 @@ AYU_DESCRIBE(vf::Door,
         attr("closed_activate", &Door::closed_activate, optional),
         attr("stuck_activate", &Door::stuck_activate, optional),
         attr("open_activate", &Door::open_activate, optional),
+        attr("open_after", &Door::open_after, optional),
         attr("crush", &Door::crush, optional),
         attr("troll", &Door::troll, optional),
         attr("troll_dist", &Door::troll_dist, optional),

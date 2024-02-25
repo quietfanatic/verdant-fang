@@ -13,6 +13,12 @@ Monster::Monster () {
 void Monster::init () {
     if (!defined(home_pos)) home_pos = pos;
     if (!home_left) home_left = left;
+    if (!home_hide_phase) home_hide_phase = hide_phase;
+}
+
+void Monster::Walker_move (const Controls& controls) {
+    invincible = hide_phase == 2;
+    Walker::Walker_move(controls);
 }
 
 void Monster::Walker_on_hit (
@@ -73,8 +79,7 @@ void Monster::Resident_on_exit () {
         left = *home_left;
         alert_phase = 0;
         alert_timer = 0;
-        hide_phase = 0;
-        invincible = false;
+        hide_phase = *home_hide_phase;
     }
     Walker::Resident_on_exit();
 }
@@ -101,7 +106,6 @@ Controls MonsterMind::Mind_think (Resident& s) {
     if (!(s.types & Types::Monster)) return r;
     auto& self = static_cast<Monster&>(s);
     if (!target || target->state == WS::Dead) return r;
-    self.invincible = false;
 
      // Calculcate some distances
     float dist = target->pos.x - self.pos.x;
@@ -179,7 +183,6 @@ Controls MonsterMind::Mind_think (Resident& s) {
             else if (self.hide_phase == 1) {
                 if (self.pos.x > hiding_spot) {
                     r[Control::Left] = 1;
-                    self.invincible = true;
                     return r;
                 }
                 else {
@@ -205,7 +208,6 @@ Controls MonsterMind::Mind_think (Resident& s) {
                         goto next_hide_phase;
                     }
                 }
-                self.invincible = true;
                 return r;
             }
             else if (self.hide_phase == 3) {
@@ -275,7 +277,8 @@ AYU_DESCRIBE(vf::Monster,
         attr("home_left", &Monster::home_left, collapse_optional),
         attr("alert_phase", &Monster::alert_phase, optional),
         attr("alert_timer", &Monster::alert_timer, optional),
-        attr("hide_phase", &Monster::hide_phase, optional)
+        attr("hide_phase", &Monster::hide_phase, optional),
+        attr("home_hide_phase", &Monster::home_hide_phase, collapse_optional)
     ),
     init<&Monster::init>()
 )

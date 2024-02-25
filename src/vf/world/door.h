@@ -22,6 +22,7 @@ struct Door : Resident, Activatable {
     DoorState closed_activate = DoorState::Open;
     DoorState stuck_activate = DoorState::Open;
     DoorState open_activate = DoorState::Closed;
+    uint8 open_after = 0;
     bool crush = false;
     bool troll = false;
     float troll_dist = 16;
