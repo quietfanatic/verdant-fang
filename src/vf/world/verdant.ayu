@@ -165,7 +165,7 @@
     fang_air: [vf::WeaponFrame [#fang2 [14 82]]]
     fang_diag: [vf::WeaponFrame [#fang2 [14 63]]]
     fang_diag_longg: [vf::WeaponFrame [#fang2 [14 38]]]
-    spear_diag: [vf::WeaponFrame [#fang [14 14]]]
+    spear_diag: [vf::WeaponFrame [#fang2 [14 14]]]
      -- The origin of spear frames is generally 1 behind the center end to end.
      -- Incidentally, this is also where the hitbox starts.  For the neutral
      -- body frame, this is [7 4] plus the center of the back hand.

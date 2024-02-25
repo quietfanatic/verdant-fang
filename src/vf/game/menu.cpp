@@ -18,6 +18,7 @@ OpenMenu::~OpenMenu () {
 }
 
 void OpenMenu::step (const Controls& controls) {
+    frame_count += 1;
      // Only allow one input at once to avoid misinputs
     uint32 count = (controls[Control::Up] == 1)
                  + (controls[Control::Down] == 1)
@@ -63,26 +64,44 @@ void OpenMenu::step (const Controls& controls) {
     }
 }
 
-void MenuImage::MenuDrawable_draw (Menu*, Vec pos, glow::RGBA8 tint) {
+void MenuImage::MenuDrawable_draw (OpenMenu&, Vec pos, glow::RGBA8 tint) {
     draw_frame(*this, 0, pos, 10, {1, 1}, tint);
 }
 
-void MenuOptionBase::draw (Menu* data, Vec pos, bool eq) {
+void MenuFang::MenuDrawable_draw (OpenMenu& om, Vec pos, glow::RGBA8) {
+    uint32 len = 0;
+    for (auto& phase : cycle) len += phase;
+    uint32 timer = om.frame_count % len;
+    uint8 layers;
+    if (timer < cycle[0]) layers = 0b001;
+    else {
+        timer -= cycle[0];
+        if (timer < cycle[1]) layers = 0b011;
+        else {
+            timer -= cycle[1];
+            if (timer < cycle[2]) layers = 0b111;
+            else layers = 0b011;
+        }
+    }
+    draw_layers(frame, layers, pos, 10);
+}
+
+void MenuOptionBase::draw (OpenMenu& om, Vec pos, bool eq) {
     draw_frame(
         *this, 0, pos, 10, {1, 1},
-        eq ? data->selected_tint : data->unselected_tint
+        eq ? om.data->selected_tint : om.data->unselected_tint
     );
 }
 
 void OpenMenu::draw () {
     for (auto& deco : data->decorations) {
         deco.draw->MenuDrawable_draw(
-            data, deco.pos, data->decoration_tint
+            *this, deco.pos, data->decoration_tint
         );
     }
     for (usize i = 0; i < data->items.size(); i++) {
         data->items[i].draw->MenuDrawable_draw(
-            data, data->items[i].pos,
+            *this, data->items[i].pos,
             current_index == i ? data->selected_tint : data->unselected_tint
         );
     }
@@ -103,6 +122,14 @@ AYU_DESCRIBE(vf::MenuImage,
     attrs(
         attr("vf::MenuDrawable", base<MenuDrawable>(), include),
         attr("vf::Frame", base<Frame>(), include)
+    )
+)
+
+AYU_DESCRIBE(vf::MenuFang,
+    attrs(
+        attr("vf::MenuDrawable", base<MenuDrawable>(), include),
+        attr("frame", &MenuFang::frame),
+        attr("cycle", &MenuFang::cycle)
     )
 )
 

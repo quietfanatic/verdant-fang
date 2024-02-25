@@ -150,7 +150,7 @@ void State::step () {
     if (should_step) {
         if (current_room) current_room->step();
     }
-    current_frame += 1;
+    frame_count += 1;
 }
 
 void State::save_checkpoint (uint8 checkpoint_level, Vec transition_center) {
@@ -206,7 +206,7 @@ AYU_DESCRIBE(vf::Checkpoint,
 AYU_DESCRIBE(vf::State,
     attrs(
         attr("rng", member(&State::rng_uint32, prefer_hex), optional),
-        attr("current_frame", &State::current_frame, optional),
+        attr("frame_count", &State::frame_count, optional),
         attr("current_room", &State::current_room),
         attr("current_music", &State::current_music),
         attr("current_music_position", &State::current_music_position),

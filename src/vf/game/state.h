@@ -44,7 +44,7 @@ struct State {
         std::minstd_rand rng;
         uint32 rng_uint32;
     };
-    uint64 current_frame = 0;
+    uint64 frame_count = 0;
     Room* current_room = null;
     Music* current_music = null;
     double current_music_position = 0;

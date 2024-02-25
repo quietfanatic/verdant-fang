@@ -3,23 +3,45 @@
         image: ../world/assets.ayu#layer1
         bounds: [506 2 598 142]
     }]]
+    fang_tex: [vf::LayeredTexture [
+        {
+            image: ../world/assets.ayu#layer1
+            bounds: [465 73 502 94]
+        } {
+            image: ../world/assets.ayu#layer2
+            bounds: [465 73 502 94]
+        } {
+            image: ../world/assets.ayu#layer3
+            bounds: [465 73 502 94]
+        }
+    ]]
     main_title:   [vf::MenuImage [#text [56 133] [-56 -31 0 0]]]
+    fang:         [vf::MenuFang {
+        frame: [#fang_tex [19 11] [-19 -11 18 10]]
+        cycle: [80 6 6 6]
+    }]
     options:      [vf::MenuImage [#text [92 140] [-33 -7 0 0]]]
     start:        [vf::MenuImage [#text [92 130] [-22 -7 0 0]]]
     exit:         [vf::MenuImage [#text [92 110] [-18 -7 0 0]]]
     main_menu: [vf::Menu {
-        decorations: [[#main_title [300 160]]]
+        decorations: [
+            [#main_title [200 156]]
+            [#fang [146 100]]
+        ]
         items: [{
             draw: #options
-            pos: [300 120]
+            pos: [220 116]
             on_press: [open_options_menu]
         } {
             draw: #start
-            pos: [300 110]
-            on_press: [close_menu]
+            pos: [220 106]
+            on_press: [seq [
+                [ignore_held_controls]
+                [close_menu]
+            ]]
         } {
             draw: #exit
-            pos: [300 100]
+            pos: [220 96]
             on_press: [exit_program]
         }]
         selected_tint: 0xebf4e0ff

@@ -7,29 +7,36 @@
 namespace vf {
 struct Menu;
 struct Music;
+struct OpenMenu;
 
 struct MenuDrawable {
     virtual void MenuDrawable_draw (
-        Menu* menu, Vec pos, glow::RGBA8 tint
+        OpenMenu&, Vec pos, glow::RGBA8 tint
     ) = 0;
 };
 
 struct MenuImage : MenuDrawable, Frame {
-    void MenuDrawable_draw (Menu*, Vec, glow::RGBA8) override;
+    void MenuDrawable_draw (OpenMenu&, Vec, glow::RGBA8) override;
+};
+
+struct MenuFang : MenuDrawable {
+    Frame frame;
+    uint8 cycle [4];
+    void MenuDrawable_draw (OpenMenu&, Vec, glow::RGBA8) override;
 };
 
 struct MenuOptionBase : Frame {
     uint32* option;
     uint32 value;
-    void draw (Menu*, Vec, bool);
+    void draw (OpenMenu&, Vec, bool);
 };
 
 template <class T>
 struct MenuOption : MenuDrawable, MenuOptionBase {
     T* option;
     T value;
-    void MenuDrawable_draw (Menu* data, Vec pos, glow::RGBA8) override {
-        draw(data, pos, option && *option == value);
+    void MenuDrawable_draw (OpenMenu& om, Vec pos, glow::RGBA8) override {
+        draw(om, pos, option && *option == value);
     }
 };
 
@@ -59,7 +66,8 @@ struct Menu {
 
 struct OpenMenu {
     Menu* data;
-    usize current_index;
+    uint32 current_index;
+    uint32 frame_count = 0;
     OpenMenu (Menu*);
     ~OpenMenu ();
     OpenMenu (const OpenMenu&) = delete;
