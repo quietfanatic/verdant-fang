@@ -696,7 +696,7 @@ void Verdant::Resident_on_collide (
         expect(proper(overlap));
          // Allow a bit of grace.  TODO: Make horizontal situation better.
         if (height(overlap) < 12) return;
-        else if (width(overlap) <= 3) {
+        else if (width(overlap) <= 2) {
             goto not_handled;
         }
         else if (overlap.t == here.t) {

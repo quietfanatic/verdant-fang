@@ -71,6 +71,7 @@
         room: #start
         pos: [288 32]
         data: assets.ayu#door
+        open_from_right: true
     }]
     start_to_den: [vf::LoadingZone {
         room: #start
@@ -178,6 +179,7 @@
         room: #den
         data: assets.ayu#door
         pos: [288 80]
+        open_from_right: true
     }]
 
     den_to_start: [vf::LoadingZone {
@@ -269,6 +271,7 @@
         room: #hive
         data: assets.ayu#door
         pos: [288 64]
+        open_from_right: true
     }]
 
     hive_to_den: [vf::LoadingZone {
@@ -325,7 +328,8 @@
         open_activate: open
         troll: true
         pos: [224 32]
-        troll_dist: 84
+        detection_dist: 84
+        open_from_right: true
     }]
     corridor_door1: [vf::Door {
         room: #corridor
@@ -334,8 +338,17 @@
         open_activate: open
         troll: true
         pos: [288 96]
-        troll_dist: 84
+        detection_dist: 84
         no_troll_unless_open: #corridor_door0
+        open_from_right: true
+    }]
+    corridor_antisoftlock: [vf::Door {
+        room: #corridor
+        data: assets.ayu#door
+        state: open
+        pos: [256 96]
+        close_after_these: [#corridor_door0 #corridor_door1]
+        open_from_right: true
     }]
 
     corridor_to_hive: [vf::LoadingZone {
@@ -448,6 +461,7 @@
         room: #storage
         pos: [288 96]
         data: assets.ayu#door
+        open_from_right: true
     }]
     storage_to_party: [vf::LoadingZone {
         room: #storage
@@ -524,6 +538,7 @@
         room: #party
         pos: [288 32]
         data: assets.ayu#door
+        open_from_right: true
     }]
     party_to_hallway: [vf::LoadingZone {
         room: #party
@@ -586,7 +601,7 @@
         pos: [288 96]
         state: open
         troll: true
-        troll_dist: 84
+        detection_dist: 84
         open_after: 120
     }]
 
@@ -669,6 +684,7 @@
         data: assets.ayu#door
         state: open
         pos: [37 96] --48 - 11
+        open_from_left: true
     }]
     atelier_to_hallway: [vf::LoadingZone {
         room: #atelier
@@ -741,5 +757,6 @@
         room: #bedroom
         data: assets.ayu#door
         pos: [284 32]
+        open_from_right: true
     }]
 }]

@@ -60,9 +60,8 @@ void Door::Resident_before_step () {
         (!no_troll_unless_open || no_troll_unless_open->state == DoorState::Open)
     ) {
         if (auto v = find_verdant()) {
-            if (
-                v->pos.y < pos.y &&
-                distance(v->pos.x, pos.x) <= troll_dist
+            if (v->pos.y < pos.y &&
+                distance(v->pos.x, pos.x) <= detection_dist
             ) {
                 set_state(DoorState::Closed);
                 troll = false;
@@ -129,10 +128,40 @@ void Door::Resident_before_step () {
             set_state(DoorState::Open);
         }
     }
+    else if (state == DoorState::Open) {
+        if (close_after_these[0] && close_after_these[1] &&
+            close_after_these[0]->state == DoorState::Closed &&
+            close_after_these[1]->state == DoorState::Closed
+        ) {
+            if (close_after) {
+                if (!--close_after) set_state(DoorState::Closed);
+            }
+            else if (auto v = find_verdant()) {
+                if (v->pos.y < pos.y &&
+                    distance(v->pos.x, pos.x) <= detection_dist
+                ) {
+                    close_after = 180;
+                }
+            }
+        }
+    }
 }
 
 void Door::Resident_draw () {
     draw_all_layers(data->frame, pos, Z::Door);
+}
+
+void Door::Resident_on_enter () {
+    if (auto v = find_verdant()) {
+        if (open_from_left && v->pos < pos) {
+            state = DoorState::Open;
+            pos = open_pos;
+        }
+        if (open_from_right && v->pos > pos) {
+            state = DoorState::Open;
+            pos = open_pos;
+        }
+    }
 }
 
 void Door::Resident_on_exit () {
@@ -171,10 +200,14 @@ AYU_DESCRIBE(vf::Door,
         attr("stuck_activate", &Door::stuck_activate, optional),
         attr("open_activate", &Door::open_activate, optional),
         attr("open_after", &Door::open_after, optional),
+        attr("close_after", &Door::close_after, optional),
+        attr("open_from_left", &Door::open_from_left, optional),
+        attr("open_from_right", &Door::open_from_right, optional),
         attr("crush", &Door::crush, optional),
         attr("troll", &Door::troll, optional),
-        attr("troll_dist", &Door::troll_dist, optional),
-        attr("no_troll_unless_open", &Door::no_troll_unless_open, optional)
+        attr("detection_dist", &Door::detection_dist, optional),
+        attr("no_troll_unless_open", &Door::no_troll_unless_open, optional),
+        attr("close_after_these", &Door::close_after_these, optional)
     ),
     init<&Door::init>(10)
 )
