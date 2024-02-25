@@ -190,6 +190,7 @@ struct Verdant : Walker {
     uint8 limb_layers = 1;
     Vec limb_pos [4] = {GNAN, GNAN, GNAN, GNAN};
     Vec limb_initial_pos [4] = {GNAN, GNAN, GNAN, GNAN};
+    Vec floor_decal_pos = GNAN;
     glow::RGBA8 limb_tint = {};
     Indigo* indigo = null;
     float fang_vel_y = GNAN;

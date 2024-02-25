@@ -268,6 +268,7 @@ WalkerBusiness Verdant::Walker_business () {
     else if (state == VS::Limbless) {
         if (floor) {
             if (anim_timer >= vd.limbless_sequence) {
+                floor_decal_pos = pos;
                 set_state(VS::Inch);
                 return Walker_business();
             }
@@ -983,8 +984,87 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
         );
         return;
     }
+    else if (state == VS::CapturedLimbsDetached) {
+        if (!indigo) {
+#ifndef NDEBUG
+            never();
+#endif
+            return;
+        }
+         // Draw limb decals
+        if (!current_game->options().hide_blood)
+        for (int i = 0; i < 4; i++) {
+            uint32 phase;
+            if (indigo->anim_phase < CP::DetachLimb0 + i) {
+                 // Not detached yet, don't draw decal
+                continue;
+            }
+            else if (indigo->anim_phase == CP::DetachLimb0 + i) {
+                int32 timer = indigo->anim_timer;
+                timer -= vd.limb_detach_sequence[0];
+                if (timer <= 0) phase = 0;
+                else {
+                    timer -= vd.limb_detach_sequence[1];
+                    if (timer <= 0) phase = 1;
+                    else {
+                        timer -= vd.limb_detach_sequence[2];
+                        if (timer <= 0) phase = 2;
+                        else phase = 3;
+                    }
+                }
+            }
+            else phase = 3;
+            auto& id = static_cast<IndigoData&>(*indigo->data);
+            uint8 limb = id.capture_limb_order[i];
+            draw_frame(
+                vd.decals->limbless.detach[phase][limb], 0,
+                pos + left_flip(poses.captured_limbs[limb]->attached),
+                pose.z + poses.captured_limbs[limb]->z_offset,
+                left_flip(Vec(1, 1))
+            );
+        }
+    }
+    else if (state == VS::Limbless) {
+        if (!current_game->options().hide_blood) {
+            if (!floor) {
+                draw_frame(
+                    vd.decals->limbless.fall, 0,
+                    pos, pose.z + 5, // between layers 1 and 2
+                    left_flip(Vec(1, 1))
+                );
+            }
+            else {
+                draw_frame(
+                    vd.decals->limbless.land[1], 0,
+                    pos, pose.z + 5,
+                    left_flip(Vec(1, 1))
+                );
+            }
+        }
+    }
+    else if (state == VS::Inch) {
+        if (!current_game->options().hide_blood) {
+            draw_frame(
+                vd.decals->limbless.inch[anim_phase % 2], 0,
+                pos, pose.z + 5,
+                left_flip(Vec(1, 1))
+            );
+            draw_frame(
+                vd.decals->limbless.floor, 0,
+                floor_decal_pos, pose.z + Z::DecalOffset,
+                left_flip(Vec(1, 1))
+            );
+        }
+    }
     else if (state == VS::Snakify) {
-        if (anim_phase >= 3) {
+        if (anim_phase < 3) {
+            draw_frame(
+                vd.decals->limbless.floor, 0,
+                floor_decal_pos, pose.z + Z::DecalOffset,
+                left_flip(Vec(1, 1))
+            );
+        }
+        else {
             glow::RGBA8 screen = vd.transform_magic_color;
             if (anim_phase == 3 || anim_phase == 7) {
                 screen.a *= float(0x60) / 0xff;
@@ -1240,6 +1320,8 @@ AYU_DESCRIBE(vf::Verdant,
         attr("revive_timer", &Verdant::revive_timer, optional),
         attr("limb_layers", &Verdant::limb_layers, optional),
         attr("limb_pos", &Verdant::limb_pos, optional),
+        attr("limb_initial_pos", &Verdant::limb_initial_pos, optional),
+        attr("floor_decal_pos", &Verdant::floor_decal_pos, optional),
         attr("limb_tint", &Verdant::limb_tint, optional),
         attr("indigo", &Verdant::indigo, optional),
         attr("fang_vel_y", &Verdant::fang_vel_y, optional),

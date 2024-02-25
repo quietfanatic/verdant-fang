@@ -140,6 +140,7 @@
         ]
          -- This one stays in place on the floor during inch sequence
         floor: [#/limbless/tex [60 3] [-11 0 5 1]]
+         -- indexed by anim_phase % 2
         inch: [
             [#/limbless/tex [34 13] [-8 0 6 3]]
             [#/limbless/tex [9 13] [-7 0 5 3]]
