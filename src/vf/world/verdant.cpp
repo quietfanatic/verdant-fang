@@ -73,6 +73,13 @@ void Verdant::go_to_limbo () {
     }
 }
 
+void Verdant::revive () {
+    if (revive_phase) return;
+    go_to_limbo();
+    revive_phase = 1;
+    revive_timer = 0;
+}
+
 void Verdant::animate_tongue () {
     auto& vd = static_cast<VerdantData&>(*data);
     uint32 acc = 0;
@@ -1166,9 +1173,7 @@ void restart_if_dead_ () {
     if (!current_game || current_game->menus) return;
     if (auto v = find_verdant()) {
         if (v->state == WS::Dead || v->state == VS::FangHelp) {
-            v->go_to_limbo();
-            v->revive_phase = 1;
-            v->revive_timer = 0;
+            v->revive();
         }
     }
 }
@@ -1176,11 +1181,7 @@ control::Command restart_if_dead (restart_if_dead_, "restart_if_dead", "Restart 
 
 void force_restart_ () {
     if (!current_game || current_game->menus) return;
-    if (auto v = find_verdant()) {
-        v->go_to_limbo();
-        v->revive_phase = 1;
-        v->revive_timer = 0;
-    }
+    if (auto v = find_verdant()) v->revive();
 }
 control::Command force_restart (force_restart_, "force_restart", "Restart from checkpoint even if player is alive.");
 

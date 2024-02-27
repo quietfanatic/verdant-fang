@@ -206,6 +206,7 @@ struct Verdant : Walker {
     Vec visual_center ();
 
     void go_to_limbo ();
+    void revive ();
     void animate_tongue ();
 
      // For handling custom hit animations

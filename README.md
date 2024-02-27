@@ -106,7 +106,7 @@ https://leafuw.itch.io/verdant-fang
 [x] Package source
 [x] Fix losing checkpoint when saving state
 [x] death animation while poisoned crash
-[ ] revive animation multiple occurence
+[x] revive animation multiple occurence
 [ ] clothes on floor
 [ ] don't make Indigo's hat disappear
 [ ] Tweak monster's AI
