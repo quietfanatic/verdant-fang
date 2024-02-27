@@ -25,6 +25,7 @@ void Indigo::go_to_bed () {
     glasses_pos = bed_pos + Vec(36, 0);
     head_layers = 0b101;
     left = false;
+    alert_phase = 2;
 }
 
 WalkerBusiness Indigo::Walker_business () {
@@ -187,6 +188,7 @@ WalkerBusiness Indigo::Walker_business () {
         else anim_timer += 1;
         if (anim_phase == 1) {
             verdant->set_state(VS::SnakeCaptured);
+            verdant->left = false;
             verdant->pos = lerp(
                 capture_initial_pos,
                 id.capture_target_pos,

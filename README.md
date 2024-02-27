@@ -4,11 +4,11 @@ Verdant Fang - https://leafuw.itch.io/verdant-fang - v0.9.1
 Magical warrior Verdant and her trusty sidekick Fang venture into a dark cave to
 confront the evil within!
 
-This game was made for Strawberry Jam 2024.  The theme of the jam is sexuality,
-so I packed a bunch of things I find sexy into this game, including:
+This game was made for Strawberry Jam 8.  The theme of the jam is sexuality,
+so I packed a bunch of things I find sexy into this game, such as:
   - Snakes
   - Caves
-  - Violence
+  - Strong women
   - Transformation scenes
   - Slightly unfair level design
   - Moddable game content (with a text editor)
@@ -17,6 +17,21 @@ This game contains content that may disturb some people, including:
   - Blood (can be turned off)
   - Nudity (can be turned off)
   - Snakes (cannot be turned off)
+
+###Controls
+
+The default controls are as follows:
+  - Arrow keys or WASD: Move around
+  - Z or slash: Jump (Confirm)
+  - X or period: Attack (Back)
+  - R (on game over screen): Restart from checkpoint
+  - P: Pause
+  - F11: Toggle fullscreen mode
+  - Escape: Boss Key (immediately save state and close)
+  - Ctrl-R: Restart from checkpoint at any time
+
+You can change the controls by editing `save/settings.ayu` (you must run the
+game once to generate the file).
 
 ###Windows
 
@@ -32,20 +47,6 @@ Please install the equivalent packages with your system package manager.
 
 After that, run `verdant-fang`.  If it doesn't work, try running it in a
 terminal and tell me what the error message is.
-
-###Controls
-
-The default controls are as follows:
-  - Arrow keys or WASD: Move around
-  - Z or slash: Jump
-  - X or period: Attack
-  - R (on game over screen): Restart from checkpoint
-  - P: Pause
-  - F11: Toggle fullscreen mode
-  - Escape: Boss Key (immediately save state and close)
-  - Ctrl-R: Restart from checkpoint at any time
-
-You can change the controls by editing `save/settings.ayu`
 
 ###Modding
 
@@ -71,7 +72,7 @@ features.
 If you don't have the source code and want it, it can be downloaded at
 https://leafuw.itch.io/verdant-fang
 
-#####TODO
+#####Wrap up checklist
 [x] Actually trigger capture sequence
 [x] Decals during capture sequence
 [x] Place limbs in bedroom
@@ -90,6 +91,9 @@ https://leafuw.itch.io/verdant-fang
 [ ] clothes on floor
 [ ] don't make Indigo's hat disappear
 [ ] Tweak monster's AI
+[ ] Fix bed hitbox
+[ ] Game over screen controls
+[ ] Window title
 Optional:
 [ ] Kick off spear animation
 [ ] Boss fight?
