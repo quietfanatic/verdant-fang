@@ -112,7 +112,7 @@ https://leafuw.itch.io/verdant-fang
 [ ] Tweak monster's AI
 [x] Fix bed hitbox
 [ ] Game over screen controls
-[ ] Window title
+[x] Window title
 Optional:
 [ ] Kick off spear animation
 [ ] Boss fight?

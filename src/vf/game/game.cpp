@@ -86,7 +86,7 @@ static void on_draw (Game& game) {
 }
 
 Game::Game () :
-    window("Verdant Fang (testing)", size(window_viewport)),
+    window("Verdant Fang", size(window_viewport)),
     loop{
         .on_event = [this](SDL_Event* e){ return on_event(*this, e); },
         .on_step = [this]{ on_step(*this); },
