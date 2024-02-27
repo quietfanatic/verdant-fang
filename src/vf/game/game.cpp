@@ -92,9 +92,9 @@ Game::Game () :
         .on_step = [this]{ on_step(*this); },
         .on_draw = [this]{ on_draw(*this); },
     },
-    settings_res(iri::constant("data:/settings.ayu")),
-    options_res(iri::constant("data:/options.ayu")),
-    state_res(iri::constant("data:/state.ayu"))
+    settings_res(iri::constant("save:/settings.ayu")),
+    options_res(iri::constant("save:/options.ayu")),
+    state_res(iri::constant("save:/state.ayu"))
 {
     expect(!current_game);
     current_game = this;
@@ -187,7 +187,7 @@ Game* current_game = null;
 tap::TestSet tests ("vf/game", []{
     using namespace control;
     using namespace tap;
-    fs::remove(ayu::resource_filename(iri::constant("data:/state.ayu")));
+    fs::remove(ayu::resource_filename(iri::constant("save:/state.ayu")));
     Game game;
     auto room = game.state().current_room;
     ok(room->find_with_types(Types::Verdant), "Initial state has player");

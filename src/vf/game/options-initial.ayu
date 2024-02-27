@@ -5,7 +5,7 @@
     frustration: 2
      -- 1 = enemy attacks are slower
      -- 2 = normal
-    enemy_difficult: 2
+    enemy_difficulty: 2
     hide_blood: false
     hide_nudity: false
 }]

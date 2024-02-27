@@ -98,42 +98,42 @@
     checkpoints: [vf::MenuImage [#text [92 98] [-53 -7 0 0]]]
     lots: [vf::MenuOption<uint8> [
         #text [43 89] [-17 -5 0 0]
-        "data:/options.ayu#/frustration" 1
+        "save:/options.ayu#/frustration" 1
     ]]
     some: [vf::MenuOption<uint8> [
         #text [68 89] [-19 -5 0 0]
-        "data:/options.ayu#/frustration" 2
+        "save:/options.ayu#/frustration" 2
     ]]
     none: [vf::MenuOption<uint8> [
         #text [92 89] [-18 -5 0 0]
-        "data:/options.ayu#/frustration" 3
+        "save:/options.ayu#/frustration" 3
     ]]
     enemies: [vf::MenuImage [#text [92 81] [-35 -7 0 0]]]
     easy: [vf::MenuOption<uint8> [
         #text [57 72] [-19 -5 0 0]
-        "data:/options.ayu#/enemy_difficulty" 1
+        "save:/options.ayu#/enemy_difficulty" 1
     ]]
     normal: [vf::MenuOption<uint8> [
         #text [92 72] [-29 -5 0 0]
-        "data:/options.ayu#/enemy_difficulty" 2
+        "save:/options.ayu#/enemy_difficulty" 2
     ]]
     blood: [vf::MenuImage [#text [92 64] [-23 -7 0 0]]]
     show: [vf::MenuOption<bool> [
         #text [69 55] [-20 -5 0 0]
-        "data:/options.ayu#/hide_blood" false
+        "save:/options.ayu#/hide_blood" false
     ]]
     hide: [vf::MenuOption<bool> [
         #text [92 55] [-17 -5 0 0]
-        "data:/options.ayu#/hide_blood" true
+        "save:/options.ayu#/hide_blood" true
     ]]
     nudity: [vf::MenuImage [#text [92 47] [-28 -7 0 0]]]
     show_n: [vf::MenuOption<bool> [
         #text [69 55] [-20 -5 0 0]
-        "data:/options.ayu#/hide_nudity" false
+        "save:/options.ayu#/hide_nudity" false
     ]]
     hide_n: [vf::MenuOption<bool> [
         #text [92 55] [-17 -5 0 0]
-        "data:/options.ayu#/hide_nudity" true
+        "save:/options.ayu#/hide_nudity" true
     ]]
     back: [vf::MenuImage [#text [92 37] [-19 -7 0 0]]]
     options_menu: [vf::Menu {

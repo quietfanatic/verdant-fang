@@ -53,8 +53,8 @@ Almost all of the game's data is stored in editable text files.  The game world
 edit it with your favorite text editor to recreate the world to your liking.
 And if you're clever enough, you can insert your own images and music too!  If
 modifying the text data is not enough, you can download the source code version
-and modify it too.  I request that if you share a modified version of the game,
-you alter the title screen (such as by adding some text).
+and modify it too.  I request that if you redistribute a modified version of the
+game, you alter the title screen (such as by adding some text).
 
 ###Source Code
 
