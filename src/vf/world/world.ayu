@@ -698,10 +698,10 @@
         data: assets.ayu#door
         pos: [284 80] --272 + 12
     }]
-    atelier_to_bedroom: [vf::LoadingZone {
+    atelier_to_tunnel: [vf::LoadingZone {
         room: #atelier
         bounds: [328 0 328 180]
-        target_room: #bedroom
+        target_room: #tunnel
         target_pos: [16 32]
          -- There isn't really any way to die after this, but for consistency
         checkpoint_level: 1
@@ -712,6 +712,61 @@
         room: #tunnel
         data: assets.ayu#cave
         pos: [0 0]
+    }]
+    tunnel_blocks: [vf::Blocks {
+        room: #tunnel
+        data: assets.ayu#block
+        blocks: [
+            [-16 176] [16 176] [48 176] [80 176] [112 176] [144 176] [176 176] [208 176] [240 176] [272 176] [304 176]
+            [-16 144] [16 144] [48 144] [80 144] [112 144] [144 144] [176 144] [208 144] [240 144] [272 144] [304 144]
+            [-16 48] [16 48] [48 48] [80 48] [112 48] [144 48] [176 48] [208 48] [240 48] [272 48] [304 48]
+            [-16 0] [16 0] [48 0] [80 0]       [144 -16] [176 -16] [208 -16] [240 -16] [272 0] [304 0]
+        ]
+    }]
+    tunnel_door0: [vf::Door {
+        room: #tunnel
+        data: assets.ayu#block_door
+        pos: [112 0]
+        open_pos: [112 -16]
+    }]
+    tunnel_door1: [vf::Door {
+        room: #tunnel
+        data: assets.ayu#block_door
+        pos: [240 16]
+        open_pos: [240 -16]
+    }]
+    tunnel_switch0: [vf::Switch {
+        room: #tunnel
+        data: assets.ayu#switch
+        pos: [228 24]
+        activate: [#tunnel_door0 #tunnel_switch1]
+    }]
+    tunnel_switch1: [vf::Switch {
+        room: #tunnel
+        data: assets.ayu#switch
+        pos: [120 22]
+        activate: [#tunnel_door1]
+        active: false
+    }]
+    tunnel_semis: [vf::Semisolids {
+        room: #tunnel
+        data: assets.ayu#semisolid
+        blocks: [ [80 80] [240 80] ]
+    }]
+
+    tunnel_to_atelier: [vf::LoadingZone {
+        room: #tunnel
+        bounds: [-8 0 -8 180]
+        target_room: #atelier
+        target_pos: [304 32]
+        transition: wipe_right
+    }]
+    tunnel_to_bedroom: [vf::LoadingZone {
+        room: #tunnel
+        bounds: [328 0 328 180]
+        target_room: #bedroom
+        target_pos: [16 32]
+        checkpoint_level: 2
     }]
 
     bedroom: [vf::Room { }]
@@ -727,6 +782,7 @@
             [-16 176] [16 176] [48 160] [80 160] [112 160] [144 160] [176 160] [208 160] [240 160] [272 160] [304 160]
             [-16 144] [16 144] [272 128] [304 128]
             [-16 48] [16 48] [272 96] [304 96]
+            [-48 32] -- block off exit
             [-16 0] [16 0] [48 0] [80 0] [112 0] [144 0] [176 0] [208 0] [240 0] [272 0] [304 0]
         ]
     }]

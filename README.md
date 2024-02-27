@@ -64,7 +64,6 @@ versions of the required SDL libraries for you platform.  Currently the code
 only compiles with GCC; clang and MSVC are not supported.
 
 #####TODO
-[ ] Kick off spear animation
 [x] Actually trigger capture sequence
 [x] Decals during capture sequence
 [x] Place limbs in bedroom
@@ -76,3 +75,6 @@ only compiles with GCC; clang and MSVC are not supported.
 [ ] Tunnel
 [ ] Package for Windows
 [ ] Package for Linux
+Optional:
+[ ] Kick off spear animation
+[ ] Boss fight?
