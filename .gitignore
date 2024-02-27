@@ -5,6 +5,13 @@ gmon.out
 cachegrind.out.*
 callgrind.out.*
 
+# Large binary files.  These should be included in the download, but not tracked
+# by git to save space.
+*.mp3
+*.png
+*.wav
+*.xcf
+
 # Reference
 /ref
 *.draft.*
