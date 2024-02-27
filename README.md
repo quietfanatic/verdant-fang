@@ -20,14 +20,15 @@ This game contains content that may disturb some people, including:
 
 ###Windows
 
-Run `verdant-fang.exe`.  Everything required should be included in the folder.
-If it doesn't work, please let me know.
+Run `verdant-fang.exe`.  Everything required should be included.  If it doesn't
+work, please let me know.
 
 ###Linux
 
-This requires libc version 6 or higher, as well as these libraries:
+This requires a recent Linux distro (libc version 6 or higher), as well as these
+system libraries:
    libsdl2 libsdl2-image libsdl2-mixer
-Please install the equivalent packages from your package manager.
+Please install the equivalent packages with your system package manager.
 
 After that, run `verdant-fang`.  If it doesn't work, try running it in a
 terminal and tell me what the error message is.
@@ -39,12 +40,12 @@ The default controls are as follows:
   - Z or slash: Jump
   - X or period: Attack
   - R (on game over screen): Restart from checkpoint
-  - Ctrl-R: Restart from checkpoint at any time
   - P: Pause
   - F11: Toggle fullscreen mode
-  - Escape: Suspend game (save state and quit)
+  - Escape: Boss Key (immediately save state and close)
+  - Ctrl-R: Restart from checkpoint at any time
 
-You can change the controls by editing `settings.ayu`
+You can change the controls by editing `save/settings.ayu`
 
 ###Modding
 
