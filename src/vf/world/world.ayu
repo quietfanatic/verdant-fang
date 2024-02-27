@@ -707,6 +707,13 @@
         checkpoint_level: 1
     }]
 
+    tunnel: [vf::Room { }]
+    tunnel_bg: [vf::Scenery {
+        room: #tunnel
+        data: assets.ayu#cave
+        pos: [0 0]
+    }]
+
     bedroom: [vf::Room { }]
     bedroom_bg: [vf::Scenery {
         room: #bedroom

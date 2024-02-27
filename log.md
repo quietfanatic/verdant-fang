@@ -228,3 +228,20 @@
 - Some improvements to aperture transitions and other miscellaneous things.
 - Planned work for tomorrow: Add the final two rooms.  Place loose limbs in
   bedroom.  Work on music a little more, add a couple more animation frames...
+#####2024-02-24 S
+- I feel like I'm running out of steam a little bit, but that's fine because I'm
+  almost done.  I started a todo list in the morning, and there turned out to be
+  more things than I expected and it was a bit daunting, but now at EOD it's
+  almost completely filled out.
+- Finished final cutscenes, including music behavior, limb placement, and end
+  screen.
+- Finally drew blood for the limb detachment scene.
+- Added the Hallway room.
+- Prevented various door-related softlocks.
+- Improved title screen/snake music.  It's still not quite how I wanted it to
+  be, but it's a lot closer.
+- Planned work for Monday: All I have left on my todo list is add the Tunnel
+  room and the kick-off-spear animation.  I started work on the latter but it's
+  turning out surprisingly difficult, but I'll probably be able to do it in
+  time.  After that, it's just packaging and playtesting.  If I have time left
+  over, final boss fight?
