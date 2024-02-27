@@ -1,4 +1,4 @@
-Verdant Fang - https://leafuw.itch.io/verdant-fang - v0.9.0
+Verdant Fang - https://leafuw.itch.io/verdant-fang - v0.9.1
 ============
 
 Magical warrior Verdant and her trusty sidekick Fang venture into a dark cave to
@@ -61,8 +61,15 @@ game, you alter the title screen (such as by adding some text).
 
 If you downloaded the source code version, you can modify and compile the source
 yourself.  You'll need Perl to run the build system, as well as development
-versions of the required SDL libraries for you platform.  Currently the code
+versions of the required SDL libraries for your platform.  Currently the code
 only compiles with GCC; clang and MSVC are not supported.
+
+Since itch.io's command line tools ignore the `.git` directory, it has been
+renamed to `_git`.  Please rename it back to `.git` if you want to use git
+features.
+
+If you don't have the source code and want it, it can be downloaded at
+https://leafuw.itch.io/verdant-fang
 
 #####TODO
 [x] Actually trigger capture sequence
@@ -73,9 +80,10 @@ only compiles with GCC; clang and MSVC are not supported.
 [x] Improve title screen music
 [x] Set music during final cutscenes
 [x] Hallway
-[ ] Tunnel
+[x] Tunnel
 [ ] Package for Windows
-[ ] Package for Linux
+[x] Package for Linux
+[x] Package source
 Optional:
 [ ] Kick off spear animation
 [ ] Boss fight?

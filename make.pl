@@ -311,16 +311,30 @@ phony 'release', 'out/rel/build';
 phony 'test', 'out/deb/test';
 defaults 'test';
 
-phony 'deploy-linux', 'release', sub {
-    require File::Path;
-    File::Path::remove_tree("out/rel/save");
+sub version {
     slurp('README.md') =~ /^[^\n]* - v(\d+\.\d+\.\d+)\n/s
         or die "Couldn't find version number in README.md";
-    my $version = $1;
+    return $1;
+}
+
+phony 'deploy-linux', 'release', sub {
+    $compiler eq 'gcc' or die "Incorrect compiler setting for deploy-linux";
+    require File::Path;
+    File::Path::remove_tree('out/rel/save');
     run(qw(
         ../../programs/butler-linux-amd64/butler push
         out/rel leafuw/verdant-fang:linux-libc6 --userversion
-    ), $version);
+    ), version());
+};
+
+phony 'deploy-source', 'clean', sub {
+    require File::Path;
+    run(qw(cp -r .git _git));
+    run(qw(
+        ../../programs/butler-linux-amd64/butler push
+        . leafuw/verdant-fang:source-code --userversion
+    ), version());
+    File::Path::remove_tree('_git');
 };
 
 phony 'clean', [], sub {
