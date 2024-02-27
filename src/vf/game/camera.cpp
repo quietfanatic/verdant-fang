@@ -1,5 +1,6 @@
 #include "camera.h"
 
+#include <numbers>
 #include "../../dirt/ayu/resources/global.h"
 #include "../../dirt/ayu/resources/resource.h"
 #include "../../dirt/ayu/reflection/describe.h"
@@ -103,7 +104,7 @@ void end_camera () {
     if (defined(transition_t)) {
         transition_program->use();
          // Ease in and out a bit
-        float t = (1.f - std::cos(transition_t * float(M_PI))) / 2.f;
+        float t = (1.f - std::cos(transition_t * std::numbers::pi_v<float>)) / 2.f;
         if (transition_program->type == TransitionType::ApertureClose ||
             transition_program->type == TransitionType::ApertureOpen
         ) {

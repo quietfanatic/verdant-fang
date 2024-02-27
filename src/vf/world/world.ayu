@@ -134,14 +134,13 @@
         target: #verdant
         sight_range: 120
         attack_range: 28
-        jump_range: 64
+        jump_range: 80
         social_distance: 64
     }]
     hidey: [vf::MonsterMind {
         target: #verdant
         sight_range: 120
         attack_range: 28
-        jump_range: 64
         social_distance: 40
         hiding_spot: 184 -- center of #den_screen1
     }]

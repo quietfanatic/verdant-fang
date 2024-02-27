@@ -89,6 +89,12 @@ void main () {
             dist = v_tex_coords.y - t;
             color_index = mod(v_tex_coords.x * 16 + cos(dist * 10), 2) < 1 ? 0 : 1;
         }
+        else {
+             // Shouldn't happen, but some graphics drivers error if the
+             // variables could be used uninitialized.
+            dist = 0;
+            color_index = 0;
+        }
         if (dist < -wipe_width / 2) {
             if (u_side) color = vec4(texture(u_tex, v_tex_coords).rgb, 1);
             else color = vec4(0);

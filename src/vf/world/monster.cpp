@@ -227,7 +227,7 @@ Controls MonsterMind::Mind_think (Resident& s) {
             if (
                  // Don't attack too early when jumping unless the player is
                  // above.
-                (self.vel.y < 1 || target->pos.y > self.pos.y + 8) &&
+                (self.floor || self.vel.y < 0 || target->pos.y > self.pos.y + 8) &&
                  // Don't hold preattack pose
                 (self.state != WS::Attack || self.anim_phase >= 3)
             ) {

@@ -81,9 +81,15 @@ https://leafuw.itch.io/verdant-fang
 [x] Set music during final cutscenes
 [x] Hallway
 [x] Tunnel
-[ ] Package for Windows
+[ ] Package for Windows (stop opening terminal)
 [x] Package for Linux
 [x] Package source
+[ ] Fix losing checkpoint when saving state
+[ ] death animation while poisoned crash
+[ ] revive animation multiple occurence
+[ ] clothes on floor
+[ ] don't make Indigo's hat disappear
+[ ] Tweak monster's AI
 Optional:
 [ ] Kick off spear animation
 [ ] Boss fight?

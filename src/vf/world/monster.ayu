@@ -157,16 +157,16 @@
         air_max: 2
         air_dec: 0.1
         jump_vel: 3.4
-        gravity_jump: 0.2
-        gravity_fall: 0.2
-        gravity_drop: 0.2
+        gravity_jump: 0.16
+        gravity_fall: 0.16
+        gravity_drop: 0.16
         gravity_dead: 0.1
         gravity_fly: 0.1
         can_be_easy: true
         can_fly: false
         drop_duration: 6
         land_sequence: [8 4]
-        attack_sequence: [8 0 1 7 8 200]
+        attack_sequence: [12 0 1 7 16 200]
         hit_sequence: [16 10]
         dead_sequence: [14 10 10 8 10 10 10 10 60 120 240]
         jump_crouch_lift: 4

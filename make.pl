@@ -327,6 +327,16 @@ phony 'deploy-linux', 'release', sub {
     ), version());
 };
 
+phony 'deploy-windows', 'release', sub {
+    $compiler eq 'mingw' or die "Incorrect compiler setting for deploy-windows";
+    require File::Path;
+    File::Path::remove_tree('out/rel/save');
+    run(qw(
+        ..\..\programs\butler-windows-amd64\butler push
+        out/rel leafuw/verdant-fang:windows --userversion
+    ), version());
+};
+
 phony 'deploy-source', 'clean', sub {
     require File::Path;
     run(qw(cp -r .git _git));
