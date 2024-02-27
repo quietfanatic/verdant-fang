@@ -33,12 +33,30 @@ The default controls are as follows:
 You can change the controls by editing `save/settings.ayu` (you must run the
 game once to generate the file).
 
-###Windows
+###Options
+
+Detailed explanation of the in-game options:
+  - Checkpoints: Controls how many checkpoints there are, thereby controlling
+    the amount of frustration the player experiences.  "Lots" means one at just
+    about every room, "some" means one about every 2 to 3 rooms, and "none"
+    means exactly that: one mistake and you go back to the beginning.
+  - Enemies: If you're struggling fighting the enemies, try changing this to
+    "easy", which will make the enemies' attack animations slower.
+  - Blood: If pixely blood makes you queasy, use this option to hide it.
+  - Nudity: If you're looking for a slightly safer experience, use this option
+    to reduce human nudity.  Some animations may also be removed or altered.
+    Note that even with blood and nudity hidden, the game might still be
+    considered NSFW, depending on your standards.
+
+Advanced settings are in `save/settings.ayu` after running the game once.  They
+are explained in comments in the file.
+
+###Running on Windows
 
 Run `verdant-fang.exe`.  Everything required should be included.  If it doesn't
 work, please let me know.
 
-###Linux
+###Running on Linux
 
 This requires a recent Linux distro (libc version 6 or higher), as well as these
 system libraries:
@@ -67,7 +85,8 @@ only compiles with GCC; clang and MSVC are not supported.
 
 Since itch.io's command line tools ignore the `.git` directory, it has been
 renamed to `_git`.  Please rename it back to `.git` if you want to use git
-features.
+features.  Note that image and sound files are excluded from the repository
+history to keep its size down.
 
 If you don't have the source code and want it, it can be downloaded at
 https://leafuw.itch.io/verdant-fang
@@ -85,7 +104,7 @@ https://leafuw.itch.io/verdant-fang
 [ ] Package for Windows (stop opening terminal)
 [x] Package for Linux
 [x] Package source
-[ ] Fix losing checkpoint when saving state
+[x] Fix losing checkpoint when saving state
 [ ] death animation while poisoned crash
 [ ] revive animation multiple occurence
 [ ] clothes on floor

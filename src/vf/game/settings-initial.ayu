@@ -1,31 +1,34 @@
  -- This file contains settings for the game that can't be modified in-game,
  -- including keybindings.  You may edit this file to change the settings if you
- -- want.  If you break this file beyond repair, delete it and run the game once
- -- to regenerate this file.
+ -- want (It's essentially JSON but with commas and some quotes optional).  If
+ -- you break this file beyond repair, delete it and run the game once to
+ -- regenerate this file.
 
 [vf::Settings {
-     -- Game controls.  These ignore modifiers like shift and ctrl.
+     -- Game controls.  These ignore modifiers like shift and ctrl.  If you need
+     -- to see a list of supported key names, download the source code and look
+     -- at src/dirt/control/keys-table.h.
     controls: [
          -- Arrow controls
-        [[z] confirm]
-        [[x] back]
-        [[left] left]
-        [[right] right]
-        [[up] up]
-        [[down] down]
-        [[z] jump]
-        [[x] attack]
-        [[c] special]  -- unused for main character
+        [z confirm]
+        [x back]
+        [left left]
+        [right right]
+        [up up]
+        [down down]
+        [z jump]
+        [x attack]
+        [c special]  -- unused for main character
          -- WASD controls
-        [[/] confirm]
-        [["."] back]
-        [[a] left]
-        [[d] right]
-        [[w] up]
-        [[s] down]
-        [[/] jump]
-        [["."] attack]
-        [[","] special]
+        [/ confirm]
+        ["." back]
+        [a left]
+        [d right]
+        [w up]
+        [s down]
+        [/ jump]
+        ["." attack]
+        ["," special]
     ]
      -- Hotkeys.  These take modifiers into account.
     commands: [

@@ -8,7 +8,7 @@
 namespace vf {
 
 struct ControlBinding {
-    control::Input input;
+    control::InputNoModifiers input;
     Control control;
 };
 
