@@ -3,6 +3,14 @@
         image: ../world/assets.ayu#layer1
         bounds: [506 2 598 142]
     }]]
+    text2: [vf::LayeredTexture [{
+        image: ../world/assets.ayu#layer1
+        bounds: [404 368 508 396]
+    }]]
+    snek0: [vf::Frame [#text [19 66]]]
+    snek1: [vf::Frame [#text [19 61]]]
+    snek2: [vf::Frame [#text [19 56]]]
+    snek3: [vf::Frame [#text [19 51]]]
     fang_tex: [vf::LayeredTexture [
         {
             image: ../world/assets.ayu#layer1
@@ -23,10 +31,12 @@
     options:      [vf::MenuImage [#text [92 140] [-33 -7 0 0]]]
     start:        [vf::MenuImage [#text [92 130] [-22 -7 0 0]]]
     exit:         [vf::MenuImage [#text [92 110] [-18 -7 0 0]]]
+    url: [vf::MenuImage [#text2 [104 5] [-94 -5 0 0]]]
     main_menu: [vf::Menu {
         decorations: [
             [#main_title [200 156]]
             [#fang [146 100]]
+            [#url [310 15]]
         ]
         items: [{
             draw: #options
@@ -47,6 +57,7 @@
         selected_tint: 0xebf4e0ff
         unselected_tint: 0xaaaaaaff
         music: ../world/assets.ayu#verdant-fang
+        cursor: [#snek0 #snek1 #snek2 #snek3]
     }]
     paused_title: [vf::MenuImage [#text [52 21] [-41 -14 0 0]]]
     resume:       [vf::MenuImage [#text [92 27] [-30 -7 0 0]]]
@@ -93,6 +104,7 @@
         ]]
         selected_tint: 0xebf4e0ff
         unselected_tint: 0xaaaaaaff
+        cursor: [#snek0 #snek1 #snek2 #snek3]
     }]
     options_title: [vf::MenuImage [#text [52 40] [-45 -15 0 0]]]
     checkpoints: [vf::MenuImage [#text [92 98] [-53 -7 0 0]]]
@@ -136,11 +148,7 @@
         "save:/options.ayu#/hide_nudity" true
     ]]
     back: [vf::MenuImage [#text [92 37] [-19 -7 0 0]]]
-    advanced_tex: [vf::LayeredTexture [{
-        image: ../world/assets.ayu#layer1
-        bounds: [392 368 508 387]
-    }]]
-    advanced: [vf::MenuImage [#advanced_tex [116 19] [-116 -19 0 0]]]
+    advanced: [vf::MenuImage [#text2 [104 28] [-104 -19 0 0]]]
     options_menu: [vf::Menu {
         decorations: [
             [#options_title [310 170]]
@@ -183,6 +191,7 @@
         on_back: [close_menu]
         selected_tint: 0xebf4e0ff
         unselected_tint: 0xaaaaaaff
+        cursor: [#snek0 #snek1 #snek2 #snek3]
     }]
     thanks_tex: [vf::LayeredTexture [{
         image: ../world/assets.ayu#layer1

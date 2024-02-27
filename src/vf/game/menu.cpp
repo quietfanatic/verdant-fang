@@ -68,6 +68,10 @@ void MenuImage::MenuDrawable_draw (OpenMenu&, Vec pos, glow::RGBA8 tint) {
     draw_frame(*this, 0, pos, 10, {1, 1}, tint);
 }
 
+Vec MenuImage::MenuDrawable_cursor_pos (Vec pos) {
+    return pos + Vec(bounds.l - 6, (bounds.t + bounds.b) / 2);
+}
+
 void MenuFang::MenuDrawable_draw (OpenMenu& om, Vec pos, glow::RGBA8) {
     uint32 len = 0;
     for (auto& phase : cycle) len += phase;
@@ -104,6 +108,16 @@ void OpenMenu::draw () {
             *this, data->items[i].pos,
             current_index == i ? data->selected_tint : data->unselected_tint
         );
+    }
+    if (data->cursor && current_index < data->items.size()) {
+        auto pos = data->items[current_index].draw->MenuDrawable_cursor_pos(
+            data->items[current_index].pos
+        );
+        if (defined(pos)) {
+            draw_frame(
+                *data->cursor[(frame_count / 8) % data->cursor.size()], 0, pos
+            );
+        }
     }
 }
 
@@ -190,6 +204,7 @@ AYU_DESCRIBE(vf::Menu,
         attr("unselected_tint", &Menu::unselected_tint, optional),
         attr("default_index", &Menu::default_index, optional),
         attr("music", &Menu::music, optional),
-        attr("allow_pause", &Menu::allow_pause, optional)
+        attr("allow_pause", &Menu::allow_pause, optional),
+        attr("cursor", &Menu::cursor, optional)
     )
 )

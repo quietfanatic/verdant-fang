@@ -13,10 +13,12 @@ struct MenuDrawable {
     virtual void MenuDrawable_draw (
         OpenMenu&, Vec pos, glow::RGBA8 tint
     ) = 0;
+    virtual Vec MenuDrawable_cursor_pos (Vec) { return GNAN; }
 };
 
 struct MenuImage : MenuDrawable, Frame {
     void MenuDrawable_draw (OpenMenu&, Vec, glow::RGBA8) override;
+    Vec MenuDrawable_cursor_pos (Vec pos) override;
 };
 
 struct MenuFang : MenuDrawable {
@@ -63,6 +65,7 @@ struct Menu {
     uint32 default_index = 0;
     Music* music = null;
     bool allow_pause = false;
+    UniqueArray<Frame*> cursor;
 };
 
 struct OpenMenu {
