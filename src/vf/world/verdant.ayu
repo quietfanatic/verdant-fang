@@ -509,7 +509,7 @@
         ]
          -- Try to do transformation at this position.  Y coordinate currently
          -- ignored.
-        transform_pos: [100 60]
+        transform_pos: [84 60]
         transform_magic_color: 0xccddaaff
         transform_sounds: [
              -- When to play the sounds.  [sound anim_phase anim_timer]

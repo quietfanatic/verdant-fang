@@ -34,24 +34,24 @@
     url: [vf::MenuImage [#text2 [104 5] [-94 -5 0 0]]]
     main_menu: [vf::Menu {
         decorations: [
-            [#main_title [200 156]]
-            [#fang [146 100]]
+            [#main_title [184 156]]
+            [#fang [130 100]]
             [#url [310 15]]
         ]
         items: [{
             draw: #options
-            pos: [220 116]
+            pos: [204 116]
             on_press: [open_options_menu]
         } {
             draw: #start
-            pos: [220 106]
+            pos: [204 106]
             on_press: [seq [
                 [ignore_held_controls]
                 [close_menu]
             ]]
         } {
             draw: #exit
-            pos: [220 96]
+            pos: [204 96]
             on_press: [exit_program]
         }]
         selected_tint: 0xebf4e0ff
