@@ -104,6 +104,7 @@ struct VerdantPoses : WalkerPoses {
     Pose limbless;
     LimbFrame* captured_limbs [4];
     Pose inch [3];
+    Frame* floor_clothes;
     Pose snake_stand;
     Pose snake_walk [4];
     Pose snake_attack [6];
@@ -191,9 +192,12 @@ struct Verdant : Walker {
     uint8 revive_phase = 0;
     uint8 revive_timer = 0;
     uint8 limb_layers = 1;
+    uint8 floor_clothes_layers = 0;
     Vec limb_pos [4] = {GNAN, GNAN, GNAN, GNAN};
     Vec limb_initial_pos [4] = {GNAN, GNAN, GNAN, GNAN};
     Vec floor_decal_pos = GNAN;
+    Room* floor_clothes_room = null;
+    Vec floor_clothes_pos = GNAN;
     glow::RGBA8 limb_tint = {};
     Indigo* indigo = null;
     float fang_vel_y = GNAN;

@@ -303,23 +303,40 @@ WalkerBusiness Verdant::Walker_business () {
                 }
             }
             else {
-                if (anim_phase == 3) {
-                    if (vd.revive_sound) vd.revive_sound->play();
-                }
                 anim_phase += 1;
                 anim_timer = 0;
+                if (anim_phase == 5) {
+                    if (vd.revive_sound) vd.revive_sound->play();
+                    floor_clothes_room = room;
+                    floor_clothes_pos = pos;
+                    floor_clothes_layers = body_layers;
+                }
             }
             return Walker_business();
         }
         else {
             anim_timer += 1;
-            body_tint = vd.transform_magic_color;
             switch (anim_phase) {
-                case 0: body_tint.a = 0x60; break;
-                case 1: body_tint.a = 0xa0; break;
-                case 2: case 3: case 4: break;
-                case 5: case 6: case 7:
-                    body_tint = 0; body_layers = 1; break;
+                case 0: {
+                    body_tint = vd.transform_magic_color;
+                    body_tint.a = 0x60;
+                    break;
+                }
+                case 1: {
+                    body_tint = vd.transform_magic_color;
+                    body_tint.a = 0xa0;
+                    break;
+                }
+                case 2: case 3: case 4: {
+                    body_tint = vd.transform_magic_color;
+                    break;
+                }
+                case 5: {
+                    body_tint = 0;
+                    body_layers = 1;
+                    break;
+                }
+                case 6: case 7: break;
                 default: never();
             }
             weapon_tint = body_tint;
@@ -931,6 +948,13 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
             );
         }
     }
+     // Draw clothes on floor
+    if (floor_clothes_room == room && defined(floor_clothes_pos)) {
+        draw_layers(
+            *poses.floor_clothes, floor_clothes_layers,
+            floor_clothes_pos, Z::Overlap
+        );
+    }
     if (state == VS::Transform) {
         Vec weapon_offset;
         glow::RGBA8 tint = weapon_tint;
@@ -1265,6 +1289,7 @@ AYU_DESCRIBE(vf::VerdantPoses,
         attr("limbless", &VerdantPoses::limbless),
         attr("captured_limbs", &VerdantPoses::captured_limbs),
         attr("inch", &VerdantPoses::inch),
+        attr("floor_clothes", &VerdantPoses::floor_clothes),
         attr("snake_stand", &VerdantPoses::snake_stand),
         attr("snake_walk", &VerdantPoses::snake_walk),
         attr("snake_attack", &VerdantPoses::snake_attack),
@@ -1345,6 +1370,9 @@ AYU_DESCRIBE(vf::Verdant,
         attr("limb_pos", &Verdant::limb_pos, optional),
         attr("limb_initial_pos", &Verdant::limb_initial_pos, optional),
         attr("floor_decal_pos", &Verdant::floor_decal_pos, optional),
+        attr("floor_clothes_room", &Verdant::floor_clothes_room, optional),
+        attr("floor_clothes_pos", &Verdant::floor_clothes_pos, optional),
+        attr("floor_clothes_layers", &Verdant::floor_clothes_layers, optional),
         attr("limb_tint", &Verdant::limb_tint, optional),
         attr("indigo", &Verdant::indigo, optional),
         attr("fang_vel_y", &Verdant::fang_vel_y, optional),

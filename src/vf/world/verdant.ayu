@@ -104,6 +104,7 @@
     body_limbless: [vf::BodyFrame [#body [161 7] [8 3]]]
     body_inch_down: [vf::BodyFrame [#body [135 7] [8 3]]]
     body_inch_up: [vf::BodyFrame [#body [110 7] [7 3]]]
+    floor_clothes: [vf::Frame [#body [85 7] [-8 0 9 3]]]
 
     head: [vf::LayeredTexture [{
         image: assets.ayu#layer0
@@ -382,6 +383,7 @@
             [#body_inch_up #head_inch #fang_dead4]
             [#body_inch_down #head_inch #fang_dead4]
         ]
+        floor_clothes: #floor_clothes
         snake_stand: [#snake_neutral]
         snake_walk: [[#snake_walk0] [#snake_walk1] [#snake_walk2] [#snake_walk3]]
         snake_attack: [
