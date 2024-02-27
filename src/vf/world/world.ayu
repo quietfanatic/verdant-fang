@@ -737,7 +737,7 @@
     tunnel_switch0: [vf::Switch {
         room: #tunnel
         data: assets.ayu#switch
-        pos: [228 24]
+        pos: [228 22]
         activate: [#tunnel_door0 #tunnel_switch1]
     }]
     tunnel_switch1: [vf::Switch {

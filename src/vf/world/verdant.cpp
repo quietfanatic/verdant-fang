@@ -274,6 +274,7 @@ WalkerBusiness Verdant::Walker_business () {
         return WB::Frozen;
     }
     else if (state == VS::Limbless) {
+         // TODO: More anim phases
         if (floor) {
             if (anim_timer >= vd.limbless_sequence) {
                 floor_decal_pos = pos;

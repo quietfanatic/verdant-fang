@@ -110,7 +110,7 @@ https://leafuw.itch.io/verdant-fang
 [ ] clothes on floor
 [ ] don't make Indigo's hat disappear
 [ ] Tweak monster's AI
-[ ] Fix bed hitbox
+[x] Fix bed hitbox
 [ ] Game over screen controls
 [ ] Window title
 Optional:
