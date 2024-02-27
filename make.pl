@@ -311,6 +311,18 @@ phony 'release', 'out/rel/build';
 phony 'test', 'out/deb/test';
 defaults 'test';
 
+phony 'deploy-linux', 'release', sub {
+    require File::Path;
+    File::Path::remove_tree("out/rel/save");
+    slurp('README.md') =~ /^[^\n]* - v(\d+\.\d+\.\d+)\n/s
+        or die "Couldn't find version number in README.md";
+    my $version = $1;
+    run(qw(
+        ../../programs/butler-linux-amd64/butler push
+        out/rel leafuw/verdant-fang:linux-libc6 --userversion
+    ), $version);
+};
+
 phony 'clean', [], sub {
     require File::Path;
     File::Path::remove_tree('tmp');

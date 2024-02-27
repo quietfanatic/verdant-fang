@@ -136,42 +136,48 @@
         "save:/options.ayu#/hide_nudity" true
     ]]
     back: [vf::MenuImage [#text [92 37] [-19 -7 0 0]]]
+    advanced_tex: [vf::LayeredTexture [{
+        image: ../world/assets.ayu#layer1
+        bounds: [392 368 508 387]
+    }]]
+    advanced: [vf::MenuImage [#advanced_tex [116 19] [-116 -19 0 0]]]
     options_menu: [vf::Menu {
         decorations: [
-            [#options_title [300 160]]
-            [#lots [251 121]]
-            [#some [277 121]]
-            [#none [300 121]]
-            [#easy [265 101]]
-            [#normal [300 101]]
-            [#show [277 81]]
-            [#hide [300 81]]
-            [#show_n [277 61]]
-            [#hide_n [300 61]]
+            [#options_title [310 170]]
+            [#lots [261 137]]
+            [#some [287 137]]
+            [#none [310 137]]
+            [#easy [275 117]]
+            [#normal [310 117]]
+            [#show [287 97]]
+            [#hide [310 97]]
+            [#show_n [287 77]]
+            [#hide_n [310 77]]
+            [#advanced [310 29]]
         ]
         items: [{
             draw: #checkpoints
-            pos: [300 130]
+            pos: [310 146]
             on_left: [frustration -1]
             on_right: [frustration +1]
         } {
             draw: #enemies
-            pos: [300 110]
+            pos: [310 126]
             on_left: [enemy_difficulty -1]
             on_right: [enemy_difficulty +1]
         } {
             draw: #blood
-            pos: [300 90]
+            pos: [310 106]
             on_left: [hide_blood false]
             on_right: [hide_blood true]
         } {
             draw: #nudity
-            pos: [300 70]
+            pos: [310 86]
             on_left: [hide_nudity false]
             on_right: [hide_nudity true]
         } {
             draw: #back
-            pos: [300 50]
+            pos: [310 66]
             on_press: [close_menu]
         }]
         on_back: [close_menu]

@@ -1,4 +1,4 @@
-Verdant Fang - https://leafuw.itch.io/verdant-fang
+Verdant Fang - https://leafuw.itch.io/verdant-fang - v0.9.0
 ============
 
 Magical warrior Verdant and her trusty sidekick Fang venture into a dark cave to
