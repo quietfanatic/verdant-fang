@@ -105,7 +105,7 @@ https://leafuw.itch.io/verdant-fang
 [x] Package for Linux
 [x] Package source
 [x] Fix losing checkpoint when saving state
-[ ] death animation while poisoned crash
+[x] death animation while poisoned crash
 [ ] revive animation multiple occurence
 [ ] clothes on floor
 [ ] don't make Indigo's hat disappear

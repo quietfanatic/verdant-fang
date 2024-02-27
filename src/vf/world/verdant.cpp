@@ -819,7 +819,7 @@ Pose Verdant::Walker_pose () {
         }
     }
     else if (state == WS::Dead) {
-        if (damage_forward) {
+        if (damage_forward && decal_type != DecalType::None) {
             Pose r;
              // Mirror the WS::Dead case in Walker::Walker_pos
             switch (anim_phase) {
