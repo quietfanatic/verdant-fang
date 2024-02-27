@@ -185,12 +185,17 @@ AYU_DESCRIBE(vf::Transition,
         attr("target_room", &Transition::target_room),
         attr("migrant", &Transition::migrant),
         attr("target_pos", &Transition::target_pos),
+        attr("type", &Transition::type),
         attr("save_checkpoint", &Transition::save_checkpoint),
         attr("load_checkpoint", &Transition::load_checkpoint),
+        attr("checkpoint_level", &Transition::checkpoint_level),
+        attr("checkpoint_transition_center", &Transition::checkpoint_transition_center),
         attr("exit_at", &Transition::exit_at),
         attr("enter_at", &Transition::enter_at),
         attr("end_at", &Transition::end_at),
-        attr("timer", &Transition::timer)
+        attr("timer", &Transition::timer),
+        attr("start_music_volume", &Transition::start_music_volume),
+        attr("end_music_volume", &Transition::end_music_volume)
     )
 )
 
@@ -198,6 +203,7 @@ AYU_DESCRIBE(vf::Checkpoint,
     attrs(
         attr("current_room", &Checkpoint::current_room),
         attr("current_music", &Checkpoint::current_music),
+        attr("checkpoint_level", &Checkpoint::checkpoint_level),
         attr("transition_center", &Checkpoint::transition_center),
         attr("world", &Checkpoint::world)
     )
