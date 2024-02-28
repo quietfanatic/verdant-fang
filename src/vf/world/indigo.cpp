@@ -217,18 +217,18 @@ WalkerBusiness Indigo::Walker_business () {
         return WB::Frozen;
     }
     else if (state == IS::CapturingSnake) {
-        expect(anim_phase < 5);
-        if (anim_phase == 4) {
+        expect(anim_phase < 6);
+        if (anim_phase == 5) {
              // Stop, wait for poison
         }
         else if (anim_timer >= id.capturing_snake_sequence[anim_phase]) {
             anim_phase += 1;
             anim_timer = 0;
-            if (anim_phase == 1) capture_initial_pos = verdant->pos;
+            if (anim_phase == 2) capture_initial_pos = verdant->pos;
             return Walker_business();
         }
         else anim_timer += 1;
-        if (anim_phase == 1) {
+        if (anim_phase == 2) {
             verdant->set_state(VS::SnakeCaptured);
             verdant->left = false;
             verdant->pos = lerp(
@@ -239,7 +239,7 @@ WalkerBusiness Indigo::Walker_business () {
                 )
             );
         }
-        else if (anim_phase == 2) {
+        else if (anim_phase == 3) {
             verdant->set_state(VS::SnakeCaptured);
             verdant->pos = id.capture_target_pos;
         }
@@ -395,14 +395,14 @@ Pose Indigo::Walker_pose () {
         if (current_game->options().hide_nudity) {
             r = poses.bed[0];
         }
-        r = poses.bed[anim_phase];
+        else r = poses.bed[anim_phase];
     }
     else if (state == IS::Bit) {
         expect(anim_phase < 9);
         r = poses.bit[anim_phase];
     }
     else if (state == IS::CapturingSnake) {
-        expect(anim_phase < 5);
+        expect(anim_phase < 6);
         r = poses.capturing_snake[anim_phase];
     }
     else if (state == IS::Eaten) {
@@ -465,6 +465,22 @@ void Indigo::Walker_draw_weapon (const Pose& pose) {
             expect(frame);
             draw_frame(*frame, 0, bubble.pos, Z::Projectile);
         }
+    }
+    if (state == IS::Capturing && anim_phase == CP::TrackTarget) {
+        Vec track_pos = lerp(
+            pos + left_flip(poses.attack[2].body->weapon),
+            verdant->pos + verdant->visual_center(),
+            float(anim_timer) / id.capturing_sequence[CP::TrackTarget]
+        );
+        draw_frame(*poses.bubble[0], 0, track_pos, Z::Projectile);
+    }
+    else if (state == IS::CapturingSnake && anim_phase == 1) {
+        Vec track_pos = lerp(
+            pos + left_flip(poses.attack[2].body->weapon),
+            verdant->pos + verdant->visual_center(),
+            float(anim_timer) / id.capturing_snake_sequence[1]
+        );
+        draw_frame(*poses.bubble[0], 0, track_pos, Z::Projectile);
     }
     Walker::Walker_draw_weapon(pose);
 }
@@ -546,12 +562,10 @@ Controls IndigoMind::Mind_think (Resident& s) {
         }
          // Dodge if Verdant gets too close.  Not that it matters since I'm
          // normally intangible, but it's for the performance.
-        if (auto v = find_verdant()) {
-            if (distance2(v->pos, me.pos) < 36*36 &&
-                length(me.vel.x) < 1
-            ) {
-                r[Control::Special] = 1;
-            }
+        if (distance2(target->pos, me.pos) < 36*36 &&
+            length(me.vel.x) < 1
+        ) {
+            r[Control::Special] = 1;
         }
     }
      // If I hold a direction while going fast from dodging, I'll keep going

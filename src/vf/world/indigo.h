@@ -19,24 +19,25 @@ namespace IS = IndigoState;
 
 namespace CapturingPhase {
     constexpr uint8 MoveTargetPre = 0;
-    constexpr uint8 MoveTarget = 1;
-    constexpr uint8 MoveTargetPost = 2;
-    constexpr uint8 MoveTargetWait = 3;
-    constexpr uint8 MoveWeapon = 4;
-    constexpr uint8 HaveWeapon = 5;
-    constexpr uint8 BreakWeaponPre = 6;
-    constexpr uint8 BreakWeapon = 7;
-    constexpr uint8 BreakWeaponPost = 8;
-    constexpr uint8 BreakWeaponWait = 9;
-    constexpr uint8 DetachLimbsPre = 10;
-    constexpr uint8 DetachLimb0 = 11;
-    constexpr uint8 DetachLimb1 = 12;
-    constexpr uint8 DetachLimb2 = 13;
-    constexpr uint8 DetachLimb3 = 14;
-    constexpr uint8 TakeLimbs = 15;
-    constexpr uint8 Leave = 16;
-    constexpr uint8 CloseDoor = 17;
-    constexpr uint8 N_Phases = 18;
+    constexpr uint8 TrackTarget = 1;
+    constexpr uint8 MoveTarget = 2;
+    constexpr uint8 MoveTargetPost = 3;
+    constexpr uint8 MoveTargetWait = 4;
+    constexpr uint8 MoveWeapon = 5;
+    constexpr uint8 HaveWeapon = 6;
+    constexpr uint8 BreakWeaponPre = 7;
+    constexpr uint8 BreakWeapon = 8;
+    constexpr uint8 BreakWeaponPost = 9;
+    constexpr uint8 BreakWeaponWait = 10;
+    constexpr uint8 DetachLimbsPre = 11;
+    constexpr uint8 DetachLimb0 = 12;
+    constexpr uint8 DetachLimb1 = 13;
+    constexpr uint8 DetachLimb2 = 14;
+    constexpr uint8 DetachLimb3 = 15;
+    constexpr uint8 TakeLimbs = 16;
+    constexpr uint8 Leave = 17;
+    constexpr uint8 CloseDoor = 18;
+    constexpr uint8 N_Phases = 19;
 };
 namespace CP = CapturingPhase;
 
@@ -47,7 +48,7 @@ struct IndigoPoses : WalkerPoses {
     Pose bed [2];
     Frame* glasses;
     Pose bit [9];
-    Pose capturing_snake [5];
+    Pose capturing_snake [6];
     Frame* hat;
     Pose eaten [34];
 };
@@ -68,12 +69,13 @@ struct IndigoData : WalkerData {
     uint8 bed_use_limb;
     uint8 bit_sequence [9];
      // 0 = preattack
-     // 1 = move snake
-     // 2 = postattack
-     // 3 = waiting
-     // 4 = preattack (time limit ignored, but this array entry used to
+     // 1 = track snake
+     // 2 = move snake
+     // 3 = postattack
+     // 4 = waiting
+     // 5 = preattack (time limit ignored, but this array entry used to
      // calculate sequence length)
-    uint8 capturing_snake_sequence [5];
+    uint8 capturing_snake_sequence [6];
     Sound* bubble_pop_sound = null;
     Sound* dodge_sound = null;
 };

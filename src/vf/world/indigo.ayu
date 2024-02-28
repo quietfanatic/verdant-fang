@@ -170,6 +170,7 @@
         capturing: [
             [#body_preattack #head_fly #magic_sparkle0]
             [#body_attack #head_fly #magic_sparkle1]
+            [#body_attack #head_fly #magic_sparkle1]
             [#body_attack #head_fly #magic_sparkle2]
             [#body_fly #head_fly]
             [#body_fly #head_fly]
@@ -206,6 +207,7 @@
         ]
         capturing_snake: [
             [#body_preattack #head_fly #magic_sparkle0]
+            [#body_attack #head_fly #magic_sparkle1]
             [#body_attack #head_fly #magic_sparkle1]
             [#body_attack #head_fly #magic_sparkle2]
             [#body_fly #head_fly]
@@ -317,7 +319,7 @@
         ]
         capture_limb_order: [1 2 0 3]
         capturing_sequence: [
-            12 30 12 18
+            12 20 30 12 18
             30 30
             12 12 12 180
             12 60 60 60 60
@@ -329,9 +331,9 @@
         bed_cycle: [20 20]
         bed_use_limb: 3
         bit_sequence: [15 30 12 12 12 12 12 12 60]
-        capturing_snake_sequence: [12 30 12 60 20]
+        capturing_snake_sequence: [12 20 30 12 60 20]
 
         bubble_pop_sound: assets.ayu#poiy
-        dodge_sound: assets.ayu#pwsh
+        dodge_sound: assets.ayu#woosh
     }]
 }]
