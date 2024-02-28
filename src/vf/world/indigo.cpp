@@ -107,8 +107,17 @@ WalkerBusiness Indigo::Walker_business () {
                 go_to_bed();
                 return WB::Frozen;
             }
-            anim_phase += 1;
-            anim_timer = 0;
+            if (anim_phase == CP::MoveTargetWait &&
+                (distance(pos, home_pos[home_index]) > 4 || length(vel.x) > 1)
+            ) {
+                 // If this happens I probably just dodged away from the
+                 // target's captured pos, so wait until I settle down a little
+                 // before advancing the cutscene.
+            }
+            else {
+                anim_phase += 1;
+                anim_timer = 0;
+            }
         }
         else {
             if (anim_phase == CP::MoveTarget) {
@@ -245,10 +254,13 @@ WalkerBusiness Indigo::Walker_business () {
 
 void Indigo::Walker_move (const Controls& controls) {
     auto& id = static_cast<IndigoData&>(*data);
-    if (business == WB::Free && controls[Control::Special]) {
+    if (business == WB::Free && controls[Control::Special] &&
+        length(vel.x) < 1
+    ) {
          // Dodge
         home_index = !home_index;
         vel.x = home_index ? -id.dodge_speed : id.dodge_speed;
+        if (id.dodge_sound) id.dodge_sound->play();
     }
     if (business == WB::DoAttack) {
         float seed_angle = std::uniform_real_distribution<float>(
@@ -508,11 +520,13 @@ Controls IndigoMind::Mind_think (Resident& s) {
         }
     }
     if (me.business == WB::Free) {
-        me.left = target->pos.x < me.pos.x;
+        if (me.state != IS::Capturing || me.anim_phase < CP::Leave) {
+            me.left = target->pos.x < me.pos.x;
+        }
          // Dodge if Verdant gets too close.  Not that it matters since I'm
          // normally intangible, but it's for the performance.
         if (auto v = find_verdant()) {
-            if (distance2(v->pos, me.pos) < 32*32 &&
+            if (distance2(v->pos, me.pos) < 36*36 &&
                 length(me.vel.x) < 1
             ) {
                 r[Control::Special] = 1;
@@ -540,6 +554,9 @@ Controls IndigoMind::Mind_think (Resident& s) {
     }
     else if (me.pos.y > goal.y + goal_tolerance.y) {
         r[Control::Down] = 1;
+    }
+    else if (me.vel.y < -1) {
+        r[Control::Up] = 1;
     }
      // else just float down
     return r;
@@ -602,7 +619,8 @@ AYU_DESCRIBE(vf::IndigoData,
         attr("bed_use_limb", &IndigoData::bed_use_limb),
         attr("bit_sequence", &IndigoData::bit_sequence),
         attr("capturing_snake_sequence", &IndigoData::capturing_snake_sequence),
-        attr("bubble_pop_sound", &IndigoData::bubble_pop_sound, optional)
+        attr("bubble_pop_sound", &IndigoData::bubble_pop_sound, optional),
+        attr("dodge_sound", &IndigoData::dodge_sound, optional)
     )
 );
 

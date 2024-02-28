@@ -74,6 +74,7 @@ struct IndigoData : WalkerData {
      // calculate sequence length)
     uint8 capturing_snake_sequence [5];
     Sound* bubble_pop_sound = null;
+    Sound* dodge_sound = null;
 };
 
 struct IndigoBubble {

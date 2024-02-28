@@ -329,5 +329,6 @@
         capturing_snake_sequence: [12 30 12 60 20]
 
         bubble_pop_sound: assets.ayu#poiy
+        dodge_sound: assets.ayu#pwsh
     }]
 }]
