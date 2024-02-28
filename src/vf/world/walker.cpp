@@ -210,6 +210,7 @@ void Walker::Walker_move (const Controls& controls) {
         decelerate = true; break;
     }
     case WB::DoAttack:
+     // TODO: A little bit of slop room for releasing jump while attacking
     case WB::Occupied: decelerate = true; break;
     case WB::Interruptible:
     case WB::Free: {

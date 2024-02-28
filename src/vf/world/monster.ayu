@@ -147,8 +147,8 @@
         body_box: [-7 0 7 30]
         crouch_body_box: [-7 0 7 30]
         dead_body_box: [-16 0 8 5]
-        damage_box: [-4 12 4 32]
-        crouch_damage_box: [-4 12 4 32]
+        damage_box: [-4 12 5 32]
+        crouch_damage_box: [-4 12 5 32]
         ground_acc: 0.18
         ground_max: 2.0
         ground_dec: 0.3

@@ -186,7 +186,7 @@ void Bug::Walker_on_hit (const Hitbox& hb, Walker& victim, const Hitbox& o_hb) {
     float height_diff = decal_pos.y - weapon_y;
     victim.pos.y -= height_diff;
      // Move victor horizontally
-    if (stab_depth < -2) {
+    if (stab_depth < 2) {
         pos.x += left_flip(2 - stab_depth);
     }
     else if (stab_depth > 16) {
