@@ -42,7 +42,7 @@ elsif ($compiler eq 'mingw') {
         "-L$mingw/SDL2_image-2.8.2/$arch/lib",
         "-L$mingw/SDL2_mixer-2.8.0/$arch/lib",
         "-L$mingw/SDL2-2.28.5/$arch/lib",
-        qw(-lSDL2_image -lSDL2_mixer -lSDL2main -lSDL2),
+        qw(-lSDL2_image -lSDL2_mixer -lSDL2main -lSDL2 -mwindows),
     );
     push @compile_opts, (
         "-I$mingw/SDL2-2.28.5/$arch/include",

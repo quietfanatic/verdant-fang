@@ -109,10 +109,10 @@ https://leafuw.itch.io/verdant-fang
 [x] revive animation multiple occurence
 [x] clothes on floor
 [x] don't make Indigo's hat disappear
-[ ] Tweak monster's AI and hitboxes
+[x] Tweak monster's AI and hitboxes
 [x] Fix bed hitbox
 [x] Game over screen controls
 [x] Window title
 Optional:
-[ ] Kick off spear animation
+[abandoned] Kick off spear animation
 [ ] Boss fight?
