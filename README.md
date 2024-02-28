@@ -116,6 +116,7 @@ https://leafuw.itch.io/verdant-fang
 [x] Window title
 [ ] Sound effects for inching (and other things?)
 [ ] Finish off in-code TODOs
+[ ] Fix suspend during title screen going to pause menu
 Optional:
 [abandoned] Kick off spear animation
 [ ] Boss fight?

@@ -101,6 +101,9 @@
      -- Bubble is concentric circles so if we don't specify the bounds, only
      -- the inner circle will be detected.
     bubble: [vf::Frame [#magic [8 39] [-6 -6 6 6]]]
+    bubble_pop0: [vf::Frame [#magic [25 64] [-6 -6 6 6]]]
+    bubble_pop1: [vf::Frame [#magic [25 30] [-8 -8 8 8]]]
+    bubble_pop2: [vf::Frame [#magic [25 12] [-8 -8 8 8]]]
     poses: [vf::IndigoPoses {
         stand: [#body_stand #head_fly]
         crouch: [#body_stand #head_fly]
@@ -161,6 +164,7 @@
             [#body_dead #head_dead null *z_dead]
         ]
         bubble: #bubble
+        bubble_pop: [#bubble_pop0 #bubble_pop1 #bubble_pop2]
         capturing: [
             [#body_preattack #head_fly #magic_sparkle0]
             [#body_attack #head_fly #magic_sparkle1]
@@ -296,6 +300,8 @@
         flavor: strawberry
 
         bubble_radius: 6
+        bubble_speed: 1.4
+        bubble_pop_sequence: [8 8 8]
          -- Based on world.ayu#atelier
         capture_target_pos: [120 68]
         capture_weapon_pos: [196 88]

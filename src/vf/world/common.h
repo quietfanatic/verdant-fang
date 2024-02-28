@@ -3,8 +3,8 @@
 
 namespace vf {
 
+ // Keep these in sync with the declarations at the top of *.ayu
 namespace Z {
-     // Keep these in sync with the declarations at the top of *.ayu
     constexpr float BG = -700;
     constexpr float DoorBehind = -600;
     constexpr float Hiding = -500;
@@ -28,6 +28,8 @@ namespace Z {
     constexpr float WeaponOffset = 30;
 }
 
+ // If a Resident has the given flag in its types, you can static_cast it to the
+ // same-named type.
 namespace Types {
     constexpr uint32 Walker = 1 << 0;
     constexpr uint32 Verdant = 1 << 1;
@@ -40,6 +42,7 @@ namespace Types {
     constexpr uint32 Indigo = 1 << 8;
 }
 
+ // Flags that determine which hitboxes interact with each other
 namespace Layers {
     constexpr uint32 Walker_Solid = 1 << 0;
     constexpr uint32 Walker_Semisolid = 1 << 1;
@@ -48,8 +51,10 @@ namespace Layers {
     constexpr uint32 Weapon_Walker = 1 << 4;
     constexpr uint32 LoadingZone_Verdant = 1 << 5;
     constexpr uint32 Switch_Weapon = 1 << 6;
+     // Not all projectiles need to have all of these
     constexpr uint32 Projectile_Walker = 1 << 7;
     constexpr uint32 Projectile_Solid = 1 << 8;
+    constexpr uint32 Projectile_Weapon = 1 << 9;
 }
 
 } // vf
