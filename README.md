@@ -1,4 +1,4 @@
-Verdant Fang - https://leafuw.itch.io/verdant-fang - v0.9.1
+Verdant Fang - https://leafuw.itch.io/verdant-fang - v0.9.2
 ============
 
 Magical warrior Verdant and her trusty sidekick Fang venture into a dark cave to
@@ -39,7 +39,8 @@ Detailed explanation of the in-game options:
   - Checkpoints: Controls how many checkpoints there are, thereby controlling
     the amount of frustration the player experiences.  "Lots" means one at just
     about every room, "some" means one about every 2 to 3 rooms, and "none"
-    means exactly that: one mistake and you go back to the beginning.
+    means exactly that: one mistake and you go back to the beginning.  Sometimes
+    referred to as hardcore mode.
   - Enemies: If you're struggling fighting the enemies, try changing this to
     "easy", which will make the enemies' attack animations slower.
   - Blood: If pixely blood makes you queasy, use this option to hide it.
@@ -101,7 +102,7 @@ https://leafuw.itch.io/verdant-fang
 [x] Set music during final cutscenes
 [x] Hallway
 [x] Tunnel
-[ ] Package for Windows (stop opening terminal)
+[x] Package for Windows (stop opening terminal)
 [x] Package for Linux
 [x] Package source
 [x] Fix losing checkpoint when saving state
@@ -113,6 +114,8 @@ https://leafuw.itch.io/verdant-fang
 [x] Fix bed hitbox
 [x] Game over screen controls
 [x] Window title
+[ ] Sound effects for inching (and other things?)
+[ ] Finish off in-code TODOs
 Optional:
 [abandoned] Kick off spear animation
 [ ] Boss fight?

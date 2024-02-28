@@ -188,7 +188,7 @@ struct Verdant : Walker {
     uint32 transform_timer = 0;
     Room* limbo = null;
      // Keep revive counters separate from anim counters because with force
-     // restart and limbo animations, you can revive in any state.
+     // restart and limbo animations, I can revive in any state.
     uint8 revive_phase = 0;
     uint8 revive_timer = 0;
     uint8 limb_layers = 1;
@@ -206,7 +206,7 @@ struct Verdant : Walker {
 
     Verdant ();
 
-     // Relative to self.pos
+     // Relative to my pos
     Vec visual_center ();
 
     void go_to_limbo ();

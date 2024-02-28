@@ -1,4 +1,6 @@
 #include "indigo.h"
+#include <numbers>
+#include <random>
 #include "../../dirt/ayu/reflection/describe.h"
 #include "../../dirt/control/command.h"
 #include "../game/game.h"
@@ -12,6 +14,10 @@ namespace vf {
 
 Indigo::Indigo () {
     types |= Types::Indigo;
+    for (auto& bubble : bubbles) {
+        bubble.hb.layers_1 = Layers::Projectile_Walker
+                           | Layers::Projectile_Solid;
+    }
 }
 
 void Indigo::init () {
@@ -218,14 +224,85 @@ WalkerBusiness Indigo::Walker_business () {
     return Walker::Walker_business();
 }
 
+void Indigo::Walker_move (const Controls& controls) {
+    if (business == WB::DoAttack) {
+        float seed_angle = std::uniform_real_distribution<float>(
+            std::numbers::pi_v<float> / 2, std::numbers::pi_v<float>
+        )(current_game->state().rng);
+        float angles [4] = {
+            seed_angle - 1.f, seed_angle - 0.5f, seed_angle + 0.5f, seed_angle + 1.f
+        };
+        for (int i = 0; i < 4; i++) {
+            bubbles[i].pos = pos + left_flip(data->poses->attack[2].body->weapon);
+            bubbles[i].vel = Vec(std::cos(angles[i]), std::sin(angles[i]));
+        }
+    }
+    for (auto& bubble : bubbles) {
+        if (defined(bubble.pos)) {
+            bubble.pos += bubble.vel;
+            if (!contains(Rect(-20, -20, 340, 200), bubble.pos)) {
+                bubble.pos = GNAN;
+            }
+        }
+    }
+    Walker::Walker_move(controls);
+}
+
 void Indigo::Walker_set_hitboxes () {
-    if (state == IS::Eaten) clear_hitboxes();
+    if (state == IS::Eaten) {
+        clear_hitboxes();
+        return;
+    }
     body_hb.box = data->body_box;
     set_hitbox(body_hb);
     if (state == IS::Bed) {
         damage_hb.box = data->damage_box;
         add_hitbox(damage_hb);
     }
+    auto& id = static_cast<IndigoData&>(*data);
+    for (auto& bubble : bubbles) {
+        if (defined(bubble.pos)) {
+            bubble.hb.box = bubble.pos - pos + Rect(
+                Vec(-id.bubble_radius), Vec(id.bubble_radius)
+            );
+            add_hitbox(bubble.hb);
+        }
+    }
+}
+
+void Indigo::Resident_on_collide (
+    const Hitbox& hb, Resident& o, const Hitbox& o_hb
+) {
+    if (hb.layers_1 & Layers::Projectile_Solid &&
+        o_hb.layers_2 & Layers::Projectile_Solid
+    ) {
+        Rect here = pos + hb.box;
+        Rect there = o.pos + o_hb.box;
+        Rect overlap = here & there;
+        auto& bubble = *(IndigoBubble*)(
+            (char*)&hb - offsetof(IndigoBubble, hb)
+        );
+         // Too much in a hurry to figure out the collision point properly, so
+         // just rewind the bubble one frame
+        bubble.pos -= bubble.vel;
+        if (width(overlap) < height(overlap)) {
+            if (overlap.l == here.l && bubble.vel.x < 0) {
+                bubble.vel.x = -bubble.vel.x;
+            }
+            else if (overlap.r == here.r && bubble.vel.x > 0) {
+                bubble.vel.x = -bubble.vel.x;
+            }
+        }
+        else {
+            if (overlap.b == here.b && bubble.vel.y < 0) {
+                bubble.vel.y = -bubble.vel.y;
+            }
+            else if (overlap.t == here.t && bubble.vel.y > 0) {
+                bubble.vel.y = -bubble.vel.y;
+            }
+        }
+    }
+    else Walker::Resident_on_collide(hb, o, o_hb);
 }
 
 Pose Indigo::Walker_pose () {
@@ -288,6 +365,11 @@ void Indigo::Walker_draw_weapon (const Pose& pose) {
     if (defined(hat_pos)) {
         draw_frame(*poses.hat, 2, hat_pos, Z::Dead - 10, {-1, 1});
     }
+    for (auto& bubble : bubbles) {
+        if (defined(bubble.pos)) {
+            draw_frame(*poses.bubble, 0, bubble.pos, Z::Projectile);
+        }
+    }
     Walker::Walker_draw_weapon(pose);
 }
 
@@ -314,11 +396,20 @@ Controls IndigoMind::Mind_think (Resident& s) {
         if (me.alert_timer >= 120) {
             me.alert_phase = 2;
             me.alert_timer = 0;
-            me.set_state(IS::Capturing);
         }
         else me.alert_timer += 1;
     }
     else if (me.alert_phase == 2) {
+        int bubble_count = 0;
+        for (auto& bubble : me.bubbles) {
+            if (defined(bubble.pos)) bubble_count++;
+        }
+        if (bubble_count == 0 && me.state != WS::Attack) {
+            r[Control::Attack] = 1;
+        }
+        //me.set_state(IS::Capturing);
+    }
+    else if (me.alert_phase == 3) {
         if (me.poison_level) {
             goal = Vec(160, 80);
             auto& id = static_cast<IndigoData&>(*me.data);
@@ -390,6 +481,7 @@ control::Command put_indigo_to_bed (put_indigo_to_bed_, "put_indigo_to_bed");
 AYU_DESCRIBE(vf::IndigoPoses,
     attrs(
         attr("vf::WalkerPoses", base<WalkerPoses>(), include),
+        attr("bubble", &IndigoPoses::bubble),
         attr("capturing", &IndigoPoses::capturing),
         attr("bed", &IndigoPoses::bed),
         attr("glasses", &IndigoPoses::glasses),
@@ -403,6 +495,7 @@ AYU_DESCRIBE(vf::IndigoPoses,
 AYU_DESCRIBE(vf::IndigoData,
     attrs(
         attr("vf::WalkerData", base<WalkerData>(), include),
+        attr("bubble_radius", &IndigoData::bubble_radius),
         attr("capture_target_pos", &IndigoData::capture_target_pos),
         attr("capture_weapon_pos", &IndigoData::capture_weapon_pos),
         attr("capture_limb_offsets", &IndigoData::capture_limb_offsets),
@@ -416,12 +509,20 @@ AYU_DESCRIBE(vf::IndigoData,
     )
 );
 
+AYU_DESCRIBE(vf::IndigoBubble,
+    attrs(
+        attr("pos", &IndigoBubble::pos),
+        attr("vel", &IndigoBubble::vel)
+    )
+)
+
 AYU_DESCRIBE(vf::Indigo,
     attrs(
         attr("vf::Walker", base<Walker>(), include),
         attr("alert_phase", &Indigo::alert_phase, optional),
         attr("alert_timer", &Indigo::alert_timer, optional),
         attr("home_pos", &Indigo::home_pos, optional),
+        attr("bubbles", &Indigo::bubbles, optional),
         attr("capture_initial_pos", &Indigo::capture_initial_pos, optional),
         attr("front_door", &Indigo::front_door),
         attr("back_door", &Indigo::back_door),

@@ -41,6 +41,7 @@ namespace CapturingPhase {
 namespace CP = CapturingPhase;
 
 struct IndigoPoses : WalkerPoses {
+    Frame* bubble;
     Pose capturing [CP::N_Phases];
     Pose bed [2];
     Frame* glasses;
@@ -51,6 +52,8 @@ struct IndigoPoses : WalkerPoses {
 };
 
 struct IndigoData : WalkerData {
+    float bubble_radius;
+    float bubble_speed;
     Vec capture_target_pos;
     Vec capture_weapon_pos;
     Vec capture_limb_offsets [4];
@@ -69,11 +72,20 @@ struct IndigoData : WalkerData {
     uint8 capturing_snake_sequence [5];
 };
 
+struct IndigoBubble {
+     // Absolute
+    Vec pos = GNAN;
+    Vec vel = GNAN;
+     // Relative to my pos
+    Hitbox hb;
+};
+
 struct Indigo : Walker {
     uint8 alert_phase = 0;
     uint8 alert_timer = 0;
-    Vec capture_initial_pos = GNAN;
     Vec home_pos = GNAN;
+    IndigoBubble bubbles [4];
+    Vec capture_initial_pos = GNAN;
      // Will be activated when I notice Verdant
     Door* front_door;
      // Will be activated twice when I leave (once to open, once to exit)
@@ -90,10 +102,14 @@ struct Indigo : Walker {
     void init ();
     void go_to_bed ();
     WalkerBusiness Walker_business () override;
+     // Create bubbles when attacking
+    void Walker_move (const Controls&) override;
      // Disable damage hitbox in most states
     void Walker_set_hitboxes () override;
+     // Bubble collision
+    void Resident_on_collide (const Hitbox&, Resident&, const Hitbox&) override;
     Pose Walker_pose () override;
-     // For drawing glasses separately
+     // For drawing glasses, hat, bubbles
     void Walker_draw_weapon (const Pose&) override;
 };
 

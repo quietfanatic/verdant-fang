@@ -196,7 +196,6 @@ void Walker::Walker_move (const Controls& controls) {
      // Try to move
     bool walking = false;
     bool decelerate = false;
-    restart_move:
     switch (business) {
     case WB::Frozen: vel = {0, 0}; break;
     case WB::HoldAttack: {
@@ -205,7 +204,7 @@ void Walker::Walker_move (const Controls& controls) {
             anim_phase = 1;
             anim_timer = 0;
             business = Walker_business();
-            goto restart_move;
+            return Walker_move(controls);
         }
         decelerate = true; break;
     }
@@ -252,7 +251,7 @@ void Walker::Walker_move (const Controls& controls) {
             if (data->can_fly && controls[Control::Up]) {
                 fly = true;
                 if (floor) pos.y += data->fly_floor_lift;
-                goto restart_move;
+                return Walker_move(controls);
             }
              // Crouch or don't
             if (no_crouch_timer) {

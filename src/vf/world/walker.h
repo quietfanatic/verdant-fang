@@ -14,13 +14,32 @@ namespace vf {
  //
  //    [WalkerState]
  //          |
- //    Walker_business()  Mind_think()
+ //    Walker_business()  Mind_think(Resident&)
  //          |               |
  //    [WalkerBusiness]  [Controls]
  //              \        /
- //       fixed movement routines
+ //            Walker_move(const Controls&)
  //                  |
- //           [pos, hitboxes]
+ //              [vel, pos]
+ //                  |
+ //         Walker_set_hitboxes()
+ //                  |
+ //              [hitboxes]
+ //                  |
+ //         (Collision detection)
+ //                  |
+ //         Resident_on_collide(...)
+ //                  |
+ //           Walker_on_hit(...)
+ //
+ // And the rendering pipeline is like this
+ //            Walker_pose()
+ //                  |
+ //                [Pose]
+ //                  |
+ //           Resident_draw()
+ //                  |
+ //         Walker_draw_weapon(const Pose&)
 
  // WalkerState indicates roughly what state the character is in between frames.
  // Each state has an associated anim_phase and anim_timer, and what values are

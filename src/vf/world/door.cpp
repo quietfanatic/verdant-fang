@@ -19,7 +19,8 @@ struct DoorData {
 
 void Door::init () {
     types |= Types::Door;
-    hb.layers_2 = Layers::Walker_Solid | Layers::Weapon_Solid;
+    hb.layers_2 = Layers::Walker_Solid | Layers::Weapon_Solid |
+        Layers::Projectile_Solid;
     hb.box = data->hitbox;
     set_hitbox(hb);
     Vec default_offset = Vec(0, height(data->hitbox));
