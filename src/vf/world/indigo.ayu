@@ -119,6 +119,8 @@
             [#body_fly #head_fly]
         ]
         fly: [
+             -- Any pose with #body_fly or #head_fly will have that segment
+             -- replaced with one of these depending on vel.x
             [#body_fly #head_fly]
             [#body_flyf #head_flyf]
             [#body_flyb #head_flyb]

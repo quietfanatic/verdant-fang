@@ -308,53 +308,66 @@ void Indigo::Resident_on_collide (
 Pose Indigo::Walker_pose () {
     auto& id = static_cast<IndigoData&>(*data);
     auto& poses = static_cast<IndigoPoses&>(*id.poses);
+    Pose r = {};
     if (state == IS::Capturing) {
         if (anim_phase >= CP::DetachLimb1 && anim_phase <= CP::TakeLimbs) {
             if (current_game->options().hide_nudity) {
-                return poses.capturing[CP::DetachLimb0];
+                r = poses.capturing[CP::DetachLimb0];
             }
-            uint32 cycle_length = id.fingering_cycle[0] + id.fingering_cycle[1];
-            return poses.capturing[
-                (anim_timer % cycle_length) < id.fingering_cycle[0]
-                    ? CP::DetachLimb1 : CP::DetachLimb2
-            ];
-        }
-        else {
-            Pose r = poses.capturing[anim_phase];
-            if (r.body == poses.fly[0].body) {
-                if (left_flip(vel.x) > 1) {
-                    r = poses.fly[1];
-                }
-                else if (left_flip(vel.x) < -1) {
-                    r = poses.fly[2];
-                }
+            else {
+                uint32 cycle_length = id.fingering_cycle[0] +
+                    id.fingering_cycle[1];
+                r = poses.capturing[
+                    (anim_timer % cycle_length) < id.fingering_cycle[0]
+                        ? CP::DetachLimb1 : CP::DetachLimb2
+                ];
             }
-            return r;
         }
+        else r = poses.capturing[anim_phase];
     }
     else if (state == IS::Bed) {
         expect(anim_phase < 2);
         if (current_game->options().hide_nudity) {
-            return poses.bed[0];
+            r = poses.bed[0];
         }
-        return poses.bed[anim_phase];
+        r = poses.bed[anim_phase];
     }
     else if (state == IS::Bit) {
         expect(anim_phase < 9);
-        return poses.bit[anim_phase];
+        r = poses.bit[anim_phase];
     }
     else if (state == IS::CapturingSnake) {
         expect(anim_phase < 5);
-        return poses.capturing_snake[anim_phase];
+        r = poses.capturing_snake[anim_phase];
     }
     else if (state == IS::Eaten) {
         if (anim_phase == 0) {
             expect(verdant && verdant->anim_phase < 34);
-            return poses.eaten[verdant->anim_phase];
+            r = poses.eaten[verdant->anim_phase];
         }
-        else return Pose{};
+        else {
+             // Gone
+            return Pose{};
+        }
     }
-    else return Walker::Walker_pose();
+    else r = Walker::Walker_pose();
+    if (r.body == poses.fly[0].body) {
+        if (left_flip(vel.x) > 1) {
+            r.body = poses.fly[1].body;
+        }
+        else if (left_flip(vel.x) < -1) {
+            r.body = poses.fly[2].body;
+        }
+    }
+    if (r.head == poses.fly[0].head) {
+        if (left_flip(vel.x) > 1) {
+            r.head = poses.fly[1].head;
+        }
+        else if (left_flip(vel.x) < -1) {
+            r.head = poses.fly[2].head;
+        }
+    }
+    return r;
 }
 
 void Indigo::Walker_draw_weapon (const Pose& pose) {
