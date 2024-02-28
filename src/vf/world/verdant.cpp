@@ -1197,7 +1197,7 @@ Verdant* find_verdant () {
 }
 
 void restart_if_dead_ () {
-    if (!current_game || current_game->menus) return;
+    if (!current_game) return;
     if (auto v = find_verdant()) {
         if (v->state == WS::Dead || v->state == VS::FangHelp) {
             v->revive();

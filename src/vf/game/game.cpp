@@ -128,8 +128,8 @@ Game::Game () :
     }
 
     ayu::SharedResource menus_res (iri::constant("res:/vf/game/menus.ayu"));
-    ayu::global(&main_menu);
-    main_menu = menus_res["main_menu"][1];
+    ayu::global(&start_menu);
+    start_menu = menus_res["start_menu"][1];
     ayu::global(&pause_menu);
     pause_menu = menus_res["pause_menu"][1];
     ayu::global(&options_menu);
@@ -145,7 +145,7 @@ Game::Game () :
         state_res->set_value(ayu::Dynamic::make<State>());
         auto& state = state_res->get_value().as<State>();
         state.load_initial();
-        menus.emplace_back(main_menu);
+        menus.emplace_back(start_menu);
     }
 }
 
@@ -173,6 +173,20 @@ void Game::start () {
     SDL_GL_SetSwapInterval(1);
     glow::init();
     loop.start();
+}
+
+void Game::reset () {
+     // Clear everything including transitions and stuff
+    state_res->set_value(ayu::Dynamic::make<State>());
+    auto& state = state_res->get_value().as<State>();
+    state.load_initial();
+    menus = {};
+    menus.push_back(OpenMenu(start_menu));
+}
+
+void Game::suspend () {
+    ayu::save(current_game->state_res);
+    exit(0);
 }
 
 Game* current_game = null;

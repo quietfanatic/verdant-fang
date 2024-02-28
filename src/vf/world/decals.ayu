@@ -4,11 +4,11 @@
     stab: {
         tex: [{
             image: assets.ayu#layer0
-            bounds: [337 323 393 356]
+            bounds: [315 281 368 314]
             has_blood: true
         } {
             image: assets.ayu#layer1
-            bounds: [337 323 393 356]
+            bounds: [315 281 368 314]
             has_blood: true
         }]
         dir_0: [

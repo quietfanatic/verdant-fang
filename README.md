@@ -27,8 +27,8 @@ The default controls are as follows:
   - R (on game over screen): Restart from checkpoint
   - P: Pause
   - F11: Toggle fullscreen mode
-  - Escape: Boss Key (immediately save state and close)
   - Ctrl-R: Restart from checkpoint at any time
+  - Ctrl-Q or Escape while paused: Boss Key (immediately save state and close)
 
 You can change the controls by editing `save/settings.ayu` (you must run the
 game once to generate the file).
@@ -108,10 +108,10 @@ https://leafuw.itch.io/verdant-fang
 [x] death animation while poisoned crash
 [x] revive animation multiple occurence
 [x] clothes on floor
-[ ] don't make Indigo's hat disappear
-[ ] Tweak monster's AI
+[x] don't make Indigo's hat disappear
+[ ] Tweak monster's AI and hitboxes
 [x] Fix bed hitbox
-[ ] Game over screen controls
+[x] Game over screen controls
 [x] Window title
 Optional:
 [ ] Kick off spear animation

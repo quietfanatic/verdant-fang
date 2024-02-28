@@ -40,14 +40,15 @@
         [[p] [pause_or_unpause]]
         [[pause] [pause_or_unpause]]
          -- Restart from checkpoint
-        [[r] [restart_if_dead]]
+        [[r] [seq [
+            [restart_if_dead]
+            [reset_game_if_ended]
+        ]]]
         [[ctrl r] [force_restart]]
          -- Various forms of quitting
-        [[escape] [seq [
-            [save_state]
-            [exit_program]
-        ]]]
-        [[ctrl q] [seq [
+        [[escape] [pause_or_suspend]]
+        [[ctrl q] [suspend]]
+        [[ctrl shift q] [seq [
             [delete_state]
             [exit_program]
         ]]]

@@ -61,30 +61,32 @@ void reset_state_ () {
     auto& state = current_game->state_res->get_value().as<State>();
     state.load_initial();
 }
-Command reset_state (reset_state_, "reset_state", "Reset game state to initial state wthout affecting saved state.");
+Command reset_state (reset_state_, "reset_state", "Reset game state to initial state wthout affecting saved state");
+
+void reset_game_ () {
+    if (!current_game) return;
+    current_game->reset();
+}
+Command reset_game (reset_game_, "reset_game", "Reset game to initial state and open start menu");
+
+void reset_game_if_ended_ () {
+    if (!current_game) return;
+    if (current_game->menus.size() == 1 &&
+        current_game->menus[0].data == current_game->end_menu
+    ) current_game->reset();
+}
+Command reset_game_if_ended (reset_game_if_ended_, "reset_game_if_ended", "Reset game if on the end screen");
 
 void exit_program_ () {
     exit(0);
 }
-Command exit_program (exit_program_, "exit_program", "Exit the program immediately regardless of whether a state is saved.");
+Command exit_program (exit_program_, "exit_program", "Exit the program immediately regardless of whether a state is saved");
 
-void ignore_held_controls_ () {
+void suspend_ () {
     if (!current_game) return;
-    auto& settings = current_game->settings();
-    settings.disable_while_held = settings.read_controls();
+    current_game->suspend();
 }
-Command ignore_held_controls (ignore_held_controls_, "ignore_held_controls", "If any controls are currently being held, ignore them until they are released.");
-
- // Currently having pointers inside commands is broken, so we can't have a
- // generic open_menu command that takes a Menu* as an argument.
-void open_main_menu_ () {
-    if (!current_game) return;
-    if (current_game->menus &&
-        current_game->menus.back().data == current_game->main_menu
-    ) return;
-    current_game->menus.emplace_back(current_game->main_menu);
-}
-control::Command open_main_menu (open_main_menu_, "open_main_menu", "Open the main menu");
+Command suspend (suspend_, "suspend", "Save state and exit program");
 
 void pause_or_unpause_ () {
     if (!current_game) return;
@@ -106,6 +108,45 @@ void pause_or_unpause_ () {
     }
 }
 Command pause_or_unpause (pause_or_unpause_, "pause_or_unpause", "Pause game if playing game; Unpause game if paused");
+
+void pause_or_suspend_ () {
+    if (!current_game) return;
+    if (!current_game->menus) {
+        current_game->menus.emplace_back(current_game->pause_menu);
+    }
+    else for (auto om = current_game->menus.rbegin();
+        om != current_game->menus.rend();
+        om++
+    ) {
+        if (om->data->allow_pause) {
+            current_game->menus.emplace_back(current_game->pause_menu);
+            break;
+        }
+        if (om->data == current_game->pause_menu) {
+            current_game->suspend();
+            break;
+        }
+    }
+}
+Command pause_or_suspend (pause_or_suspend_, "pause_or_suspend", "Pause game if playing game; Save state and exit if paused");
+
+void ignore_held_controls_ () {
+    if (!current_game) return;
+    auto& settings = current_game->settings();
+    settings.disable_while_held = settings.read_controls();
+}
+Command ignore_held_controls (ignore_held_controls_, "ignore_held_controls", "If any controls are currently being held, ignore them until they are released");
+
+ // Currently having pointers inside commands is broken, so we can't have a
+ // generic open_menu command that takes a Menu* as an argument.
+void open_start_menu_ () {
+    if (!current_game) return;
+    if (current_game->menus &&
+        current_game->menus.back().data == current_game->start_menu
+    ) return;
+    current_game->menus.emplace_back(current_game->start_menu);
+}
+control::Command open_start_menu (open_start_menu_, "open_start_menu", "Open the start menu");
 
 void open_options_menu_ () {
     if (!current_game) return;

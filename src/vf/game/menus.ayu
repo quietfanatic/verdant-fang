@@ -5,7 +5,7 @@
     }]]
     text2: [vf::LayeredTexture [{
         image: ../world/assets.ayu#layer1
-        bounds: [404 368 508 396]
+        bounds: [483 353 596 396]
     }]]
     snek0: [vf::Frame [#text [19 66]]]
     snek1: [vf::Frame [#text [19 61]]]
@@ -23,7 +23,7 @@
             bounds: [465 73 502 94]
         }
     ]]
-    main_title:   [vf::MenuImage [#text [56 133] [-56 -31 0 0]]]
+    start_title:   [vf::MenuImage [#text [56 133] [-56 -31 0 0]]]
     fang:         [vf::MenuFang {
         frame: [#fang_tex [19 11] [-19 -11 18 10]]
         cycle: [80 6 6 6]
@@ -31,11 +31,13 @@
     options:      [vf::MenuImage [#text [92 140] [-33 -7 0 0]]]
     start:        [vf::MenuImage [#text [92 130] [-22 -7 0 0]]]
     exit:         [vf::MenuImage [#text [92 110] [-18 -7 0 0]]]
-    url: [vf::MenuImage [#text2 [104 5] [-94 -5 0 0]]]
-    main_menu: [vf::Menu {
+    readme: [vf::MenuImage [#text2 [113 43] [-113 -5 0 0]]]
+    url: [vf::MenuImage [#text2 [113 5] [-94 -5 0 0]]]
+    start_menu: [vf::Menu {
         decorations: [
-            [#main_title [184 156]]
+            [#start_title [184 156]]
             [#fang [130 100]]
+            [#readme [123 15]]
             [#url [310 15]]
         ]
         items: [{
@@ -95,7 +97,7 @@
                 [delete_state]
                 [reset_state]
                 [close_all_menus]
-                [open_main_menu]
+                [open_start_menu]
             ]]
         }]
         on_back: [seq [
@@ -148,7 +150,7 @@
         "save:/options.ayu#/hide_nudity" true
     ]]
     back: [vf::MenuImage [#text [92 37] [-19 -7 0 0]]]
-    advanced: [vf::MenuImage [#text2 [104 28] [-104 -19 0 0]]]
+    advanced: [vf::MenuImage [#text2 [113 27] [-104 -19 0 0]]]
     options_menu: [vf::Menu {
         decorations: [
             [#options_title [310 170]]
@@ -198,8 +200,13 @@
         bounds: [415 3 502 33]
     }]]
     thanks: [vf::MenuImage [#thanks_tex [44 15] [-44 -15 43 15]]]
+    reset: [vf::MenuImage [#text2 [113 35] [-65 -5 0 0]]]
     end_menu: [vf::Menu {
-        decorations: [[#thanks [160 100]]]
+        decorations: [
+            [#thanks [160 100]]
+            [#reset [75 15]]
+            [#url [310 15]]
+        ]
         items: []
         allow_pause: true
     }]

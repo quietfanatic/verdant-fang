@@ -14,7 +14,7 @@ struct Game {
     wind::Window window;
     wind::ActiveLoop loop;
     UniqueArray<OpenMenu> menus;
-    Menu* main_menu;
+    Menu* start_menu;
     Menu* pause_menu;
     Menu* options_menu;
     Menu* end_menu;
@@ -29,6 +29,8 @@ struct Game {
     Game ();
     ~Game ();
     void start ();
+    void reset ();
+    [[noreturn]] void suspend ();
 };
 
 extern Game* current_game;
