@@ -661,9 +661,9 @@
         room: #atelier
         data: indigo.ayu#data
         mind: #indigomind
-        pos: [230 72]
+        pos: [240 32]
+        floor: #atelier_blocks
         left: true
-        fly: true
         body_layers: 0x5 --no pants
         --body_layers: 0x7 --fully clothed
         --body_layers: 0x3 --leotard

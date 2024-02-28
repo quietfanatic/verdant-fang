@@ -488,6 +488,7 @@ Controls IndigoMind::Mind_think (Resident& s) {
             }
             goto next_alert_phase;
         }
+        else return r;
     }
     else if (me.alert_phase == 1) {
         if (me.alert_timer >= 120) {
@@ -575,7 +576,7 @@ Controls IndigoMind::Mind_think (Resident& s) {
     else if (me.pos.y > goal.y + goal_tolerance.y) {
         r[Control::Down] = 1;
     }
-    else if (me.vel.y < -1) {
+    else if (me.vel.y < -0.5) {
         r[Control::Up] = 1;
     }
      // else just float down
