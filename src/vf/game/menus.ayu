@@ -37,8 +37,8 @@
         decorations: [
             [#start_title [184 156]]
             [#fang [130 100]]
-            [#readme [123 15]]
-            [#url [310 15]]
+            [#url [104 15]]
+            [#readme [310 15]]
         ]
         items: [{
             draw: #options
@@ -204,8 +204,8 @@
     end_menu: [vf::Menu {
         decorations: [
             [#thanks [160 100]]
-            [#reset [75 15]]
-            [#url [310 15]]
+            [#url [104 15]]
+            [#reset [310 15]]
         ]
         items: []
         allow_pause: true
