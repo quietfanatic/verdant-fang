@@ -38,8 +38,13 @@ WalkerBusiness Indigo::Walker_business () {
     for (auto& bubble : bubbles) {
         if (bubble.state) {
             bubble.timer += 1;
-            if (bubble.state == 2) {
-                if (bubble.phase == 0 && bubble.timer == 1) {
+            if (bubble.state == 1) {
+                bubble.pos += bubble.vel;
+            }
+            else if (bubble.state == 2 || bubble.state == 3) {
+                if (bubble.state == 2 && bubble.phase == 0 &&
+                    bubble.timer == 1
+                ) {
                     if (id.bubble_pop_sound) id.bubble_pop_sound->play();
                 }
                 if (bubble.timer >= id.bubble_pop_sequence[bubble.phase]) {
@@ -51,7 +56,7 @@ WalkerBusiness Indigo::Walker_business () {
                 }
                 else bubble.timer += 1;
             }
-            bubble.pos += bubble.vel;
+            else never();
             if (!contains(Rect(-20, -20, 340, 200), bubble.pos)) {
                 bubble.state = 0;
             }
@@ -355,7 +360,7 @@ void Indigo::Resident_on_collide (
         victim.set_state(WS::Dead);
         if (victim.data->attack_sound) victim.data->attack_sound->stop();
         if (victim.data->damage_sound) victim.data->damage_sound->play();
-        bubble.state = 2;
+        bubble.state = 3;
         bubble.timer = 0;
     }
     else if (hb.layers_1 & Layers::Projectile_Weapon &&
@@ -461,6 +466,9 @@ void Indigo::Walker_draw_weapon (const Pose& pose) {
             }
             else if (bubble.state == 2) {
                 frame = poses.bubble_pop[bubble.phase];
+            }
+            else if (bubble.state == 3) {
+                frame = poses.bubble_boom[bubble.phase];
             }
             expect(frame);
             draw_frame(*frame, 0, bubble.pos, Z::Projectile);
@@ -627,6 +635,7 @@ AYU_DESCRIBE(vf::IndigoPoses,
         attr("vf::WalkerPoses", base<WalkerPoses>(), include),
         attr("bubble", &IndigoPoses::bubble),
         attr("bubble_pop", &IndigoPoses::bubble_pop),
+        attr("bubble_boom", &IndigoPoses::bubble_boom),
         attr("capturing", &IndigoPoses::capturing),
         attr("bed", &IndigoPoses::bed),
         attr("glasses", &IndigoPoses::glasses),
