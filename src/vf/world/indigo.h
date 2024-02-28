@@ -56,6 +56,7 @@ struct IndigoData : WalkerData {
     float bubble_radius;
     float bubble_speed;
     uint8 bubble_pop_sequence [3];
+    float dodge_speed;
     Vec capture_target_pos;
     Vec capture_weapon_pos;
     Vec capture_limb_offsets [4];
@@ -72,6 +73,7 @@ struct IndigoData : WalkerData {
      // 4 = preattack (time limit ignored, but this array entry used to
      // calculate sequence length)
     uint8 capturing_snake_sequence [5];
+    Sound* bubble_pop_sound = null;
 };
 
 struct IndigoBubble {
@@ -92,7 +94,8 @@ struct Indigo : Walker {
     uint8 alert_phase = 0;
     uint8 alert_timer = 0;
     uint8 attack_count = 0;
-    Vec home_pos = GNAN;
+    uint8 home_index = 0;
+    Vec home_pos [2] = {Vec(230, 72), Vec(90, 72)};
     IndigoBubble bubbles [4];
     Vec capture_initial_pos = GNAN;
      // Will be activated when I notice Verdant
@@ -108,7 +111,6 @@ struct Indigo : Walker {
     Verdant* verdant = null;
 
     Indigo ();
-    void init ();
     void go_to_bed ();
     WalkerBusiness Walker_business () override;
      // Create bubbles when attacking
@@ -125,7 +127,7 @@ struct Indigo : Walker {
 struct IndigoMind : Mind {
     Verdant* target;
     float sight_range;
-    Vec goal_tolerance = {2, 4};
+    Vec goal_tolerance = {2, 2};
     Controls Mind_think (Resident&) override;
 };
 

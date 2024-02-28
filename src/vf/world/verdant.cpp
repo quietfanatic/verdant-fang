@@ -578,7 +578,9 @@ WalkerBusiness Verdant::Walker_business () {
 void Verdant::Walker_move (const Controls& controls) {
     auto& vd = static_cast<VerdantData&>(*data);
     if (state == VS::Inch) {
-        expect(business == WB::Free);
+         // This can happen if we're force restarting.  This should probably be
+         // prevented.
+        if (business != WB::Free) return;
         if (controls[Control::Right]) {
             left = false;
             if (anim_phase == 0) {

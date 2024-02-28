@@ -21,10 +21,6 @@ Indigo::Indigo () {
     }
 }
 
-void Indigo::init () {
-    if (!defined(home_pos)) home_pos = pos;
-}
-
 void Indigo::go_to_bed () {
     set_state(IS::Bed);
     set_room(bedroom);
@@ -43,6 +39,9 @@ WalkerBusiness Indigo::Walker_business () {
         if (bubble.state) {
             bubble.timer += 1;
             if (bubble.state == 2) {
+                if (bubble.phase == 0 && bubble.timer == 1) {
+                    if (id.bubble_pop_sound) id.bubble_pop_sound->play();
+                }
                 if (bubble.timer >= id.bubble_pop_sequence[bubble.phase]) {
                     if (bubble.phase == 2) bubble.state = 0;
                     else {
@@ -245,8 +244,13 @@ WalkerBusiness Indigo::Walker_business () {
 }
 
 void Indigo::Walker_move (const Controls& controls) {
+    auto& id = static_cast<IndigoData&>(*data);
+    if (business == WB::Free && controls[Control::Special]) {
+         // Dodge
+        home_index = !home_index;
+        vel.x = home_index ? -id.dodge_speed : id.dodge_speed;
+    }
     if (business == WB::DoAttack) {
-        auto& id = static_cast<IndigoData&>(*data);
         float seed_angle = std::uniform_real_distribution<float>(
             0, std::numbers::pi_v<float> / 2
         )(current_game->state().rng);
@@ -436,10 +440,11 @@ void Indigo::Walker_draw_weapon (const Pose& pose) {
 Controls IndigoMind::Mind_think (Resident& s) {
     Controls r {};
     if (!(s.types & Types::Indigo)) return r;
-    auto& me = static_cast<Indigo&>(s);
     if (!target) return r;
+    auto& me = static_cast<Indigo&>(s);
+    auto& id = static_cast<IndigoData&>(*me.data);
     next_alert_phase:
-    Vec goal = me.home_pos;
+    Vec goal = me.home_pos[me.home_index];
     if (me.alert_phase == 0) {
         if (distance2(target->pos.x, me.pos.x) < length2(sight_range)) {
             me.alert_phase = 1;
@@ -481,15 +486,12 @@ Controls IndigoMind::Mind_think (Resident& s) {
         else me.alert_timer += 1;
     }
     else if (me.alert_phase == 4) {
-        if (!me.alert_timer) {
-            me.alert_timer = 1;
-            me.set_state(IS::Capturing);
-        }
+        me.set_state(IS::Capturing);
+        me.alert_phase = 5;
     }
     else if (me.alert_phase == 5) {
         if (me.poison_level) {
             goal = Vec(160, 80);
-            auto& id = static_cast<IndigoData&>(*me.data);
             if (me.state == WS::Neutral) {
                 uint32 anim_len = 0;
                 for (auto ph : id.capturing_snake_sequence) anim_len += ph;
@@ -504,14 +506,27 @@ Controls IndigoMind::Mind_think (Resident& s) {
             me.left = false;
             goal = me.back_door->closed_pos + Vec(120, 8);
         }
-        else if (me.business == WB::Free) {
-            me.left = target->pos.x < me.pos.x;
+    }
+    if (me.business == WB::Free) {
+        me.left = target->pos.x < me.pos.x;
+         // Dodge if Verdant gets too close.  Not that it matters since I'm
+         // normally intangible, but it's for the performance.
+        if (auto v = find_verdant()) {
+            if (distance2(v->pos, me.pos) < 32*32 &&
+                length(me.vel.x) < 1
+            ) {
+                r[Control::Special] = 1;
+            }
         }
     }
-    if (me.pos.x < goal.x - goal_tolerance.x) {
+     // If I hold a direction while going fast from dodging, I'll keep going
+     // the same speed.  We should probably fix this in the movement logic, but
+     // that's handled by Walker and we don't want to interfere with that, so
+     // I'm just going to release the directional button to decelerate.
+    if (me.pos.x < goal.x - goal_tolerance.x && me.vel.x < id.air_max) {
         r[Control::Right] = 1;
     }
-    else if (me.pos.x > goal.x + goal_tolerance.x) {
+    else if (me.pos.x > goal.x + goal_tolerance.x && me.vel.x > -id.air_max) {
         r[Control::Left] = 1;
     }
     else if (me.vel.x < 0.01) {
@@ -576,6 +591,7 @@ AYU_DESCRIBE(vf::IndigoData,
         attr("bubble_radius", &IndigoData::bubble_radius),
         attr("bubble_speed", &IndigoData::bubble_speed),
         attr("bubble_pop_sequence", &IndigoData::bubble_pop_sequence),
+        attr("dodge_speed", &IndigoData::dodge_speed),
         attr("capture_target_pos", &IndigoData::capture_target_pos),
         attr("capture_weapon_pos", &IndigoData::capture_weapon_pos),
         attr("capture_limb_offsets", &IndigoData::capture_limb_offsets),
@@ -585,7 +601,8 @@ AYU_DESCRIBE(vf::IndigoData,
         attr("bed_cycle", &IndigoData::bed_cycle, optional),
         attr("bed_use_limb", &IndigoData::bed_use_limb),
         attr("bit_sequence", &IndigoData::bit_sequence),
-        attr("capturing_snake_sequence", &IndigoData::capturing_snake_sequence, optional)
+        attr("capturing_snake_sequence", &IndigoData::capturing_snake_sequence),
+        attr("bubble_pop_sound", &IndigoData::bubble_pop_sound, optional)
     )
 );
 
@@ -604,6 +621,7 @@ AYU_DESCRIBE(vf::Indigo,
         attr("vf::Walker", base<Walker>(), include),
         attr("alert_phase", &Indigo::alert_phase, optional),
         attr("alert_timer", &Indigo::alert_timer, optional),
+        attr("home_index", &Indigo::home_index, optional),
         attr("attack_count", &Indigo::attack_count, optional),
         attr("home_pos", &Indigo::home_pos, optional),
         attr("bubbles", &Indigo::bubbles, optional),
@@ -615,8 +633,7 @@ AYU_DESCRIBE(vf::Indigo,
         attr("glasses_pos", &Indigo::glasses_pos, optional),
         attr("bedroom_limb_pos", &Indigo::bedroom_limb_pos, optional),
         attr("verdant", &Indigo::verdant, optional)
-    ),
-    init<&Indigo::init>()
+    )
 )
 
 AYU_DESCRIBE(vf::IndigoMind,

@@ -302,6 +302,7 @@
         bubble_radius: 6
         bubble_speed: 1.4
         bubble_pop_sequence: [8 8 8]
+        dodge_speed: 5
          -- Based on world.ayu#atelier
         capture_target_pos: [120 68]
         capture_weapon_pos: [196 88]
@@ -326,5 +327,7 @@
         bed_use_limb: 3
         bit_sequence: [15 30 12 12 12 12 12 12 60]
         capturing_snake_sequence: [12 30 12 60 20]
+
+        bubble_pop_sound: assets.ayu#poiy
     }]
 }]
