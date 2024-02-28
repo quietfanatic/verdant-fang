@@ -22,8 +22,10 @@ void Indigo::go_to_bed () {
     set_state(IS::Bed);
     set_room(bedroom);
     pos = bed_pos;
-    glasses_pos = bed_pos + Vec(36, 0);
-    head_layers = 0b101;
+    if (head_layers & 0b010) {
+        glasses_pos = bed_pos + Vec(36, 0);
+        head_layers &= ~0b010;
+    }
     left = false;
     alert_phase = 2;
 }
@@ -34,6 +36,12 @@ WalkerBusiness Indigo::Walker_business () {
         if (anim_phase >= 8 && verdant && verdant->state == VS::SnakeCaptured) {
             verdant->set_state(VS::Snake);
             verdant->limb_layers &= ~0b1000;
+        }
+        else if (anim_phase == 3 && floor) {
+            if (head_layers & 0b100) {
+                hat_pos = pos + left_flip(Vec(18, 0));
+                head_layers &= ~0b100;
+            }
         }
     }
     else if (state == IS::Capturing) {
@@ -275,7 +283,10 @@ Pose Indigo::Walker_pose () {
 void Indigo::Walker_draw_weapon (const Pose& pose) {
     auto& poses = static_cast<IndigoPoses&>(*data->poses);
     if (defined(glasses_pos)) {
-        draw_frame(*poses.glasses, 1, glasses_pos);
+        draw_frame(*poses.glasses, 1, glasses_pos, Z::Dead - 10);
+    }
+    if (defined(hat_pos)) {
+        draw_frame(*poses.hat, 2, hat_pos, Z::Dead - 10, {-1, 1});
     }
     Walker::Walker_draw_weapon(pose);
 }
@@ -292,7 +303,10 @@ Controls IndigoMind::Mind_think (Resident& s) {
             me.alert_phase = 1;
             me.alert_timer = 0;
             if (me.front_door) me.front_door->set_state(DoorState::Closed);
-            glow::require_sdl(Mix_FadeOutMusic(120*1000/60));
+            if (current_game->state().current_music) {
+                glow::require_sdl(Mix_FadeOutMusic(120*1000/60));
+                current_game->state().current_music = null;
+            }
             goto next_alert_phase;
         }
     }
@@ -381,6 +395,7 @@ AYU_DESCRIBE(vf::IndigoPoses,
         attr("glasses", &IndigoPoses::glasses),
         attr("bit", &IndigoPoses::bit),
         attr("capturing_snake", &IndigoPoses::capturing_snake),
+        attr("hat", &IndigoPoses::hat),
         attr("eaten", &IndigoPoses::eaten)
     )
 )

@@ -501,16 +501,14 @@ WalkerBusiness Verdant::Walker_business () {
             }
         }
         if (anim_phase == DP::End) {
+            current_game->menus.emplace_back(
+                OpenMenu(current_game->end_menu)
+            );
             return WB::Frozen;
         }
         else if (anim_timer >= vd.desnakify_sequence[anim_phase]) {
             anim_phase += 1;
             anim_timer = 0;
-            if (anim_phase == DP::End) {
-                current_game->menus.emplace_back(
-                    OpenMenu(current_game->end_menu)
-                );
-            }
             return Walker_business();
         }
         else {
@@ -769,10 +767,14 @@ void Verdant::Walker_on_hit (
         victim.poison_timer = 360;
         if (victim.types & Types::Indigo) {
             indigo = &static_cast<Indigo&>(victim);
+            left = indigo->left;
             expect(indigo->state == IS::Bed);
             indigo->set_state(IS::Bit);
             set_state(VS::SnakeBite);
-            Mix_FadeOutMusic(120*1000/60);
+            if (current_game->state().current_music) {
+                glow::require_sdl(Mix_FadeOutMusic(120*1000/60));
+                current_game->state().current_music = null;
+            }
         }
         else {
             victim.set_state(WS::Stun);

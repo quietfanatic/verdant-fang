@@ -46,6 +46,7 @@ struct IndigoPoses : WalkerPoses {
     Frame* glasses;
     Pose bit [9];
     Pose capturing_snake [5];
+    Frame* hat;
     Pose eaten [34];
 };
 
@@ -82,6 +83,7 @@ struct Indigo : Walker {
     Vec bed_pos;
     Vec glasses_pos = GNAN;
     Vec bedroom_limb_pos [4] = {GNAN, GNAN, GNAN, GNAN};
+    Vec hat_pos = GNAN;
     Verdant* verdant = null;
 
     Indigo ();
