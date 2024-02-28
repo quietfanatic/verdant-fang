@@ -41,7 +41,7 @@ namespace CapturingPhase {
 namespace CP = CapturingPhase;
 
 struct IndigoPoses : WalkerPoses {
-    Frame* bubble;
+    Frame* bubble [6];
     Frame* bubble_pop [3];
     Pose capturing [CP::N_Phases];
     Pose bed [2];
@@ -55,6 +55,7 @@ struct IndigoPoses : WalkerPoses {
 struct IndigoData : WalkerData {
     float bubble_radius;
     float bubble_speed;
+    uint8 bubble_sequence [6];
     uint8 bubble_pop_sequence [3];
     float dodge_speed;
     Vec capture_target_pos;

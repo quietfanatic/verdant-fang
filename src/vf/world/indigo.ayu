@@ -100,7 +100,9 @@
     }]
      -- Bubble is concentric circles so if we don't specify the bounds, only
      -- the inner circle will be detected.
-    bubble: [vf::Frame [#magic [8 39] [-6 -6 6 6]]]
+    bubble0: [vf::Frame [#magic [8 39] [-6 -6 6 6]]]
+    bubble1: [vf::Frame [#magic [8 25] [-6 -6 6 6]]]
+    bubble2: [vf::Frame [#magic [8 11] [-6 -6 6 6]]]
     bubble_pop0: [vf::Frame [#magic [25 64] [-6 -6 6 6]]]
     bubble_pop1: [vf::Frame [#magic [25 30] [-8 -8 8 8]]]
     bubble_pop2: [vf::Frame [#magic [25 12] [-8 -8 8 8]]]
@@ -163,7 +165,7 @@
             [#body_dead #head_dead null *z_dead]
             [#body_dead #head_dead null *z_dead]
         ]
-        bubble: #bubble
+        bubble: [#bubble0 #bubble1 #bubble2 #bubble0 #bubble2 #bubble1]
         bubble_pop: [#bubble_pop0 #bubble_pop1 #bubble_pop2]
         capturing: [
             [#body_preattack #head_fly #magic_sparkle0]
@@ -301,6 +303,7 @@
 
         bubble_radius: 6
         bubble_speed: 1.4
+        bubble_sequence: [16 8 8 16 8 8]
         bubble_pop_sequence: [8 8 8]
         dodge_speed: 5
          -- Based on world.ayu#atelier

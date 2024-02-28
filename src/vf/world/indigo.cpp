@@ -263,17 +263,22 @@ void Indigo::Walker_move (const Controls& controls) {
         if (id.dodge_sound) id.dodge_sound->play();
     }
     if (business == WB::DoAttack) {
+        auto& rng = current_game->state().rng;
         float seed_angle = std::uniform_real_distribution<float>(
             0, std::numbers::pi_v<float> / 2
-        )(current_game->state().rng);
+        )(rng);
         float angles [4] = {
             seed_angle - 1.f, seed_angle - 0.5f,
             seed_angle + 0.5f, seed_angle + 1.f
         };
+        uint32 seq_len = 0;
+        for (auto& p : id.bubble_sequence) seq_len += p;
         for (int i = 0; i < 4; i++) {
             bubbles[i].state = 1;
             bubbles[i].phase = 0;
-            bubbles[i].timer = 0;
+            bubbles[i].timer = std::uniform_int_distribution<uint32>(
+                0, seq_len - 1
+            )(rng);
             bubbles[i].pos = pos + left_flip(
                 data->poses->attack[2].body->weapon
             );
@@ -406,7 +411,7 @@ Pose Indigo::Walker_pose () {
             r = poses.eaten[verdant->anim_phase];
         }
         else {
-             // Gone
+             // Goodbye
             return Pose{};
         }
     }
@@ -431,18 +436,33 @@ Pose Indigo::Walker_pose () {
 }
 
 void Indigo::Walker_draw_weapon (const Pose& pose) {
-    auto& poses = static_cast<IndigoPoses&>(*data->poses);
+    auto& id = static_cast<IndigoData&>(*data);
+    auto& poses = static_cast<IndigoPoses&>(*id.poses);
     if (defined(glasses_pos)) {
         draw_frame(*poses.glasses, 1, glasses_pos, Z::Dead - 10);
     }
     if (defined(hat_pos)) {
         draw_frame(*poses.hat, 2, hat_pos, Z::Dead - 10, {-1, 1});
     }
+    uint32 seq_len = 0;
+    for (auto& p : id.bubble_sequence) seq_len += p;
     for (auto& bubble : bubbles) {
         if (bubble.state) {
-            Frame* frame = bubble.state == 1 ? poses.bubble
-                         : bubble.state == 2 ? poses.bubble_pop[bubble.phase]
-                         : (never(), poses.bubble);
+            Frame* frame = null;
+            if (bubble.state == 1) {
+                uint32 timer = bubble.timer % seq_len;
+                for (int i = 0; i < 6; i++) {
+                    if (timer < id.bubble_sequence[i]) {
+                        frame = poses.bubble[i];
+                        break;
+                    }
+                    timer -= id.bubble_sequence[i];
+                }
+            }
+            else if (bubble.state == 2) {
+                frame = poses.bubble_pop[bubble.phase];
+            }
+            expect(frame);
             draw_frame(*frame, 0, bubble.pos, Z::Projectile);
         }
     }
@@ -607,6 +627,7 @@ AYU_DESCRIBE(vf::IndigoData,
         attr("vf::WalkerData", base<WalkerData>(), include),
         attr("bubble_radius", &IndigoData::bubble_radius),
         attr("bubble_speed", &IndigoData::bubble_speed),
+        attr("bubble_sequence", &IndigoData::bubble_sequence),
         attr("bubble_pop_sequence", &IndigoData::bubble_pop_sequence),
         attr("dodge_speed", &IndigoData::dodge_speed),
         attr("capture_target_pos", &IndigoData::capture_target_pos),
