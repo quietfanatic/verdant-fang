@@ -7,6 +7,9 @@
 
 namespace vf {
 
+constexpr uint32 initial_weapon_layers_1 =
+    Layers::Weapon_Solid | Layers::Weapon_Walker;
+
 Walker::Walker () {
     types |= Types::Walker;
     body_hb.layers_1 = Layers::Walker_Solid |
@@ -15,8 +18,7 @@ Walker::Walker () {
     body_hb.layers_2 = Layers::Walker_Walker;
     damage_hb.layers_2 = Layers::Weapon_Walker |
                          Layers::Projectile_Walker;
-    weapon_hb.layers_1 = Layers::Weapon_Solid |
-                         Layers::Weapon_Walker;
+    weapon_hb.layers_1 = initial_weapon_layers_1;
     weapon_hb.layers_2 = Layers::Switch_Weapon |
                          Layers::Projectile_Weapon;
 }
@@ -115,7 +117,8 @@ WalkerBusiness Walker::Walker_business () {
                 switch (anim_phase) {
                     case 0: case 1: return WB::Occupied;
                     case 2: return WB::DoAttack;
-                    case 3: case 4: return WB::Occupied;
+                    case 3: return WB::ExtendedAttack;
+                    case 4: return WB::Occupied;
                     case 5: return WB::Interruptible;
                     default: never();
                 }
@@ -213,6 +216,7 @@ void Walker::Walker_move (const Controls& controls) {
         decelerate = true; break;
     }
     case WB::DoAttack:
+    case WB::ExtendedAttack:
      // TODO: A little bit of slop room for releasing jump while attacking
     case WB::Occupied: decelerate = true; break;
     case WB::Interruptible:
@@ -395,17 +399,25 @@ void Walker::Walker_set_hitboxes () {
         if (left) damage_hb.fliph();
         add_hitbox(damage_hb);
     }
-    if (business == WB::DoAttack && !attack_done) {
+    if ((business == WB::DoAttack || business == WB::ExtendedAttack) &&
+        !attack_done
+    ) {
+        weapon_hb.layers_1 = business == WB::DoAttack
+            ? initial_weapon_layers_1 : 0;
         if (crouch) {
             weapon_hb.box = data->poses->crouch_attack[anim_phase].body->weapon
                           + data->poses->crouch_attack[anim_phase].weapon->hitbox;
-            if (data->crouch_attack_sound) data->crouch_attack_sound->play();
-            else if (data->attack_sound) data->attack_sound->play();
+            if (business == WB::DoAttack) {
+                if (data->crouch_attack_sound) data->crouch_attack_sound->play();
+                else if (data->attack_sound) data->attack_sound->play();
+            }
         }
         else {
             weapon_hb.box = data->poses->attack[anim_phase].body->weapon
                           + data->poses->attack[anim_phase].weapon->hitbox;
-            if (data->attack_sound) data->attack_sound->play();
+            if (business == WB::DoAttack) {
+                if (data->attack_sound) data->attack_sound->play();
+            }
         }
         if (left) weapon_hb.fliph();
         add_hitbox(weapon_hb);
@@ -467,7 +479,10 @@ void Walker::set_floor (Resident& o) {
                     ) || anim_phase == 5
                 ))
             ) set_state(WS::Land);
-            if (state != WS::Dead) {
+            if (state == WS::Dead) {
+                if (data->dead_land_sound) data->dead_land_sound->play();
+            }
+            else {
                 if (data->land_sound) data->land_sound->play();
             }
         }
@@ -848,6 +863,7 @@ AYU_DESCRIBE(vf::WalkerData,
         attr("crouch_attack_sound", &WalkerData::crouch_attack_sound, optional),
         attr("hit_solid_sound", &WalkerData::hit_solid_sound, optional),
         attr("damage_sound", &WalkerData::damage_sound, optional),
+        attr("dead_land_sound", &WalkerData::dead_land_sound, optional),
         attr("paralyzed_sound", &WalkerData::paralyzed_sound, optional),
         attr("poses", &WalkerData::poses),
         attr("decals", &WalkerData::decals),

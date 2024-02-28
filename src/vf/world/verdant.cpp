@@ -591,6 +591,9 @@ void Verdant::Walker_move (const Controls& controls) {
             else if (anim_timer >= vd.inch_sequence[anim_phase-1]) {
                 pos.x += 1;
                 anim_phase = anim_phase == 2 ? 1 : 2;
+                if (anim_phase == 2) {
+                    if (vd.inch_sound) vd.inch_sound->play();
+                }
                 anim_timer = 0;
             }
             else anim_timer += 1;
@@ -1357,6 +1360,7 @@ AYU_DESCRIBE(vf::VerdantData,
         attr("spear_break_sound", &VerdantData::spear_break_sound, optional),
         attr("snake_death_sound", &VerdantData::snake_death_sound, optional),
         attr("limb_detach_sound", &VerdantData::limb_detach_sound, optional),
+        attr("inch_sound", &VerdantData::inch_sound, optional),
         attr("snake_bite_sound", &VerdantData::snake_bite_sound, optional),
         attr("snake_eat_sound", &VerdantData::snake_eat_sound, optional)
     )

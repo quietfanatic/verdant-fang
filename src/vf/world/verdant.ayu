@@ -528,7 +528,7 @@
         fang_dead_y: 33
         limb_detach_sequence: [12 12 12]
         limbless_sequence: 60
-        inch_sequence: [15 15]
+        inch_sequence: [15 20]
         snakify_sequence: [12 12 60 12 12 90 12 12]
         snake_box: [-12 0 12 6]
         snake_attack_box: [6 6 14 14]
@@ -584,6 +584,7 @@
         spear_break_sound: assets.ayu#break
         snake_death_sound: assets.ayu#kwaakh
         limb_detach_sound: assets.ayu#pwschk
+        inch_sound: assets.ayu#ffwf
         snake_bite_sound: assets.ayu#kalp
         snake_eat_sound: assets.ayu#eat
     }]

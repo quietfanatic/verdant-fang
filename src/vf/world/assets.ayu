@@ -162,4 +162,10 @@
     eat5: [vf::Sound { source:assets/eat5.mp3 channel:1 }]
     eat: [vf::RandomSound [#eat0 #eat1 #eat2 #eat3 #eat4 #eat5]]
     woosh: [vf::Sound { source:assets/woosh.mp3 channel:2 volume:0.8 }]
+     -- ffwf0 is retired, it was too different
+    ffwf1: [vf::Sound { source:assets/ffwf1.mp3 channel:1 volume:0.6 }]
+    ffwf2: [vf::Sound { source:assets/ffwf2.mp3 channel:1 volume:0.6 }]
+    ffwf3: [vf::Sound { source:assets/ffwf3.mp3 channel:1 volume:0.6 }]
+    ffwf4: [vf::Sound { source:assets/ffwf4.mp3 channel:1 volume:0.6 }]
+    ffwf: [vf::RandomSound [#ffwf1 #ffwf2 #ffwf3 #ffwf4]]
 }]

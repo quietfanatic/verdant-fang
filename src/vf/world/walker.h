@@ -69,6 +69,9 @@ enum class WalkerBusiness {
     HoldAttack,
      // You can't do anything, but the attack hitbox will be active.
     DoAttack,
+     // You can't do anything, but the extended attack hitbox will be active (it
+     // can hit projectiles and switches).
+    ExtendedAttack,
      // You can't do anything.
     Occupied,
      // You are stuck in place.  You can't even fall.
@@ -185,6 +188,7 @@ struct WalkerData {
     Sound* crouch_attack_sound = null;
     Sound* hit_solid_sound = null;
     Sound* damage_sound = null;
+    Sound* dead_land_sound = null;
     Sound* paralyzed_sound = null;
     WalkerPoses* poses;
     DecalData* decals;

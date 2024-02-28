@@ -178,6 +178,7 @@ struct VerdantData : WalkerData {
     Sound* spear_break_sound = null;
     Sound* snake_death_sound = null;
     Sound* limb_detach_sound = null;
+    RandomSound* inch_sound = null;
     Sound* snake_bite_sound = null;
     RandomSound* snake_eat_sound = null;
 };
