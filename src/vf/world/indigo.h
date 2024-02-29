@@ -101,7 +101,7 @@ struct Indigo : Walker {
     uint8 attack_count = 0;
     uint8 home_index = 0;
     Vec home_pos [2] = {Vec(230, 72), Vec(90, 72)};
-    IndigoBubble bubbles [4];
+    IndigoBubble bubbles [6];
     Vec capture_initial_pos = GNAN;
      // Will be activated when I notice Verdant
     Door* front_door;
@@ -116,6 +116,7 @@ struct Indigo : Walker {
     Verdant* verdant = null;
 
     Indigo ();
+    void emit_bubble (float angle);
     void go_to_bed ();
     WalkerBusiness Walker_business () override;
      // Create bubbles when attacking

@@ -278,13 +278,9 @@ void Indigo::Walker_move (const Controls& controls) {
         float seed_angle = std::uniform_real_distribution<float>(
             0, std::numbers::pi_v<float> / 2
         )(rng);
-        float angles [4] = {
-            seed_angle - 1.f, seed_angle - 0.5f,
-            seed_angle + 0.5f, seed_angle + 1.f
-        };
         uint32 seq_len = 0;
         for (auto& p : id.bubble_sequence) seq_len += p;
-        for (int i = 0; i < 4; i++) {
+        auto emit_bubble = [&](uint8 i, float angle){
             bubbles[i].state = 1;
             bubbles[i].phase = 0;
             bubbles[i].timer = std::uniform_int_distribution<uint32>(
@@ -294,8 +290,24 @@ void Indigo::Walker_move (const Controls& controls) {
                 data->poses->attack[2].body->weapon
             );
             bubbles[i].vel = left_flip(
-                Vec(std::cos(angles[i]), std::sin(angles[i]))
+                Vec(std::cos(angle), std::sin(angle))
             ) * id.bubble_speed;
+        };
+        if (attack_count == 0) {
+            emit_bubble(0, seed_angle - 0.9f);
+            emit_bubble(1, seed_angle - 0.3f);
+            emit_bubble(2, seed_angle + 0.3f);
+            emit_bubble(3, seed_angle + 0.9f);
+            bubbles[4].state = 0;
+            bubbles[5].state = 0;
+        }
+        else {
+            emit_bubble(0, seed_angle - 1.0f);
+            emit_bubble(1, seed_angle - 0.6f);
+            emit_bubble(2, seed_angle - 0.2f);
+            emit_bubble(3, seed_angle + 0.2f);
+            emit_bubble(4, seed_angle + 0.6f);
+            emit_bubble(5, seed_angle + 1.0f);
         }
         attack_count += 1;
         if (id.attack_sound) id.attack_sound->play();
@@ -513,10 +525,6 @@ Controls IndigoMind::Mind_think (Resident& s) {
             me.alert_phase = 1;
             me.alert_timer = 0;
             if (me.front_door) me.front_door->set_state(DoorState::Closed);
-            if (current_game->state().current_music) {
-                glow::require_sdl(Mix_FadeOutMusic(120*1000/60));
-                current_game->state().current_music = null;
-            }
             goto next_alert_phase;
         }
         else return r;
@@ -534,9 +542,15 @@ Controls IndigoMind::Mind_think (Resident& s) {
             if (bubble.state) bubble_count++;
         }
         if (bubble_count == 0 && me.state != WS::Attack) {
-            if (me.attack_count) {
+            uint8 attack_limit = current_game->options().enemy_difficulty < 2
+                ? 1 : 2;
+            if (me.attack_count >= attack_limit) {
                 me.alert_phase = 3;
                 me.alert_timer = 0;
+                if (current_game->state().current_music) {
+                    glow::require_sdl(Mix_FadeOutMusic(120*1000/60));
+                    current_game->state().current_music = null;
+                }
                 goto next_alert_phase;
             }
             else r[Control::Attack] = 1;
