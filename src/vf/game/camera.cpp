@@ -94,6 +94,10 @@ void begin_camera () {
         )["transition_program"][1];
     }
     if (!world_fb) setup_camera();
+    glClearColor(
+        float(0x27)/0xff, float(0x1f)/0xff, float(0x11)/0xff, 1.f
+    );
+    glClear(GL_COLOR_BUFFER_BIT);
     glBindFramebuffer(GL_FRAMEBUFFER, world_fb);
     glViewport(0, 0, camera_size.x, camera_size.y);
     glEnable(GL_BLEND);
@@ -173,20 +177,19 @@ void swap_world_tex () {
 }
 
 void window_size_changed (IVec new_size) {
-     // TODO: fill the blank areas
-    if (slope(new_size) > slope(camera_size)) {
+    if (aspect(Vec(new_size)) < aspect(camera_size)) {
          // letterbox
         float zoom = new_size.x / camera_size.x;
         float height = camera_size.y * zoom;
         float margin = new_size.y - height;
-        window_viewport = IRect(0, margin / 2, new_size.x, height);
+        window_viewport = IRect(0, margin / 2, new_size.x, margin / 2 + height);
     }
     else {
          // Pillarbox
         float zoom = new_size.y / camera_size.y;
         float width = camera_size.x * zoom;
         float margin = new_size.x - width;
-        window_viewport = IRect(margin / 2, 0, width, new_size.y);
+        window_viewport = IRect(margin / 2, 0, margin / 2 + width, new_size.y);
     }
 }
 
