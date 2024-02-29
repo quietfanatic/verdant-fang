@@ -56,7 +56,7 @@ struct IndigoPoses : WalkerPoses {
 
 struct IndigoData : WalkerData {
     float bubble_radius;
-    float bubble_speed;
+    float bubble_speeds [6];
     uint8 bubble_sequence [6];
     uint8 bubble_pop_sequence [3];
     float dodge_speed;
@@ -90,7 +90,8 @@ struct IndigoBubble {
     uint32 timer = 0;
      // Absolute
     Vec pos = GNAN;
-    Vec vel = GNAN;
+    float direction;
+    float curve;
      // Relative to my pos
     Hitbox hb;
 };

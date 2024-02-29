@@ -35,11 +35,23 @@ void Indigo::go_to_bed () {
 
 WalkerBusiness Indigo::Walker_business () {
     auto& id = static_cast<IndigoData&>(*data);
+    uint8 n_bubbles = 0;
+    for (auto& bubble : bubbles) if (bubble.state == 1) n_bubbles += 1;
     for (auto& bubble : bubbles) {
         if (bubble.state) {
             bubble.timer += 1;
             if (bubble.state == 1) {
-                bubble.pos += bubble.vel;
+                uint8 speed_i = attack_count == 1
+                    ? 4 - n_bubbles : 6 - n_bubbles;
+                if (speed_i >= 6) {
+#ifndef NDEBUG
+                    never();
+#endif
+                    speed_i = 5;
+                }
+                bubble.direction += bubble.curve;
+                bubble.pos += id.bubble_speeds[speed_i] *
+                    Vec(std::cos(bubble.direction), std::sin(bubble.direction));
             }
             else if (bubble.state == 2 || bubble.state == 3) {
                 if (bubble.state == 2 && bubble.phase == 0 &&
@@ -76,6 +88,7 @@ WalkerBusiness Indigo::Walker_business () {
     }
     else if (state == IS::Capturing) {
         if (!verdant) verdant = find_verdant();
+        if (verdant->state == WS::Dead) return WB::Free;
         if (anim_timer == 0) {
             if (anim_phase == CP::TrackTarget) {
                 if (id.attack_sound) id.attack_sound->play();
@@ -280,7 +293,7 @@ void Indigo::Walker_move (const Controls& controls) {
         )(rng);
         uint32 seq_len = 0;
         for (auto& p : id.bubble_sequence) seq_len += p;
-        auto emit_bubble = [&](uint8 i, float angle){
+        auto emit_bubble = [&](uint8 i, float angle, float curve){
             bubbles[i].state = 1;
             bubbles[i].phase = 0;
             bubbles[i].timer = std::uniform_int_distribution<uint32>(
@@ -289,25 +302,25 @@ void Indigo::Walker_move (const Controls& controls) {
             bubbles[i].pos = pos + left_flip(
                 data->poses->attack[2].body->weapon
             );
-            bubbles[i].vel = left_flip(
-                Vec(std::cos(angle), std::sin(angle))
-            ) * id.bubble_speed;
+            if (left) angle = std::numbers::pi_v<float> - angle;
+            bubbles[i].direction = angle;
+            bubbles[i].curve = left_flip(curve);
         };
         if (attack_count == 0) {
-            emit_bubble(0, seed_angle - 0.9f);
-            emit_bubble(1, seed_angle - 0.3f);
-            emit_bubble(2, seed_angle + 0.3f);
-            emit_bubble(3, seed_angle + 0.9f);
+            emit_bubble(0, seed_angle - 0.8f, -0.01f);
+            emit_bubble(1, seed_angle - 0.4f, 0.01f);
+            emit_bubble(2, seed_angle + 0.4f, -0.01f);
+            emit_bubble(3, seed_angle + 0.8f, 0.01f);
             bubbles[4].state = 0;
             bubbles[5].state = 0;
         }
         else {
-            emit_bubble(0, seed_angle - 1.0f);
-            emit_bubble(1, seed_angle - 0.6f);
-            emit_bubble(2, seed_angle - 0.2f);
-            emit_bubble(3, seed_angle + 0.2f);
-            emit_bubble(4, seed_angle + 0.6f);
-            emit_bubble(5, seed_angle + 1.0f);
+            emit_bubble(0, seed_angle - 0.8f, -0.01f);
+            emit_bubble(1, seed_angle - 0.7f, 0.01f);
+            emit_bubble(2, seed_angle - 0.1f, -0.01f);
+            emit_bubble(3, seed_angle + 0.1f, 0.01f);
+            emit_bubble(4, seed_angle + 0.7f, -0.01f);
+            emit_bubble(5, seed_angle + 0.8f, 0.01f);
         }
         attack_count += 1;
         if (id.attack_sound) id.attack_sound->play();
@@ -350,23 +363,25 @@ void Indigo::Resident_on_collide (
             (char*)&hb - offsetof(IndigoBubble, hb)
         );
         if (width(overlap) < height(overlap)) {
-            if (overlap.l == here.l && bubble.vel.x < 0) {
+            if (overlap.l == here.l && std::cos(bubble.direction) < 0) {
                 bubble.pos.x += width(overlap);
-                bubble.vel.x = -bubble.vel.x;
+                bubble.direction =
+                    std::numbers::pi_v<float> - bubble.direction;
             }
-            else if (overlap.r == here.r && bubble.vel.x > 0) {
+            else if (overlap.r == here.r && std::cos(bubble.direction) > 0) {
                 bubble.pos.x -= width(overlap);
-                bubble.vel.x = -bubble.vel.x;
+                bubble.direction =
+                    std::numbers::pi_v<float> - bubble.direction;
             }
         }
         else {
-            if (overlap.b == here.b && bubble.vel.y < 0) {
+            if (overlap.b == here.b && std::sin(bubble.direction) < 0) {
                 bubble.pos.y += height(overlap);
-                bubble.vel.y = -bubble.vel.y;
+                bubble.direction = -bubble.direction;
             }
-            else if (overlap.t == here.t && bubble.vel.y > 0) {
+            else if (overlap.t == here.t && std::sin(bubble.direction) > 0) {
                 bubble.pos.y -= height(overlap);
-                bubble.vel.y = -bubble.vel.y;
+                bubble.direction = -bubble.direction;
             }
         }
     }
@@ -558,7 +573,7 @@ Controls IndigoMind::Mind_think (Resident& s) {
         }
     }
     else if (me.alert_phase == 3) {
-        if (me.alert_timer >= 120) {
+        if (me.alert_timer >= 120 && target->state != WS::Dead) {
             me.alert_phase = 4;
             me.alert_timer = 0;
         }
@@ -672,7 +687,7 @@ AYU_DESCRIBE(vf::IndigoData,
     attrs(
         attr("vf::WalkerData", base<WalkerData>(), include),
         attr("bubble_radius", &IndigoData::bubble_radius),
-        attr("bubble_speed", &IndigoData::bubble_speed),
+        attr("bubble_speeds", &IndigoData::bubble_speeds),
         attr("bubble_sequence", &IndigoData::bubble_sequence),
         attr("bubble_pop_sequence", &IndigoData::bubble_pop_sequence),
         attr("dodge_speed", &IndigoData::dodge_speed),
@@ -697,7 +712,8 @@ AYU_DESCRIBE(vf::IndigoBubble,
         attr("phase", &IndigoBubble::phase),
         attr("timer", &IndigoBubble::timer),
         attr("pos", &IndigoBubble::pos),
-        attr("vel", &IndigoBubble::vel)
+        attr("direction", &IndigoBubble::direction),
+        attr("curve", &IndigoBubble::curve)
     )
 )
 

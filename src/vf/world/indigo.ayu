@@ -306,7 +306,7 @@
         flavor: strawberry
 
         bubble_radius: 6
-        bubble_speed: 1.4
+        bubble_speeds: [1.4 1.5 1.6 1.7 1.8 1.9]
         bubble_sequence: [16 8 8 16 8 8]
         bubble_pop_sequence: [8 8 8]
         dodge_speed: 5
