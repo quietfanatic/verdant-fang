@@ -1,8 +1,8 @@
  -- This file contains settings for the game that can't be modified in-game,
  -- including keybindings.  You may edit this file to change the settings if you
- -- want (It's essentially JSON but with commas and some quotes optional).  If
+ -- want (It's essentially JSON but commas and some quotes are optional).  If
  -- you break this file beyond repair, delete it and run the game once to
- -- regenerate this file.
+ -- regenerate it.
 
 [vf::Settings {
      -- Game controls.  These ignore modifiers like shift and ctrl.  If you need
