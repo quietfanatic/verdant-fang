@@ -35,7 +35,15 @@ in vec2 v_tex_coords;
 out vec4 color;
 
 void main () {
-    color = texture(u_tex, v_tex_coords);
+     // This code taken from uh, I think
+     // https://www.youtube.com/watch?v=d6tp43wZqps
+     // for optimal pixel scaling.  I haven't figured out how it works yet.
+    vec2 size = textureSize(u_tex, 0);
+    vec2 box_size = clamp(fwidth(v_tex_coords) * size, 1.0e-5, 1.0);
+    vec2 tx = v_tex_coords * size - 0.5 * box_size;
+    vec2 tx_offset = smoothstep(vec2(1.0) - box_size, vec2(1.0), fract(tx));
+    vec2 uv = (floor(tx) + 0.5 + tx_offset) / size;
+    color = texture(u_tex, uv);
 }"
 
 &transition_fragment: "#version 140
