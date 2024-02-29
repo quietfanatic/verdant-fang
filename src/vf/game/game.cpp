@@ -16,7 +16,6 @@ namespace vf {
 
 static bool on_event (Game& game, SDL_Event* event) {
     switch (event->type) {
-         // TODO: handle SDL_QUIT
         case SDL_KEYDOWN: {
             SDL_ShowCursor(SDL_DISABLE);
             auto input = control::input_from_event(event);
@@ -52,6 +51,9 @@ static bool on_event (Game& game, SDL_Event* event) {
                 return true;
             }
             else return false;
+        }
+        case SDL_QUIT: {
+            game.suspend();
         }
         default: return false;
     }
@@ -192,7 +194,9 @@ bool Game::hardcore () {
 }
 
 void Game::suspend () {
-    ayu::save(current_game->state_res);
+    if (!menus || menus[0].data != start_menu) {
+        ayu::save(current_game->state_res);
+    }
     exit(0);
 }
 

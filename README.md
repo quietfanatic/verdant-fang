@@ -48,8 +48,8 @@ Detailed explanation of the in-game options:
     Note that even with blood and nudity hidden, the game might still be
     considered NSFW, depending on your standards.
 
-If you play from the begining with checkpoints=none and enemies=normal, you will
-see an "S" symbol in the lower-right corner.  It stands for Super.
+If you play from the beginning with checkpoints=none and enemies=normal, you
+will see an "S" symbol in the lower-right corner.  It stands for Super.
 
 Advanced settings are in `save/settings.ayu` after running the game once.  They
 are explained in comments in the file.
@@ -116,9 +116,9 @@ https://leafuw.itch.io/verdant-fang
 [x] Fix bed hitbox
 [x] Game over screen controls
 [x] Window title
-[ ] Sound effects for inching (and other things?)
+[x] Sound effects for inching (and other things?)
 [ ] Finish off in-code TODOs
-[ ] Fix suspend during title screen going to pause menu
+[x] Fix suspend during title screen going to pause menu
 Optional:
 [abandoned] Kick off spear animation
-[ ] Boss fight?
+[x] Boss fight?
