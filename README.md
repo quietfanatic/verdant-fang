@@ -8,7 +8,6 @@ This game was made for Strawberry Jam 8.  The theme of the jam is sexuality,
 so I packed a bunch of things I find erotic into this game, such as:
   - Snakes
   - Caves
-  - Strong women
   - Transformation scenes
   - Slightly unfair level design
   - Moddable game content (use a text editor)
@@ -17,6 +16,7 @@ This game contains content that may disturb some people, including:
   - Blood (can be turned off)
   - Nudity (can be turned off)
   - Snakes (cannot be turned off)
+  - Violent scenes
 
 ###Controls
 

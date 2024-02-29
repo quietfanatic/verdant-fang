@@ -349,22 +349,23 @@ void Indigo::Resident_on_collide (
         auto& bubble = *(IndigoBubble*)(
             (char*)&hb - offsetof(IndigoBubble, hb)
         );
-         // Too much in a hurry to figure out the collision point properly, so
-         // just rewind the bubble one frame
-        bubble.pos -= bubble.vel;
         if (width(overlap) < height(overlap)) {
             if (overlap.l == here.l && bubble.vel.x < 0) {
+                bubble.pos.x += width(overlap);
                 bubble.vel.x = -bubble.vel.x;
             }
             else if (overlap.r == here.r && bubble.vel.x > 0) {
+                bubble.pos.x -= width(overlap);
                 bubble.vel.x = -bubble.vel.x;
             }
         }
         else {
             if (overlap.b == here.b && bubble.vel.y < 0) {
+                bubble.pos.y += height(overlap);
                 bubble.vel.y = -bubble.vel.y;
             }
             else if (overlap.t == here.t && bubble.vel.y > 0) {
+                bubble.pos.y -= height(overlap);
                 bubble.vel.y = -bubble.vel.y;
             }
         }
