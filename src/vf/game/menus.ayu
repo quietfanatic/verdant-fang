@@ -64,7 +64,7 @@
     paused_title: [vf::MenuImage [#text [52 21] [-41 -14 0 0]]]
     resume:       [vf::MenuImage [#text [92 27] [-30 -7 0 0]]]
     suspend:      [vf::MenuImage [#text [92 17] [-35 -7 0 0]]]
-    quit:         [vf::MenuImage [#text [92 7] [-17 -7 0 0]]]
+    reset:        [vf::MenuImage [#text [92 7] [-23 -7 0 0]]]
     pause_menu: [vf::Menu {
         decorations: [[#paused_title [300 160]]]
         items: [{
@@ -80,8 +80,7 @@
             draw: #options
             pos: [300 120]
              -- Currently having pointers inside of commands is broken, so we
-             -- can't do
-             -- on_press: [open_menu #options_menu]
+             -- can't do on_press: [open_menu #options_menu]
             on_press: [open_options_menu]
         } {
             draw: #suspend
@@ -91,7 +90,7 @@
                 [exit_program]
             ]]
         } {
-            draw: #quit
+            draw: #reset
             pos: [300 100]
             on_press: [seq [
                 [delete_state]
@@ -200,12 +199,12 @@
         bounds: [415 3 502 33]
     }]]
     thanks: [vf::MenuImage [#thanks_tex [44 15] [-44 -15 43 15]]]
-    reset: [vf::MenuImage [#text2 [113 35] [-65 -5 0 0]]]
+    press_r: [vf::MenuImage [#text2 [113 35] [-65 -5 0 0]]]
     end_menu: [vf::Menu {
         decorations: [
             [#thanks [160 100]]
             [#url [104 15]]
-            [#reset [310 15]]
+            [#press_r [310 15]]
         ]
         items: []
         allow_pause: true
