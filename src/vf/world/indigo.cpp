@@ -705,8 +705,8 @@ AYU_DESCRIBE(vf::Indigo,
         attr("vf::Walker", base<Walker>(), include),
         attr("alert_phase", &Indigo::alert_phase, optional),
         attr("alert_timer", &Indigo::alert_timer, optional),
-        attr("home_index", &Indigo::home_index, optional),
         attr("attack_count", &Indigo::attack_count, optional),
+        attr("home_index", &Indigo::home_index, optional),
         attr("home_pos", &Indigo::home_pos, optional),
         attr("bubbles", &Indigo::bubbles, optional),
         attr("capture_initial_pos", &Indigo::capture_initial_pos, optional),
@@ -716,6 +716,7 @@ AYU_DESCRIBE(vf::Indigo,
         attr("bed_pos", &Indigo::bed_pos),
         attr("glasses_pos", &Indigo::glasses_pos, optional),
         attr("bedroom_limb_pos", &Indigo::bedroom_limb_pos, optional),
+        attr("hat_pos", &Indigo::hat_pos, optional),
         attr("verdant", &Indigo::verdant, optional)
     )
 )

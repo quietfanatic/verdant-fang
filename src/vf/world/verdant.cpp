@@ -726,6 +726,7 @@ void Verdant::Walker_set_hitboxes () {
             add_hitbox(damage_hb);
         }
         if (business == WB::DoAttack && !attack_done) {
+            weapon_hb.layers_1 = initial_weapon_layers_1;
             weapon_hb.box = left_flip(vd.snake_attack_box);
             add_hitbox(weapon_hb);
         }

@@ -226,9 +226,9 @@ struct Walker : Resident {
     glow::RGBA8 weapon_tint = 0;
      // This counts down.
     uint32 poison_timer = 180;
+    uint8 poison_level = 0;
     DecalType decal_type = {};
     uint8 decal_index = -1;
-    uint8 poison_level = 0;
     uint8 paralyze_symbol_timer = 0;
      // Bitset, each bit corresponding to a layer in the body LayeredTexture.
     uint8 body_layers = 0x1;
@@ -302,5 +302,9 @@ struct Walker : Resident {
         return {left ? -v.r : v.l, v.b, left ? -v.l : v.r, v.t};
     }
 };
+
+ // Bad workaround for bad code organization
+constexpr uint32 initial_weapon_layers_1 =
+    Layers::Weapon_Solid | Layers::Weapon_Walker;
 
 } // vf

@@ -7,9 +7,6 @@
 
 namespace vf {
 
-constexpr uint32 initial_weapon_layers_1 =
-    Layers::Weapon_Solid | Layers::Weapon_Walker;
-
 Walker::Walker () {
     types |= Types::Walker;
     body_hb.layers_1 = Layers::Walker_Solid |
@@ -905,14 +902,15 @@ AYU_DESCRIBE(vf::Walker,
         attr("drop_timer", &Walker::drop_timer, optional),
         attr("floor", &Walker::floor, optional),
         attr("override_weapon_pos", &Walker::override_weapon_pos, optional),
+        attr("override_weapon_scale", &Walker::override_weapon_scale, optional),
         attr("walk_start_x", &Walker::walk_start_x, optional),
         attr("fall_start_x", &Walker::walk_start_x, optional),
         attr("body_tint", &Walker::body_tint, optional),
         attr("weapon_tint", &Walker::weapon_tint, optional),
+        attr("poison_timer", &Walker::poison_timer, optional),
+        attr("poison_level", &Walker::poison_level, optional),
         attr("decal_type", &Walker::decal_type, optional),
         attr("decal_index", &Walker::decal_index, optional),
-        attr("poison_level", &Walker::poison_level, optional),
-        attr("poison_timer", &Walker::poison_timer, optional),
         attr("paralyze_symbol_timer", &Walker::paralyze_symbol_timer, optional),
         attr("body_layers", &Walker::body_layers, optional),
         attr("head_layers", &Walker::head_layers, optional),
