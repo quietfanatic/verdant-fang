@@ -117,7 +117,7 @@ https://leafuw.itch.io/verdant-fang
 [x] Game over screen controls
 [x] Window title
 [x] Sound effects for inching (and other things?)
-[ ] Finish off in-code TODOs
+[x] Finish off in-code TODOs
 [x] Fix suspend during title screen going to pause menu
 Optional:
 [abandoned] Kick off spear animation

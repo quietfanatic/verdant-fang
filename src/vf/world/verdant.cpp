@@ -747,7 +747,7 @@ void Verdant::Resident_on_collide (
         Rect there = o_hb.box + o.pos;
         Rect overlap = here & there;
         expect(proper(overlap));
-         // Allow a bit of grace.  TODO: Make horizontal situation better.
+         // Allow a bit of grace.
         if (height(overlap) < 12) return;
         else if (width(overlap) <= 2) {
             goto not_handled;
