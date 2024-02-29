@@ -147,7 +147,7 @@
     shwp: [vf::Sound { source:assets/shwp.mp3 channel:1 }]
     poiy: [vf::Sound { source:assets/poiy.mp3 channel:1 }]
     spit: [vf::Sound { source:assets/spit.mp3 channel:5 volume:0.8 }]
-    splat: [vf::Sound { source:assets/splat.mp3 channel:5 }]
+    splat: [vf::Sound { source:assets/splat.mp3 channel:3 }]
     piwiwi: [vf::Sound { source:assets/piwiwi.mp3 channel:1 }]
     hiss: [vf::Sound { source:assets/hiss.mp3 channel:1 }]
     break: [vf::Sound { source:assets/break.mp3 channel:1 }]

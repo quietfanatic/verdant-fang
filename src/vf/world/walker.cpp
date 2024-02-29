@@ -144,6 +144,7 @@ WalkerBusiness Walker::Walker_business () {
         case WS::Stun: {
             fly = false;
             if (anim_timer >= stun_duration) {
+                body_tint = {};
                 set_state(WS::Neutral);
                 return Walker_business();
             }
