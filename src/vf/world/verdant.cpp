@@ -274,11 +274,18 @@ WalkerBusiness Verdant::Walker_business () {
         return WB::Frozen;
     }
     else if (state == VS::Limbless) {
-         // TODO: More anim phases
         if (floor) {
-            if (anim_timer >= vd.limbless_sequence) {
-                floor_decal_pos = pos;
-                set_state(VS::Inch);
+            expect(anim_phase < 3);
+            if (anim_timer >= vd.limbless_sequence[anim_phase]) {
+                if (anim_phase == 2) {
+                    set_state(VS::Inch);
+                    return Walker_business();
+                }
+                if (anim_phase == 1) {
+                    floor_decal_pos = pos;
+                }
+                anim_phase += 1;
+                anim_timer = 0;
                 return Walker_business();
             }
             else anim_timer += 1;
@@ -886,7 +893,14 @@ Pose Verdant::Walker_pose () {
         else return poses.limbs_taken;
     }
     else if (state == VS::Limbless) {
-        if (floor) return poses.limbless;
+        if (floor) {
+            if (anim_phase < 2) {
+                return poses.limbless;
+            }
+            else {
+                return poses.inch[0];
+            }
+        }
         else return poses.limbless_fall;
     }
     else if (state == VS::Inch) {
@@ -1087,7 +1101,7 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
         }
     }
     else if (state == VS::Limbless) {
-        if (!current_game->options().hide_blood) {
+        if (!current_game->options().hide_blood && room != limbo) {
             if (!floor) {
                 draw_frame(
                     vd.decals->limbless.fall, 0,
@@ -1095,17 +1109,29 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
                     left_flip(Vec(1, 1))
                 );
             }
+            else if (anim_phase < 2) {
+                draw_frame(
+                    vd.decals->limbless.land[anim_phase], 0,
+                    pos, pose.z + 5,
+                    left_flip(Vec(1, 1))
+                );
+            }
             else {
                 draw_frame(
-                    vd.decals->limbless.land[1], 0,
+                    vd.decals->limbless.inch[0], 0,
                     pos, pose.z + 5,
+                    left_flip(Vec(1, 1))
+                );
+                draw_frame(
+                    vd.decals->limbless.floor, 0,
+                    floor_decal_pos, pose.z + Z::DecalOffset,
                     left_flip(Vec(1, 1))
                 );
             }
         }
     }
     else if (state == VS::Inch) {
-        if (!current_game->options().hide_blood) {
+        if (!current_game->options().hide_blood && room != limbo) {
             draw_frame(
                 vd.decals->limbless.inch[anim_phase % 2], 0,
                 pos, pose.z + 5,
@@ -1120,11 +1146,13 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
     }
     else if (state == VS::Snakify) {
         if (anim_phase < 3) {
-            draw_frame(
-                vd.decals->limbless.floor, 0,
-                floor_decal_pos, pose.z + Z::DecalOffset,
-                left_flip(Vec(1, 1))
-            );
+            if (!current_game->options().hide_blood && room != limbo) {
+                draw_frame(
+                    vd.decals->limbless.floor, 0,
+                    floor_decal_pos, pose.z + Z::DecalOffset,
+                    left_flip(Vec(1, 1))
+                );
+            }
         }
         else {
             glow::RGBA8 screen = vd.transform_magic_color;

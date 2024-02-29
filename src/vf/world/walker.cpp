@@ -232,7 +232,7 @@ void Walker::Walker_move (const Controls& controls) {
                 }
             }
         }
-        break;
+        decelerate = true; break;
     }
     case WB::Interruptible:
     case WB::Free: {

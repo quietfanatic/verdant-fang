@@ -145,7 +145,7 @@ struct VerdantData : WalkerData {
     float fang_dead_y;
      // For drawing decals, repeated for each limb
     uint8 limb_detach_sequence [3];
-    uint8 limbless_sequence;
+    uint8 limbless_sequence [3];
      // Indexed by anim_phase-1
     uint8 inch_sequence [2];
      // 0 1 2 = self and fang glow

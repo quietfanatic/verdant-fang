@@ -529,7 +529,7 @@
         fang_gravity: 0.05
         fang_dead_y: 33
         limb_detach_sequence: [12 12 12]
-        limbless_sequence: 60
+        limbless_sequence: [12 12 36]
         inch_sequence: [15 20]
         snakify_sequence: [12 12 60 12 12 90 12 12]
         snake_box: [-12 0 12 6]
