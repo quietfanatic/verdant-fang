@@ -53,10 +53,8 @@ WalkerBusiness Indigo::Walker_business () {
                 bubble.pos += id.bubble_speeds[speed_i] *
                     Vec(std::cos(bubble.direction), std::sin(bubble.direction));
             }
-            else if (bubble.state == 2 || bubble.state == 3) {
-                if (bubble.state == 2 && bubble.phase == 0 &&
-                    bubble.timer == 1
-                ) {
+            else if (bubble.state == 2) {
+                if (bubble.phase == 0 && bubble.timer == 1) {
                     if (id.bubble_pop_sound) id.bubble_pop_sound->play();
                 }
                 if (bubble.timer >= id.bubble_pop_sequence[bubble.phase]) {
@@ -65,6 +63,13 @@ WalkerBusiness Indigo::Walker_business () {
                         bubble.phase += 1;
                         bubble.timer = 0;
                     }
+                }
+                else bubble.timer += 1;
+            }
+            else if (bubble.state == 3) {
+                if (bubble.timer >= id.bubble_hit_sequence) {
+                    bubble.state = 1;
+                    bubble.timer = 0;
                 }
                 else bubble.timer += 1;
             }
@@ -503,7 +508,7 @@ void Indigo::Walker_draw_weapon (const Pose& pose) {
                 frame = poses.bubble_pop[bubble.phase];
             }
             else if (bubble.state == 3) {
-                frame = poses.bubble_boom[bubble.phase];
+                frame = poses.bubble_hit;
             }
             expect(frame);
             draw_frame(*frame, 0, bubble.pos, Z::Projectile);
@@ -671,8 +676,8 @@ AYU_DESCRIBE(vf::IndigoPoses,
     attrs(
         attr("vf::WalkerPoses", base<WalkerPoses>(), include),
         attr("bubble", &IndigoPoses::bubble),
+        attr("bubble_hit", &IndigoPoses::bubble_hit),
         attr("bubble_pop", &IndigoPoses::bubble_pop),
-        attr("bubble_boom", &IndigoPoses::bubble_boom),
         attr("capturing", &IndigoPoses::capturing),
         attr("bed", &IndigoPoses::bed),
         attr("glasses", &IndigoPoses::glasses),
@@ -689,6 +694,7 @@ AYU_DESCRIBE(vf::IndigoData,
         attr("bubble_radius", &IndigoData::bubble_radius),
         attr("bubble_speeds", &IndigoData::bubble_speeds),
         attr("bubble_sequence", &IndigoData::bubble_sequence),
+        attr("bubble_hit_sequence", &IndigoData::bubble_hit_sequence),
         attr("bubble_pop_sequence", &IndigoData::bubble_pop_sequence),
         attr("dodge_speed", &IndigoData::dodge_speed),
         attr("capture_target_pos", &IndigoData::capture_target_pos),

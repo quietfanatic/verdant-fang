@@ -103,10 +103,10 @@
     bubble0: [vf::Frame [#magic [8 39] [-6 -6 6 6]]]
     bubble1: [vf::Frame [#magic [8 25] [-6 -6 6 6]]]
     bubble2: [vf::Frame [#magic [8 11] [-6 -6 6 6]]]
+    bubble_hit: [vf::Frame [#magic [25 48] [-9 -9 9 9]]]
     bubble_pop0: [vf::Frame [#magic [25 64] [-6 -6 6 6]]]
     bubble_pop1: [vf::Frame [#magic [25 30] [-8 -8 8 8]]]
     bubble_pop2: [vf::Frame [#magic [25 12] [-8 -8 8 8]]]
-    bubble_boom0: [vf::Frame [#magic [25 48] [-8 -8 8 8]]]
     poses: [vf::IndigoPoses {
         stand: [#body_stand #head_fly]
         crouch: [#body_stand #head_fly]
@@ -167,8 +167,8 @@
             [#body_dead #head_dead null *z_dead]
         ]
         bubble: [#bubble0 #bubble1 #bubble2 #bubble0 #bubble2 #bubble1]
+        bubble_hit: #bubble_hit
         bubble_pop: [#bubble_pop0 #bubble_pop1 #bubble_pop2]
-        bubble_boom: [#bubble_boom0 #bubble_pop1 #bubble_pop2]
         capturing: [
             [#body_preattack #head_fly #magic_sparkle0]
             [#body_attack #head_fly #magic_sparkle1]
@@ -308,6 +308,7 @@
         bubble_radius: 6
         bubble_speeds: [1.4 1.5 1.6 1.7 1.8 1.9]
         bubble_sequence: [16 8 8 16 8 8]
+        bubble_hit_sequence: 24
         bubble_pop_sequence: [8 8 8]
         dodge_speed: 5
          -- Based on world.ayu#atelier
