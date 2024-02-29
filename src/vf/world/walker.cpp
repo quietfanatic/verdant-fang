@@ -217,8 +217,23 @@ void Walker::Walker_move (const Controls& controls) {
     }
     case WB::DoAttack:
     case WB::ExtendedAttack:
-     // TODO: A little bit of slop room for releasing jump while attacking
-    case WB::Occupied: decelerate = true; break;
+    case WB::Occupied: {
+         // Allow a bit of cheating by letting you control your jump gravity for
+         // a few frames after starting an attack.  We don't like breaking the
+         // "no controlling while attacking" rule, but players complain if their
+         // intuitions aren't satisfied.
+        if (state == WS::Attack && anim_phase == 0 && anim_timer <= 3) {
+            if (controls[Control::Jump]) {
+                drop_timer = 0;
+            }
+            else {
+                if (drop_timer < data->drop_duration) {
+                    drop_timer += 1;
+                }
+            }
+        }
+        break;
+    }
     case WB::Interruptible:
     case WB::Free: {
         if (fly) {
