@@ -77,6 +77,9 @@ WalkerBusiness Indigo::Walker_business () {
     else if (state == IS::Capturing) {
         if (!verdant) verdant = find_verdant();
         if (anim_timer == 0) {
+            if (anim_phase == CP::TrackTarget) {
+                if (id.attack_sound) id.attack_sound->play();
+            }
             if (anim_phase == CP::MoveTarget) {
                 verdant->set_state(VS::Captured);
                 verdant->indigo = this;
@@ -229,6 +232,9 @@ WalkerBusiness Indigo::Walker_business () {
         else if (anim_timer >= id.capturing_snake_sequence[anim_phase]) {
             anim_phase += 1;
             anim_timer = 0;
+            if (anim_phase == 1) {
+                if (id.attack_sound) id.attack_sound->play();
+            }
             if (anim_phase == 2) capture_initial_pos = verdant->pos;
             return Walker_business();
         }
@@ -292,6 +298,7 @@ void Indigo::Walker_move (const Controls& controls) {
             ) * id.bubble_speed;
         }
         attack_count += 1;
+        if (id.attack_sound) id.attack_sound->play();
     }
     Walker::Walker_move(controls);
 }
