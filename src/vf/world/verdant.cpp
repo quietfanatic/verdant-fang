@@ -962,6 +962,10 @@ void Verdant::Walker_draw_weapon (const Pose& pose) {
             floor_clothes_pos, Z::Overlap
         );
     }
+     // Draw hardcore symbol
+    if (current_game->hardcore()) {
+        draw_frame(*poses.hardcore_symbol, 0, Vec(4, 4), Z::Symbol);
+    }
     if (state == VS::Transform) {
         Vec weapon_offset;
         glow::RGBA8 tint = weapon_tint;
@@ -1303,7 +1307,8 @@ AYU_DESCRIBE(vf::VerdantPoses,
         attr("snake_bite", &VerdantPoses::snake_bite),
         attr("snake_captured", &VerdantPoses::snake_captured),
         attr("eat", &VerdantPoses::eat),
-        attr("desnakify", &VerdantPoses::desnakify)
+        attr("desnakify", &VerdantPoses::desnakify),
+        attr("hardcore_symbol", &VerdantPoses::hardcore_symbol)
     )
 )
 

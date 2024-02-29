@@ -187,7 +187,8 @@ void Game::reset () {
 
 bool Game::hardcore () {
     return options().frustration >= 3 && options().enemy_difficulty >= 2 &&
-        (!state().checkpoint || state().checkpoint->checkpoint_level >= 3);
+        (!state().checkpoint || state().checkpoint->checkpoint_level >= 3) &&
+        !state().lost_hardcore;
 }
 
 void Game::suspend () {

@@ -122,6 +122,7 @@
     head_damagef: [vf::Frame [#head [132 8]]]
     head_deadf:   [vf::Frame [#head [148 9]]]
     head_inch:    [vf::Frame [#head [126 27]]]
+    hardcore_symbol: [vf::Frame [#head [154 18]]]
 
     fang: [vf::LayeredTexture {
         layers: [{
@@ -444,6 +445,7 @@
             [#body_hold #head_neutral #fang_held]
             [#body_hold #head_neutral #fang_held]
         ]
+        hardcore_symbol: #hardcore_symbol
     }]
     data: [vf::VerdantData {
         body_box: [-6 0 6 30]

@@ -425,6 +425,10 @@ void Walker::Walker_set_hitboxes () {
 }
 
 void Walker::Resident_before_step () {
+     // Make non-hardcoreness permanent
+    if (data->can_be_easy && !current_game->hardcore()) {
+        current_game->state().lost_hardcore = true;
+    }
      // Do poison
     if (poison_level) {
         if (state == WS::Dead) {

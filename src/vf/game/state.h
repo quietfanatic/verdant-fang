@@ -49,6 +49,7 @@ struct State {
     Music* current_music = null;
     double current_music_position = 0;
     std::optional<Transition> transition;
+    bool lost_hardcore = false;
 
     ayu::Document world;
 

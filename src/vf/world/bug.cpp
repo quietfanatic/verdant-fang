@@ -257,7 +257,6 @@ Controls BugMind::Mind_think (Resident& s) {
     auto& self = static_cast<Bug&>(s);
     if (!target) return r;
 
-
     auto set_roam_timer = [&]{
         auto& rng = current_game->state().rng;
          // Limit number of roam_pos choices

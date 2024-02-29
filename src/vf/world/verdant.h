@@ -112,6 +112,7 @@ struct VerdantPoses : WalkerPoses {
     Pose snake_captured;
     Pose eat [34];
     Pose desnakify [DP::N_Phases];
+    Frame* hardcore_symbol;
 };
 
 struct CutsceneSound {

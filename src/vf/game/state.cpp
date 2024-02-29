@@ -85,11 +85,14 @@ bool Transition::step (State& state) {
                     state.current_music = state.checkpoint->current_music;
                     if (state.current_music) state.current_music->play();
                 }
+                if (state.checkpoint->checkpoint_level >= 3) {
+                    state.lost_hardcore = false;
+                }
             }
             else {
                  // No checkpoint?  Uh...reload from initial world?
-                state.load_initial();
                 if (state.current_music) state.current_music->stop();
+                state.load_initial();
             }
         }
          // fallthrough
@@ -132,6 +135,7 @@ void State::load_initial () {
     else current_room = initial["start"][1];
     world = move(initial->value().as<ayu::Document>());
     ayu::force_unload(initial);
+    lost_hardcore = false;
 }
 
 void State::step () {
@@ -218,7 +222,8 @@ AYU_DESCRIBE(vf::State,
         attr("current_music_position", &State::current_music_position),
         attr("transition", &State::transition, collapse_optional),
         attr("world", &State::world),
-        attr("checkpoint", &State::checkpoint, collapse_optional)
+        attr("checkpoint", &State::checkpoint, collapse_optional),
+        attr("lost_hardcore", &State::lost_hardcore, optional)
     ),
      // This needs to happen after the music loads itself.
     init<&State::init>(-10)

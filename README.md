@@ -39,8 +39,7 @@ Detailed explanation of the in-game options:
   - Checkpoints: Controls how many checkpoints there are, thereby controlling
     the amount of frustration the player experiences.  "Lots" means one at just
     about every room, "some" means one about every 2 to 3 rooms, and "none"
-    means exactly that: one mistake and you go back to the beginning.  Sometimes
-    referred to as hardcore mode.
+    means exactly that: one mistake and you go back to the beginning.
   - Enemies: If you're struggling fighting the enemies, try changing this to
     "easy", which will make the enemies' attack animations slower.
   - Blood: If pixely blood makes you queasy, use this option to hide it.
@@ -48,6 +47,9 @@ Detailed explanation of the in-game options:
     to reduce human nudity.  Some animations may also be removed or altered.
     Note that even with blood and nudity hidden, the game might still be
     considered NSFW, depending on your standards.
+
+If you play from the begining with checkpoints=none and enemies=normal, you will
+see an "S" symbol in the lower-right corner.  It stands for Super.
 
 Advanced settings are in `save/settings.ayu` after running the game once.  They
 are explained in comments in the file.
