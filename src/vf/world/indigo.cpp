@@ -396,12 +396,30 @@ void Indigo::Resident_on_collide (
         auto& bubble = *(IndigoBubble*)(
             (char*)&hb - offsetof(IndigoBubble, hb)
         );
-        auto& victim = static_cast<Walker&>(o);
-        victim.set_state(WS::Dead);
-        if (victim.data->attack_sound) victim.data->attack_sound->stop();
-        if (victim.data->damage_sound) victim.data->damage_sound->play();
-        bubble.state = 3;
-        bubble.timer = 0;
+         // Do rounded collision.  There might be a shorter way to do this.
+        auto& id = static_cast<IndigoData&>(*data);
+        float r2 = id.bubble_radius * id.bubble_radius;
+        Rect there = o_hb.box + o.pos;
+        if (
+             // Check if any rectangle corners are in circle
+            distance2(lb(there), bubble.pos) < r2 ||
+            distance2(rb(there), bubble.pos) < r2 ||
+            distance2(rt(there), bubble.pos) < r2 ||
+            distance2(lt(there), bubble.pos) < r2 ||
+             // Check if any orthogonal points on the circle are in the
+             // rectangle
+            contains(there, bubble.pos + Vec(id.bubble_radius, 0)) ||
+            contains(there, bubble.pos + Vec(0, id.bubble_radius)) ||
+            contains(there, bubble.pos + Vec(-id.bubble_radius, 0)) ||
+            contains(there, bubble.pos + Vec(0, -id.bubble_radius))
+        ) {
+            auto& victim = static_cast<Walker&>(o);
+            victim.set_state(WS::Dead);
+            if (victim.data->attack_sound) victim.data->attack_sound->stop();
+            if (victim.data->damage_sound) victim.data->damage_sound->play();
+            bubble.state = 3;
+            bubble.timer = 0;
+        }
     }
     else if (hb.layers_1 & Layers::Projectile_Weapon &&
         o_hb.layers_2 & Layers::Projectile_Weapon
