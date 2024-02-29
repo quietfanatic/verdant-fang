@@ -39,6 +39,7 @@
          -- Pause the game
         [[p] [pause_or_unpause]]
         [[pause] [pause_or_unpause]]
+        [[escape] [pause_or_unpause]]
          -- Restart from checkpoint
         [[r] [seq [
             [restart_if_dead]
@@ -46,8 +47,8 @@
         ]]]
         [[ctrl r] [force_restart]]
          -- Various forms of quitting
-        [[escape] [pause_or_suspend]]
         [[ctrl q] [suspend]]
+        [[alt f4] [suspend]] -- This is probably handled by the OS already
         [[ctrl shift q] [seq [
             [delete_state]
             [exit_program]
