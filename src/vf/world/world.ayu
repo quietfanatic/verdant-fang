@@ -472,7 +472,8 @@
     party_bg: [vf::Scenery {
         room: #party
         data: assets.ayu#cave
-        pos: [0 0]
+        pos: [320 0]
+        scale: [-1 1]
     }]
     party_blocks: [vf::Blocks {
         room: #party
@@ -549,8 +550,7 @@
     hallway_bg: [vf::Scenery {
         room: #hallway
         data: assets.ayu#cave
-        pos: [320 0]
-        scale: [-1 1]
+        pos: [0 0]
     }]
     hallway_blocks: [vf::Blocks {
         room: #hallway
@@ -633,7 +633,7 @@
         bounds: [328 0 328 180]
         target_room: #atelier
         target_pos: [16 32]
-        checkpoint_level: 1
+        checkpoint_level: 2
     }]
 
     atelier: [vf::Room { }]
@@ -772,7 +772,8 @@
     bedroom_bg: [vf::Scenery {
         room: #bedroom
         data: assets.ayu#cave
-        pos: [0 0]
+        pos: [320 0]
+        scale: [-1 1]
     }]
     bedroom_blocks: [vf::Blocks {
         room: #bedroom
