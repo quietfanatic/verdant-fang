@@ -5,13 +5,13 @@ Magical warrior Verdant and her trusty sidekick Fang venture into a dark cave to
 confront the evil within!
 
 This game was made for Strawberry Jam 8.  The theme of the jam is sexuality,
-so I packed a bunch of things I find sexy into this game, such as:
+so I packed a bunch of things I find erotic into this game, such as:
   - Snakes
   - Caves
   - Strong women
   - Transformation scenes
   - Slightly unfair level design
-  - Moddable game content (with a text editor)
+  - Moddable game content (use a text editor)
 
 This game contains content that may disturb some people, including:
   - Blood (can be turned off)
@@ -76,20 +76,29 @@ Almost all of the game's data is stored in editable text files.  The game world
 edit it with your favorite text editor to recreate the world to your liking.
 And if you're clever enough, you can insert your own images and music too!  If
 modifying the text data is not enough, you can download the source code version
-and modify it too.  I request that if you redistribute a modified version of the
-game, you alter the title screen (such as by adding some text).
+and modify it too.  If you widely distribute a modified version of the game,
+please alter the title screen (such as by adding or changing some text).
 
 ###Source Code
 
 If you downloaded the source code version, you can modify and compile the source
 yourself.  You'll need Perl to run the build system, as well as development
 versions of the required SDL libraries for your platform.  Currently the code
-only compiles with GCC; clang and MSVC are not supported.
+only compiles with GCC; clang and MSVC are not supported.  To build the debug
+version, use
+```
+perl make.pl out/deb/build
+```
+after which the program will be at `out/deb/verdant-fang`.  You can build other
+flavors by replacing `deb` with one of the other configs in the build script.
 
 Since itch.io's command line tools ignore the `.git` directory, it has been
 renamed to `_git`.  Please rename it back to `.git` if you want to use git
 features.  Note that image and sound files are excluded from the repository
 history to keep its size down.
+
+This game was made in only a month, so some of the code may be a little messy,
+especially the actor state management and animation code.
 
 If you don't have the source code and want it, it can be downloaded at
 https://leafuw.itch.io/verdant-fang

@@ -26,8 +26,13 @@ if ($compiler eq 'gcc') {
     push @link_opts, qw(-lSDL2 -lSDL2_image -lSDL2_mixer);
 }
 elsif ($compiler eq 'mingw') {
+     # This is where I store my mingw libraries.  If you store them somewhere
+     # else you need to change this.
     my $mingw = '../../programs/mingw';
-    my $bin = '..\\..\\programs\\mingw\\mingw64\\bin';
+     # Because even if most of Windows accepts forward slashes now, the command
+     # name at the start of a command still needs backslashes.
+    (my $bin = $mingw) =~ s/\//\\/g;
+    $bin .= '\\mingw64\\bin';
     my $arch = 'x86_64-w64-mingw32';
     %compilers = (
         cpp => ["$bin\\g++.exe"],
