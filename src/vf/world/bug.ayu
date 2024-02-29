@@ -201,7 +201,9 @@
         spit_mouth_offset: [10 9]
         projectile_vel: [
             [2 2]
+            [2 1]
             [2 0]
+            [1.5 0]
             [1 0]
         ]
         projectile_gravity: 0.1

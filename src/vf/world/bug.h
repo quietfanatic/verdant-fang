@@ -68,7 +68,7 @@ struct BugMind : Mind {
      // Min and max time to spit.
     IRange spit_interval;
      // Boundaries for target pos to aim spit up or down
-    float spit_range_cutoffs [2] = {120, 60};
+    float spit_range_cutoffs [4] = {120, 100, 80, 60};
      // Show some rectangles
     bool debug = false;
     Controls Mind_think (Resident&) override;

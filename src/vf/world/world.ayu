@@ -227,6 +227,7 @@
         attack_area: [6 -12 40 -5]
         roam_interval: [60 300]
         spit_interval: [60 120]
+        debug: true
     }]
     coochers: [vf::Bug {
         room: #hive
@@ -242,6 +243,7 @@
         data: bug.ayu#data
         mind: #buggy
         pos: [240 25]
+        left: true
         floor: #hive_blocks
         roam_territory: [64 32 256 144]
     }]

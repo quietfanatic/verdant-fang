@@ -18,7 +18,8 @@ struct BugData : WalkerData {
     Rect projectile_box;
     uint8 spit_sequence [3];
     Vec spit_mouth_offset;
-    Vec projectile_vel [3];
+     // up, diagonal up, neutral, diagonal down, down
+    Vec projectile_vel [5];
     float projectile_gravity;
     uint32 projectile_duration;
     uint8 projectile_anim_cycle;
@@ -94,12 +95,18 @@ void Bug::Walker_move (const Controls& controls) {
         projectile_state = 1;
         projectile_pos = pos + left_flip(bd.spit_mouth_offset);
         if (controls[Control::Up] && !controls[Control::Down]) {
-            projectile_vel = left_flip(bd.projectile_vel[0]);
+            if (controls[Control::Left] || controls[Control::Right]) {
+                projectile_vel = left_flip(bd.projectile_vel[1]);
+            }
+            else projectile_vel = left_flip(bd.projectile_vel[0]);
         }
         else if (controls[Control::Down]) {
-            projectile_vel = left_flip(bd.projectile_vel[2]);
+            if (controls[Control::Left] || controls[Control::Right]) {
+                projectile_vel = left_flip(bd.projectile_vel[3]);
+            }
+            else projectile_vel = left_flip(bd.projectile_vel[4]);
         }
-        else projectile_vel = left_flip(bd.projectile_vel[1]);
+        else projectile_vel = left_flip(bd.projectile_vel[2]);
         if (bd.spit_sound) bd.spit_sound->play();
     }
     if (business == WB::Free && controls[Control::Special] &&
@@ -372,24 +379,33 @@ Controls BugMind::Mind_think (Resident& s) {
              // Aim projectile.  Reuse attack_rel even though it's probably not
              // very accurate.  All the numbers here are spitball estimates
              // anyway.
-            if (attack_rel.y > 0 ||
-                self.left_flip(attack_rel.x) > spit_range_cutoffs[0]
-            ) {
+            float dist = self.left_flip(attack_rel.x);
+            if (attack_rel.y > 0 || dist > spit_range_cutoffs[0]) {
                 r[Control::Up] = 1;
             }
-            else if (self.left_flip(attack_rel.x) > spit_range_cutoffs[1]) {
+            else if (dist > spit_range_cutoffs[1]) {
+                r[Control::Up] = 1;
+                r[Control::Left] = 1;
+            }
+            else if (dist > spit_range_cutoffs[2]) {
                  // Neutral
+            }
+            else if (dist > spit_range_cutoffs[2]) {
+                r[Control::Down] = 1;
+                r[Control::Left] = 1;
             }
             else {
                 r[Control::Down] = 1;
             }
             if (debug) {
                 draw_rectangle(
-                    Rect(self.pos - Vec(spit_range_cutoffs[0], 400), self.pos),
+                    Rect(self.pos + self.left_flip(Vec(spit_range_cutoffs[0], 0)),
+                         self.pos + self.left_flip(Vec(spit_range_cutoffs[1], -400))),
                     0x00ff0080
                 );
                 draw_rectangle(
-                    Rect(self.pos - Vec(spit_range_cutoffs[1], 400), self.pos),
+                    Rect(self.pos + self.left_flip(Vec(spit_range_cutoffs[2], 0)),
+                         self.pos + self.left_flip(Vec(spit_range_cutoffs[3], -400))),
                     0x0000ff80
                 );
             }
