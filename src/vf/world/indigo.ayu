@@ -295,8 +295,8 @@
 
         step_sound: assets.ayu#step
         land_sound: assets.ayu#pmf
-        attack_sound: assets.ayu#vivv
-        crouch_attack_sound: assets.ayu#vivv
+        attack_sound: assets.ayu#bzzh
+        crouch_attack_sound: assets.ayu#bzzh
         hit_solid_sound: assets.ayu#tkk
         damage_sound: assets.ayu#doof
         paralyzed_sound: assets.ayu#piwiwi

@@ -168,5 +168,5 @@
     ffwf3: [vf::Sound { source:assets/ffwf3.mp3 channel:1 volume:0.6 }]
     ffwf4: [vf::Sound { source:assets/ffwf4.mp3 channel:1 volume:0.6 }]
     ffwf: [vf::RandomSound [#ffwf1 #ffwf2 #ffwf3 #ffwf4]]
-    vivv: [vf::Sound { source:assets/vivv.mp3 channel:2 }]
+    bzzh: [vf::Sound { source:assets/bzzh.mp3 channel:2 }]
 }]
