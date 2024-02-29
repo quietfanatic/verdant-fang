@@ -1,4 +1,4 @@
-Verdant Fang - https://leafuw.itch.io/verdant-fang - v0.9.2
+Verdant Fang - https://leafuw.itch.io/verdant-fang - v0.9.4
 ============
 
 Magical warrior Verdant and her trusty sidekick Fang venture into a dark cave to
@@ -94,31 +94,3 @@ history to keep its size down.
 If you don't have the source code and want it, it can be downloaded at
 https://leafuw.itch.io/verdant-fang
 
-#####Wrap up checklist
-[x] Actually trigger capture sequence
-[x] Decals during capture sequence
-[x] Place limbs in bedroom
-[x] End screen
-[x] Put snake on title screen
-[x] Improve title screen music
-[x] Set music during final cutscenes
-[x] Hallway
-[x] Tunnel
-[x] Package for Windows (stop opening terminal)
-[x] Package for Linux
-[x] Package source
-[x] Fix losing checkpoint when saving state
-[x] death animation while poisoned crash
-[x] revive animation multiple occurence
-[x] clothes on floor
-[x] don't make Indigo's hat disappear
-[x] Tweak monster's AI and hitboxes
-[x] Fix bed hitbox
-[x] Game over screen controls
-[x] Window title
-[x] Sound effects for inching (and other things?)
-[x] Finish off in-code TODOs
-[x] Fix suspend during title screen going to pause menu
-Optional:
-[abandoned] Kick off spear animation
-[x] Boss fight?
