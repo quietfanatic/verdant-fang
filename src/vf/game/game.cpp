@@ -7,6 +7,7 @@
 #include "../../dirt/control/input.h"
 #include "camera.h"
 #include "menu.h"
+#include "options.h"
 #include "room.h"
 #include "settings.h"
 #include "state.h"
@@ -182,6 +183,11 @@ void Game::reset () {
     state.load_initial();
     menus = {};
     menus.push_back(OpenMenu(start_menu));
+}
+
+bool Game::hardcore () {
+    return options().frustration >= 3 && options().enemy_difficulty >= 2 &&
+        (!state().checkpoint || state().checkpoint->checkpoint_level >= 3);
 }
 
 void Game::suspend () {

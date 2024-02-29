@@ -608,6 +608,7 @@
         attack_range: 28
         social_distance: 40
         hiding_spot: 192
+        special_behavior_in_hardcore: true
     }]
     colin: [vf::Monster {
         room: #hallway
@@ -617,6 +618,7 @@
         left: true
         floor: #hallway_blocks
         hide_phase: 2
+        alert_phase: 3
     }]
 
     hallway_to_party: [vf::LoadingZone {

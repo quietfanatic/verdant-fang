@@ -40,8 +40,9 @@ struct MonsterMind : Mind {
     float attack_range;
     float jump_range = 0;
     float social_distance;
-    uint8 alert_sequence [2] = {10, 20};
     float hiding_spot = GNAN;
+    uint8 alert_sequence [2] = {10, 20};
+    bool special_behavior_in_hardcore = false;
     Controls Mind_think (Resident&) override;
 };
 

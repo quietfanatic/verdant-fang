@@ -30,6 +30,7 @@ struct Game {
     ~Game ();
     void start ();
     void reset ();
+    bool hardcore ();
     [[noreturn]] void suspend ();
 };
 

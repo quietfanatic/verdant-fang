@@ -1,6 +1,7 @@
 #include "monster.h"
 
 #include "../../dirt/ayu/reflection/describe.h"
+#include "../game/game.h"
 #include "math.h"
 #include "verdant.h"
 
@@ -168,6 +169,8 @@ Controls MonsterMind::Mind_think (Resident& s) {
         }
     }
     else if (self.alert_phase == 3) {
+        bool special_behavior =
+            special_behavior_in_hardcore && current_game->hardcore();
         if (defined(hiding_spot)) {
             next_hide_phase:
             if (self.hide_phase == 0) {
@@ -194,7 +197,7 @@ Controls MonsterMind::Mind_think (Resident& s) {
                 if (self.left) {
                     r[Control::Right] = 1;
                 }
-                else if (dist > 48) {
+                else if (dist > (special_behavior ? -140 : 48)) {
                      // Don't come out until you're the only one left
                     bool others = false;
                     for (auto r : self.room->residents) {
@@ -211,7 +214,7 @@ Controls MonsterMind::Mind_think (Resident& s) {
                 return r;
             }
             else if (self.hide_phase == 3) {
-                if (self.pos.x > hiding_spot + 20) {
+                if (distance(self.pos.x, hiding_spot) > 20) {
                     self.hide_phase = 4;
                 }
             }
@@ -259,7 +262,7 @@ Controls MonsterMind::Mind_think (Resident& s) {
             }
         }
          // If we're behind scenery, keep going right no matter what
-        if (self.hide_phase == 3) {
+        if (self.hide_phase == 3 && !special_behavior) {
             r[Control::Right] = 1;
             r[Control::Left] = 0;
         }
@@ -287,11 +290,12 @@ AYU_DESCRIBE(vf::MonsterMind,
     attrs(
         attr("vf::Mind", base<Mind>(), include),
         attr("target", &MonsterMind::target),
-        attr("alert_sequence", &MonsterMind::alert_sequence, optional),
         attr("sight_range", &MonsterMind::sight_range),
         attr("attack_range", &MonsterMind::attack_range),
         attr("jump_range", &MonsterMind::jump_range, optional),
         attr("social_distance", &MonsterMind::social_distance),
-        attr("hiding_spot", &MonsterMind::hiding_spot, optional)
+        attr("hiding_spot", &MonsterMind::hiding_spot, optional),
+        attr("alert_sequence", &MonsterMind::alert_sequence, optional),
+        attr("special_behavior_in_hardcore", &MonsterMind::special_behavior_in_hardcore, optional)
     )
 )
