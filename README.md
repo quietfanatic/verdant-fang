@@ -1,4 +1,4 @@
-Verdant Fang - https://leafuw.itch.io/verdant-fang - v0.9.8
+Verdant Fang - https://leafuw.itch.io/verdant-fang - v1.0.1
 ============
 
 Magical warrior Verdant and her trusty sidekick Fang venture into a dark cave to
@@ -12,11 +12,11 @@ so I packed a bunch of things I find erotic into this game, such as:
   - Slightly unfair level design
   - Moddable game content (use a text editor)
 
-WARNING: This game contains content that may disturb some people, including:
+WARNING: This game contains content that may disturb some people, including but
+not limited to:
   - Blood (can be turned off)
   - Nudity (can be turned off)
   - Snakes (cannot be turned off)
-  - Depictions of death
 
 ###Controls
 
