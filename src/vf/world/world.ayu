@@ -227,7 +227,6 @@
         attack_area: [6 -12 40 -5]
         roam_interval: [60 300]
         spit_interval: [60 120]
-        debug: true
     }]
     coochers: [vf::Bug {
         room: #hive

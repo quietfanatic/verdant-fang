@@ -149,7 +149,7 @@ void Bug::Resident_on_collide (
             victim.set_state(WS::Stun);
             victim.stun_duration = bd.projectile_stun;
             victim.poison_level += 1;
-            victim.body_tint = 0xd7ca9680;
+            victim.body_tint = 0xeedd2280;
              // Don't play sound twice on double collision (probably doesn't
              // matter if it has an assigned channel)
             if (projectile_state == 1) {
@@ -262,8 +262,9 @@ void Bug::Resident_on_exit () {
 Controls BugMind::Mind_think (Resident& s) {
     Controls r {};
     if (!(s.types & Types::Bug)) return r;
-    auto& self = static_cast<Bug&>(s);
     if (!target) return r;
+    auto& self = static_cast<Bug&>(s);
+    auto& bd = static_cast<BugData&>(*self.data);
 
     auto set_roam_timer = [&]{
         auto& rng = current_game->state().rng;
@@ -377,38 +378,57 @@ Controls BugMind::Mind_think (Resident& s) {
             self.fly = false;
         }
         else if (self.state == BS::Spit) {
-             // Aim projectile.  Reuse attack_rel even though it's probably not
-             // very accurate.  All the numbers here are spitball estimates
-             // anyway.
-            float dist = self.left_flip(attack_rel.x);
-            if (attack_rel.y > 0 || dist > spit_range_cutoffs[0]) {
-                r[Control::Up] = 1;
+             // Aim projectile.  Don't predict positions for this one.  The most
+             // dangerous scenario for us is if the target is headed straight
+             // for us, which shouldn't change our aim much.
+            float dist = self.left_flip(rel.x);
+            float aimable_xs [5];
+            for (int i = 0; i < 5; i++) {
+                 // This returns a time, so if have to multiply it by a speed to
+                 // get a distance.
+                aimable_xs[i] = positive_quadratic_root(
+                     // Subtract an amount for the target's height, and also an
+                     // amount that I'm not really sure why
+                    -rel.y - 24,
+                    bd.projectile_vel[i].y,
+                    -bd.projectile_gravity
+                ) * bd.projectile_vel[i].x;
+                 // I don't know what I'm doing wrong for these to be off by a
+                 // factor of two, but they are, and I don't have time to
+                 // investigate.
+                aimable_xs[i] *= 2;
             }
-            else if (dist > spit_range_cutoffs[1]) {
-                r[Control::Up] = 1;
-                r[Control::Left] = 1;
+            uint8 closest_i = 0;
+            float closest_x = distance(aimable_xs[0], dist);
+            for (int i = 1; i < 5; i++) {
+                float x = distance(aimable_xs[i], dist);
+                if (x < closest_x) {
+                    closest_i = i;
+                    closest_x = x;
+                }
             }
-            else if (dist > spit_range_cutoffs[2]) {
-                 // Neutral
-            }
-            else if (dist > spit_range_cutoffs[2]) {
-                r[Control::Down] = 1;
-                r[Control::Left] = 1;
-            }
-            else {
-                r[Control::Down] = 1;
+            switch (closest_i) {
+                case 0: r[Control::Up] = 1; break;
+                case 1: r[Control::Up] = 1; r[Control::Left] = 1; break;
+                case 2: break;
+                case 3: r[Control::Down] = 1; r[Control::Left] = 1; break;
+                case 4: r[Control::Down] = 1; break;
+                default: never();
             }
             if (debug) {
                 draw_rectangle(
-                    Rect(self.pos + self.left_flip(Vec(spit_range_cutoffs[0], 0)),
-                         self.pos + self.left_flip(Vec(spit_range_cutoffs[1], -400))),
-                    0x00ff0080
+                    self.pos + rel + Vec(0, 24) + Rect(-4, -4, 4, 4),
+                    0xff000080, Z::Debug
                 );
-                draw_rectangle(
-                    Rect(self.pos + self.left_flip(Vec(spit_range_cutoffs[2], 0)),
-                         self.pos + self.left_flip(Vec(spit_range_cutoffs[3], -400))),
-                    0x0000ff80
-                );
+                for (auto& x : aimable_xs) {
+                    if (defined(x)) {
+                        draw_rectangle(
+                            Vec(self.pos.x + self.left_flip(x), self.pos.y + (rel.y + 24))
+                                + Rect(-4, -4, 4, 4),
+                            0x00ff0080, Z::Debug
+                        );
+                    }
+                }
             }
         }
         else if (self.state == WS::Attack && self.anim_phase < 3) {
@@ -426,11 +446,10 @@ Controls BugMind::Mind_think (Resident& s) {
         else if (contains(actual_attack_area, attack_rel)) {
             r[Control::Attack] = 1;
         }
-        else if (length2(rel) < length2(personal_space)) {
-            r[self.left ? Control::Right : Control::Left] = 1;
-        }
         else {
-            if (self.roam_timer == 0) {
+            if (self.roam_timer == 0 ||
+                distance(self.roam_pos.x, target->pos.x) < personal_space
+            ) {
                 set_roam_timer();
             }
             else self.roam_timer -= 1;

@@ -28,8 +28,8 @@ The default controls are as follows:
   - P or Escape: Pause
   - F11: Toggle fullscreen mode
   - Ctrl-R: Restart from checkpoint at any time
-  - Ctrl-Q or Alt-F4: Boss Key (immediately save state and close; next time you
-    open the game it will resume from the same place)
+  - Ctrl-Q or Alt-F4: Boss Key! (immediately save and exit; next time you open
+    the game it will start paused at the same moment)
 
 You can change the controls by editing `save/settings.ayu` (you must run the
 game once to generate the file).

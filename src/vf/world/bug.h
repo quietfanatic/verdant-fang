@@ -56,8 +56,6 @@ struct BugMind : Mind {
      // Unlike Monster, this is a 2D distance
     float sight_range;
     uint8 alert_sequence = 10;
-     // Back up if we're too close to target
-    float personal_space = 20;
      // Area the bug thinks its tail hitbox covers.  Does not include target's
      // hitbox (that's added in calculations later).
     Rect attack_area;
@@ -65,6 +63,8 @@ struct BugMind : Mind {
     IRange roam_interval;
      // How strict the bug adheres to its desired roam position.
     float roam_tolerance = 8;
+     // Find new roam position if target is too close to it in the X direction.
+    float personal_space = 16;
      // Min and max time to spit.
     IRange spit_interval;
      // Boundaries for target pos to aim spit up or down

@@ -42,4 +42,19 @@ inline float quadratic_until_stop (float p, float v, float a, float t) {
     return p + v*t + a*(t*t);
 }
 
+ // Finds t of the first zero after t=0, or GNAN if there are no roots or both
+ // roots are negative.
+inline float positive_quadratic_root (float p, float v, float a) {
+    float disc = v*v - a*p*4;
+    if (disc >= 0) {
+        float s = root2(disc);
+        float r0 = (-v + s) / (2*a);
+        float r1 = (-v - s) / (2*a);
+        if (r0 >= 0 && r0 <= r1) return r0;
+        else if (r1 >= 0) return r1;
+        else return GNAN;
+    }
+    else return GNAN;
+}
+
 } // vf
