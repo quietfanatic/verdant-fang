@@ -149,7 +149,7 @@ void Bug::Resident_on_collide (
             victim.set_state(WS::Stun);
             victim.stun_duration = bd.projectile_stun;
             victim.poison_level += 1;
-            victim.body_tint = 0xeedd2280;
+            victim.body_tint = 0x7744ff30;
              // Don't play sound twice on double collision (probably doesn't
              // matter if it has an assigned channel)
             if (projectile_state == 1) {

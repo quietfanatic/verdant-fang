@@ -197,7 +197,7 @@
         flavor: lemon
 
         projectile_box: [-2 -2 2 2]
-        spit_sequence: [10 20 30]
+        spit_sequence: [0 16 30]
         spit_mouth_offset: [10 9]
         projectile_vel: [
             [2 2]

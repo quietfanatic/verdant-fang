@@ -158,7 +158,7 @@ void State::step () {
 }
 
 void State::save_checkpoint (uint8 checkpoint_level, Vec transition_center) {
-    expect(!transition);
+    //expect(!transition);
     transition = Transition{
         .save_checkpoint = true,
         .checkpoint_level = checkpoint_level,
@@ -170,7 +170,7 @@ void State::save_checkpoint (uint8 checkpoint_level, Vec transition_center) {
 }
 
 void State::load_checkpoint () {
-    expect(!transition);
+    //expect(!transition);
     transition = Transition{
         .type = TransitionType::ApertureOpen,
         .load_checkpoint = true,

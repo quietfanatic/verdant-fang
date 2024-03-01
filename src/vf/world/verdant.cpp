@@ -1198,6 +1198,7 @@ void Verdant::Resident_on_exit () {
     decal_type = DecalType::None;
     decal_index = -1;
     poison_level = 0;
+    body_tint = {};
     stun_duration = 0;
     paralyze_symbol_timer = 0;
     weapon_layers = 0x1;
