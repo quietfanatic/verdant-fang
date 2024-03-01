@@ -80,6 +80,13 @@ WalkerBusiness Indigo::Walker_business () {
         }
     }
     if (state == WS::Dead) {
+         // Assuming I was poisoned to death by Verdant Snake
+        if (anim_phase <= 2) {
+            body_tint = 0x7744ff20;
+        }
+        else {
+            body_tint = {};
+        }
         if (anim_phase >= 8 && verdant && verdant->state == VS::SnakeCaptured) {
             verdant->set_state(VS::Snake);
             verdant->limb_layers &= ~0b1000;
@@ -90,6 +97,7 @@ WalkerBusiness Indigo::Walker_business () {
                 head_layers &= ~0b100;
             }
         }
+         // Fall through
     }
     else if (state == IS::Capturing) {
         if (!verdant) verdant = find_verdant();
