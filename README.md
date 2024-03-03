@@ -1,4 +1,4 @@
-Verdant Fang - https://leafuw.itch.io/verdant-fang - v1.0.1
+Verdant Fang - https://leafuw.itch.io/verdant-fang - v1.0.2
 ============
 
 Magical warrior Verdant and her trusty sidekick Fang venture into a dark cave to
@@ -17,6 +17,11 @@ not limited to:
   - Blood (can be turned off)
   - Nudity (can be turned off)
   - Snakes (cannot be turned off)
+
+###Requirements
+
+This game requires a video driver that supports OpenGL 3.1 or higher (not OpenGL
+ES).  For the most part, anything made since 2011 should work.
 
 ###Controls
 
@@ -50,7 +55,7 @@ Detailed explanation of the in-game options:
     considered NSFW, depending on your standards.
 
 If you play from the beginning with checkpoints=none and enemies=normal, you
-will see an "S" symbol in the lower-right corner.  It stands for Super.
+will see an "S" symbol in the lower-left corner.  It stands for Super.
 
 Advanced settings are in `save/settings.ayu` after running the game once.  They
 are explained in comments in the file.
@@ -61,6 +66,10 @@ Run `verdant-fang.exe`.  Everything required should be included.  If it doesn't
 work, please let me know.
 
 ###Running on Linux
+
+Some video drivers on Linux only support OpenGL ES, and not OpenGL classic.
+Unfortunately, those drivers are not supported at this time, so you will have to
+use a different driver or run the game on Windows.
 
 This requires a recent Linux distro (libc version 6 or higher), as well as these
 system libraries:
