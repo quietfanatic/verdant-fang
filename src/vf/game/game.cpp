@@ -104,7 +104,9 @@ Game::Game () :
 
     ayu::ResourceTransaction tr;
 
-    if (ayu::source_exists(settings_res->name())) {
+    if (ayu::source_exists(settings_res->name()) &&
+        fs::file_size(ayu::resource_filename(settings_res->name()))
+    ) {
         ayu::load(settings_res);
     }
     else {
@@ -118,7 +120,9 @@ Game::Game () :
         ayu::load(settings_res);
     }
 
-    if (ayu::source_exists(options_res->name())) {
+    if (ayu::source_exists(options_res->name()) &&
+        fs::file_size(ayu::resource_filename(options_res->name()))
+    ) {
         ayu::load(options_res);
     }
     else {
@@ -140,7 +144,9 @@ Game::Game () :
     ayu::global(&end_menu);
     end_menu = menus_res["end_menu"][1];
 
-    if (ayu::source_exists(state_res->name())) {
+    if (ayu::source_exists(state_res->name()) &&
+        fs::file_size(ayu::resource_filename(state_res->name()))
+    ) {
         ayu::load(state_res);
         menus.emplace_back(pause_menu);
     }
@@ -214,10 +220,12 @@ tap::TestSet tests ("vf/game", []{
     using namespace tap;
     fs::remove(ayu::resource_filename(iri::constant("save:/state.ayu")));
     Game game;
+    game.menus = {};
     auto room = game.state().current_room;
     ok(room->find_with_types(Types::Verdant), "Initial state has player");
     int window_id = SDL_GetWindowID(game.window);
     send_input_as_event({.type = InputType::Key, .code = SDLK_ESCAPE}, window_id);
+    game.loop.stop();
     game.loop.start();
     pass();
     done_testing();
