@@ -97,7 +97,7 @@ versions of the required SDL libraries for your platform.  Currently the code
 only compiles with GCC-12; clang and MSVC are not supported.  To build the debug
 version, use
 ```
-perl make.pl out/deb/build
+perl make.pl --jobs=7 out/deb/build
 ```
 after which the program will be at `out/deb/verdant-fang`.  You can build other
 flavors by replacing `deb` with one of the other configs in the build script.
