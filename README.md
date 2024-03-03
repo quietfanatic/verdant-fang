@@ -94,7 +94,7 @@ please alter the title screen (such as by adding or changing some text).
 If you downloaded the source code version, you can modify and compile the source
 yourself.  You'll need Perl to run the build system, as well as development
 versions of the required SDL libraries for your platform.  Currently the code
-only compiles with GCC; clang and MSVC are not supported.  To build the debug
+only compiles with GCC-12; clang and MSVC are not supported.  To build the debug
 version, use
 ```
 perl make.pl out/deb/build
@@ -113,3 +113,16 @@ especially the actor state management and animation code.
 If you don't have the source code and want it, it can be downloaded at
 https://leafuw.itch.io/verdant-fang
 
+###Credits
+
+Programming, art, music & sound: Leafuw
+Playtesting: Anonymous
+Help with compatibility debugging: Disposable Dev
+Special thanks: Everyone in the Strawberry Jam community
+
+###Tools Used
+
+Pixel art: The GIMP
+Music composing: Sekaiju
+MIDI rendering: TiMidity with eawpats
+Recording and audio editing: Audacity
