@@ -495,7 +495,11 @@ AYU_DESCRIBE(vf::Bug,
         attr("roam_pos", &Bug::roam_pos, optional),
         attr("roam_territory", &Bug::roam_territory),
         attr("roam_timer", &Bug::roam_timer, optional),
-        attr("spit_timer", &Bug::spit_timer, optional)
+        attr("spit_timer", &Bug::spit_timer, optional),
+        attr("projectile_state", &Bug::projectile_state, optional),
+        attr("projectile_timer", &Bug::projectile_timer, optional),
+        attr("projectile_pos", &Bug::projectile_pos, optional),
+        attr("projectile_vel", &Bug::projectile_vel, optional)
     ),
     init<&Bug::init>()
 )
