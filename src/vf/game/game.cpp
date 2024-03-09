@@ -201,7 +201,7 @@ bool Game::hardcore () {
 
 void Game::suspend () {
     if (!menus || menus[0].data != start_menu) {
-        ayu::save(current_game->state_res);
+        ayu::save(current_game->state_res, ayu::PrintOptions::Compact);
     }
     exit(0);
 }

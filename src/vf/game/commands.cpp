@@ -36,7 +36,7 @@ Command fullscreen (fullscreen_, "fullscreen", "Toggle window fullscreen state")
 
 void save_state_ () {
     if (!current_game) return;
-    ayu::save(current_game->state_res);
+    ayu::save(current_game->state_res, ayu::PrintOptions::Compact);
 }
 Command save_state (save_state_, "save_state", "Save game state");
 

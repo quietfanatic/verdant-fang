@@ -488,7 +488,7 @@ AYU_DESCRIBE(vf::Bug,
     attrs(
         attr("vf::Walker", base<Walker>(), include),
         attr("home_pos", &Bug::home_pos, optional),
-        attr("home_left", &Bug::home_left, optional),
+        attr("home_left", &Bug::home_left, collapse_optional),
         attr("wings_timer", &Bug::wings_timer, optional),
         attr("alert_phase", &Bug::alert_phase, optional),
         attr("alert_timer", &Bug::alert_timer, optional),
