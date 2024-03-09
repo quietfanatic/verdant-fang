@@ -245,3 +245,42 @@
   turning out surprisingly difficult, but I'll probably be able to do it in
   time.  After that, it's just packaging and playtesting.  If I have time left
   over, final boss fight?
+#####2024-02-26 M
+- Starting today, I forgot to write my work in this log, so this and everything
+  below will be written in the future by looking at my commit history
+  (2024-03-09 S).
+- Filled out README.md with a bunch of stuff.
+- Added Tunnel room.
+- Adjusted menus and added some more miscellaneous text.
+- Figured out how to do deployment with butler, and did initial deploy for
+  linux, windows, and source code.
+- In response to playtesting, made lizard monsters much easier.
+- Planned work for tomorrow: Knock off remaining todos and maybe implement
+  actual boss fight?
+#####2024-02-27 T
+- A bunch of random bufixes and small todos, some of which were found by
+  playtesting.
+- Some art improvements regarding clothes and accessories during cutscenes.
+- Make indigo shoot projectiles, they don't do anything yet though.
+- Planned work for tomorrow: Finish boss fight and final adjustments, leaving
+  one extra day to put out last-minute fires.
+#####2024-02-28 W
+- Implement actual boss fight!  You have to stab all the bubbles to advance to
+  the next phase.  Indigo will dodge if you get too close.
+- Made it so it actually looks like Indigo is using magic on you during capture
+  cutscenes.
+- Added some final sound effects.  It was too rainy to record in my room so I
+  borrowed a relative's basement.
+- Made game aware of when you're doing "hardcore" aka "deathless" aka "super"
+  mode.
+- A whole bunch more fixes and adjustments.
+####2024-02-29 H
+- The final day!
+- Made Indigo's projectiles curve when moving, leading to a much more
+  interesting and difficult fight.  Also fixed them getting stuck in the corner.
+- In response to playtesting, made the bugs much more accurate with their
+  spitting and made it more obvious when you (and Indigo) are poisoned by
+  tinting your body purple (green for Indigo because she's already purple).
+- More last-minute fixes
+- Final deployment and submission!  About 2.5 hours before the deadline.
+  Hope you enjoy!
