@@ -78,6 +78,7 @@ struct IndigoData : WalkerData {
      // 5 = preattack (time limit ignored, but this array entry used to
      // calculate sequence length)
     uint8 capturing_snake_sequence [6];
+    Vec capture_snake_pos;
     Sound* bubble_pop_sound = null;
     Sound* dodge_sound = null;
 };

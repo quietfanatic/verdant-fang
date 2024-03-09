@@ -335,6 +335,7 @@
         bed_use_limb: 3
         bit_sequence: [15 30 12 12 12 12 12 12 60]
         capturing_snake_sequence: [12 20 30 12 60 20]
+        capture_snake_pos: [100 80]
 
         bubble_pop_sound: assets.ayu#poiy
         dodge_sound: assets.ayu#woosh

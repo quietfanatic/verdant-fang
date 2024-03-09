@@ -270,7 +270,7 @@ WalkerBusiness Indigo::Walker_business () {
             verdant->left = false;
             verdant->pos = lerp(
                 capture_initial_pos,
-                id.capture_target_pos,
+                id.capture_snake_pos,
                 ease_in_out_sin(
                     float(anim_timer) / id.capturing_snake_sequence[anim_phase]
                 )
@@ -278,7 +278,7 @@ WalkerBusiness Indigo::Walker_business () {
         }
         else if (anim_phase == 3) {
             verdant->set_state(VS::SnakeCaptured);
-            verdant->pos = id.capture_target_pos;
+            verdant->pos = id.capture_snake_pos;
         }
         return WB::Free;
     }
@@ -733,6 +733,7 @@ AYU_DESCRIBE(vf::IndigoData,
         attr("bed_use_limb", &IndigoData::bed_use_limb),
         attr("bit_sequence", &IndigoData::bit_sequence),
         attr("capturing_snake_sequence", &IndigoData::capturing_snake_sequence),
+        attr("capture_snake_pos", &IndigoData::capture_snake_pos),
         attr("bubble_pop_sound", &IndigoData::bubble_pop_sound, optional),
         attr("dodge_sound", &IndigoData::dodge_sound, optional)
     )
