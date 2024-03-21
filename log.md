@@ -1,10 +1,13 @@
-#####2024-02-01 H
+#### 2024-02-01 H
+
 - Some cancelled work making the ayu description system support llvm
 - Started work on character art.  One standing frame, two attack frames, and
   almost two running frames.  Character ended up better looking than expected.
 - Customized render pipeline a bit.  `GL_TEXTURE_RECTANGLE` and alpha blending.
 - Started experimenting with sound effects.  Tentative landing SFX.
-#####2024-02-02 F
+
+#### 2024-02-02 F
+
 - Did a bunch more work on character art.  Have one standing frame, two better
   attack frames, and six running frames, all fully clothed.  I tried to work
   with four running frames but it's just not enough.
@@ -23,7 +26,9 @@
   a big challenge making that work with game rooms which need to be geometric
   and legible.  Also my art skill level.
 - Planned work for tomorrow: Cave!
-#####2024-02-03 S
+
+#### 2024-02-03 S
+
 - Made a simple cave background,  It's passable and better than nothing.
 - Did more animation work, including falling, landing, and crouching frames, and
   improved existing ones.
@@ -32,7 +37,9 @@
 - Improved player control logic a bit.
 - Revised settings and state resource loading.
 - Planned work for tomorrow: Monster!
-#####2024-02-05 M
+
+#### 2024-02-05 M
+
 - Some adjustments to player physics.
 - Add a simple monster.  I say simple, but it shares almost all code with the
   player.  Behavior is separated by resource data and a Mind interface, which
@@ -46,7 +53,9 @@
   again.
 - Planned work for tomorrow: Blood!  And maybe room transitions or music or more
   sound effects.
-#####2024-02-06 T
+
+#### 2024-02-06 T
+
 - Added damage and dead frames for player and monster.
 - Made sound effects for player and monster damage.
 - Implemented a bunch of logic around damage and dying.  Killing an enemy feels
@@ -54,7 +63,9 @@
 - Started drawing art for blood and started some logic around displaying it, but
   haven't finished it yet.
 - Planned work for tomorrow: Actual blood!
-#####2024-02-07 W
+
+#### 2024-02-07 W
+
 - Animated blood for both player and monster.  A lot of work but worth it.
 - Added a really snazzy snake-themed effect for room transitions, using some
   trig and a new shader.  Oh, and added room transitions.
@@ -64,7 +75,9 @@
   effect is not.  Saving it fully would require saving the texture of the old
   room, which is not worth the effort.
 - Planned work for tomorrow: Buttons and doors and more enemies?
-#####2024-02-08 H
+
+#### 2024-02-08 H
+
 - Much of the work today was not very visible.  A lot of maintainance and
   interface improvements.
 - Added another monster personality and did a lot of work on monster AI.  It's
@@ -76,7 +89,9 @@
   the door moved instantly.
 - Added sounds for the switch and the door and a better sound for landing.
 - Planned work for tomorrow: Boss?
-#####2024-02-09 F
+
+#### 2024-02-09 F
+
 - Mostly art work today.  Drew some frames for the witch boss, who came out much
   cuter than I expected.  I'm sorry cute witch, but you're the villain.
 - Drew frames for falling forward, landing on elbows and knees, and laying
@@ -86,7 +101,9 @@
 - Added sounds for door closing (and fixed door closing animation).
 - Planned work for tomorrow: Crushing by door and witch movement, and some
   architecture for specializing Walker type and adding custom states.
-#####2024-02-10 S
+
+#### 2024-02-10 S
+
 - A lot of work under the hood today.  I added a system to automatically
   determine the bounds of art frames, which makes it a lot faster to add new
   frames and modify existing ones.  Also implemented the system for specializing
@@ -100,7 +117,9 @@
   anticlimatic, thanks to all the refactoring work.
 - Planned work for Monday: Dunno!  Probably gonna play around with Witch some
   more.
-#####2024-02-12 M
+
+#### 2024-02-12 M
+
 - Added the transformation scene!  I decided this was even more important than
   the boss, to establish that the character is a magical-girl-like person and
   the spear is a snake.  Also, showing nudity in the transformation scene early
@@ -111,7 +130,9 @@
 - Fixed the decals having bits cut off from the frame auto bounds system.
 - Planned work for tomorrow: Semisolid platforms, crouch stab, hiding enemies,
   think about witch some more.
-#####2024-02-13 T
+
+#### 2024-02-13 T
+
 - Not as many big additions as I'd hoped, but knocked off a bunch of smaller
   todos.
 - Made semisolid platforms
@@ -127,7 +148,9 @@
   to have.
 - Planned work for tomorrow: Not entirely sure.  Could do restart transitions,
   troll doors, flying bugs, or the boss.
-#####2024-02-14 W
+
+#### 2024-02-14 W
+
 - Starting implementing bugs.  Like, insects.  They only have a few animation
   frames and no AI, but they can attack and be attacked.
 - Spent far too long worrying about how much code to share between walkers and
@@ -138,7 +161,9 @@
   code.
 - Planned work for tomorrow: Make bug spit venom.  Venom will be an important
   mechanic for the story later on.
-#####2024-02-15 H
+
+#### 2024-02-15 H
+
 - Halfway point!
 - Implemented more art, animation, AI, and decals for bugs.  Implemented a bunch
   of untested code for spitting venom, but haven't tried it out yet.
@@ -154,7 +179,9 @@
 - Planned work for tomorrow: Spitting!  Maybe start work on Witch some, as
   another flying entity?  I should also maybe start in on music too...oh but
   there are a bunch of sound effects I need to add too...uhhhhh
-####2024-02-16 F
+
+#### 2024-02-16 F
+
 - Still didn't implement much of the final boss, but I did get some very
   important work done.
 - Made bugs spit poison and implemented poison/paralysis, including related art
@@ -168,7 +195,9 @@
 - Haven't implemented anything yet, but drew some art for the captured-by-final-
   boss scene.
 - Planned work for tomorrow: More boss cutscene work.  And maybe music.
-#####2024-02-17 S
+
+#### 2024-02-17 S
+
 - Today was cutscene day.  I implemented probably 50% of the endgame cutscenes.
   And that's about it.
 - I guess I started programming stuff for Indigo (Witch) too.
@@ -178,19 +207,25 @@
 - Planned work for Monday: I really should start in on the music, and maybe the
   menus.  There's still a lot of cutscene work to do.  I might not have time to
   implement an actual fight for the boss.
-#####2024-02-19 M
+
+#### 2024-02-19 M
+
 - Music!!!  I made a main music track and it's really good.  Day well spent.
 - Also made a title screen track, which is a little plain, but it might be
   better that way.
 - Also did more cutscene work.  Implemented the cutscene of turning into a
   snake, and did some snake movement.
 - Planned work for tomorrow: Menus, more work on Indigo.
-#####2024-02-20 T
+
+#### 2024-02-20 T
+
 - Didn't get a whole lot done today due to personal circumstances, but I did
   implement a pause menu, and drew text for all the menus.
 - Also tweaked music a little.
 - Planned work for tomorrow: Finish up menus, get back to Indigo.
-#####2024-02-21 W
+
+#### 2024-02-21 W
+
 - Progress was slower than I would have liked, partly for health reasons and
   partly because I spent all morning moving cutscene logic from Verdant to
   Indigo.  This way makes more sense, but it took a long time and wasn't really
@@ -201,7 +236,9 @@
 - Planned work for tomorrow: Keep cracking at these cutscenes.  If all goes well
   I might actually finish them tomorrow, and have some time left over to work on
   menus.
-#####2024-02-22 H
+
+#### 2024-02-22 H
+
 - Aaaalmost done with the final cutscenes!  I've implemented biting, being
   shaken off, poisoning, and eating.
 - Also tweaked some other parts of cutscenes.
@@ -212,7 +249,9 @@
   transformation back to human.  Then I want to step back from cutscenes a bit
   and add more rooms, and come back to the cutscenes with a fresh mind to
   freshen them up.
-#####2024-02-23 F
+
+#### 2024-02-23 F
+
 - Basically done with every major thing in the game.  All that's left is
   polishing, adding a couple more rooms (which are already planned), and maybe a
   little more music and sound effects.
@@ -228,7 +267,9 @@
 - Some improvements to aperture transitions and other miscellaneous things.
 - Planned work for tomorrow: Add the final two rooms.  Place loose limbs in
   bedroom.  Work on music a little more, add a couple more animation frames...
-#####2024-02-24 S
+
+#### 2024-02-24 S
+
 - I feel like I'm running out of steam a little bit, but that's fine because I'm
   almost done.  I started a todo list in the morning, and there turned out to be
   more things than I expected and it was a bit daunting, but now at EOD it's
@@ -245,7 +286,9 @@
   turning out surprisingly difficult, but I'll probably be able to do it in
   time.  After that, it's just packaging and playtesting.  If I have time left
   over, final boss fight?
-#####2024-02-26 M
+
+#### 2024-02-26 M
+
 - Starting today, I forgot to write my work in this log, so this and everything
   below will be written in the future by looking at my commit history
   (2024-03-09 S).
@@ -257,14 +300,18 @@
 - In response to playtesting, made lizard monsters much easier.
 - Planned work for tomorrow: Knock off remaining todos and maybe implement
   actual boss fight?
-#####2024-02-27 T
+
+#### 2024-02-27 T
+
 - A bunch of random bufixes and small todos, some of which were found by
   playtesting.
 - Some art improvements regarding clothes and accessories during cutscenes.
 - Make indigo shoot projectiles, they don't do anything yet though.
 - Planned work for tomorrow: Finish boss fight and final adjustments, leaving
   one extra day to put out last-minute fires.
-#####2024-02-28 W
+
+#### 2024-02-28 W
+
 - Implement actual boss fight!  You have to stab all the bubbles to advance to
   the next phase.  Indigo will dodge if you get too close.
 - Made it so it actually looks like Indigo is using magic on you during capture
@@ -274,7 +321,9 @@
 - Made game aware of when you're doing "hardcore" aka "deathless" aka "super"
   mode.
 - A whole bunch more fixes and adjustments.
-####2024-02-29 H
+
+#### 2024-02-29 H
+
 - The final day!
 - Made Indigo's projectiles curve when moving, leading to a much more
   interesting and difficult fight.  Also fixed them getting stuck in the corner.
