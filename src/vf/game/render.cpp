@@ -214,7 +214,7 @@ void draw_texture (
     float fade
 ) {
     require(!!tex);
-    require(tex.target == GL_TEXTURE_RECTANGLE);
+    require(tex.target == GL_TEXTURE_2D);
     if (!frame_program) {
         ayu::global(&frame_program);
         frame_program = ayu::ResourceRef(
@@ -266,7 +266,7 @@ void commit_draws () {
             cmd.tint.b / 255.f, cmd.tint.a / 255.f
         );
         glUniform1f(program.u_fade, cmd.fade);
-        glBindTexture(GL_TEXTURE_RECTANGLE, cmd.tex);
+        glBindTexture(GL_TEXTURE_2D, cmd.tex);
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     }
     program.n_commands = 0;
