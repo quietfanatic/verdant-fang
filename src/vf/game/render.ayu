@@ -1,4 +1,4 @@
-&vertex: "#version 140
+&vertex: "#version 300 es
 
 uniform float u_screen_rect [4];
 uniform float u_tex_rect [4];
@@ -18,7 +18,8 @@ void main () {
     v_tex_coords.y = u_tex_rect[corners[gl_VertexID].y];
 }"
 
-&fragment: "#version 140
+&fragment: "#version 300 es
+precision highp float; // why
 
 uniform sampler2D u_tex;
 uniform vec4 u_tint;
@@ -27,9 +28,9 @@ in vec2 v_tex_coords;
 out vec4 color;
 
 void main () {
-    vec2 size = textureSize(u_tex, 0);
+    vec2 size = vec2(textureSize(u_tex, 0));
     color = texture(u_tex, v_tex_coords / size);
-    color.rgb = u_tint.rgb * u_tint.a + color.rgb * (1 - u_tint.a);
+    color.rgb = u_tint.rgb * u_tint.a + color.rgb * (1.0 - u_tint.a);
     color.a *= u_fade;
 }"
 
