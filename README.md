@@ -116,11 +116,16 @@ please alter the title screen (such as by adding or changing some text).
 
 ### Source Code
 
+*NOTICE for GitHub users: If you cloned this from GitHub, your local copy will
+be missing the images and sounds required to run the game.  You need to download
+these things from https://leafuw.itch.io/verdant-fang to be able to build the
+entire game.*
+
 If you downloaded the source code version, you can modify and compile the source
 yourself.  You'll need Perl to run the build system, as well as development
 versions of the required SDL libraries for your platform.  Currently the code
 only compiles with gcc-12; clang and MSVC are not supported.  To build the debug
-version, use one of the following commands
+version, use the following command
 ```
 perl make.pl --jobs=7 out/deb/build
 ```
@@ -145,9 +150,6 @@ history to keep its size down.
 
 This game was made in only a month, so some of the code may be a little messy,
 especially the actor state management and animation code.
-
-If you don't have the source code and want it, it can be downloaded at
-https://leafuw.itch.io/verdant-fang
 
 ### Credits
 
