@@ -121,7 +121,7 @@ please alter the title screen (such as by adding or changing some text).
 *NOTICE for GitHub users: If you cloned this from GitHub, your local copy will
 be missing the images and sounds required to run the game.  You need to download
 these things from https://leafuw.itch.io/verdant-fang to be able to build the
-entire game.*
+entire game.  You must also run `git submodule update`.*
 
 If you downloaded the source code version, you can modify and compile the source
 yourself.  You'll need Perl to run the build system, as well as development
