@@ -1,4 +1,4 @@
-Verdant Fang - https://leafuw.itch.io/verdant-fang - v1.0.3
+Verdant Fang - https://leafuw.itch.io/verdant-fang - v1.0.4
 ============
 
 Magical warrior Verdant and her trusty sidekick Fang venture into a dark cave to
@@ -18,11 +18,6 @@ not limited to:
   - Nudity (can be turned off)
   - Snakes (cannot be turned off)
 
-### Requirements
-
-This game requires a video driver that supports OpenGL 3.1 or higher (not OpenGL
-ES).  For the most part, anything made since 2011 should work.
-
 ### Controls
 
 The default controls are as follows:
@@ -36,12 +31,13 @@ The default controls are as follows:
   - Ctrl-Q or Alt-F4: Boss Key! (immediately save and exit; next time you open
     the game it will start paused at the same moment)
 
-You can change the controls by editing `save/settings.ayu` (you must run the
-game once to generate the file).
+You can change the controls by editing `save/settings.ayu` with a text editor
+(you must run the game once to generate the file).
 
 ### Options
 
-Detailed explanation of the in-game options:
+Here's a detailed explanation of the in-game options.
+
   - Checkpoints: Controls how many checkpoints there are, thereby controlling
     the amount of frustration the player experiences.  "Lots" means one at just
     about every room, "some" means one about every 2 to 3 rooms, and "none"
@@ -60,6 +56,37 @@ will see an "S" symbol in the lower-left corner.  It stands for Super.
 Advanced settings are in `save/settings.ayu` after running the game once.  They
 are explained in comments in the file.
 
+### FAQ
+
+The combat is too difficult for me!
+
+- There's an option to add more checkpoints and an option to make enemies a
+  little easier. Do please use them! I'm not going to go all "You cheated not
+  only the game but yourself" on you.
+- Still struggling? There are cheat codes that let you use savestates, if you
+  can figure out how to enable them in the configuration files.
+
+How do I clear the first room?
+
+- You have to jump up and hit the blue switch to open the door. Don't hold the
+  attack button for too long. This room is practice for the combat later on.
+
+How do I change the controls?
+
+- For now you'll have to use a text editor to edit the file `save/settings.ayu`
+  in the program directory. In-game control customization is on the feature
+  roadmap.
+
+There may or may not be more up-to-date FAQ on the game webpage.
+
+### System Requirements
+
+This game requires a video driver that supports OpenGL ES 3.0.  For the most
+part, anything made since 2012 should work.
+
+The precompiled binaries are only for x64 machines.  You should be able to
+compile tbe source for other machines, but I have only tested it on x64.
+
 ### Running on Windows
 
 Run `verdant-fang.exe`.  Everything required should be included.  If it doesn't
@@ -67,17 +94,15 @@ work, please let me know.
 
 ### Running on Linux
 
-Some video drivers on Linux only support OpenGL ES, and not OpenGL classic.
-Unfortunately, those drivers are not supported at this time, so you will have to
-use a different driver or run the game on Windows.
-
 This requires a recent Linux distro (libc version 6 or higher), as well as these
-system libraries:
-    libsdl2 libsdl2-image libsdl2-mixer
+system libraries: `libsdl2 libsdl2-image libsdl2-mixer`
 Please install the equivalent packages with your system package manager.
 
 After that, run `verdant-fang`.  If it doesn't work, try running it in a
 terminal and tell me what the error message is.
+
+If the Linux package doesn't work, you may have better luck either building from
+source or running the Windows version with WINE.
 
 ### Modding
 
@@ -94,13 +119,24 @@ please alter the title screen (such as by adding or changing some text).
 If you downloaded the source code version, you can modify and compile the source
 yourself.  You'll need Perl to run the build system, as well as development
 versions of the required SDL libraries for your platform.  Currently the code
-only compiles with GCC-12; clang and MSVC are not supported.  To build the debug
-version, use
+only compiles with gcc-12; clang and MSVC are not supported.  To build the debug
+version, use one of the following commands
 ```
 perl make.pl --jobs=7 out/deb/build
 ```
 after which the program will be at `out/deb/verdant-fang`.  You can build other
 flavors by replacing `deb` with one of the other configs in the build script.
+If you're just here to play the game and not hack on it, you probably want to
+build the `rel` configuration.
+
+By default, the build script is configured for building on Linux.  To build on
+Windows, you will need the mingw toolchain corresponding to GCC version 12, as
+well as the mingw versions of the SDL libraries.  You'll have to tweak the build
+script in `make.pl` in the following ways:
+
+- Change `$mingw` (at or around line 34) to wherever your mingw folder is.
+- Change `$sdl`, `$sdl_image`, and `$sdl_mixer` (right below) to match the
+  folders of the SDL libraries you downloaded.
 
 Since itch.io's command line tools ignore the `.git` directory, it has been
 renamed to `_git`.  Please rename it back to `.git` if you want to use git
@@ -127,38 +163,23 @@ Music composing: Sekaiju
 MIDI rendering: TiMidity with eawpats
 Recording and audio editing: Audacity
 
-### FAQ
-
-The combat is too difficult for me!
-  - There's an option to add more checkpoints and an option to make enemies a
-    little easier. Do please use them! I'm not going to go all "You cheated not
-    only the game but yourself" on you.
-  - Still struggling? There are cheat codes that let you use savestates, if you
-    can figure out how to enable them in the configuration files.
-
-How do I clear the first room?
-  - You have to jump up and hit the blue switch to open the door. Don't hold the
-    attack button for too long. This room is practice for the combat later on.
-
-How do I change the controls?
-  - For now you'll have to use a text editor to edit the file
-    `save/settings.ayu` in the program directory. In-game control customization
-    is on the feature roadmap.
-
-There may or may not be more up-to-date FAQ on the game webpage.
-
 ### Version History
 
 #### v1.0.1
+
 Initial public version.
 
 #### v1.0.2
+
 Bugfix release.
+
 - Fixed a crash that only happens after another crash.
 - Added some more things to README.md
 
 #### v1.0.3
+
 Bugfix release.
+
 - Fixed bug (enemy) projectiles not being saved to savestates.
 - Halved size of savestate file by removing whitespace.
 - Adjusted position of an entity during final cutscene.
@@ -168,4 +189,14 @@ Bugfix release.
 an error message when starting the game after updating, you will need to
 manually delete save/state.ayu.  We apologize for the inconvenience.  Better
 state version checking is planned for the future.*
+
+#### v1.0.4
+
+Compatibility release.
+
+- Changed graphics target from OpenGL Core 3.1 to OpenGL ES 3.0, as there are
+  some graphics drivers that only support OpenGL ES.  This change might make
+  the game unplayable on some older devices made between 2011 and 2012.  If
+  this version doesn't work on your device, please let me know.
+- Provided better instructions for building from source on Windows.
 

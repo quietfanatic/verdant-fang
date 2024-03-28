@@ -7,7 +7,9 @@ no warnings 'qw';
 
 ##### COMMAND LINE CONFIGURATION
 
-my $compiler = 'gcc';
+ # The compiler toolchain you're building with.
+ # Valid options are 'gcc' (for Linux) and 'mingw' (for Windows).
+my $compiler = $^O eq 'MSWin32' ? 'mingw' : 'gcc';
 my %compilers;
 my @linker;
 my @includes;
@@ -26,14 +28,21 @@ if ($compiler eq 'gcc') {
     push @link_opts, qw(-lSDL2 -lSDL2_image -lSDL2_mixer);
 }
 elsif ($compiler eq 'mingw') {
-     # This is where I store my mingw libraries.  If you store them somewhere
-     # else you need to change this.
+     # This is where I store my mingw toolchain libraries.  If you store them
+     # somewhere else you need to change this.  There should be a bin folder
+     # right under this path containing g++.exe and gcc.exe
     my $mingw = '../../programs/mingw';
+     # These are the versions of these libraries I downloaded.  If you download
+     # different versions or put them in a different location, please update
+     # these strings.
+    my $sdl = "$mingw/SDL2-2.28.5/x86_64-w64-mingw32";
+    my $sdl_image = "$mingw/SDL2_image-2.8.2/x86_64-w64-mingw32";
+    my $sdl_mixer = "$mingw/SDL2_mixer-2.8.0/x86_64-w64-mingw32";
+
      # Because even if most of Windows accepts forward slashes now, the command
      # name at the start of a command still needs backslashes.
     (my $bin = $mingw) =~ s/\//\\/g;
     $bin .= '\\mingw64\\bin';
-    my $arch = 'x86_64-w64-mingw32';
     %compilers = (
         cpp => ["$bin\\g++.exe"],
         c => ["$bin\\gcc.exe"],
@@ -44,25 +53,25 @@ elsif ($compiler eq 'mingw') {
      # These need to be at the end of the command line because the linker is
      # too dumb to look backwards.
     push @link_opts, (
-        "-L$mingw/SDL2_image-2.8.2/$arch/lib",
-        "-L$mingw/SDL2_mixer-2.8.0/$arch/lib",
-        "-L$mingw/SDL2-2.28.5/$arch/lib",
+        "-L$sdl_image/lib",
+        "-L$sdl_mixer/lib",
+        "-L$sdl/lib",
         qw(-lSDL2_image -lSDL2_mixer -lSDL2main -lSDL2 -mwindows),
     );
     push @compile_opts, (
-        "-I$mingw/SDL2-2.28.5/$arch/include",
+        "-I$sdl/include",
          # The SDL sublibraries expect their headers to be in the same place as
          # the SDL headers, but I prefer to keep them separate, so here's an
          # ugly workaround.
-        "-I$mingw/SDL2-2.28.5/$arch/include/SDL2",
-        "-I$mingw/SDL2_image-2.8.2/$arch/include",
-        "-I$mingw/SDL2_mixer-2.8.0/$arch/include",
+        "-I$sdl/include/SDL2",
+        "-I$sdl_image/include",
+        "-I$sdl_mixer/include",
     );
      # These are relative to ./src.  TODO: make this more intuitive
     push @resources, (
-        ["../$mingw/SDL2-2.28.5/$arch/bin/SDL2.dll" => 'SDL2.dll'],
-        ["../$mingw/SDL2_image-2.8.2/$arch/bin/SDL2_image.dll" => 'SDL2_image.dll'],
-        ["../$mingw/SDL2_mixer-2.8.0/$arch/bin/SDL2_mixer.dll" => 'SDL2_mixer.dll'],
+        ["../$sdl/bin/SDL2.dll" => 'SDL2.dll'],
+        ["../$sdl_image/bin/SDL2_image.dll" => 'SDL2_image.dll'],
+        ["../$sdl_mixer/bin/SDL2_mixer.dll" => 'SDL2_mixer.dll'],
     );
 }
 else {
@@ -206,8 +215,9 @@ push @resources, (qw(
     vf/world/*.ayu
     vf/world/assets/*.{png,mp3,wav}
 ),
-    ["../LICENSE" => "LICENSE"],
-    ["../README.md" => "README.md"],
+    ['../LICENSE' => 'LICENSE.txt'],
+    ['../README.md' => 'README.md'],
+    ['../README.md' => 'README.txt'],
 );
 my @test_resources = (qw(
     dirt/ayu/test/*.ayu
