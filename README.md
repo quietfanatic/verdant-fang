@@ -6,6 +6,7 @@ confront the evil within!
 
 This game was made for Strawberry Jam 8.  The theme of the jam is sexuality,
 so I packed a bunch of things I find erotic into this game, such as:
+
   - Snakes
   - Caves
   - Transformation scenes
@@ -14,6 +15,7 @@ so I packed a bunch of things I find erotic into this game, such as:
 
 WARNING: This game contains content that may disturb some people, including but
 not limited to:
+
   - Blood (can be turned off)
   - Nudity (can be turned off)
   - Snakes (cannot be turned off)
@@ -153,17 +155,17 @@ especially the actor state management and animation code.
 
 ### Credits
 
-Programming, art, music & sound: Leafuw
-Playtesting: Anonymous
-Help with compatibility debugging: Disposable Dev
-Special thanks: Everyone in the Strawberry Jam community
+- Programming, art, music & sound: Leafuw
+- Playtesting: Anonymous
+- Help with compatibility debugging: Disposable Dev
+- Special thanks: Everyone in the Strawberry Jam community
 
 #### Tools Used
 
-Pixel art: The GIMP
-Music composing: Sekaiju
-MIDI rendering: TiMidity with eawpats
-Recording and audio editing: Audacity
+- Pixel art: The GIMP
+- Music composing: Sekaiju
+- MIDI rendering: TiMidity with eawpats
+- Recording and audio editing: Audacity
 
 ### Version History
 
