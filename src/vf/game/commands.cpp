@@ -57,7 +57,7 @@ Command delete_state (delete_state_, "delete_state", "Delete the saved game stat
 void reset_state_ () {
     if (!current_game) return;
      // Clear everything including transitions and stuff
-    current_game->state_res->set_value(ayu::Dynamic::make<State>());
+    current_game->state_res->set_value(ayu::AnyVal::make<State>());
     auto& state = current_game->state_res->get_value().as<State>();
     state.load_initial();
 }

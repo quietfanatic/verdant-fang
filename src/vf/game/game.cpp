@@ -151,7 +151,7 @@ Game::Game () :
         menus.emplace_back(pause_menu);
     }
     else {
-        state_res->set_value(ayu::Dynamic::make<State>());
+        state_res->set_value(ayu::AnyVal::make<State>());
         auto& state = state_res->get_value().as<State>();
         state.load_initial();
         menus.emplace_back(start_menu);
@@ -186,7 +186,7 @@ void Game::start () {
 
 void Game::reset () {
      // Clear everything including transitions and stuff
-    state_res->set_value(ayu::Dynamic::make<State>());
+    state_res->set_value(ayu::AnyVal::make<State>());
     auto& state = state_res->get_value().as<State>();
     state.load_initial();
     menus = {};
@@ -212,6 +212,7 @@ Game* current_game = null;
 
 #ifndef TAP_DISABLE_TESTS
 #include <filesystem>
+#include "../../dirt/ayu/traversal/to-tree.h"
 #include "../../dirt/tap/tap.h"
 #include "../world/common.h"
 
@@ -227,7 +228,10 @@ tap::TestSet tests ("vf/game", []{
     send_input_as_event({.type = InputType::Key, .code = SDLK_ESCAPE}, window_id);
     game.loop.stop();
     game.loop.start();
-    pass();
+    pass("Game loop ran");
+     // For performance testing
+    auto checkpoint = ayu::item_to_tree(&game.state().world);
+    pass("Can serialize world");
     done_testing();
 });
 #endif
