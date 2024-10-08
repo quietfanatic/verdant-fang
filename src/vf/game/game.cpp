@@ -134,6 +134,8 @@ Game::Game () :
         ayu::save(options_res);
     }
 
+     // TODO: This loads the images a second time after they've been trimmed
+     // already.  Don't trim them until necessary
     ayu::SharedResource menus_res (iri::constant("res:/vf/game/menus.ayu"));
     ayu::global(&start_menu);
     start_menu = menus_res["start_menu"][1];
@@ -214,6 +216,7 @@ Game* current_game = null;
 #include <filesystem>
 #include "../../dirt/ayu/traversal/to-tree.h"
 #include "../../dirt/tap/tap.h"
+#include "../../dirt/uni/lilac.h"
 #include "../world/common.h"
 
 tap::TestSet tests ("vf/game", []{
@@ -233,5 +236,6 @@ tap::TestSet tests ("vf/game", []{
     auto checkpoint = ayu::item_to_tree(&game.state().world);
     pass("Can serialize world");
     done_testing();
+    uni::lilac::dump_profile();
 });
 #endif

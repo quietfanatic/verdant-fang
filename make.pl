@@ -21,10 +21,10 @@ my @resources;
 
 if ($compiler eq 'gcc') {
     %compilers = (
-        cpp => ['g++-12'],
-        c => ['gcc-12'],
+        cpp => ['g++-14'],
+        c => ['gcc-14'],
     );
-    @linker = 'g++-12';
+    @linker = 'g++-14';
     push @link_opts, qw(-lSDL2 -lSDL2_image -lSDL2_mixer);
 }
 elsif ($compiler eq 'mingw') {
@@ -84,7 +84,7 @@ push @{$compilers{cpp}}, qw(
 );
 push @compile_opts, qw(
     -msse2 -mfpmath=sse
-    -fstrict-aliasing -fstack-protector
+    -fstrict-aliasing -fstack-protector -flimit-function-alignment
     -Wall -Wextra -Wno-unused-value
     -fmax-errors=10 -fdiagnostics-color -fno-diagnostics-show-caret
 );
@@ -177,6 +177,7 @@ my @sources = (qw(
     dirt/ayu/traversal/scan.cpp
     dirt/ayu/traversal/test.cpp
     dirt/ayu/traversal/to-tree.cpp
+    dirt/ayu/traversal/traversal.cpp
     dirt/control/command.cpp
     dirt/control/command-builtins.cpp
     dirt/control/input.cpp
@@ -201,6 +202,8 @@ my @sources = (qw(
     dirt/uni/assertions.cpp
     dirt/uni/errors.cpp
     dirt/uni/io.cpp
+    dirt/uni/lilac.cpp
+    dirt/uni/lilac-global-override.cpp
     dirt/uni/text.cpp
     dirt/uni/utf.cpp
     dirt/whereami/whereami.c

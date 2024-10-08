@@ -1,5 +1,6 @@
 #include "render.h"
 
+#include <algorithm>
 #include "../../dirt/ayu/resources/global.h"
 #include "../../dirt/ayu/resources/resource.h"
 #include "../../dirt/glow/gl.h"
