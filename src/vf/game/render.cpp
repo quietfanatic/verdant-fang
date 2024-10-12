@@ -219,7 +219,7 @@ void draw_texture (
     if (!frame_program) {
         ayu::global(&frame_program);
         frame_program = ayu::ResourceRef(
-            iri::constant("res:/vf/game/render.ayu")
+            "res:/vf/game/render.ayu"_iri
         )["program"][1];
     }
     require(frame_program->n_commands < FrameProgram::max_commands);
@@ -238,7 +238,7 @@ void draw_rectangle (
     if (!empty_tex) {
         ayu::global(&empty_tex);
         empty_tex = ayu::ResourceRef(
-            iri::constant("res:/vf/game/render.ayu")
+            "res:/vf/game/render.ayu"_iri
         )["empty_tex"][1];
     }
     glow::RGBA8 tint = color; tint.a = 0xff;

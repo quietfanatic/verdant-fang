@@ -95,9 +95,9 @@ Game::Game () :
         .on_step = [this]{ on_step(*this); },
         .on_draw = [this]{ on_draw(*this); },
     },
-    settings_res(iri::constant("save:/settings.ayu")),
-    options_res(iri::constant("save:/options.ayu")),
-    state_res(iri::constant("save:/state.ayu"))
+    settings_res("save:/settings.ayu"_iri),
+    options_res("save:/options.ayu"_iri),
+    state_res("save:/state.ayu"_iri)
 {
     expect(!current_game);
     current_game = this;
@@ -113,7 +113,7 @@ Game::Game () :
          // Copy file instead of renaming resource to keep the comments.
         fs::copy_file(
             ayu::resource_filename(
-                iri::constant("res:/vf/game/settings-initial.ayu")
+                "res:/vf/game/settings-initial.ayu"_iri
             ),
             ayu::resource_filename(settings_res->name())
         );
@@ -127,7 +127,7 @@ Game::Game () :
     }
     else {
         auto initial = ayu::SharedResource(
-            iri::constant("res:/vf/game/options-initial.ayu")
+            "res:/vf/game/options-initial.ayu"_iri
         );
         ayu::load(initial);
         ayu::rename(initial, options_res);
@@ -136,7 +136,7 @@ Game::Game () :
 
      // TODO: This loads the images a second time after they've been trimmed
      // already.  Don't trim them until necessary
-    ayu::SharedResource menus_res (iri::constant("res:/vf/game/menus.ayu"));
+    ayu::SharedResource menus_res ("res:/vf/game/menus.ayu"_iri);
     ayu::global(&start_menu);
     start_menu = menus_res["start_menu"][1];
     ayu::global(&pause_menu);
@@ -222,7 +222,7 @@ Game* current_game = null;
 tap::TestSet tests ("vf/game", []{
     using namespace control;
     using namespace tap;
-    fs::remove(ayu::resource_filename(iri::constant("save:/state.ayu")));
+    fs::remove(ayu::resource_filename("save:/state.ayu"_iri));
     Game game;
     game.menus = {};
     auto room = game.state().current_room;

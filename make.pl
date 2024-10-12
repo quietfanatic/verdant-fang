@@ -79,7 +79,7 @@ else {
 }
 
 push @{$compilers{cpp}}, qw(
-    -std=c++20 -fno-threadsafe-statics
+    -std=c++23 -fno-threadsafe-statics
     -ftemplate-backtrace-limit=0 -fconcepts-diagnostics-depth=4
 );
 push @compile_opts, qw(

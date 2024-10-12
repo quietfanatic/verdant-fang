@@ -127,7 +127,7 @@ void State::init () {
 }
 
 void State::load_initial () {
-    ayu::SharedResource initial (iri::constant("res:/vf/world/world.ayu"));
+    ayu::SharedResource initial ("res:/vf/world/world.ayu"_iri);
     Resident* v = initial["verdant"][1];
     if (v) {
         current_room = v->room;

@@ -83,13 +83,13 @@ void begin_camera () {
     if (!zoom_program) {
         ayu::global(&zoom_program);
         zoom_program = ayu::ResourceRef(
-            iri::constant("res:/vf/game/camera.ayu")
+            "res:/vf/game/camera.ayu"_iri
         )["zoom_program"][1];
     }
     if (!transition_program) {
         ayu::global(&transition_program);
         transition_program = ayu::ResourceRef(
-            iri::constant("res:/vf/game/camera.ayu")
+            "res:/vf/game/camera.ayu"_iri
         )["transition_program"][1];
     }
     if (!world_fb) setup_camera();
