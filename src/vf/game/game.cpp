@@ -234,7 +234,6 @@ tap::TestSet tests ("vf/game", []{
     pass("Game loop ran");
      // For performance testing
     auto checkpoint = ayu::item_to_tree(&game.state().world);
-    pass("Can serialize world");
     done_testing();
     uni::lilac::dump_profile();
 });
